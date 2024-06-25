@@ -1,0 +1,66 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
+
+class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
+  final String path;
+
+  const AppNavBar({required this.path, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isSideBarOpen = context.select((SidebarCubit cubit) => cubit.state);
+
+    return Padding(
+      padding: isSideBarOpen ? const EdgeInsets.fromLTRB(24, 0, 16, 8) : const EdgeInsets.symmetric(horizontal: 16.0),
+      child: AppBar(
+        backgroundColor: UIColors.background,
+        surfaceTintColor: UIColors.transparent,
+        centerTitle: false,
+        titleSpacing: 0.0,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!isSideBarOpen) ...[
+              IconButton(
+                onPressed: context.read<SidebarCubit>().openSideBar,
+                icon: Assets.icons.menu.svg(),
+              ),
+              const UIHorizontalSpace(12.0),
+            ],
+            UIText.labelMedium(path),
+          ],
+        ),
+        actions: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // TODO: Implement Notification
+              // hasNotification
+              //     ? Badge(
+              //         label: const Text('2'),
+              //         child: Assets.icons.notification,
+              //       )
+              //     : Assets.icons.notification.svg(),
+              const UIHorizontalSpace(16.0),
+              UIText.labelMedium('Sara smith'),
+              const UIHorizontalSpace(12.0),
+              UIPopupMenuButton<ProfileMenu>.icon(
+                  icon: Assets.icons.arrowDown.size(12.0),
+                  options: ProfileMenu.values,
+                  getOptionTitle: (item) => item.title,
+                  onSelectMenu: (menu) {
+                    if (ProfileMenu.logout == menu) context.read<AuthBloc>().add(const LogoutEvent());
+                  }),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => AppBar().preferredSize;
+}
