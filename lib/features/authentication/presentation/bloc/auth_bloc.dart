@@ -33,12 +33,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final result = await getAuthSession.call(NoParams());
       result.fold(
-        (error) => emit(AuthErrorState(message: error.message)),
-        (data) => emit(
-          const UnauthenticatedState(),
-          // data.isLoggedIn == true ? AuthenticatedState(user: data.user!) : emit(const UnauthenticatedState()),
-        ),
-      );
+          (error) => emit(AuthErrorState(message: error.message)),
+          (data) => data.isLoggedIn == true
+              ? emit(AuthenticatedState(user: data.user!))
+              : emit(const UnauthenticatedState()));
     } catch (e) {
       emit(AuthErrorState(message: e.toString()));
     }

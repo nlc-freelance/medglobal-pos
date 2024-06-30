@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:medglobal_admin_portal/core/configs/config.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/network/interceptors/error_interceptor.dart';
+import 'package:medglobal_admin_portal/core/network/interceptors/request_interceptor.dart';
 import 'package:medglobal_admin_portal/core/network/models/api_response.dart';
 
 class DioService {
@@ -12,18 +12,17 @@ class DioService {
   }
 
   BaseOptions _createBaseOptions() => BaseOptions(
-        baseUrl: Config.baseUrl,
         headers: {'content-type': 'application/json'},
         responseType: ResponseType.json,
         validateStatus: (status) => true,
-        receiveTimeout: const Duration(seconds: 5),
-        // sendTimeout: const Duration(seconds: 5),
         connectTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
       );
 
   Dio create() => Dio(_createBaseOptions())
     ..interceptors.addAll([
       ErrorInterceptor(),
+      RequestInterceptor(),
     ]);
 
   Future<ApiResponse<R>> get<R>(String endpoint, {JSON? queryParams}) async {

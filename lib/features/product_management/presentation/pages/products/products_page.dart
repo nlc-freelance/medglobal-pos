@@ -23,7 +23,7 @@ class ProductsPage extends StatelessWidget {
           actions: [
             UIButton.filled(
               'New Product',
-              icon: Assets.icons.add.size(12.0),
+              icon: Assets.icons.add.setSize(12.0),
               onClick: () => AppRouter.router.goNamed(SideMenuTreeItem.addProduct.name),
             ),
           ],

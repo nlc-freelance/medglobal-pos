@@ -45,7 +45,7 @@ class SupplierActions extends StatelessWidget {
               CancelActionButton(
                 onCancel: onCancel,
                 onAction: onSave,
-                enabled: !(state is SaveSupplierLoadingState || state is DeleteSupplierLoadingState) && isSupplierValid,
+                // enabled: !(state is SaveSupplierLoadingState || state is DeleteSupplierLoadingState) && isSupplierValid,
                 isLoading: state is SaveSupplierLoadingState,
               ),
             ],

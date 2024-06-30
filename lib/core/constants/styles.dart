@@ -30,10 +30,10 @@ class StyleDataGrid {
       );
 }
 
-class LeftBorderClipper extends CustomClipper<Rect> {
+class HorizontalBorderClipper extends CustomClipper<Rect> {
   @override
   Rect getClip(Size size) {
-    return Rect.fromLTWH(2, 2, size.width - 2, size.height - 2);
+    return Rect.fromLTRB(2, 0, size.width - 2, size.height);
   }
 
   @override

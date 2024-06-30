@@ -3,11 +3,13 @@ import 'package:medglobal_admin_portal/core/core.dart';
 class ApiResponse<T> {
   final String message;
   final T? data;
+  final List<T>? items;
   final PageInfo? pageInfo;
 
   const ApiResponse({
     required this.message,
     this.data,
+    this.items,
     this.pageInfo,
   });
 
@@ -15,6 +17,7 @@ class ApiResponse<T> {
     return ApiResponse(
       message: json['message'],
       data: json['data'],
+      items: json['data']['items'],
       pageInfo: json.keys.contains('data') && json['data']['page'] != null ? PageInfo.fromJson(json['data']) : null,
     );
   }
@@ -22,13 +25,11 @@ class ApiResponse<T> {
 
 class PageInfo {
   final int page;
-  final int size;
   final int totalCount;
   final int totalPages;
 
   PageInfo({
     required this.page,
-    required this.size,
     required this.totalCount,
     required this.totalPages,
   });
@@ -36,7 +37,6 @@ class PageInfo {
   factory PageInfo.fromJson(JSON json) {
     return PageInfo(
       page: json['page'],
-      size: json['size'],
       totalCount: json['totalCount'],
       totalPages: json['totalPages'],
     );

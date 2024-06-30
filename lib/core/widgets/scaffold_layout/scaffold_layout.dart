@@ -16,13 +16,16 @@ class ScaffoldLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showSideBar = context.select((SidebarCubit cubit) => cubit.state);
-
     return Portal(
       child: Scaffold(
         body: Row(
           children: [
-            if (showSideBar) SideNavBar(currentMenu: routerState.topRoute!.name!),
+            BlocBuilder<SidebarCubit, bool>(
+              builder: (context, state) => Visibility(
+                visible: state,
+                child: SideNavBar(currentMenu: routerState.topRoute!.name!),
+              ),
+            ),
             Expanded(
               child: Column(
                 children: [

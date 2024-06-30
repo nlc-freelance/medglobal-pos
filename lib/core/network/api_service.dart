@@ -1,14 +1,15 @@
 import 'package:dio/dio.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/network/dio_service.dart';
-import 'package:medglobal_admin_portal/core/utils/typedefs.dart';
+import '../core.dart';
+import 'dio_service.dart';
+import 'models/api_response.dart';
+import '../utils/typedefs.dart';
 
 class ApiService {
   late final DioService _dioService;
 
   ApiService(DioService dioService) : _dioService = dioService;
 
-  Future<List<T>> collection<T>(
+  Future<ApiResponse<T>> collection<T>(
     String endpoint, {
     JSON? queryParams,
     required T Function(JSON responseBody) converter,
@@ -16,7 +17,16 @@ class ApiService {
     try {
       final response = await _dioService.get(endpoint, queryParams: queryParams);
       List<Object?> data = response.data!['items'];
-      return data.map((item) => converter(item as JSON)).toList();
+      final items = data.map((item) => converter(item as JSON)).toList();
+      return ApiResponse(
+        message: response.message,
+        items: items,
+        pageInfo: PageInfo(
+          page: response.data['page'],
+          totalCount: response.data['totalCount'],
+          totalPages: response.data['totalPages'],
+        ),
+      );
     } on DioException catch (e) {
       throw _handleDioException(e);
     } catch (_) {

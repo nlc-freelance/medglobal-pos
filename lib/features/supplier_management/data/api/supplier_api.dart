@@ -20,11 +20,13 @@ class SupplierApiImpl implements SupplierApi {
   @override
   Future<List<SupplierDto>> getSuppliers(int page) async {
     try {
-      return await api.collection<SupplierDto>(
-        ApiEndpoint.suppliers(),
-        queryParams: ApiQueryParams(page: page).toJson(),
-        converter: SupplierDto.fromJson,
-      );
+      // TODO: Get supplier list using SupplierList
+      return [];
+      // return await api.collection<SupplierDto>(
+      //   ApiEndpoint.suppliers(),
+      //   queryParams: ApiQueryParams(page: page).toJson(),
+      //   converter: SupplierDto.fromJson,
+      // );
     } catch (_) {
       rethrow;
     }

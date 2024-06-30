@@ -10,7 +10,7 @@ extension ColorFilterExt on Color {
 }
 
 extension SvgExt on SvgGenImage {
-  SvgPicture size(double size) => this.svg(width: size, height: size);
+  SvgPicture setSize(double size) => this.svg(width: size, height: size);
 
   SvgPicture setColorOnHover(isHover) => this.svg(
         width: 12.0,

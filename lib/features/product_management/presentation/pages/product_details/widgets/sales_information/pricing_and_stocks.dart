@@ -49,11 +49,6 @@ class PricingAndStocks extends StatelessWidget {
           hint: 'Enter ideal stock level',
           controller: TextEditingController(),
         ),
-        UITextField.topLabel(
-          label: 'Suppliers',
-          hint: 'Select supplier',
-          controller: TextEditingController(),
-        ),
       ],
     );
   }
