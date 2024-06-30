@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/overlay_dropdown.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/entities/category.dart';
+import '../../../../../../core/core.dart';
+import 'bulk_edit_category_dropdown.dart';
+import '../../../../domain/entities/category.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class BulkEditProperty extends StatefulWidget {
-  const BulkEditProperty({super.key});
+class BulkEditPopupDialog extends StatefulWidget {
+  const BulkEditPopupDialog({super.key});
 
   @override
-  State<BulkEditProperty> createState() => _BulkEditPropertyState();
+  State<BulkEditPopupDialog> createState() => _BulkEditPropertyState();
 }
 
-class _BulkEditPropertyState extends State<BulkEditProperty> with DialogMixin {
+class _BulkEditPropertyState extends State<BulkEditPopupDialog> with DialogMixin {
   final _hideCategory = true;
   bool _showPopup = false;
   Category? _category;
@@ -49,27 +49,24 @@ class _BulkEditPropertyState extends State<BulkEditProperty> with DialogMixin {
             children: [
               UIText.heading6('Edit Property'),
               const UIVerticalSpace(4.0),
-              UIText.subtitle('The following actions will update the existing value of the selected products.'),
+              UIText.subtitle(
+                  'Bulk setting or removing a product property value. These actions will update all selected products at once.'),
               const UIVerticalSpace(24.0),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  OverlayCategoryDropdown(
+                  BulkEditCategoryDropdown(
                     hide: _hideCategory,
                     label: 'Category',
                     hint: 'Select category',
-                    categories: [
-                      Category(id: 1, name: 'Category 1'),
-                      Category(id: 2, name: 'Category 2'),
-                    ],
                     onSelect: (category) => setState(() => _category = category),
                   ),
                   const UIHorizontalSpace(8.0),
                   Padding(
                     padding: const EdgeInsets.only(top: 18.0),
                     child: UIOutlinedIconButton(
-                      icon: Assets.icons.trash.svg(width: 16.0),
+                      icon: Assets.icons.minus.svg(width: 16.0),
                       onTap: () {
                         setState(() => _hideCategory);
                         showConfirmationDialog(
@@ -82,7 +79,7 @@ class _BulkEditPropertyState extends State<BulkEditProperty> with DialogMixin {
                               _showPopup = false;
                               _category = null;
                             });
-                            // TODO: Remove category for selected products
+                            // TODO: API remove category for selected products
                           },
                         );
                       },
@@ -101,7 +98,7 @@ class _BulkEditPropertyState extends State<BulkEditProperty> with DialogMixin {
                         _showPopup = false;
                         _category = null;
                       });
-                      // TODO: Set category
+                      // TODO: API bulk set category
                     },
                   ),
                 ),

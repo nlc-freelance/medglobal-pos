@@ -9,7 +9,7 @@ abstract class DialogHandler {
   void showSidePeek(BuildContext context) {
     showGeneralDialog(
       barrierLabel: create(context).toString(),
-      barrierDismissible: true,
+      barrierDismissible: false,
       transitionDuration: const Duration(milliseconds: 300),
       context: context,
       pageBuilder: (context, animation1, animation2) => SidePeekModal(child: create(context)),

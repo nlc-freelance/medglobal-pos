@@ -30,6 +30,7 @@ class ToastNotification {
               constraints: const BoxConstraints(minWidth: 300),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
+                color: UIColors.background,
                 border: Border.all(color: UIColors.borderMuted, width: 2),
                 borderRadius: const BorderRadius.all(Radius.circular(12.0)),
               ),

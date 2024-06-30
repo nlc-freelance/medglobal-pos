@@ -32,7 +32,6 @@ class _SalesInformationState extends State<SalesInformation> {
             PageSectionTitle.subsection('Pricing and Stocks'),
             const PricingAndStocks(),
           ],
-          const UIVerticalSpace(40.0),
         ],
       );
 }

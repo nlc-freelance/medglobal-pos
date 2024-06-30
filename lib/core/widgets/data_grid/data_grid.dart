@@ -78,7 +78,7 @@ class _DataGridState<T> extends State<DataGrid<T>> with DataGridInitMixin<T> {
           child: SfDataGridTheme(
             data: widget.style,
             child: ClipRect(
-              clipper: LeftBorderClipper(),
+              clipper: HorizontalBorderClipper(),
               child: SfDataGrid(
                 controller: _controller,
                 source: _source,

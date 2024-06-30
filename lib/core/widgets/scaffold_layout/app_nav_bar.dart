@@ -48,7 +48,7 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
               UIText.labelMedium('Sara smith'),
               const UIHorizontalSpace(12.0),
               UIPopupMenuButton<ProfileMenu>.icon(
-                  icon: Assets.icons.arrowDown.size(12.0),
+                  icon: Assets.icons.arrowDown.setSize(12.0),
                   options: ProfileMenu.values,
                   getOptionTitle: (item) => item.title,
                   onSelectMenu: (menu) {

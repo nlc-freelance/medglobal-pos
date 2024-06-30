@@ -41,7 +41,7 @@ class _LoadingDataGridState<T> extends State<LoadingDataGrid<T>> with DataGridIn
           child: SfDataGridTheme(
             data: widget.style,
             child: ClipRect(
-              clipper: LeftBorderClipper(),
+              clipper: HorizontalBorderClipper(),
               child: SfDataGrid(
                 source: _source,
                 columns: _columns,

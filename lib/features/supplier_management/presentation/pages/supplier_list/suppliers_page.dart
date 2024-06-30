@@ -47,7 +47,7 @@ class _SuppliersPage extends StatelessWidget {
             actions: [
               UIButton.filled(
                 'New Supplier',
-                icon: Assets.icons.add.size(12.0),
+                icon: Assets.icons.add.setSize(12.0),
                 onClick: () => SupplierDetailsDialog().showSidePeek(context),
               ),
             ],

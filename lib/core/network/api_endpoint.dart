@@ -1,7 +1,14 @@
-import 'package:medglobal_admin_portal/core/configs/config.dart';
-
 class ApiEndpoint {
-  static const baseUrl = Config.baseUrl;
+  final String path;
+
+  ApiEndpoint(this.path);
+
+  static String baseUrl(path) {
+    String url = '';
+    if (path.contains('/suppliers')) url = 'https://7ayvpkcn48.execute-api.ap-southeast-1.amazonaws.com/dev';
+    if (path.contains('/product')) url = 'https://i4pqwf8ek2.execute-api.ap-southeast-1.amazonaws.com/dev';
+    return url;
+  }
 
   /// Supplier
   static String suppliers([int? id]) {
@@ -10,6 +17,8 @@ class ApiEndpoint {
   }
 
   /// Products
+  static String productCategories = '/product-categories';
+
   static String products([int? id]) {
     const path = '/products';
     return id != null ? '$path/$id' : path;

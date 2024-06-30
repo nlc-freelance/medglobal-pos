@@ -15,21 +15,21 @@ class ProductDetailsPage extends StatelessWidget {
           title: 'Add Product',
           subtitle: Strings.subtitlePlaceholder,
         ),
-        Expanded(
+        const Expanded(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const GeneralInformation(),
-                const SalesInformation(),
-                CancelActionButton(
-                  onCancel: () => AppRouter.router.pushReplacementNamed(SideMenuTreeItem.manageProducts.name),
-                  onAction: () {
-                    // TODO: Add Product
-                  },
-                ),
+                GeneralInformation(),
+                SalesInformation(),
               ],
             ),
           ),
+        ),
+        CancelActionButton(
+          onCancel: () => AppRouter.router.pushReplacementNamed(SideMenuTreeItem.manageProducts.name),
+          onAction: () {
+            // TODO: Add Product
+          },
         ),
       ],
     );
