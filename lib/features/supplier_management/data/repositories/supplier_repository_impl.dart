@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/api/supplier_api.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier_list.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/repositories/supplier_repository.dart';
 
 class SupplierRepositoryImpl implements SupplierRepository {
@@ -11,11 +12,22 @@ class SupplierRepositoryImpl implements SupplierRepository {
   SupplierRepositoryImpl(this.supplierApi);
 
   @override
-  Future<Either<Failure, List<Supplier>>> getSuppliers(int page) async {
+  Future<List<Supplier>> getAllSuppliers() async {
+    try {
+      final response = await supplierApi.getAllSuppliers();
+      final suppliers = response.map((dto) => dto.toEntity()).toList();
+      return suppliers;
+    } on DioException catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<Either<Failure, SupplierList>> getSuppliers(int page) async {
     try {
       final response = await supplierApi.getSuppliers(page);
-      final suppliers = response.map((supplier) => supplier.toEntity()).toList();
-      return Right(suppliers);
+      // final suppliers = response.map((supplier) => supplier.toEntity()).toList();
+      return Right(response.toEntity());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

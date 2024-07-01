@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/features/authentication/presentation/bloc/auth_bloc.dart';
+import '../../../../../core/core.dart';
+import '../../bloc/auth_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class LoginForm extends StatelessWidget {

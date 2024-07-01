@@ -19,9 +19,6 @@ class SupplierInitialState extends SupplierState {
 ///
 class GetSupplierLoadingState extends SupplierState {
   const GetSupplierLoadingState();
-
-  @override
-  List<Object?> get props => [];
 }
 
 class SaveSupplierLoadingState extends SupplierState {

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../../../../../core/core.dart';
-import 'category_dropdown.dart';
+import 'package:get_it/get_it.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/search_dropdown/search_dropdown.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/pages/widgets/category_dropdown.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/get_all_suppliers.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class GeneralInformation extends StatelessWidget {
@@ -28,15 +32,17 @@ class GeneralInformation extends StatelessWidget {
                     showRequired: true,
                   ),
                   const UIVerticalSpace(16),
-                  CategoryDropdown(
-                    onItemSelect: (value) {},
+                  SearchDropdown<Supplier>.multi(
+                    label: 'Suppliers',
+                    hint: 'Select suppliers',
+                    itemAsString: (item) => item.name,
+                    asyncItemsCallback: GetIt.I<GetAllSuppliersUseCase>().call(),
                   ),
                 ],
               ),
             ),
             const UIHorizontalSpace(16),
-            // TODO: Replace with SupplierDropdown
-            // const Expanded(child: CategoryDropdown()),
+            const Expanded(child: CategoryDropdown()),
             Padding(
               padding: const EdgeInsets.only(left: 16.0),
               child: Column(

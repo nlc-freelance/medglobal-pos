@@ -10,10 +10,10 @@ import 'package:medglobal_admin_portal/features/supplier_management/domain/useca
 part 'supplier_state.dart';
 
 class SupplierCubit extends Cubit<SupplierState> {
-  final GetSupplierById _getSupplierById;
-  final CreateSupplier _createSupplier;
-  final UpdateSupplier _updateSupplier;
-  final DeleteSupplier _deleteSupplier;
+  final GetSupplierByIdUseCase _getSupplierById;
+  final CreateSupplierUseCase _createSupplier;
+  final UpdateSupplierUseCase _updateSupplier;
+  final DeleteSupplierUseCase _deleteSupplier;
 
   SupplierCubit(
     this._getSupplierById,

@@ -1,19 +1,10 @@
-import 'package:dartz/dartz.dart';
-import '../../../../../core/core.dart';
-import '../../entities/category_list.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/entities/category.dart';
 import '../../repositories/category_repository.dart';
 
-class GetCategoriesUseCase implements UseCase<CategoryList, GetCategoriesParams> {
+class GetAllCategoriesUseCase {
   final CategoryRepository repository;
 
-  GetCategoriesUseCase(this.repository);
+  GetAllCategoriesUseCase(this.repository);
 
-  @override
-  Future<Either<Failure, CategoryList>> call(GetCategoriesParams params) => repository.getCategories(params.page);
-}
-
-class GetCategoriesParams {
-  final int page;
-
-  GetCategoriesParams(this.page);
+  Future<List<Category>> call() => repository.getAllCategories();
 }

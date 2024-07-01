@@ -23,7 +23,6 @@ class VariantForm extends StatelessWidget {
             'Disable variations',
             iconBuilder: (isHover) => Assets.icons.minusSquare.setColorOnHover(isHover),
             onClick: onDisableVariations,
-            // onClick: () => context.read<ProductCubit>().showHideVariantForm(false),
           ),
         ),
         DottedBorder(
@@ -42,6 +41,7 @@ class VariantForm extends StatelessWidget {
                 UITextField.topLabel(label: 'Variant Name', controller: TextEditingController()),
                 const UIVerticalSpace(30.0),
                 const PricingAndStocks(),
+                const UIVerticalSpace(20.0),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: UIButton.secondary(
@@ -57,6 +57,7 @@ class VariantForm extends StatelessWidget {
         ),
         // Display if a variant is added, else hide
         const VariantDataGrid(),
+        const UIVerticalSpace(40.0),
       ],
     );
   }
