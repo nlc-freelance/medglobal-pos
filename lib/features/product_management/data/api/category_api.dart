@@ -2,11 +2,10 @@ import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/core/network/models/api_query_params.dart';
 import 'package:medglobal_admin_portal/features/product_management/data/dto/category_dto.dart';
-import 'package:medglobal_admin_portal/features/product_management/data/dto/category_list_dto.dart';
 
 abstract class CategoryApi {
   Future<CategoryDto> addNewCategory(String name);
-  Future<CategoryListDto> getCategories(int page);
+  Future<List<CategoryDto>> getAllCategories();
 }
 
 class CategoryApiImpl implements CategoryApi {
@@ -28,22 +27,27 @@ class CategoryApiImpl implements CategoryApi {
   }
 
   @override
-  Future<CategoryListDto> getCategories(int page) async {
+  Future<List<CategoryDto>> getAllCategories() async {
     try {
-      final response = await api.collection<CategoryDto>(
-        ApiEndpoint.productCategories,
-        queryParams: ApiQueryParams(page: page).toJson(),
-        converter: CategoryDto.fromJson,
-      );
-      // print(response.items.toString());
-      // print(response.pageInfo?.totalPages);
-      // print(response.pageInfo?.page);
+      int currentPage = 1;
+      List<CategoryDto> categories = [];
+      bool hasNextPage = true;
 
-      return CategoryListDto(
-        categories: response.items,
-        currentPage: response.pageInfo?.page,
-        totalPages: response.pageInfo?.totalPages,
-      );
+      while (hasNextPage) {
+        final response = await api.collection<CategoryDto>(
+          ApiEndpoint.productCategories,
+          queryParams: ApiQueryParams(page: currentPage).toJson(),
+          converter: CategoryDto.fromJson,
+        );
+        if (response.items?.isNotEmpty == true) {
+          categories.addAll(response.items!.toList());
+          currentPage++;
+        } else {
+          hasNextPage = false;
+        }
+      }
+
+      return categories;
     } catch (_) {
       rethrow;
     }

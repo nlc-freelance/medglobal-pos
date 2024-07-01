@@ -27,7 +27,7 @@ class SidePeekModal extends StatelessWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 0, 30, 20),
+                  padding: const EdgeInsets.fromLTRB(30, 10, 30, 20),
                   child: child,
                 ),
               ),

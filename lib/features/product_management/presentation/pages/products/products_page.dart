@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/data_grid/product_grid.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/bloc/product_selection/product_selection_cubit.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/pages/products/widgets/selected_products_toolbar.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';

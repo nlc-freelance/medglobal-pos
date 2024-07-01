@@ -16,18 +16,19 @@ import 'package:medglobal_admin_portal/features/product_management/data/reposito
 import 'package:medglobal_admin_portal/features/product_management/domain/repositories/category_repository.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/usecases/category/add_category.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/usecases/category/get_all_categories.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/bloc/category/category_bloc.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/bloc/product_selection/product_selection_cubit.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/category/category_cubit.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/api/supplier_api.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/repositories/supplier_repository_impl.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/repositories/supplier_repository.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/create_supplier.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/delete_supplier.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/get_all_suppliers.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/get_supplier_by_id.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/get_suppliers.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/update_supplier.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/presentation/bloc/supplier/supplier_cubit.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/presentation/bloc/supplier_list/supplier_list_cubit.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
 
 /// lazySingleton are only initialized when needed while factory are always initialized
 
@@ -61,15 +62,16 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => Logout(injector()))
 
     /// Supplier UseCase
-    ..registerLazySingleton(() => GetSuppliers(injector()))
-    ..registerLazySingleton(() => GetSupplierById(injector()))
-    ..registerLazySingleton(() => CreateSupplier(injector()))
-    ..registerLazySingleton(() => UpdateSupplier(injector()))
-    ..registerLazySingleton(() => DeleteSupplier(injector()))
+    ..registerLazySingleton(() => GetAllSuppliersUseCase(injector()))
+    ..registerLazySingleton(() => GetSuppliersUseCase(injector()))
+    ..registerLazySingleton(() => GetSupplierByIdUseCase(injector()))
+    ..registerLazySingleton(() => CreateSupplierUseCase(injector()))
+    ..registerLazySingleton(() => UpdateSupplierUseCase(injector()))
+    ..registerLazySingleton(() => DeleteSupplierUseCase(injector()))
 
     /// Products UseCase
     ..registerLazySingleton(() => AddCategoryUseCase(injector()))
-    ..registerLazySingleton(() => GetCategoriesUseCase(injector()))
+    ..registerLazySingleton(() => GetAllCategoriesUseCase(injector()))
 
     /// Bloc
     ..registerFactory(() => AuthBloc(injector(), injector(), injector(), injector()))
@@ -77,5 +79,5 @@ void initDependencyInjection() {
     ..registerFactory(() => SupplierListCubit(injector()))
     ..registerFactory(() => SupplierCubit(injector(), injector(), injector(), injector()))
     ..registerFactory(() => ProductSelectionCubit())
-    ..registerFactory(() => CategoryBloc(injector(), injector()));
+    ..registerFactory(() => CategoryCubit(injector()));
 }

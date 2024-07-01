@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/presentation/bloc/supplier/supplier_cubit.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/pages/supplier_details/widgets/general_information.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/pages/supplier_details/widgets/address_information.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/pages/supplier_details/widgets/contact_information.dart';

@@ -3,10 +3,10 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/repositories/supplier_repository.dart';
 
-class CreateSupplier implements UseCase<void, CreateSupplierParams> {
+class CreateSupplierUseCase implements UseCase<void, CreateSupplierParams> {
   final SupplierRepository repository;
 
-  const CreateSupplier(this.repository);
+  const CreateSupplierUseCase(this.repository);
 
   @override
   Future<Either<Failure, void>> call(CreateSupplierParams params) => repository.create(params.supplier);

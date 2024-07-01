@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/features/product_management/data/api/category_api.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/category.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/entities/category_list.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/repositories/category_repository.dart';
 
 class CategoryRepositoryImpl implements CategoryRepository {
@@ -22,12 +21,13 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, CategoryList>> getCategories(int page) async {
+  Future<List<Category>> getAllCategories() async {
     try {
-      final response = await _categoryApi.getCategories(page);
-      return Right(response.toEntity());
+      final response = await _categoryApi.getAllCategories();
+      final categories = response.map((dto) => dto.toEntity()).toList();
+      return categories;
     } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
+      throw Exception(e);
     }
   }
 }

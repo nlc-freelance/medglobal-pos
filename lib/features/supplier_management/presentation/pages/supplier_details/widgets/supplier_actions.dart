@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/presentation/bloc/supplier/supplier_cubit.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class SupplierActions extends StatelessWidget {
