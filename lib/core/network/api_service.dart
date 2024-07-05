@@ -29,7 +29,8 @@ class ApiService {
       );
     } on DioException catch (e) {
       throw _handleDioException(e);
-    } catch (_) {
+    } catch (e) {
+      print(e);
       rethrow;
     }
   }
@@ -64,14 +65,15 @@ class ApiService {
     }
   }
 
-  Future<T> update<T>(
+  Future<T?> update<T>(
     String endpoint, {
     required JSON data,
     required T Function(JSON response) converter,
   }) async {
     try {
       final response = await _dioService.put<JSON>(endpoint, data: data);
-      return converter(response.data!);
+      if (response.data != null) return converter(response.data!);
+      return null;
     } on DioException catch (e) {
       throw _handleDioException(e);
     } catch (_) {

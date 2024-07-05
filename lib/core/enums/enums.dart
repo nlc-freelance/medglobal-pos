@@ -17,7 +17,7 @@ enum ProductDeleteAction {
 enum SideMenuTree {
   products(
     'Products',
-    ['Manage Products', 'Add Product', 'Suppliers'],
+    ['Manage Products', 'Add Product', 'Product Details', 'Suppliers'],
   ),
   stocks(
     'Stock Management',
@@ -27,7 +27,7 @@ enum SideMenuTree {
     'Transactions',
     ['Sales', 'Returns'],
   ),
-  returns('Returns Management', []),
+  returns('Returns Management', ['Returns Management']),
   reports(
     'Reports',
     ['Product History', 'Sales Report', 'Sales Per Category', 'Sales Per Branch', 'Sales Per Day'],
@@ -42,7 +42,8 @@ enum SideMenuTree {
 enum SideMenuTreeItem {
   products('Products', '/products', '/products'),
   manageProducts('Manage Products', 'manage-products', '/products/manage-products'),
-  addProduct('Add Product', 'add', '/products/add'),
+  newProduct('Add Product', 'add', '/products/add'),
+  productDetails('Product Details', 'id=:id', '/products/:id'),
   suppliers('Suppliers', 'suppliers', '/products/suppliers'),
 
   stockManagement('Stock Management', '/stock-management', '/stock-management'),

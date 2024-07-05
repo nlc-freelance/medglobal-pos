@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/entities/data_grid/product_grid.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ProductDataSource extends BaseDataSource {
-  final List<ProductGrid> products;
+  final List<Product> products;
 
   ProductDataSource({required this.products});
 
@@ -18,13 +19,8 @@ class ProductDataSource extends BaseDataSource {
           cells: [
             DataGridCell<int>(columnName: 'id', value: product.id),
             DataGridCell<String>(columnName: 'name', value: product.name),
-            DataGridCell<String>(columnName: 'category', value: product.category),
-            DataGridCell<String>(columnName: 'sku', value: product.sku),
-            DataGridCell<String>(columnName: 'barcode', value: product.barcode),
-            DataGridCell<double>(columnName: 'cost', value: product.cost),
-            DataGridCell<double>(columnName: 'price', value: product.price),
-            DataGridCell<String>(columnName: 'margin', value: '${product.margin}%'),
-            DataGridCell<int>(columnName: 'qty', value: product.qty),
+            DataGridCell<String>(columnName: 'category', value: product.category?.name ?? Strings.empty),
+            DataGridCell<String>(columnName: 'createdAt', value: DateFormat.yMd().format(product.createdAt!)),
           ],
         ),
       )
@@ -46,7 +42,20 @@ class ProductDataSource extends BaseDataSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: UIText.bodyRegular(cell.value.toString()),
+          child: cell.columnName == 'name'
+              ? HoverBuilder(
+                  builder: (isHover) => InkWell(
+                        onTap: () => AppRouter.router
+                            .goNamed('Product Details', pathParameters: {'id': row.getCells().first.value.toString()}),
+                        // onTap: () => print(row.getCells().first.value),
+                        hoverColor: UIColors.transparent,
+                        child: UIText.bodyRegular(
+                          cell.value.toString(),
+                          color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
+                          textDecoration: isHover ? TextDecoration.underline : TextDecoration.none,
+                        ),
+                      ))
+              : UIText.bodyRegular(cell.value.toString()),
         );
       }).toList(),
     );

@@ -36,8 +36,7 @@ class PageSectionTitle extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          isSubSection ? UIText.heading6(title) : UIText.heading5(title),
-          const UIVerticalSpace(4.0),
+          isSubSection ? UIText.labelSemiBold(title) : UIText.heading5(title),
           if (isSubSectionWithSubtitleAndAction) ...[
             SizedBox(
               height: 16.0,
@@ -51,8 +50,8 @@ class PageSectionTitle extends StatelessWidget {
             ),
             const UIVerticalSpace(8.0),
           ],
-          const Divider(color: UIColors.borderMuted),
-          const UIVerticalSpace(16.0),
+          if (!isSubSectionWithSubtitleAndAction) const Divider(color: UIColors.borderMuted),
+          UIVerticalSpace(isSubSection ? 8 : 10),
         ],
       );
 }

@@ -13,6 +13,7 @@ class DataGrid<T> extends StatefulWidget {
   final SelectionMode selectionMode;
   final bool showCheckbox;
   final bool allowColumnDrag;
+  final bool allowEditing;
   final GridNavigationMode navigationMode;
   final SfDataGridThemeData style;
   final Widget Function(DataGridController controller)? selectionToolbarBuilder;
@@ -32,6 +33,7 @@ class DataGrid<T> extends StatefulWidget {
     this.selectionMode = SelectionMode.none,
     this.showCheckbox = false,
     this.allowColumnDrag = true,
+    this.allowEditing = false,
     this.selectionToolbarBuilder,
     this.onSelectedRowDataIds,
     this.selectedRowDataIDs,
@@ -103,6 +105,8 @@ class _DataGridState<T> extends State<DataGrid<T>> with DataGridInitMixin<T> {
                 allowColumnsDragging: widget.allowColumnDrag,
                 navigationMode: widget.navigationMode,
                 verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                allowEditing: widget.allowEditing,
+                editingGestureType: EditingGestureType.tap,
 
                 /// Data Grid Constant Style
                 shrinkWrapRows: true,

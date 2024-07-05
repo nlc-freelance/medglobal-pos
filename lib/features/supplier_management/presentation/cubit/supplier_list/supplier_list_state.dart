@@ -8,31 +8,31 @@ abstract class SupplierListState extends Equatable {
   List<Object?> get props => [];
 }
 
-class SupplierListInitialState extends SupplierListState {
-  const SupplierListInitialState();
+class SupplierListInitial extends SupplierListState {
+  const SupplierListInitial();
 
   @override
   List<Object?> get props => [];
 }
 
-class SupplierListLoadingState extends SupplierListState {
-  const SupplierListLoadingState();
+class SupplierListLoading extends SupplierListState {
+  const SupplierListLoading();
 
   @override
   List<Object?> get props => [];
 }
 
-class GetSupplierListState extends SupplierListState {
+class SupplierListLoaded extends SupplierListState {
   final List<Supplier> suppliers;
-  const GetSupplierListState({required this.suppliers});
+  const SupplierListLoaded({required this.suppliers});
 
   @override
   List<Object?> get props => [suppliers];
 }
 
-class SupplierListErrorState extends SupplierListState {
+class SupplierListError extends SupplierListState {
   final String message;
-  const SupplierListErrorState({required this.message});
+  const SupplierListError({required this.message});
 
   @override
   List<Object?> get props => [message];

@@ -16,6 +16,11 @@ class SearchDropdown<T> extends StatefulWidget {
     required this.asyncItemsCallback,
     this.isRequired = false,
     this.isLeftLabel = false,
+    this.showSelectedItems = true,
+    this.selectedItem,
+    this.selectedItems,
+    this.onSelectItem,
+    this.onSelectItems,
   });
 
   final DropdownType type;
@@ -23,15 +28,23 @@ class SearchDropdown<T> extends StatefulWidget {
   final String label;
   final bool isRequired;
   final bool isLeftLabel;
-
+  final bool showSelectedItems;
   final String Function(T item) itemAsString;
   final Future<List<T>> asyncItemsCallback;
+  final Function(T value)? onSelectItem;
+  final Function(List<T> value)? onSelectItems;
+  final T? selectedItem;
+  final List<T>? selectedItems;
 
   factory SearchDropdown.multi({
     required String hint,
     required String label,
     required String Function(T item) itemAsString,
     required Future<List<T>> asyncItemsCallback,
+    required Function(List<T> value)? onSelectItems,
+    bool isRequired = false,
+    bool showSelectedItems = true,
+    List<T>? selectedItems,
   }) =>
       SearchDropdown._(
         type: DropdownType.multi,
@@ -39,6 +52,10 @@ class SearchDropdown<T> extends StatefulWidget {
         label: label,
         itemAsString: itemAsString,
         asyncItemsCallback: asyncItemsCallback,
+        showSelectedItems: showSelectedItems,
+        onSelectItems: onSelectItems,
+        selectedItems: selectedItems,
+        isRequired: isRequired,
       );
 
   factory SearchDropdown.single({
@@ -46,8 +63,10 @@ class SearchDropdown<T> extends StatefulWidget {
     required String label,
     required String Function(T item) itemAsString,
     required Future<List<T>> asyncItemsCallback,
+    required Function(T value) onSelectItem,
     bool isRequired = false,
     bool isLeftLabel = false,
+    T? selectedItem,
   }) =>
       SearchDropdown._(
         type: DropdownType.single,
@@ -57,6 +76,8 @@ class SearchDropdown<T> extends StatefulWidget {
         isLeftLabel: isLeftLabel,
         itemAsString: itemAsString,
         asyncItemsCallback: asyncItemsCallback,
+        onSelectItem: onSelectItem,
+        selectedItem: selectedItem,
       );
 
   @override
@@ -68,13 +89,6 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final singleSelectDropdown = SingleSelectDropdown(
-      label: widget.label,
-      hint: widget.hint,
-      itemAsString: widget.itemAsString,
-      asyncItemsCallback: widget.asyncItemsCallback,
-    );
-
     return Flex(
       direction: widget.isLeftLabel ? Axis.horizontal : Axis.vertical,
       crossAxisAlignment: widget.isLeftLabel ? CrossAxisAlignment.center : CrossAxisAlignment.start,
@@ -93,20 +107,35 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
         if (!widget.isLeftLabel) const UIVerticalSpace(4),
         widget.type == DropdownType.single
             ? widget.isLeftLabel
-                ? Expanded(child: singleSelectDropdown)
-                : singleSelectDropdown
+                ? Expanded(
+                    child: SingleSelectDropdown(
+                    label: widget.label,
+                    hint: widget.hint,
+                    itemAsString: widget.itemAsString,
+                    asyncItemsCallback: widget.asyncItemsCallback,
+                    onSelectItem: widget.onSelectItem!,
+                    selectedItem: widget.selectedItem,
+                  ))
+                : SingleSelectDropdown(
+                    label: widget.label,
+                    hint: widget.hint,
+                    itemAsString: widget.itemAsString,
+                    asyncItemsCallback: widget.asyncItemsCallback,
+                    onSelectItem: widget.onSelectItem!,
+                    selectedItem: widget.selectedItem,
+                  )
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   DropdownSearch<T>.multiSelection(
                     asyncItems: (_) async => await widget.asyncItemsCallback,
                     itemAsString: (item) => widget.itemAsString(item),
-                    onChanged: (value) => {},
+                    selectedItems: widget.selectedItems ?? _selectedItems,
                     compareFn: (item1, item2) => item1 == item2,
                     popupProps: PopupPropsMultiSelection.menu(
                       showSearchBox: true,
                       fit: FlexFit.loose,
-                      constraints: const BoxConstraints.tightFor(height: 240),
+                      constraints: const BoxConstraints(maxHeight: 240),
                       // Local search, change if going to search via API request
                       searchDelay: const Duration(milliseconds: 0),
                       itemBuilder: (context, item, isSelected) => ListTile(
@@ -114,10 +143,17 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
                         title: Text(widget.itemAsString(item), style: UIStyleText.chip),
                       ),
                       menuProps: const MenuProps(elevation: 1),
-                      validationWidgetBuilder: (context, item) => UIButton.filled(
-                        'Add',
+                      selectionWidget: (context, item, isSelected) => Checkbox(
+                        value: isSelected || _selectedItems.contains(item),
+                        onChanged: (_) => {},
+                      ),
+                      validationWidgetBuilder: (context, items) => UIButton.filled(
+                        'Select item(s)',
                         onClick: () {
-                          setState(() => _selectedItems = item);
+                          for (var item in items) {
+                            if (!_selectedItems.contains(item)) setState(() => _selectedItems.add(item));
+                          }
+                          widget.onSelectItems!(_selectedItems);
                           Navigator.pop(context);
                         },
                       ),
@@ -150,25 +186,26 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
                     ),
                   ),
                   const UIVerticalSpace(8),
-                  Wrap(
-                    direction: Axis.horizontal,
-                    runSpacing: 6,
-                    spacing: 4,
-                    children: _selectedItems
-                        .map(
-                          (item) => Chip(
-                            label: Text(widget.itemAsString(item), style: UIStyleText.chip),
-                            backgroundColor: UIColors.whiteBg,
-                            deleteIcon: Assets.icons.close.svg(),
-                            onDeleted: () => setState(() => _selectedItems.removeAt(_selectedItems.indexOf(item))),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: const BorderSide(color: UIColors.borderMuted, width: 0.8),
+                  if (widget.showSelectedItems)
+                    Wrap(
+                      direction: Axis.horizontal,
+                      runSpacing: 6,
+                      spacing: 4,
+                      children: _selectedItems
+                          .map(
+                            (item) => Chip(
+                              label: Text(widget.itemAsString(item), style: UIStyleText.chip),
+                              backgroundColor: UIColors.whiteBg,
+                              deleteIcon: Assets.icons.close.svg(),
+                              onDeleted: () => setState(() => _selectedItems.removeAt(_selectedItems.indexOf(item))),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: const BorderSide(color: UIColors.borderMuted, width: 0.8),
+                              ),
                             ),
-                          ),
-                        )
-                        .toList(),
-                  ),
+                          )
+                          .toList(),
+                    ),
                 ],
               ),
       ],

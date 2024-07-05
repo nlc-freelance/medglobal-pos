@@ -9,24 +9,30 @@ class SingleSelectDropdown<T> extends StatelessWidget {
     required this.label,
     required this.itemAsString,
     required this.asyncItemsCallback,
+    required this.onSelectItem,
+    this.selectedItem,
   });
 
   final String hint;
   final String label;
   final String Function(T item) itemAsString;
   final Future<List<T>> asyncItemsCallback;
+  final Function(T value) onSelectItem;
+  final T? selectedItem;
 
   @override
   Widget build(BuildContext context) => DropdownSearch<T>(
         asyncItems: (_) async => await asyncItemsCallback,
         itemAsString: (item) => itemAsString(item),
-        onChanged: (value) {},
+        onChanged: (value) => onSelectItem(value as T),
+        selectedItem: selectedItem,
         popupProps: PopupProps.menu(
           showSearchBox: true,
           fit: FlexFit.loose,
           menuProps: const MenuProps(elevation: 1),
-          constraints: const BoxConstraints.tightFor(height: 210),
-          searchDelay: const Duration(milliseconds: 1), // search via API request
+          constraints: const BoxConstraints(maxHeight: 210),
+          // Local search, change if going to search via API request
+          searchDelay: const Duration(milliseconds: 0),
           itemBuilder: (context, item, isSelected) => ListTile(
             dense: true,
             title: Text(itemAsString(item), style: UIStyleText.chip),

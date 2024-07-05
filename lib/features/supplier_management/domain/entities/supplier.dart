@@ -39,6 +39,8 @@ class Supplier extends Equatable {
   List<Object?> get props =>
       [id, name, mainContactName, email, phone, fax, website, street1, street2, city, state, zipCode, country];
 
+  factory Supplier.fromJson(Map<String, dynamic> json) => _$SupplierFromJson(json);
+
   Map<String, dynamic> toJson() => _$SupplierToJson(this);
 
   Supplier copyWith({

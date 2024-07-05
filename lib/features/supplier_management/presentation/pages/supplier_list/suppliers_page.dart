@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/loading_data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
@@ -11,18 +10,23 @@ import 'package:medglobal_admin_portal/features/supplier_management/presentation
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class SuppliersPage extends StatelessWidget {
+class SuppliersPage extends StatefulWidget {
+  static String route = SideMenuTreeItem.suppliers.route;
+
   const SuppliersPage({super.key});
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-        create: (context) => GetIt.I<SupplierListCubit>()..getSuppliers(),
-        child: const _SuppliersPage(),
-      );
+  State<SuppliersPage> createState() => _SuppliersPageState();
 }
 
-class _SuppliersPage extends StatelessWidget {
-  const _SuppliersPage();
+class _SuppliersPageState extends State<SuppliersPage> {
+  late SupplierListCubit _supplierListCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _supplierListCubit = BlocProvider.of<SupplierListCubit>(context)..getSuppliers();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +35,11 @@ class _SuppliersPage extends StatelessWidget {
 
     return BlocListener<SupplierCubit, SupplierState>(
         listener: (_, state) {
-          if (state is GetSupplierState) {
-            SupplierDetailsDialog(state.supplier).showSidePeek(context);
-          }
-          if (state is SupplierSuccessState) {
-            BlocProvider.of<SupplierListCubit>(context).getSuppliers();
+          if (state is SupplierSuccess) {
+            _supplierListCubit.getSuppliers();
             ToastNotification.success(context, state.message);
           }
-          if (state is SupplierErrorState) ToastNotification.error(context, state.message);
+          if (state is SupplierError) ToastNotification.error(context, state.message);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,19 +57,19 @@ class _SuppliersPage extends StatelessWidget {
             ),
             const DataGridToolbar(isDownloadable: false, searchPlaceholder: 'Search supplier name'),
             BlocBuilder<SupplierListCubit, SupplierListState>(
-              buildWhen: (previous, current) => previous != current,
-              builder: (context, state) {
-                if (state is SupplierListErrorState) {
+              builder: (_, state) {
+                if (state is SupplierListError) {
                   return Center(child: Text(state.message));
                 }
-                if (state is GetSupplierListState) {
+                if (state is SupplierListLoaded) {
                   return Expanded(
                     child: DataGrid<Supplier>(
                       data: state.suppliers,
                       columns: columns,
                       style: StyleDataGrid.rowNavigation,
                       navigationMode: GridNavigationMode.row,
-                      onTap: (id) => context.read<SupplierCubit>().getSupplierById(id),
+                      onTap: (id) => SupplierDetailsDialog(state.suppliers.firstWhere((supplier) => supplier.id == id))
+                          .showSidePeek(context),
                     ),
                   );
                 }

@@ -28,6 +28,7 @@ class CategoryApiImpl implements CategoryApi {
 
   @override
   Future<List<CategoryDto>> getAllCategories() async {
+    print('category fetch');
     try {
       int currentPage = 1;
       List<CategoryDto> categories = [];

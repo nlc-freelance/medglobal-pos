@@ -30,7 +30,7 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
               ),
               const UIHorizontalSpace(12.0),
             ],
-            UIText.labelMedium(path),
+            // UIText.labelMedium(path),
           ],
         ),
         actions: [

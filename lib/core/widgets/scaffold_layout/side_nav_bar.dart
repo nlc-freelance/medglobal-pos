@@ -20,11 +20,22 @@ class _SideNavBarState extends State<SideNavBar> {
   final sidebarTree = IndexedTreeNode.root()
     ..addAll(
       [
-        ...[SideMenuTree.products, SideMenuTree.stocks, SideMenuTree.transacions, SideMenuTree.returns]
-            .map((tree) => IndexedTreeNode(key: tree.title)
-              ..addAll(
-                tree.items.map((item) => IndexedTreeNode(key: item)).toList(),
-              )),
+        // ...[SideMenuTree.products, SideMenuTree.stocks, SideMenuTree.transacions, SideMenuTree.returns]
+        //     .map((tree) => IndexedTreeNode(key: tree.title)
+        //       ..addAll(
+        //         tree.items.map((item) => IndexedTreeNode(key: item)).toList(),
+        //       )),
+        IndexedTreeNode(key: SideMenuTree.products.title)
+          ..addAll([
+            IndexedTreeNode(key: 'Manage Products'),
+            IndexedTreeNode(key: 'Add Product'),
+            IndexedTreeNode(key: 'Suppliers'),
+          ]),
+        IndexedTreeNode(key: SideMenuTree.stocks.title)
+          ..addAll(SideMenuTree.stocks.items.map((item) => IndexedTreeNode(key: item)).toList()),
+        IndexedTreeNode(key: SideMenuTree.transacions.title)
+          ..addAll(SideMenuTree.transacions.items.map((item) => IndexedTreeNode(key: item)).toList()),
+        IndexedTreeNode(key: SideMenuTree.returns.title),
         IndexedTreeNode(key: SideMenuTree.reports.title)
           ..addAll(
             [
@@ -138,10 +149,7 @@ class _SideNavBarState extends State<SideNavBar> {
       );
 
   bool isSelectedAsMenuItem(IndexedTreeNode node) =>
-      SideMenuTree.values
-          .singleWhere((menu) => menu.items.contains(widget.currentMenu), orElse: () => SideMenuTree.returns)
-          .title ==
-      node.key;
+      SideMenuTree.values.singleWhere((menu) => menu.items.contains(widget.currentMenu)).title == node.key;
 
   String get parentNodeKey => SideMenuTree.values.singleWhere((menu) => menu.items.contains(widget.currentMenu)).title;
 

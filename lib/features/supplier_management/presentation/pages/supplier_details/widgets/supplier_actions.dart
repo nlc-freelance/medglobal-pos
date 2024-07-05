@@ -34,7 +34,7 @@ class SupplierActions extends StatelessWidget {
                       iconBuilder: (isHover) => Assets.icons.trash.setColorOnHover(isHover),
                       onClick: onDelete,
                     ),
-                    if (state is DeleteSupplierLoadingState) ...[
+                    if (state is SupplierDeleteLoading) ...[
                       const UIHorizontalSpace(16),
                       const CupertinoActivityIndicator(),
                     ],
@@ -45,8 +45,7 @@ class SupplierActions extends StatelessWidget {
               CancelActionButton(
                 onCancel: onCancel,
                 onAction: onSave,
-                // enabled: !(state is SaveSupplierLoadingState || state is DeleteSupplierLoadingState) && isSupplierValid,
-                isLoading: state is SaveSupplierLoadingState,
+                isLoading: state is SupplierSaveLoading || state is SupplierDeleteLoading,
               ),
             ],
           );

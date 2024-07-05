@@ -41,35 +41,33 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
           return Dialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
             child: Container(
+              color: UIColors.background,
               width: MediaQuery.sizeOf(context).width * 0.35,
               padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  UIText.heading6('Add new category'),
+                  UIText.heading5('Add new category'),
                   const Divider(color: UIColors.borderMuted),
-                  const UIVerticalSpace(8.0),
+                  const UIVerticalSpace(16),
                   if (state is CategoryError && !_isInitialRebuild) ...[
                     UIText.labelMedium(state.message, color: UIColors.accent),
-                    const UIVerticalSpace(4.0),
+                    const UIVerticalSpace(4),
                   ],
                   UITextField.noLabel(
                     hint: 'Enter category name',
                     width: MediaQuery.sizeOf(context).width, // * 0.35,
                     controller: _newCategoryController,
                   ),
-                  const UIVerticalSpace(16),
-                  IgnorePointer(
-                    ignoring: state is CategoryLoading,
-                    child: CancelActionButton(
-                        isLoading: state is CategoryLoading,
-                        onCancel: () {
-                          _newCategoryController.clear();
-                          Navigator.pop(context);
-                        },
-                        onAction: () => context.read<CategoryCubit>().addCategory(_newCategoryController.text)),
-                  ),
+                  const UIVerticalSpace(30),
+                  CancelActionButton(
+                      isLoading: state is CategoryLoading,
+                      onCancel: () {
+                        _newCategoryController.clear();
+                        Navigator.pop(context);
+                      },
+                      onAction: () => context.read<CategoryCubit>().addCategory(_newCategoryController.text)),
                 ],
               ),
             ),

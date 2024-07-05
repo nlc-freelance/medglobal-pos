@@ -2,79 +2,79 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/create_supplier.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/delete_supplier.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/get_supplier_by_id.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/update_supplier.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/create_supplier_usecase.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/delete_supplier_usecase.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/get_supplier_by_id_usecase.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/domain/usecases/update_supplier_usecase.dart';
 
 part 'supplier_state.dart';
 
 class SupplierCubit extends Cubit<SupplierState> {
-  final GetSupplierByIdUseCase _getSupplierById;
-  final CreateSupplierUseCase _createSupplier;
-  final UpdateSupplierUseCase _updateSupplier;
-  final DeleteSupplierUseCase _deleteSupplier;
+  final GetSupplierByIdUseCase _getSupplierByIdUseCase;
+  final CreateSupplierUseCase _createSupplierUseCase;
+  final UpdateSupplierUseCase _updateSupplierUseCase;
+  final DeleteSupplierUseCase _deleteSupplierUseCase;
 
   SupplierCubit(
-    this._getSupplierById,
-    this._createSupplier,
-    this._updateSupplier,
-    this._deleteSupplier,
-  ) : super(const SupplierInitialState());
+    this._getSupplierByIdUseCase,
+    this._createSupplierUseCase,
+    this._updateSupplierUseCase,
+    this._deleteSupplierUseCase,
+  ) : super(SupplierInitial());
 
   Future<void> getSupplierById(int id) async {
-    emit(const GetSupplierLoadingState());
+    emit(SupplierDetailsLoading());
 
     try {
-      final result = await _getSupplierById.call(GetSupplierByIdParams(id));
+      final result = await _getSupplierByIdUseCase.call(GetSupplierByIdParams(id));
       result.fold(
-        (error) => emit(SupplierErrorState(message: error.message)),
-        (data) => emit(GetSupplierState(supplier: data)),
+        (error) => emit(SupplierError(message: error.message)),
+        (data) => emit(SupplierDetailsLoaded(supplier: data)),
       );
     } catch (e) {
-      emit(SupplierErrorState(message: e.toString()));
+      emit(SupplierError(message: e.toString()));
     }
   }
 
   Future<void> create(Supplier supplier) async {
-    emit(const SaveSupplierLoadingState());
+    emit(SupplierSaveLoading());
 
     try {
-      final result = await _createSupplier.call(CreateSupplierParams(supplier));
+      final result = await _createSupplierUseCase.call(CreateSupplierParams(supplier));
       result.fold(
-        (error) => emit(SupplierErrorState(message: error.message)),
-        (_) => emit(const SupplierSuccessState(message: 'Supplier successfully created.')),
+        (error) => emit(SupplierError(message: error.message)),
+        (_) => emit(const SupplierSuccess(message: 'Supplier successfully created.')),
       );
     } catch (e) {
-      emit(SupplierErrorState(message: e.toString()));
+      emit(SupplierError(message: e.toString()));
     }
   }
 
   Future<void> update(Supplier supplier) async {
-    emit(const SaveSupplierLoadingState());
+    emit(SupplierSaveLoading());
 
     try {
-      final result = await _updateSupplier.call(UpdateSupplierParams(supplier));
+      final result = await _updateSupplierUseCase.call(UpdateSupplierParams(supplier));
       result.fold(
-        (error) => emit(SupplierErrorState(message: error.message)),
-        (_) => emit(const SupplierSuccessState(message: 'Supplier successfully updated.')),
+        (error) => emit(SupplierError(message: error.message)),
+        (_) => emit(const SupplierSuccess(message: 'Supplier successfully updated.')),
       );
     } catch (e) {
-      emit(SupplierErrorState(message: e.toString()));
+      emit(SupplierError(message: e.toString()));
     }
   }
 
   Future<void> delete(int id) async {
-    emit(const DeleteSupplierLoadingState());
+    emit(SupplierDeleteLoading());
 
     try {
-      final result = await _deleteSupplier.call(DeleteSupplierParams(id));
+      final result = await _deleteSupplierUseCase.call(DeleteSupplierParams(id));
       result.fold(
-        (error) => emit(SupplierErrorState(message: error.message)),
-        (_) => emit(const SupplierSuccessState(message: 'Supplier successfully deleted.')),
+        (error) => emit(SupplierError(message: error.message)),
+        (_) => emit(const SupplierSuccess(message: 'Supplier successfully deleted.')),
       );
     } catch (e) {
-      emit(SupplierErrorState(message: e.toString()));
+      emit(SupplierError(message: e.toString()));
     }
   }
 }

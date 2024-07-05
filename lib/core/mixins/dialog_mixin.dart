@@ -9,6 +9,7 @@ mixin DialogMixin {
     required String message,
     required String actionLabel,
     required VoidCallback onAction,
+    required bool isLoading,
   }) =>
       showDialog(
         barrierDismissible: false,
@@ -16,6 +17,7 @@ mixin DialogMixin {
         builder: (context) => Dialog(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
           child: Container(
+            color: UIColors.background,
             width: MediaQuery.sizeOf(context).width * 0.35,
             padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
             child: Column(
@@ -28,12 +30,13 @@ mixin DialogMixin {
                 UIText.bodyRegular(message),
                 const UIVerticalSpace(30.0),
                 CancelActionButton(
+                  isLoading: isLoading,
                   actionLabel: actionLabel,
                   actionStyle: UIStyleButton.danger,
                   onCancel: () => Navigator.pop(context),
                   onAction: () {
                     onAction.call();
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
                   },
                 ),
               ],

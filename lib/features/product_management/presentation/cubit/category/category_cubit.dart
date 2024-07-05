@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/category.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/usecases/category/add_category.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/usecases/category/add_category_usecase.dart';
 
 part 'category_state.dart';
 

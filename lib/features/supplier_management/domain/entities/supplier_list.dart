@@ -1,14 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'supplier.dart';
 
-// TODO: Change to SupplierPaginatedList
-class SupplierList extends Equatable {
+class SupplierPaginatedList extends Equatable {
   final List<Supplier>? suppliers;
   final int? currentPage;
   final int? totalPages;
   final int? totalCount;
 
-  const SupplierList({
+  const SupplierPaginatedList({
     this.suppliers,
     this.currentPage,
     this.totalPages,

@@ -35,9 +35,15 @@ abstract class AppRouter {
                     pageBuilder: (context, state) => const NoTransitionPage(child: ProductsPage()),
                   ),
                   GoRoute(
-                    name: SideMenuTreeItem.addProduct.name,
-                    path: SideMenuTreeItem.addProduct.path,
+                    name: SideMenuTreeItem.newProduct.name,
+                    path: SideMenuTreeItem.newProduct.path,
                     pageBuilder: (context, state) => const NoTransitionPage(child: ProductDetailsPage()),
+                  ),
+                  GoRoute(
+                    name: SideMenuTreeItem.productDetails.name,
+                    path: SideMenuTreeItem.productDetails.path,
+                    pageBuilder: (context, state) =>
+                        NoTransitionPage(child: ProductDetailsPage(id: state.pathParameters['id'])),
                   ),
                   GoRoute(
                     name: SideMenuTreeItem.suppliers.name,

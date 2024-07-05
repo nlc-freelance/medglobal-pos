@@ -16,8 +16,8 @@ class ApiResponse<T> {
   factory ApiResponse.fromJson(JSON json) {
     return ApiResponse(
       message: json['message'],
-      data: json['data'],
-      items: json['data']['items'],
+      data: json.keys.contains('data') ? json['data'] : null,
+      items: json.keys.contains('data') ? json['data']['items'] : null,
       pageInfo: json.keys.contains('data') && json['data']['page'] != null ? PageInfo.fromJson(json['data']) : null,
     );
   }

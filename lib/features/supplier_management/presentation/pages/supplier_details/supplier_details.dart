@@ -19,6 +19,8 @@ class SupplierDetails extends StatefulWidget {
 }
 
 class _SupplierDetailsState extends State<SupplierDetails> {
+  late SupplierCubit _supplierCubit;
+
   late Supplier? _supplier;
 
   late TextEditingController _supplierNameController;
@@ -39,6 +41,8 @@ class _SupplierDetailsState extends State<SupplierDetails> {
   @override
   void initState() {
     super.initState();
+    _supplierCubit = BlocProvider.of<SupplierCubit>(context);
+
     _supplier = widget.supplier;
 
     _supplierNameController = TextEditingController(text: _supplier?.name)..addListener(() => setState(() {}));
@@ -76,37 +80,39 @@ class _SupplierDetailsState extends State<SupplierDetails> {
   }
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GeneralInformation(isSupplierNew, supplierNameController: _supplierNameController),
-          ContactInformation(
-            mainContactNameController: _mainContactNameController,
-            faxController: _faxController,
-            emailController: _emailController,
-            websiteController: _websiteController,
-            phoneController: _phoneController,
-          ),
-          AddressInformation(
-            address1Controller: _address1Controller,
-            address2Controller: _address2Controller,
-            cityController: _cityController,
-            provinceController: _provinceController,
-            postalCodeController: _postalCodeController,
-            countryController: _countryController,
-          ),
-          const Spacer(),
-          BlocListener<SupplierCubit, SupplierState>(
-            listener: (context, state) => onCompleteAction(state),
-            child: SupplierActions(
+  Widget build(BuildContext context) => BlocListener<SupplierCubit, SupplierState>(
+        listener: (context, state) {
+          if (state is! SupplierSaveLoading && state is! SupplierDeleteLoading) closeDialog();
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GeneralInformation(isSupplierNew, supplierNameController: _supplierNameController),
+            ContactInformation(
+              mainContactNameController: _mainContactNameController,
+              faxController: _faxController,
+              emailController: _emailController,
+              websiteController: _websiteController,
+              phoneController: _phoneController,
+            ),
+            AddressInformation(
+              address1Controller: _address1Controller,
+              address2Controller: _address2Controller,
+              cityController: _cityController,
+              provinceController: _provinceController,
+              postalCodeController: _postalCodeController,
+              countryController: _countryController,
+            ),
+            const Spacer(),
+            SupplierActions(
               isSupplierExisting: isSupplierExisting,
               isSupplierValid: isSupplierValid,
               onDelete: onDeleteSupplier,
               onSave: onSaveSupplier,
               onCancel: closeDialog,
             ),
-          ),
-        ],
+          ],
+        ),
       );
 
   bool get isSupplierNew => widget.supplier == null;
@@ -135,27 +141,24 @@ class _SupplierDetailsState extends State<SupplierDetails> {
 
   void closeDialog() => Navigator.pop(widget.dialogContext);
 
-  void onCompleteAction(SupplierState state) =>
-      (state is! SaveSupplierLoadingState && state is! DeleteSupplierLoadingState) ? closeDialog() : null;
-
-  void onDeleteSupplier() => context.read<SupplierCubit>().delete(_supplier!.id!);
+  void onDeleteSupplier() => _supplierCubit.delete(_supplier!.id!);
 
   void onSaveSupplier() => isSupplierNew
-      ? context.read<SupplierCubit>().create(newSupplier)
-      : context.read<SupplierCubit>().update(
-            _supplier!.copyWith(
-              name: _supplierNameController.text,
-              mainContactName: _mainContactNameController.text,
-              email: _emailController.text,
-              phone: _phoneController.text,
-              fax: _faxController.text,
-              website: _websiteController.text,
-              street1: _address1Controller.text,
-              street2: _address2Controller.text,
-              city: _cityController.text,
-              state: _provinceController.text,
-              zipCode: _postalCodeController.text,
-              country: _countryController.text,
-            ),
-          );
+      ? _supplierCubit.create(newSupplier)
+      : _supplierCubit.update(
+          _supplier!.copyWith(
+            name: _supplierNameController.text,
+            mainContactName: _mainContactNameController.text,
+            email: _emailController.text,
+            phone: _phoneController.text,
+            fax: _faxController.text,
+            website: _websiteController.text,
+            street1: _address1Controller.text,
+            street2: _address2Controller.text,
+            city: _cityController.text,
+            state: _provinceController.text,
+            zipCode: _postalCodeController.text,
+            country: _countryController.text,
+          ),
+        );
 }

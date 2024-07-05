@@ -86,8 +86,9 @@ class ColumnData {
   final String name;
   final String label;
   final double? minWidth;
+  final bool isEditable;
 
-  ColumnData(this.name, this.label, {this.minWidth});
+  ColumnData(this.name, this.label, {this.minWidth, this.isEditable = false});
 }
 
 class DataGridUtil {
@@ -95,6 +96,7 @@ class DataGridUtil {
       .map<GridColumn>((column) => GridColumn(
             visible: column.name != 'id',
             columnName: column.name,
+            allowEditing: column.isEditable,
             minimumWidth: column.minWidth ?? double.nan,
             label: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),

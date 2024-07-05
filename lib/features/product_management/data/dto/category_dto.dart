@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/datetime_converter.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/category.dart';
 
 part 'category_dto.g.dart';
@@ -9,14 +9,20 @@ part 'category_dto.g.dart';
 class CategoryDto extends Equatable {
   final int? id;
   final String? name;
+  @DateTimeConverter()
+  final DateTime? createdAt;
+  @DateTimeConverter()
+  final DateTime? updatedAt;
 
   const CategoryDto({
     this.id,
     this.name,
+    this.createdAt,
+    this.updatedAt,
   });
 
   @override
-  List<Object?> get props => [id, name];
+  List<Object?> get props => [id, name, createdAt, updatedAt];
 
   factory CategoryDto.fromJson(Map<String, dynamic> json) => _$CategoryDtoFromJson(json);
 
@@ -24,6 +30,8 @@ class CategoryDto extends Equatable {
 
   Category toEntity() => Category(
         id: id,
-        name: name ?? Strings.empty,
+        name: name,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
       );
 }

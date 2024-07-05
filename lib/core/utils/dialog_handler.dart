@@ -4,8 +4,6 @@ import 'package:medglobal_admin_portal/core/widgets/sidepeek_modal.dart';
 abstract class DialogHandler {
   Widget create(BuildContext context);
 
-  void dismiss(BuildContext context) => Navigator.pop(context);
-
   void showSidePeek(BuildContext context) {
     showGeneralDialog(
       barrierLabel: create(context).toString(),

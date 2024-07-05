@@ -2,13 +2,13 @@ import 'package:medglobal_admin_portal/core/network/models/api_query_params.dart
 import 'package:medglobal_admin_portal/features/supplier_management/data/dto/supplier_dto.dart';
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/data/dto/supplier_list_dto.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier_list.dart';
 
 abstract class SupplierApi {
   Future<List<SupplierDto>> getAllSuppliers();
 
-  Future<SupplierListDto> getSuppliers(int page);
+  Future<SupplierPaginatedList> getSuppliers(int page);
   Future<SupplierDto> getSupplier(int id);
   Future<void> create(Supplier supplier);
   Future<void> update(int id, Supplier supplier);
@@ -22,6 +22,7 @@ class SupplierApiImpl implements SupplierApi {
 
   @override
   Future<List<SupplierDto>> getAllSuppliers() async {
+    print('supplier fetch');
     try {
       int currentPage = 1;
       List<SupplierDto> suppliers = [];
@@ -48,31 +49,20 @@ class SupplierApiImpl implements SupplierApi {
   }
 
   @override
-  Future<SupplierListDto> getSuppliers(int page) async {
+  Future<SupplierPaginatedList> getSuppliers(int page) async {
     try {
       final response = await api.collection<SupplierDto>(
         ApiEndpoint.suppliers(),
         queryParams: ApiQueryParams(page: page).toJson(),
         converter: SupplierDto.fromJson,
       );
-      // print(response.items.toString());
-      // print(response.pageInfo?.totalPages);
-      // print(response.pageInfo?.page);
 
-      return SupplierListDto(
-        suppliers: response.items,
+      return SupplierPaginatedList(
+        suppliers: response.items?.map((item) => item.toEntity()).toList(),
         currentPage: response.pageInfo?.page,
         totalPages: response.pageInfo?.totalPages,
         totalCount: response.pageInfo?.totalCount,
       );
-
-      // TODO: Get supplier list using SupplierList
-      // return [];
-      // return await api.collection<SupplierDto>(
-      //   ApiEndpoint.suppliers(),
-      //   queryParams: ApiQueryParams(page: page).toJson(),
-      //   converter: SupplierDto.fromJson,
-      // );
     } catch (_) {
       rethrow;
     }

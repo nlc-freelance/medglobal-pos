@@ -6,7 +6,7 @@ import 'package:medglobal_admin_portal/features/supplier_management/domain/entit
 abstract class SupplierRepository {
   Future<List<Supplier>> getAllSuppliers();
 
-  Future<Either<Failure, SupplierList>> getSuppliers(int page);
+  Future<Either<Failure, SupplierPaginatedList>> getSuppliers(int page);
   Future<Either<Failure, Supplier>> getSupplierById(int id);
   Future<Either<Failure, void>> create(Supplier supplier);
   Future<Either<Failure, void>> update(int id, Supplier supplier);
