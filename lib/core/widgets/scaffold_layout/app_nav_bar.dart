@@ -45,7 +45,11 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
               //       )
               //     : Assets.icons.notification.svg(),
               const UIHorizontalSpace(16.0),
-              UIText.labelMedium('Sara smith'),
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, state) => state is AuthenticatedState
+                    ? UIText.labelMedium('${state.user.firstName} ${state.user.lastName}')
+                    : const SizedBox(),
+              ),
               const UIHorizontalSpace(12.0),
               UIPopupMenuButton<ProfileMenu>.icon(
                   icon: Assets.icons.arrowDown.setSize(12.0),
