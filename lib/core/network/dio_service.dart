@@ -15,8 +15,8 @@ class DioService {
         headers: {'content-type': 'application/json'},
         responseType: ResponseType.json,
         validateStatus: (status) => true,
-        connectTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 5),
+        connectTimeout: const Duration(seconds: 100),
+        receiveTimeout: const Duration(seconds: 100),
       );
 
   Dio create() => Dio(_createBaseOptions())
