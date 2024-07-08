@@ -22,6 +22,10 @@ class DataGridToolbar extends StatelessWidget {
           UISearchField(
             fieldWidth: 320.0,
             hint: searchPlaceholder,
+            icon: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Assets.icons.search.svg(),
+            ),
             controller: TextEditingController(),
           ),
           if (isDownloadable)
