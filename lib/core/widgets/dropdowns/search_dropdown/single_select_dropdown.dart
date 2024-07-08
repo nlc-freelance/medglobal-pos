@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class SingleSelectDropdown<T> extends StatelessWidget {
@@ -64,8 +65,8 @@ class SingleSelectDropdown<T> extends StatelessWidget {
             ),
           ),
         ),
-        dropdownButtonProps: const DropdownButtonProps(
-          icon: Icon(Icons.keyboard_arrow_down, size: 16),
+        dropdownButtonProps: DropdownButtonProps(
+          icon: Assets.icons.arrowDown.setSize(12),
         ),
       );
 }
