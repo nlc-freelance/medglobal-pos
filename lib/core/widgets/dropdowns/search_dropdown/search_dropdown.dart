@@ -181,8 +181,9 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
                         ),
                       ),
                     ),
-                    dropdownButtonProps: const DropdownButtonProps(
-                      icon: Icon(Icons.keyboard_arrow_down, size: 16),
+                    dropdownButtonProps: DropdownButtonProps(
+                      icon: Assets.icons.arrowDown.setSize(12),
+                      // icon: Icon(Icons.keyboard_arrow_down, size: 16),
                     ),
                   ),
                   const UIVerticalSpace(8),

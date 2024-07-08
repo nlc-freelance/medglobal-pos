@@ -4,7 +4,6 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/search_dropdown/search_dropdown.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch_repository.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory/branch_inventory/branch_inventory_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class BranchInventory extends StatelessWidget {
@@ -22,7 +21,8 @@ class BranchInventory extends StatelessWidget {
                   hint: 'Select branch',
                   label: 'Branches',
                   isRequired: true,
-                  showSelectedItems: false,
+                  // TODO: Price, qoh per branch
+                  showSelectedItems: true,
                   itemAsString: (branch) => branch.name,
                   asyncItemsCallback: GetIt.I<BranchRepository>().getAllBranches(),
                   onSelectItems: (branches) => {},
@@ -32,7 +32,7 @@ class BranchInventory extends StatelessWidget {
             ],
           ),
           // if (branches.isNotEmpty)
-          const BranchInventoryDataGrid(branches: []),
+          // const BranchInventoryDataGrid(branches: []),
           const UIVerticalSpace(40),
         ],
       );

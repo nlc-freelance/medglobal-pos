@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/search_dropdown/search_dropdown.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/category.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/repositories/category_repository.dart';
@@ -36,7 +37,8 @@ class _CategoryDropdownState extends State<CategoryDropdown> {
             child: Material(
               color: UIColors.background,
               child: UIOutlinedIconButton(
-                icon: const Icon(Icons.add, size: 14),
+                icon: Assets.icons.add.svg(colorFilter: UIColors.textRegular.toColorFilter, width: 12),
+                // icon: const Icon(Icons.add, size: 14),
                 border: const Border(
                   top: BorderSide(color: UIColors.borderRegular),
                   bottom: BorderSide(color: UIColors.borderRegular),

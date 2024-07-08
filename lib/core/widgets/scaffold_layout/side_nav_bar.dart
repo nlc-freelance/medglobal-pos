@@ -82,6 +82,7 @@ class _SideNavBarState extends State<SideNavBar> {
               padding: EdgeInsets.zero,
               indentation: const Indentation(style: IndentStyle.none),
               expansionBehavior: ExpansionBehavior.collapseOthers,
+              expansionIndicatorBuilder: (context, indicator) => CustomNodeTreeIcon(tree: sidebarTree),
               onItemTap: (node) => node.isLeaf ? AppRouter.router.goNamed(node.key) : null,
               onTreeReady: (controller) {
                 _controller = controller;
@@ -171,5 +172,20 @@ class _SideNavBarState extends State<SideNavBar> {
           topRight: Radius.circular(12.0),
           bottomRight: Radius.circular(12.0),
         ),
+      );
+}
+
+class CustomNodeTreeIcon extends ExpansionIndicator {
+  CustomNodeTreeIcon({super.key, required super.tree});
+
+  @override
+  State<StatefulWidget> createState() => _CustomNodeTreeIconState();
+}
+
+class _CustomNodeTreeIconState extends State<CustomNodeTreeIcon> {
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        child: Assets.icons.arrowDown.setSize(12),
       );
 }
