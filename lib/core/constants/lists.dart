@@ -26,12 +26,12 @@ class DataGridColumn {
   static List<ColumnData> variants = [
     ColumnData('id', 'ID'),
     ColumnData('name', 'Variant', minWidth: 300.0),
-    // ColumnData('sku', 'SKU', minWidth: 150.0),
-    ColumnData('price', 'Price (PHP)', minWidth: 100.0),
-    // ColumnData('cost', 'Cost (PHP)', minWidth: 100.0),
+    ColumnData('sku', 'SKU', minWidth: 150.0),
+    // ColumnData('price', 'Price (PHP)', minWidth: 100.0),
     // ColumnData('qtyOnHand', 'Qty On Hand', minWidth: 120.0),
-    ColumnData('warningStock', 'Warning Stock Level', minWidth: 170.0),
-    ColumnData('idealStock', 'Ideal Stock Level', minWidth: 150.0),
+    // ColumnData('warningStock', 'Warning Stock Level', minWidth: 170.0),
+    // ColumnData('idealStock', 'Ideal Stock Level', minWidth: 150.0),
+    ColumnData('branches', 'Branches', minWidth: 250.0),
     ColumnData('suppliers', 'Suppliers', minWidth: 250.0),
     ColumnData('action', 'Action', minWidth: 100.0),
   ];

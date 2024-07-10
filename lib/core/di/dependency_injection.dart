@@ -29,10 +29,11 @@ import 'package:medglobal_admin_portal/features/product_management/domain/usecas
 import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/get_products_usecase.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/update_product.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/category/category_cubit.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product/product_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_form/product_form_cubit.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_form/variant_form/variant_form_cubit.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_list/product_list_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/api/supplier_api.dart';
@@ -109,7 +110,8 @@ void initDependencyInjection() {
     ..registerFactory(() => ProductSelectionCubit())
     ..registerFactory(() => ProductBulkActionCubit(injector(), injector()))
     ..registerFactory(() => ProductListCubit(injector()))
-    ..registerFactory(() => ProductCubit(injector()))
+    ..registerFactory(() => ProductCubit(injector(), injector(), injector(), injector()))
     ..registerFactory(() => ProductFormCubit())
-    ..registerFactory(() => VariantFormCubit());
+    ..registerFactory(() => VariantFormCubit())
+    ..registerFactory(() => VariantFormUiCubit());
 }

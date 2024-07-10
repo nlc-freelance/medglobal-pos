@@ -21,6 +21,7 @@ class SearchDropdown<T> extends StatefulWidget {
     this.selectedItems,
     this.onSelectItem,
     this.onSelectItems,
+    this.validator,
   });
 
   final DropdownType type;
@@ -35,6 +36,7 @@ class SearchDropdown<T> extends StatefulWidget {
   final Function(List<T> value)? onSelectItems;
   final T? selectedItem;
   final List<T>? selectedItems;
+  final String? Function(List<T>?)? validator;
 
   factory SearchDropdown.multi({
     required String hint,
@@ -45,6 +47,7 @@ class SearchDropdown<T> extends StatefulWidget {
     bool isRequired = false,
     bool showSelectedItems = true,
     List<T>? selectedItems,
+    String? Function(List<T>?)? validator,
   }) =>
       SearchDropdown._(
         type: DropdownType.multi,
@@ -56,6 +59,7 @@ class SearchDropdown<T> extends StatefulWidget {
         onSelectItems: onSelectItems,
         selectedItems: selectedItems,
         isRequired: isRequired,
+        validator: validator,
       );
 
   factory SearchDropdown.single({
@@ -86,6 +90,18 @@ class SearchDropdown<T> extends StatefulWidget {
 
 class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
   List<T> _selectedItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.selectedItems != null) setState(() => _selectedItems = widget.selectedItems!);
+  }
+
+  @override
+  void didUpdateWidget(covariant SearchDropdown<T> oldWidget) {
+    if (widget.selectedItems != null) setState(() => _selectedItems = widget.selectedItems!);
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,8 +146,9 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
                   DropdownSearch<T>.multiSelection(
                     asyncItems: (_) async => await widget.asyncItemsCallback,
                     itemAsString: (item) => widget.itemAsString(item),
-                    selectedItems: widget.selectedItems ?? _selectedItems,
                     compareFn: (item1, item2) => item1 == item2,
+                    autoValidateMode: AutovalidateMode.onUserInteraction,
+                    validator: widget.validator,
                     popupProps: PopupPropsMultiSelection.menu(
                       showSearchBox: true,
                       fit: FlexFit.loose,
@@ -144,7 +161,8 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
                       ),
                       menuProps: const MenuProps(elevation: 1),
                       selectionWidget: (context, item, isSelected) => Checkbox(
-                        value: isSelected || _selectedItems.contains(item),
+                        value: isSelected ||
+                            _selectedItems.any((value) => widget.itemAsString(value) == widget.itemAsString(item)),
                         onChanged: (_) => {},
                       ),
                       validationWidgetBuilder: (context, items) => UIButton.filled(
@@ -162,7 +180,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
                         style: UIStyleText.bodyRegular,
                         decoration: const InputDecoration(
                           hintText: 'Search',
-                          constraints: BoxConstraints(maxHeight: 38),
+                          // constraints: BoxConstraints(maxHeight: 38),
                         ),
                       ),
                       loadingBuilder: (context, _) =>
@@ -173,7 +191,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
                     dropdownDecoratorProps: DropDownDecoratorProps(
                       dropdownSearchDecoration: InputDecoration(
                         hintText: widget.hint,
-                        constraints: const BoxConstraints(maxHeight: 38),
+                        // constraints: const BoxConstraints(maxHeight: 38),
                         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
                         border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),

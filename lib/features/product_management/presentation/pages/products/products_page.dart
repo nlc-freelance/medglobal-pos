@@ -13,7 +13,7 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class ProductsPage extends StatefulWidget {
-  static String route = SideMenuTreeItem.manageProducts.route;
+  static String route = SideMenuTreeItem.products.route;
 
   const ProductsPage({super.key});
 

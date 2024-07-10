@@ -4,10 +4,11 @@ import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/category/category_cubit.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product/product_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_form/product_form_cubit.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_form/variant_form/variant_form_cubit.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_list/product_list_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
@@ -32,6 +33,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<ProductCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductFormCubit>()),
         BlocProvider(create: (_) => GetIt.I<VariantFormCubit>()),
+        BlocProvider(create: (_) => GetIt.I<VariantFormUiCubit>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) => AppRouter.router.refresh(),

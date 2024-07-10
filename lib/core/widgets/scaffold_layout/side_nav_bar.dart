@@ -27,9 +27,9 @@ class _SideNavBarState extends State<SideNavBar> {
         //       )),
         IndexedTreeNode(key: SideMenuTree.products.title)
           ..addAll([
-            IndexedTreeNode(key: 'Manage Products'),
-            IndexedTreeNode(key: 'Add Product'),
             IndexedTreeNode(key: 'Suppliers'),
+            IndexedTreeNode(key: 'Products'),
+            // IndexedTreeNode(key: 'Add Product'),
           ]),
         IndexedTreeNode(key: SideMenuTree.stocks.title)
           ..addAll(SideMenuTree.stocks.items.map((item) => IndexedTreeNode(key: item)).toList()),
@@ -83,7 +83,11 @@ class _SideNavBarState extends State<SideNavBar> {
               indentation: const Indentation(style: IndentStyle.none),
               expansionBehavior: ExpansionBehavior.collapseOthers,
               expansionIndicatorBuilder: (context, indicator) => CustomNodeTreeIcon(tree: sidebarTree),
-              onItemTap: (node) => node.isLeaf ? AppRouter.router.goNamed(node.key) : null,
+              onItemTap: (node) => node.isLeaf
+                  ? node.key == 'Add Product'
+                      ? AppRouter.router.pushNamed(node.key)
+                      : AppRouter.router.goNamed(node.key)
+                  : null,
               onTreeReady: (controller) {
                 _controller = controller;
                 _selectedParentNode = _controller.elementAt(parentNodeKey);
@@ -157,7 +161,7 @@ class _SideNavBarState extends State<SideNavBar> {
   TextStyle get style => UIStyleText.heading6.copyWith(fontWeight: FontWeight.w500);
 
   SvgGenImage? icon(String key) => switch (key) {
-        'Products' => Assets.icons.bagHappy,
+        'Product Management' => Assets.icons.bagHappy,
         'Stock Management' => Assets.icons.layer,
         'Transactions' => Assets.icons.arrowSwapHorizontal,
         'Returns Management' => Assets.icons.undo,

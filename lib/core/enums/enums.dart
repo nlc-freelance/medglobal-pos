@@ -16,8 +16,8 @@ enum ProductDeleteAction {
 
 enum SideMenuTree {
   products(
-    'Products',
-    ['Manage Products', 'Add Product', 'Product Details', 'Suppliers'],
+    'Product Management',
+    ['Products', 'Add Product', 'Product Details', 'Suppliers'],
   ),
   stocks(
     'Stock Management',
@@ -40,11 +40,11 @@ enum SideMenuTree {
 }
 
 enum SideMenuTreeItem {
-  products('Products', '/products', '/products'),
-  manageProducts('Manage Products', 'manage-products', '/products/manage-products'),
-  newProduct('Add Product', 'add', '/products/add'),
-  productDetails('Product Details', 'id=:id', '/products/:id'),
-  suppliers('Suppliers', 'suppliers', '/products/suppliers'),
+  productManagement('Product Management', '/product-management', '/product-management'),
+  products('Products', 'products', '/product-management/products'),
+  newProduct('Add Product', 'add', '/product-management/add'),
+  productDetails('Product Details', 'products/id=:id', '/product-management/products/:id'),
+  suppliers('Suppliers', 'suppliers', '/product-management/suppliers'),
 
   stockManagement('Stock Management', '/stock-management', '/stock-management'),
   supplyNeeds('Supply Needs', 'supply-needs', '/stock-management/supply-needs'),
@@ -75,7 +75,8 @@ enum SideMenuTreeItem {
 
 enum ToastType {
   error('Oops! Something went wrong'),
-  success('Success!');
+  success('Success!'),
+  invalid('Missing required fields');
 
   final String title;
   const ToastType(this.title);

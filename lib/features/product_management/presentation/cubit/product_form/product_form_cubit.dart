@@ -13,7 +13,12 @@ class ProductFormCubit extends Cubit<ProductFormState> {
 
   void setProduct(Product product) => emit(ProductFormState(product));
 
-  void setName(String value) => emit(ProductFormState(state.product?.copyWith(name: value)));
+  void setName(String value) {
+    print(value);
+    print(state.product);
+    emit(ProductFormState(state.product?.copyWith(name: value)));
+  }
+
   void setCategory(Category value) => emit(ProductFormState(state.product?.copyWith(category: value)));
   void setImageUrl(String value) => emit(ProductFormState(state.product?.copyWith(imageUrl: value)));
 
@@ -22,6 +27,23 @@ class ProductFormCubit extends Cubit<ProductFormState> {
     final addedVariants = [...?variants, value];
 
     emit(ProductFormState(state.product?.copyWith(variants: addedVariants)));
+  }
+
+  void updateVariant(int id, Variant value) {
+    final variants = state.product?.variants?.toList() ?? [];
+
+    variants.removeWhere((variant) => variant.id == id);
+
+    final updatedVariants = [...variants, value];
+
+    emit(ProductFormState(state.product?.copyWith(variants: updatedVariants)));
+  }
+
+  void removeVariant(int id) {
+    final variants = state.product?.variants?.toList() ?? [];
+    variants.removeWhere((variant) => variant.id == id);
+
+    emit(ProductFormState(state.product?.copyWith(variants: variants)));
   }
 } 
 

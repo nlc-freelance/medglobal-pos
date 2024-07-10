@@ -52,7 +52,7 @@ class ContactInformation extends StatelessWidget {
             ),
             UITextField.topLabel(
               label: 'Phone',
-              formatter: FilteringTextInputFormatter.digitsOnly,
+              formatter: [FilteringTextInputFormatter.digitsOnly],
               controller: phoneController,
             ),
           ],

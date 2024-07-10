@@ -19,10 +19,10 @@ class PageSectionTitle extends StatelessWidget {
 
   factory PageSectionTitle.subsection(String title) => PageSectionTitle(title, isSubSection: true);
 
-  factory PageSectionTitle.subsectionWithSubtitleAndAction({
+  factory PageSectionTitle.subsectionWithSubtitle({
     required String title,
     required String subtitle,
-    required Widget action,
+    Widget? action,
   }) =>
       PageSectionTitle(
         title,
@@ -44,13 +44,13 @@ class PageSectionTitle extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   UIText.subtitle(subtitle!),
-                  action!,
+                  action ?? const SizedBox(),
                 ],
               ),
             ),
             const UIVerticalSpace(8.0),
           ],
-          if (!isSubSectionWithSubtitleAndAction) const Divider(color: UIColors.borderMuted),
+          const Divider(color: UIColors.borderMuted),
           UIVerticalSpace(isSubSection ? 8 : 10),
         ],
       );
