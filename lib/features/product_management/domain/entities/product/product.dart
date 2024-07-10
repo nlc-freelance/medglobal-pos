@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/datetime_converter.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/category.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/branch_inventory.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/variant.dart';
 
 part 'product.g.dart';
@@ -33,11 +34,45 @@ class Product extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, name, imageUrl, category, variants, createdAt, updatedAt, isSelected];
+  List<Object?> get props => [id, name, category, imageUrl, variants, createdAt, updatedAt, isSelected];
 
   Map<String, dynamic> toJson() => _$ProductToJson(this);
 
-  // TODO; toBranchDataGridModel for product details viewing. price is editable but qtyOnHand is not
+  List<BranchInventory> getAllBranchInventories() {
+    List<BranchInventory> allBranchInventories = [];
+
+    variants?.forEach((variant) {
+      if (variant.branchInventories != null) {
+        allBranchInventories.addAll(variant.branchInventories!);
+      }
+    });
+
+    return allBranchInventories;
+  }
+
+  JSON toProductPostRequest() => {
+        'name': name,
+        'category': category?.name,
+        'productImageUrl': imageUrl,
+        'variants': variants
+            ?.map((variant) => {
+                  if (variant.id != null && variant.id! > 0 == true) 'id': variant.id,
+                  'name': variant.name,
+                  'sku': variant.sku,
+                  'warningStock': variant.warningStock ?? 0,
+                  'idealStock': variant.idealStock ?? 0,
+                  'suppliers': variant.suppliers?.map((supplier) => supplier.id).toList(),
+                  'stores': variant.branchInventories
+                      ?.map((branchInventory) => {
+                            if (branchInventory.id != null && branchInventory.id! > 0 == true) 'id': branchInventory.id,
+                            'store': branchInventory.branch?.id,
+                            'price': branchInventory.price,
+                            'currentStock': branchInventory.qtyOnHand,
+                          })
+                      .toList(),
+                })
+            .toList(),
+      };
 
   Product copyWith({
     int? id,

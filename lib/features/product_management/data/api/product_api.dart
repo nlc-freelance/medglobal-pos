@@ -80,13 +80,15 @@ class ProductApiImpl implements ProductApi {
 
   @override
   Future<void> create(Product product) async {
+    print(product.toProductPostRequest());
     try {
       await _apiService.post<ProductDto>(
         ApiEndpoint.products(),
-        data: product.toJson(),
+        data: product.toProductPostRequest(),
         converter: ProductDto.fromJson,
       );
-    } catch (_) {
+    } catch (e) {
+      print(e);
       rethrow;
     }
   }
@@ -96,7 +98,7 @@ class ProductApiImpl implements ProductApi {
     try {
       await _apiService.update<ProductDto>(
         ApiEndpoint.products(id),
-        data: product.toJson(),
+        data: product.toProductPostRequest(),
         converter: ProductDto.fromJson,
       );
     } catch (_) {

@@ -25,13 +25,18 @@ abstract class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                name: SideMenuTreeItem.products.name,
-                path: SideMenuTreeItem.products.path,
+                name: SideMenuTreeItem.productManagement.name,
+                path: SideMenuTreeItem.productManagement.path,
                 builder: (context, state) => const SizedBox(),
                 routes: [
                   GoRoute(
-                    name: SideMenuTreeItem.manageProducts.name,
-                    path: SideMenuTreeItem.manageProducts.path,
+                    name: SideMenuTreeItem.suppliers.name,
+                    path: SideMenuTreeItem.suppliers.path,
+                    pageBuilder: (context, state) => const NoTransitionPage(child: SuppliersPage()),
+                  ),
+                  GoRoute(
+                    name: SideMenuTreeItem.products.name,
+                    path: SideMenuTreeItem.products.path,
                     pageBuilder: (context, state) => const NoTransitionPage(child: ProductsPage()),
                   ),
                   GoRoute(
@@ -44,11 +49,6 @@ abstract class AppRouter {
                     path: SideMenuTreeItem.productDetails.path,
                     pageBuilder: (context, state) =>
                         NoTransitionPage(child: ProductDetailsPage(id: state.pathParameters['id'])),
-                  ),
-                  GoRoute(
-                    name: SideMenuTreeItem.suppliers.name,
-                    path: SideMenuTreeItem.suppliers.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: SuppliersPage()),
                   ),
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
@@ -72,6 +73,7 @@ class AddressInformation extends StatelessWidget {
               dialogTextStyle: UIStyleText.heading6,
               builder: (_) => UIDropdownButton.topLabelReadOnly(
                 controller: countryController,
+                suffixIcon: Assets.icons.arrowDown.setSize(12),
                 label: 'Country',
                 hint: 'Select Country',
               ),

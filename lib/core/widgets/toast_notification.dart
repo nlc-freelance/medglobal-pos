@@ -17,6 +17,12 @@ class ToastNotification {
         message: message,
       );
 
+  static void invalid(BuildContext context, String message) => _show(
+        context,
+        type: ToastType.invalid,
+        message: message,
+      );
+
   static void _show(BuildContext context, {required ToastType type, required String message}) =>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
