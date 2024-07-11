@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'branch_inventory.g.dart';
 
@@ -26,23 +27,15 @@ class BranchInventory extends Equatable {
 
   Map<String, dynamic> toJson() => _$BranchInventoryToJson(this);
 
-  Map<String, String?> validate() {
-    Map<String, String?> errors = {};
-
-    if (branch == null) {
-      errors['branch'] = 'Branch is required';
-    }
-
-    if (price == null || price! <= 0) {
-      errors['price'] = 'Price must be greater than 0';
-    }
-
-    if (qtyOnHand == null || qtyOnHand! <= 0) {
-      errors['qtyOnHand'] = 'Quantity on hand must be greater than 0';
-    }
-
-    return errors;
-  }
+  DataGridRow toDataGridRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'name', value: branch?.name),
+          DataGridCell<double>(columnName: 'price', value: price),
+          DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand),
+          const DataGridCell(columnName: 'action', value: null),
+        ],
+      );
 
   BranchInventory copyWith({
     int? id,

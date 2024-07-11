@@ -8,5 +8,5 @@ class VariantFormState extends Equatable {
   @override
   List<Object?> get props => [variant];
 
-  factory VariantFormState.initial() => const VariantFormState(null);
+  factory VariantFormState.initial() => const VariantFormState(Variant());
 }

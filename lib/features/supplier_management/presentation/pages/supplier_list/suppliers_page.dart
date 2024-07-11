@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/data_grid_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/loading_data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
@@ -30,8 +31,8 @@ class _SuppliersPageState extends State<SuppliersPage> {
 
   @override
   Widget build(BuildContext context) {
-    final columns = DataGridUtil.getGridColumns(DataGridColumn.suppliers);
-    final style = StyleDataGrid.base;
+    final columns = DataGridUtil.getColumns(DataGridColumn.SUPPLIERS);
+    final style = DataGridUtil.baseStyle;
 
     return BlocListener<SupplierCubit, SupplierState>(
         listener: (_, state) {
@@ -66,7 +67,7 @@ class _SuppliersPageState extends State<SuppliersPage> {
                     child: DataGrid<Supplier>(
                       data: state.suppliers,
                       columns: columns,
-                      style: StyleDataGrid.rowNavigation,
+                      style: DataGridUtil.rowNavigationStyle,
                       navigationMode: GridNavigationMode.row,
                       onTap: (id) => SupplierDetailsDialog(state.suppliers.firstWhere((supplier) => supplier.id == id))
                           .showSidePeek(context),

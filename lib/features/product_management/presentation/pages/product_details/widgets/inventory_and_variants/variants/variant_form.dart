@@ -7,26 +7,26 @@ import 'package:medglobal_admin_portal/features/product_management/domain/entiti
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_form/product_form_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory/branch_inventory/inventory_per_branch.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory/suppliers_stock_details/suppliers_stock_details.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory_and_variants/inventory_per_branch/inventory_per_branch.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory_and_variants/stock_keeping_unit/stock_keeping_unit_details.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:uuid/uuid.dart';
 
 class VariantForm extends StatefulWidget {
   const VariantForm({
     super.key,
-    this.skuController,
-    this.nameController,
-    this.warningStockController,
-    this.idealStockController,
+    required this.skuController,
+    required this.nameController,
+    required this.warningStockController,
+    required this.idealStockController,
     required this.formKey,
   });
 
-  final TextEditingController? nameController;
-  final TextEditingController? skuController;
-  final TextEditingController? warningStockController;
-  final TextEditingController? idealStockController;
-  final GlobalKey<FormState>? formKey;
+  final TextEditingController nameController;
+  final TextEditingController skuController;
+  final TextEditingController warningStockController;
+  final TextEditingController idealStockController;
+  final GlobalKey<FormState> formKey;
 
   @override
   State<VariantForm> createState() => _VariantFormState();
@@ -66,10 +66,11 @@ class _VariantFormState extends State<VariantForm> {
               ),
             ),
             DottedBorder(
-              color: UIColors.borderRegular,
+              color: UIColors.textRegular.withOpacity(0.3),
               radius: const Radius.circular(12),
               dashPattern: const [10],
               borderType: BorderType.RRect,
+              borderPadding: const EdgeInsets.all(2),
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
@@ -93,7 +94,7 @@ class _VariantFormState extends State<VariantForm> {
                       ],
                     ),
                     const UIVerticalSpace(40),
-                    SuppliersStockDetails(
+                    StockKeepingUnitDetails(
                       skuController: widget.skuController,
                       warningStockController: widget.warningStockController,
                       idealStockController: widget.idealStockController,
@@ -107,7 +108,7 @@ class _VariantFormState extends State<VariantForm> {
                         onClick: () {
                           final variant = _variantFormCubit.state.variant;
 
-                          if (widget.formKey?.currentState?.validate() == true &&
+                          if (widget.formKey.currentState?.validate() == true &&
                               variant?.hasSuppliers == true &&
                               variant?.hasBranchInventories == true) {
                             if (variant?.id == null) {
@@ -116,6 +117,9 @@ class _VariantFormState extends State<VariantForm> {
                             } else {
                               context.read<ProductFormCubit>().updateVariant(variant!.id!, variant);
                             }
+
+                            context.read<VariantFormUiCubit>().hideVariantFormUi();
+                            _variantFormCubit.resetForm();
                           } else {
                             ToastNotification.invalid(
                                 context, 'One of the required field is empty. Please check your inputs.');
@@ -127,18 +131,10 @@ class _VariantFormState extends State<VariantForm> {
                 ),
               ),
             ),
-
-            /// Display if a variant is added, else hide
-            /// Hides the table when an exisitng product has no variant (only default), will show when user decides to add one
-            // if (widget.product?.variants?.isNotEmpty == true &&
-            //     !(widget.product?.variants ?? []).any((variant) => variant.name == 'default'))
-            // VariantDataGrid(variants: widget.product?.variants),
-            // const UIVerticalSpace(40.0),
+            const UIVerticalSpace(30.0),
           ],
         );
       },
     );
-    // },
-    // );
   }
 }

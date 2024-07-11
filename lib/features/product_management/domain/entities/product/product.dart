@@ -3,7 +3,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/datetime_converter.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/category.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/branch_inventory.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/variant.dart';
 
 part 'product.g.dart';
@@ -38,16 +37,9 @@ class Product extends Equatable {
 
   Map<String, dynamic> toJson() => _$ProductToJson(this);
 
-  List<BranchInventory> getAllBranchInventories() {
-    List<BranchInventory> allBranchInventories = [];
-
-    variants?.forEach((variant) {
-      if (variant.branchInventories != null) {
-        allBranchInventories.addAll(variant.branchInventories!);
-      }
-    });
-
-    return allBranchInventories;
+  bool get hasVariants {
+    if (variants?.isNotEmpty == true) return variants!.first.name != 'default';
+    return false;
   }
 
   JSON toProductPostRequest() => {

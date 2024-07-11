@@ -44,6 +44,8 @@ class ProductFormCubit extends Cubit<ProductFormState> {
     variants.removeWhere((variant) => variant.id == id);
 
     emit(ProductFormState(state.product?.copyWith(variants: variants)));
+
+    print('removed $id ${variants.length}');
   }
 } 
 

@@ -8,7 +8,7 @@ class ProductFormState extends Equatable {
   @override
   List<Object?> get props => [product];
 
-  factory ProductFormState.initial() => const ProductFormState(null);
+  factory ProductFormState.initial() => const ProductFormState(Product());
 }
 
 
