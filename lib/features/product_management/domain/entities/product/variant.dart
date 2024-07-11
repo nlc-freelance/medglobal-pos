@@ -4,6 +4,7 @@ import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
 
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/branch_inventory.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'variant.g.dart';
 
@@ -34,15 +35,11 @@ class Variant extends Equatable {
 
   Map<String, dynamic> toJson() => _$VariantToJson(this);
 
-  dynamic get(String prop) => prop;
-
   List<Branch> getAllBranches() {
     List<Branch> allBranches = [];
-
     branchInventories?.forEach((branchInventory) {
       if (branchInventory.branch != null) allBranches.add(branchInventory.branch!);
     });
-
     return allBranches;
   }
 
@@ -55,6 +52,23 @@ class Variant extends Equatable {
       return false;
     }
   }
+
+  DataGridRow toDataGridRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'name', value: name),
+          DataGridCell<String>(columnName: 'sku', value: sku),
+          DataGridCell<List<String>>(
+            columnName: 'branches',
+            value: branchInventories?.map((inventory) => inventory.branch?.name ?? '').toList() ?? <String>[],
+          ),
+          DataGridCell<List<String>>(
+            columnName: 'suppliers',
+            value: suppliers?.map((supplier) => supplier.name).toList() ?? <String>[],
+          ),
+          const DataGridCell(columnName: 'action', value: null),
+        ],
+      );
 
   Variant copyWith({
     int? id,

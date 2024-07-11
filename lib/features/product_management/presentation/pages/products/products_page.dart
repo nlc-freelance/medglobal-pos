@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/data_grid_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/loading_data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/product.dart';
@@ -32,7 +33,7 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final columns = DataGridUtil.getGridColumns(PRODUCT_COLUMNS);
+    final columns = DataGridUtil.getColumns(DataGridColumn.PRODUCTS);
 
     return BlocListener<ProductBulkActionCubit, ProductBulkActionState>(
       listener: (context, state) {
@@ -66,7 +67,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 return DataGrid<Product>(
                   columns: columns,
                   data: state.products,
-                  style: StyleDataGrid.rowNavigation,
+                  style: DataGridUtil.rowNavigationStyle,
                   navigationMode: GridNavigationMode.row,
                   showCheckbox: true,
                   selectionMode: SelectionMode.multiple,
@@ -78,7 +79,7 @@ class _ProductsPageState extends State<ProductsPage> {
               }
               return LoadingDataGrid<Supplier>(
                 columns: columns,
-                style: StyleDataGrid.base,
+                style: DataGridUtil.baseStyle,
               );
             },
           ),
@@ -86,11 +87,4 @@ class _ProductsPageState extends State<ProductsPage> {
       ),
     );
   }
-
-  List<ColumnData> PRODUCT_COLUMNS = [
-    ColumnData('id', 'ID'),
-    ColumnData('name', 'Name', minWidth: 300.0),
-    ColumnData('category', 'Category', minWidth: 180.0),
-    ColumnData('createdAt', 'Created At', minWidth: 180.0),
-  ];
 }

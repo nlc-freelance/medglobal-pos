@@ -6,23 +6,22 @@ import 'package:medglobal_admin_portal/features/product_management/domain/entiti
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_form/product_form_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory/branch_inventory/inventory_per_branch.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory/suppliers_stock_details/suppliers_stock_details.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory/variations/variant_grid.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory_and_variants/inventory_per_branch/inventory_per_branch.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory_and_variants/stock_keeping_unit/stock_keeping_unit_details.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory_and_variants/variants/variant_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
-import 'package:pluto_grid/pluto_grid.dart';
-import 'variations/variant_form.dart';
+import 'variants/variant_form.dart';
 
-class InventoryInformation extends StatefulWidget {
-  const InventoryInformation({super.key, required this.formKey});
+class InventoryAndVariantsInformation extends StatefulWidget {
+  const InventoryAndVariantsInformation({super.key, required this.formKey});
 
-  final GlobalKey<FormState>? formKey;
+  final GlobalKey<FormState> formKey;
 
   @override
-  State<InventoryInformation> createState() => _InventoryInformationState();
+  State<InventoryAndVariantsInformation> createState() => _InventoryAndVariantsInformationState();
 }
 
-class _InventoryInformationState extends State<InventoryInformation> {
+class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsInformation> {
   late ProductFormCubit _productFormCubit;
   late VariantFormCubit _variantFormCubit;
   late VariantFormUiCubit _variantFormUiCubit;
@@ -50,7 +49,7 @@ class _InventoryInformationState extends State<InventoryInformation> {
 
     final currentVariant = _variantFormCubit.state.variant;
 
-    _nameController = TextEditingController(text: currentVariant?.name)
+    _nameController = TextEditingController(text: currentVariant?.name == 'default' ? '' : currentVariant?.name)
       ..addListener(() => _variantFormCubit.setName(_nameController.text));
     _skuController = TextEditingController(text: currentVariant?.sku)
       ..addListener(() => _variantFormCubit.setSku(_skuController.text));
@@ -74,7 +73,8 @@ class _InventoryInformationState extends State<InventoryInformation> {
         selector: (state) => state.product,
         builder: (context, product) {
           return BlocListener<VariantFormCubit, VariantFormState>(
-            listenWhen: (previous, current) => previous.variant?.id != current.variant?.id,
+            listenWhen: (previous, current) =>
+                previous.variant?.id != current.variant?.id || current.variant == const Variant(),
             listener: (context, state) {
               final variant = state.variant;
 
@@ -102,10 +102,8 @@ class _InventoryInformationState extends State<InventoryInformation> {
                     onClick: () => _variantFormUiCubit.showVariantFormUi(),
                   ),
                   const UIVerticalSpace(30),
-
-                  /// Add Product or If product has no variants
-                  if (product?.id == null || (product?.variants ?? []).any((variant) => variant.name == 'default')) ...[
-                    SuppliersStockDetails(
+                  if (product?.hasVariants == false) ...[
+                    StockKeepingUnitDetails(
                       skuController: _skuController,
                       warningStockController: _warningStockController,
                       idealStockController: _idealStockController,
@@ -113,45 +111,7 @@ class _InventoryInformationState extends State<InventoryInformation> {
                     const InventoryPerBranch(),
                   ],
                 ],
-                if (product?.variants?.first.name != 'default' && product?.variants?.isNotEmpty == true)
-                  LayoutBuilder(
-                    builder: (context, constraints) => Container(
-                      width: constraints.maxWidth,
-                      height: constraints.maxHeight,
-                      constraints: const BoxConstraints(maxHeight: 300),
-                      child: VariantGrid(
-                        variants: product?.variants ?? [],
-                        rows: (product?.variants ?? [])
-                            .map<PlutoRow>((variant) => PlutoRow(
-                                  cells: {
-                                    'id': PlutoCell(value: variant.id),
-                                    'variant_name': PlutoCell(value: variant.name),
-                                    'sku': PlutoCell(value: variant.sku),
-                                    'branches': PlutoCell(
-                                      value: variant
-                                          .getAllBranches()
-                                          .map((branch) => branch.name)
-                                          .toList()
-                                          .toString()
-                                          .replaceAll(RegExp(r'[\[\]]'), ''),
-                                    ),
-                                    'suppliers': PlutoCell(
-                                      value: (variant.suppliers ?? [])
-                                          .map((branch) => branch.name)
-                                          .toList()
-                                          .toString()
-                                          .replaceAll(
-                                            RegExp(r'[\[\]]'),
-                                            '',
-                                          ),
-                                    ),
-                                    'action': PlutoCell(value: variant.id),
-                                  },
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                  ),
+                if (product?.hasVariants == true) const VariantDataGrid(),
                 const UIVerticalSpace(60),
               ],
             ),

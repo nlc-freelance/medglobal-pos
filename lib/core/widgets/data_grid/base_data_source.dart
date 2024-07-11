@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 /// Base class for DataGridSource.
@@ -80,36 +78,4 @@ abstract class BaseDataSource extends DataGridSource {
 
   // void updateDataGrid() => notifyListeners();
   void update();
-}
-
-class ColumnData {
-  final String name;
-  final String label;
-  final double? minWidth;
-  final bool isEditable;
-
-  ColumnData(this.name, this.label, {this.minWidth, this.isEditable = false});
-}
-
-class DataGridUtil {
-  static List<GridColumn> getGridColumns(List<ColumnData> columns) => columns
-      .map<GridColumn>((column) => GridColumn(
-            visible: column.name != 'id',
-            columnName: column.name,
-            allowEditing: column.isEditable,
-            minimumWidth: column.minWidth ?? double.nan,
-            label: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                column.label,
-                style: UIStyleText.labelSemiBold.copyWith(
-                  color: UIColors.textLight,
-                  fontWeight: FontWeight.w700,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ),
-          ))
-      .toList();
 }

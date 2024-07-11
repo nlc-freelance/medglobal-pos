@@ -9,7 +9,7 @@ import 'package:medglobal_admin_portal/features/product_management/presentation/
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_form/product_form_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/general/general_information.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory/inventory_information.dart';
+import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/widgets/inventory_and_variants/inventory_and_variants_information.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class ProductDetailsPage extends StatefulWidget {
@@ -97,7 +97,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   child: Column(
                     children: [
                       GeneralInformation(productNameController: _productNameController),
-                      InventoryInformation(formKey: _formKey),
+                      InventoryAndVariantsInformation(formKey: _formKey),
                     ],
                   ),
                 ),
