@@ -16,11 +16,17 @@ class VariantFormCubit extends Cubit<VariantFormState> {
   void resetForm() => emit(const VariantFormState(Variant()));
 
   void setName(String value) => emit(VariantFormState(state.variant?.copyWith(name: value)));
+
   void setSku(String value) => emit(VariantFormState(state.variant?.copyWith(sku: value)));
+
   void setWarningStockLevel(String value) =>
       emit(VariantFormState(state.variant?.copyWith(warningStock: int.tryParse(value))));
+
   void setIdealStockLevel(String value) =>
       emit(VariantFormState(state.variant?.copyWith(idealStock: int.tryParse(value))));
+
+  void setCost(String value) => emit(VariantFormState(state.variant?.copyWith(cost: double.tryParse(value))));
+
   void setSuppliers(List<Supplier> value) => emit(VariantFormState(state.variant?.copyWith(suppliers: value)));
 
   void addBranchInventory(List<Branch> branches) {

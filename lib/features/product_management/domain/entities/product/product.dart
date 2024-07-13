@@ -53,6 +53,7 @@ class Product extends Equatable {
                   'sku': variant.sku,
                   'warningStock': variant.warningStock ?? 0,
                   'idealStock': variant.idealStock ?? 0,
+                  'cost': variant.cost ?? 0,
                   'suppliers': variant.suppliers?.map((supplier) => supplier.id).toList(),
                   'stores': variant.branchInventories
                       ?.map((branchInventory) => {

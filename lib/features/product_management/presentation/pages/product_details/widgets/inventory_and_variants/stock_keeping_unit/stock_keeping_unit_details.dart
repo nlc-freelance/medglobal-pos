@@ -16,11 +16,13 @@ class StockKeepingUnitDetails extends StatelessWidget {
     required this.skuController,
     required this.warningStockController,
     required this.idealStockController,
+    required this.costController,
   });
 
   final TextEditingController skuController;
   final TextEditingController warningStockController;
   final TextEditingController idealStockController;
+  final TextEditingController costController;
 
   @override
   Widget build(BuildContext context) => BlocSelector<VariantFormCubit, VariantFormState, Variant?>(
@@ -87,7 +89,19 @@ class StockKeepingUnitDetails extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Spacer(flex: 2),
+                  const UIHorizontalSpace(12),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: UITextFormField.topLabel(
+                        label: 'Cost (PHP)',
+                        hint: 'Enter cost',
+                        controller: costController,
+                        // formatter: [FilteringTextInputFormatter.digitsOnly],
+                      ),
+                    ),
+                  ),
+                  const Spacer(flex: 1),
                 ],
               ),
               const UIVerticalSpace(40),

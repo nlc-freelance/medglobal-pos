@@ -15,6 +15,7 @@ class VariantDto extends Equatable {
   final List<Supplier>? suppliers;
   final int? warningStock;
   final int? idealStock;
+  final double? cost;
   @JsonKey(name: 'variantStoreDetails')
   final List<BranchInventoryDto>? branchInventories;
 
@@ -25,11 +26,12 @@ class VariantDto extends Equatable {
     this.suppliers,
     this.warningStock,
     this.idealStock,
+    this.cost,
     this.branchInventories,
   });
 
   @override
-  List<Object?> get props => [id, name, sku, suppliers, warningStock, idealStock];
+  List<Object?> get props => [id, name, sku, warningStock, idealStock, cost, suppliers, branchInventories];
 
   factory VariantDto.fromJson(Map<String, dynamic> json) => _$VariantDtoFromJson(json);
 
@@ -42,6 +44,7 @@ class VariantDto extends Equatable {
         suppliers: suppliers ?? <Supplier>[],
         warningStock: warningStock ?? 0,
         idealStock: idealStock ?? 0,
+        cost: cost ?? 0,
         branchInventories: branchInventories?.map((inventory) => inventory.toEntity()).toList() ?? [],
       );
 }

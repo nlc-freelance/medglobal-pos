@@ -129,8 +129,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         final product = _productFormCubit.state.product!.copyWith(name: _productNameController.text);
 
                         if (widget.id == null) {
-                          print('DSDA');
-                          print(product);
                           _productCubit.create(product);
                         } else {
                           _productCubit.update(product.id!, product);

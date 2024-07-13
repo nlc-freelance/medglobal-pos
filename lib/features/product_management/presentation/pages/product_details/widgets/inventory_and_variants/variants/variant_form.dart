@@ -19,6 +19,7 @@ class VariantForm extends StatefulWidget {
     required this.nameController,
     required this.warningStockController,
     required this.idealStockController,
+    required this.costController,
     required this.formKey,
   });
 
@@ -26,6 +27,7 @@ class VariantForm extends StatefulWidget {
   final TextEditingController skuController;
   final TextEditingController warningStockController;
   final TextEditingController idealStockController;
+  final TextEditingController costController;
   final GlobalKey<FormState> formKey;
 
   @override
@@ -98,6 +100,7 @@ class _VariantFormState extends State<VariantForm> {
                       skuController: widget.skuController,
                       warningStockController: widget.warningStockController,
                       idealStockController: widget.idealStockController,
+                      costController: widget.costController,
                     ),
                     const InventoryPerBranch(),
                     const UIVerticalSpace(30.0),

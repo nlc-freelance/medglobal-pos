@@ -73,111 +73,113 @@ class _DataGridState<T> extends State<DataGrid<T>> with DataGridInitMixin<T> {
   Widget build(BuildContext context) {
     final showSelectedRowsToolbar = widget.selectionToolbarBuilder != null && _controller.selectedRows.isNotEmpty;
 
-    return Column(
-      children: [
-        if (showSelectedRowsToolbar) widget.selectionToolbarBuilder!(_controller),
-        Container(
-          decoration: UIStyleContainer.topBorder,
-          child: SfDataGridTheme(
-            data: widget.style,
-            child: ClipRect(
-              clipper: HorizontalBorderClipper(),
-              child: SfDataGrid(
-                controller: _controller,
-                source: _source,
-                columns: _columns,
-                footerHeight: 100,
-                footer: _source.rows.isEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Assets.icons.cube.svg(),
-                            const UIVerticalSpace(12),
-                            UIText.labelMedium('No data available'),
-                          ],
-                        ),
-                      )
-                    : null,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          if (showSelectedRowsToolbar) widget.selectionToolbarBuilder!(_controller),
+          Container(
+            decoration: UIStyleContainer.topBorder,
+            child: SfDataGridTheme(
+              data: widget.style,
+              child: ClipRect(
+                clipper: HorizontalBorderClipper(),
+                child: SfDataGrid(
+                  controller: _controller,
+                  source: _source,
+                  columns: _columns,
+                  footerHeight: 100,
+                  footer: _source.rows.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Assets.icons.cube.svg(),
+                              const UIVerticalSpace(12),
+                              UIText.labelMedium('No data available'),
+                            ],
+                          ),
+                        )
+                      : null,
 
-                /// Data Grid Dynamic Config
-                selectionMode: widget.selectionMode,
-                showCheckboxColumn: widget.showCheckbox,
-                allowColumnsDragging: widget.allowColumnDrag,
-                navigationMode: widget.navigationMode,
-                verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
-                allowEditing: widget.allowEditing,
-                editingGestureType: EditingGestureType.tap,
+                  /// Data Grid Dynamic Config
+                  selectionMode: widget.selectionMode,
+                  showCheckboxColumn: widget.showCheckbox,
+                  allowColumnsDragging: widget.allowColumnDrag,
+                  navigationMode: widget.navigationMode,
+                  verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                  allowEditing: widget.allowEditing,
+                  editingGestureType: EditingGestureType.tap,
 
-                /// Data Grid Constant Style
-                shrinkWrapRows: true,
-                onQueryRowHeight: (details) => _source.runtimeType != BaseDataSource
-                    ? details.getIntrinsicRowHeight(details.rowIndex)
-                    : Sizes.rowHeight,
-                rowHeight: Sizes.rowHeight,
-                headerRowHeight: Sizes.headerHeight,
-                columnWidthMode: ColumnWidthMode.fill,
-                headerGridLinesVisibility: GridLinesVisibility.none,
-                gridLinesVisibility: GridLinesVisibility.horizontal,
+                  /// Data Grid Constant Style
+                  shrinkWrapRows: true,
+                  onQueryRowHeight: (details) => _source.runtimeType != BaseDataSource
+                      ? details.getIntrinsicRowHeight(details.rowIndex)
+                      : Sizes.rowHeight,
+                  rowHeight: Sizes.rowHeight,
+                  headerRowHeight: Sizes.headerHeight,
+                  columnWidthMode: ColumnWidthMode.fill,
+                  headerGridLinesVisibility: GridLinesVisibility.none,
+                  gridLinesVisibility: GridLinesVisibility.horizontal,
 
-                /// Data Grid Callbacks
-                onSelectionChanged: (_, __) {
-                  if (widget.showCheckbox) widget.onSelectedRowDataIds!(_controller.selectedRows);
-                },
-                onColumnDragging: (DataGridColumnDragDetails details) {
-                  if (details.action == DataGridColumnDragAction.dropped && details.to != null) {
-                    final GridColumn rearrangeColumn = _columns[details.from];
+                  /// Data Grid Callbacks
+                  onSelectionChanged: (_, __) {
+                    if (widget.showCheckbox) widget.onSelectedRowDataIds!(_controller.selectedRows);
+                  },
+                  onColumnDragging: (DataGridColumnDragDetails details) {
+                    if (details.action == DataGridColumnDragAction.dropped && details.to != null) {
+                      final GridColumn rearrangeColumn = _columns[details.from];
 
-                    _columns.removeAt(details.from);
-                    _columns.insert(details.to!, rearrangeColumn);
+                      _columns.removeAt(details.from);
+                      _columns.insert(details.to!, rearrangeColumn);
 
-                    _source.build();
-                    _source.update();
+                      _source.build();
+                      _source.update();
 
-                    /// DataGrid with [showCheckbox] does not maintain the selected rows upon column drag and drops.
-                    /// Column drag and drop requires rebuilding of the DataGridRow in order to display the data correctly.
-                    /// To maintain the selection even after re-arranging the columns, store the selected data IDs in state.
-                    /// Then use it to get the rows and assign to the [selectedRows] of the DataGridController.
-                    if (widget.showCheckbox) {
-                      final selectedRows =
-                          _source.rows.where((row) => widget.selectedRowDataIDs!.contains(row.id)).toList();
-                      _controller.selectedRows = selectedRows;
+                      /// DataGrid with [showCheckbox] does not maintain the selected rows upon column drag and drops.
+                      /// Column drag and drop requires rebuilding of the DataGridRow in order to display the data correctly.
+                      /// To maintain the selection even after re-arranging the columns, store the selected data IDs in state.
+                      /// Then use it to get the rows and assign to the [selectedRows] of the DataGridController.
+                      if (widget.showCheckbox) {
+                        final selectedRows =
+                            _source.rows.where((row) => widget.selectedRowDataIDs!.contains(row.id)).toList();
+                        _controller.selectedRows = selectedRows;
+                      }
                     }
-                  }
-                  return true;
-                },
-                columnDragFeedbackBuilder: (context, column) => Container(
-                  height: Sizes.headerHeight,
-                  width: column.minimumWidth,
-                  decoration: const BoxDecoration(
-                    color: UIColors.background,
-                    border: Border.fromBorderSide(BorderSide(color: UIColors.borderRegular, width: 1.0)),
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    return true;
+                  },
+                  columnDragFeedbackBuilder: (context, column) => Container(
+                    height: Sizes.headerHeight,
+                    width: column.minimumWidth,
+                    decoration: const BoxDecoration(
+                      color: UIColors.background,
+                      border: Border.fromBorderSide(BorderSide(color: UIColors.borderRegular, width: 1.0)),
+                      borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    ),
+                    child: column.label,
                   ),
-                  child: column.label,
+                  onCellTap: (details) => widget.onTap != null
+                      ? widget.onTap!(_source.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value)
+                      : null,
                 ),
-                onCellTap: (details) => widget.onTap != null
-                    ? widget.onTap!(_source.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value)
-                    : null,
               ),
             ),
           ),
-        ),
-        // UIVerticalSpace(16),
-        // Container(
-        //     height: 60,
-        //     child: SfDataPager(
-        //       delegate: _source,
-        //       availableRowsPerPage: [10, 30, 50],
-        //       onRowsPerPageChanged: (int? rowsPerPage) {
-        //         setState(() {
-        //           _rowsPerPage = rowsPerPage!;
-        //           _source.updateDataGrid();
-        //         });
-        //       },
-        //       pageCount: ((_rows.length / _rowsPerPage).ceil()).toDouble(),
-        //     )),
-      ],
+          // UIVerticalSpace(16),
+          // Container(
+          //     height: 60,
+          //     child: SfDataPager(
+          //       delegate: _source,
+          //       availableRowsPerPage: [10, 30, 50],
+          //       onRowsPerPageChanged: (int? rowsPerPage) {
+          //         setState(() {
+          //           _rowsPerPage = rowsPerPage!;
+          //           _source.updateDataGrid();
+          //         });
+          //       },
+          //       pageCount: ((_rows.length / _rowsPerPage).ceil()).toDouble(),
+          //     )),
+        ],
+      ),
     );
   }
 }
