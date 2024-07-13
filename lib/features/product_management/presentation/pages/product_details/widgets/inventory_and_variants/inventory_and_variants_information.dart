@@ -30,6 +30,7 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
   late TextEditingController _skuController;
   late TextEditingController _warningStockController;
   late TextEditingController _idealStockController;
+  late TextEditingController _costController;
 
   @override
   void initState() {
@@ -57,6 +58,8 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
       ..addListener(() => _variantFormCubit.setWarningStockLevel(_warningStockController.text));
     _idealStockController = TextEditingController(text: (currentVariant?.idealStock ?? '').toString())
       ..addListener(() => _variantFormCubit.setIdealStockLevel(_idealStockController.text));
+    _costController = TextEditingController(text: (currentVariant?.cost ?? '').toString())
+      ..addListener(() => _variantFormCubit.setCost(_costController.text));
   }
 
   @override
@@ -65,6 +68,7 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
     _skuController.dispose();
     _warningStockController.dispose();
     _idealStockController.dispose();
+    _costController.dispose();
     super.dispose();
   }
 
@@ -82,6 +86,7 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
               _skuController.text = variant?.sku ?? '';
               _warningStockController.text = (variant?.warningStock ?? '').toString();
               _idealStockController.text = (variant?.idealStock ?? '').toString();
+              _costController.text = (variant?.cost ?? '').toString();
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,6 +99,7 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
                     skuController: _skuController,
                     warningStockController: _warningStockController,
                     idealStockController: _idealStockController,
+                    costController: _costController,
                   )
                 else ...[
                   UIButton.secondary(
@@ -107,6 +113,7 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
                       skuController: _skuController,
                       warningStockController: _warningStockController,
                       idealStockController: _idealStockController,
+                      costController: _costController,
                     ),
                     const InventoryPerBranch(),
                   ],

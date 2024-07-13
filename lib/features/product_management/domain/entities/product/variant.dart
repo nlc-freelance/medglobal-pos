@@ -15,6 +15,7 @@ class Variant extends Equatable {
   final String? sku;
   final int? warningStock;
   final int? idealStock;
+  final double? cost;
   final List<Supplier>? suppliers;
   final List<BranchInventory>? branchInventories;
 
@@ -25,11 +26,12 @@ class Variant extends Equatable {
     this.suppliers,
     this.warningStock,
     this.idealStock,
+    this.cost,
     this.branchInventories,
   });
 
   @override
-  List<Object?> get props => [id, name, sku, warningStock, idealStock, suppliers, branchInventories];
+  List<Object?> get props => [id, name, sku, warningStock, idealStock, cost, suppliers, branchInventories];
 
   factory Variant.fromJson(Map<String, dynamic> json) => _$VariantFromJson(json);
 
@@ -76,6 +78,7 @@ class Variant extends Equatable {
     String? sku,
     int? warningStock,
     int? idealStock,
+    double? cost,
     List<Supplier>? suppliers,
     List<BranchInventory>? branchInventories,
   }) {
@@ -85,6 +88,7 @@ class Variant extends Equatable {
       sku: sku ?? this.sku,
       warningStock: warningStock ?? this.warningStock,
       idealStock: idealStock ?? this.idealStock,
+      cost: cost ?? this.cost,
       suppliers: suppliers ?? this.suppliers,
       branchInventories: branchInventories ?? this.branchInventories,
     );

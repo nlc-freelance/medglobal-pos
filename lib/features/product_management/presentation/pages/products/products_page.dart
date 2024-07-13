@@ -64,17 +64,19 @@ class _ProductsPageState extends State<ProductsPage> {
                 return Center(child: Text(state.message));
               }
               if (state is ProductListLoaded) {
-                return DataGrid<Product>(
-                  columns: columns,
-                  data: state.products,
-                  style: DataGridUtil.rowNavigationStyle,
-                  navigationMode: GridNavigationMode.row,
-                  showCheckbox: true,
-                  selectionMode: SelectionMode.multiple,
-                  selectionToolbarBuilder: (controller) => SelectedProductsToolbar(controller),
-                  onSelectedRowDataIds: (rows) =>
-                      context.read<ProductSelectionCubit>().addAllProductIds(rows.map((row) => row.id).toList()),
-                  selectedRowDataIDs: context.select((ProductSelectionCubit cubit) => cubit.state.selectedProductIds),
+                return Expanded(
+                  child: DataGrid<Product>(
+                    columns: columns,
+                    data: state.products,
+                    style: DataGridUtil.rowNavigationStyle,
+                    navigationMode: GridNavigationMode.row,
+                    showCheckbox: true,
+                    selectionMode: SelectionMode.multiple,
+                    selectionToolbarBuilder: (controller) => SelectedProductsToolbar(controller),
+                    onSelectedRowDataIds: (rows) =>
+                        context.read<ProductSelectionCubit>().addAllProductIds(rows.map((row) => row.id).toList()),
+                    selectedRowDataIDs: context.select((ProductSelectionCubit cubit) => cubit.state.selectedProductIds),
+                  ),
                 );
               }
               return LoadingDataGrid<Supplier>(

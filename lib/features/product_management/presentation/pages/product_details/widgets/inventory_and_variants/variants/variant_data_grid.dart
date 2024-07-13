@@ -103,6 +103,13 @@ class VariantDataSource extends DataGridSource {
   }
 
   Widget _buildCell(String key, DataGridCell cell, int id) => switch (key) {
+        'name' => HoverBuilder(
+            builder: (isHover) => UIText.bodyRegular(
+              cell.value.toString(),
+              color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
+              textDecoration: isHover ? TextDecoration.underline : TextDecoration.none,
+            ),
+          ),
         'action' => LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text('Delete',
                 iconBuilder: (isHover) => Assets.icons.trash.setColorOnHover(isHover),
