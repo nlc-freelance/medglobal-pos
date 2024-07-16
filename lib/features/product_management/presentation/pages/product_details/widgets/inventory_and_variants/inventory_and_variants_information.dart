@@ -91,7 +91,7 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const PageSectionTitle('Inventory and Variants'),
+                const PageSectionTitle(title: 'Inventory and Variants'),
                 if (context.select((VariantFormUiCubit cubit) => cubit.state))
                   VariantForm(
                     formKey: widget.formKey,

@@ -16,7 +16,7 @@ class GeneralInformation extends StatelessWidget {
         const UIVerticalSpace(20.0),
         UIText.heading4(isNewSupplier ? 'Add Supplier' : 'Edit Supplier'),
         const UIVerticalSpace(30.0),
-        PageSectionTitle.subsection('GeneralInformation'),
+        PageSectionTitle.subsection(title: 'General Information'),
         UITextField.leftLabel(
           width: 300.0,
           label: 'Supplier Name',

@@ -7,19 +7,19 @@ class ToastNotification {
 
   static void error(BuildContext context, String message) => _show(
         context,
-        type: ToastType.error,
+        type: ToastType.ERROR,
         message: message,
       );
 
   static void success(BuildContext context, String message) => _show(
         context,
-        type: ToastType.success,
+        type: ToastType.SUCCESS,
         message: message,
       );
 
   static void invalid(BuildContext context, String message) => _show(
         context,
-        type: ToastType.invalid,
+        type: ToastType.INVALID,
         message: message,
       );
 
@@ -46,7 +46,7 @@ class ToastNotification {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      type == ToastType.success ? Assets.icons.checkCircle.svg() : Assets.icons.infoCircle.svg(),
+                      type == ToastType.SUCCESS ? Assets.icons.checkCircle.svg() : Assets.icons.infoCircle.svg(),
                       const UIHorizontalSpace(8),
                       UIText.labelSemiBold(type.title),
                       const UIHorizontalSpace(16),

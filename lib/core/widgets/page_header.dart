@@ -5,11 +5,13 @@ class PageHeader extends StatelessWidget {
   final String title;
   final String subtitle;
   final List<Widget>? actions;
+  final List<Widget>? titleTrailings;
 
   const PageHeader({
     required this.title,
     required this.subtitle,
     this.actions,
+    this.titleTrailings,
     super.key,
   });
 
@@ -24,7 +26,15 @@ class PageHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const UIVerticalSpace(12.0),
-              UIText.heading4(title),
+              Row(
+                children: [
+                  UIText.heading4(title),
+                  if (titleTrailings != null) ...[
+                    const UIHorizontalSpace(12),
+                    ...?titleTrailings,
+                  ],
+                ],
+              ),
               const UIVerticalSpace(4.0),
               UIText.subtitle(subtitle)
             ],

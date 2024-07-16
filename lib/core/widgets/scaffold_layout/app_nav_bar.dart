@@ -53,10 +53,10 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
               const UIHorizontalSpace(12.0),
               UIPopupMenuButton<ProfileMenu>.icon(
                   icon: Assets.icons.arrowDown.setSize(12.0),
-                  options: ProfileMenu.values,
-                  getOptionTitle: (item) => item.title,
-                  onSelectMenu: (menu) {
-                    if (ProfileMenu.logout == menu) context.read<AuthBloc>().add(const LogoutEvent());
+                  menu: ProfileMenu.values,
+                  menuAsString: (item) => item.title,
+                  onSelect: (menu) {
+                    if (ProfileMenu.LOGOUT == menu) context.read<AuthBloc>().add(const LogoutEvent());
                   }),
             ],
           )

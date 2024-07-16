@@ -23,7 +23,7 @@ class ContactInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        PageSectionTitle.subsection('Contact Information'),
+        PageSectionTitle.subsection(title: 'Contact Information'),
         GridView(
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

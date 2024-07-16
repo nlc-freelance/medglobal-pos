@@ -48,21 +48,25 @@ class _BranchInventoryDataGridState extends State<BranchInventoryDataGrid> {
         _branchInventoryDataSource.buildDataGridRows();
         _branchInventoryDataSource.updateDataGridSource();
       },
-      child: ClipRect(
-        clipper: HorizontalBorderClipper(),
-        child: SfDataGridTheme(
-          data: DataGridUtil.cellNavigationStyle,
-          child: SfDataGrid(
-            source: _branchInventoryDataSource,
-            columns: DataGridUtil.getColumns(DataGridColumn.BRANCH_INVENTORIES),
-            controller: _dataGridController,
-            selectionManager: customSelectionManager,
-            shrinkWrapRows: true,
-            allowEditing: true,
-            navigationMode: GridNavigationMode.cell,
-            selectionMode: SelectionMode.single,
-            columnWidthMode: ColumnWidthMode.fill,
-            editingGestureType: EditingGestureType.tap,
+      child: Container(
+        decoration: UIStyleContainer.topBorder,
+        child: ClipRect(
+          clipper: HorizontalBorderClipper(),
+          child: SfDataGridTheme(
+            data: DataGridUtil.cellNavigationStyle,
+            child: SfDataGrid(
+              source: _branchInventoryDataSource,
+              columns: DataGridUtil.getColumns(DataGridColumn.BRANCH_INVENTORIES),
+              controller: _dataGridController,
+              selectionManager: customSelectionManager,
+              shrinkWrapRows: true,
+              allowEditing: true,
+              navigationMode: GridNavigationMode.cell,
+              selectionMode: SelectionMode.single,
+              columnWidthMode: ColumnWidthMode.fill,
+              headerGridLinesVisibility: GridLinesVisibility.none,
+              editingGestureType: EditingGestureType.tap,
+            ),
           ),
         ),
       ),
@@ -230,8 +234,9 @@ class BranchInventoryDataSource extends DataGridSource {
         controller: editingController..text = displayText,
         autofocus: true,
         cursorHeight: 15.0,
+        style: UIStyleText.bodyRegular,
         decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10.0)),
             borderSide: BorderSide(color: UIColors.textGray),

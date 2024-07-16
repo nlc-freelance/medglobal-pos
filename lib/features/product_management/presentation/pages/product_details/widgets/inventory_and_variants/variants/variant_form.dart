@@ -51,7 +51,7 @@ class _VariantFormState extends State<VariantForm> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PageSectionTitle.subsectionWithSubtitle(
+            PageSectionTitle.subsection(
               title: 'Variations',
               subtitle: Strings.subtitlePlaceholder,
               action: UIButton.text(

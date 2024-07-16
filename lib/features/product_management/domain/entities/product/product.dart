@@ -1,9 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/datetime_converter.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/category.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/variant.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'product.g.dart';
 
@@ -66,6 +68,15 @@ class Product extends Equatable {
                 })
             .toList(),
       };
+
+  DataGridRow toDataGridRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'name', value: name),
+          DataGridCell<String>(columnName: 'category', value: category?.name ?? Strings.empty),
+          DataGridCell<String>(columnName: 'createdAt', value: DateFormat.yMd().format(createdAt!)),
+        ],
+      );
 
   Product copyWith({
     int? id,

@@ -30,7 +30,7 @@ class StockKeepingUnitDetails extends StatelessWidget {
         builder: (context, variant) {
           return Column(
             children: [
-              PageSectionTitle.subsection('Suppliers and Stock Details'),
+              PageSectionTitle.subsection(title: 'Suppliers and Stock Details'),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,

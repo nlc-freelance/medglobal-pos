@@ -14,7 +14,7 @@ class GeneralInformation extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const PageSectionTitle('General Information'),
+        const PageSectionTitle(title: 'General Information'),
         ProductNameCategory(controller: productNameController),
         const UIVerticalSpace(24),
         const ProductImage(),

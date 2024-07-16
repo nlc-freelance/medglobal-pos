@@ -9,6 +9,7 @@ import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch_repository.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/variant.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
 
 class InventoryPerBranch extends StatelessWidget {
   const InventoryPerBranch({super.key});
@@ -19,7 +20,7 @@ class InventoryPerBranch extends StatelessWidget {
         builder: (context, variant) {
           return Column(
             children: [
-              PageSectionTitle.subsectionWithSubtitle(
+              PageSectionTitle.subsection(
                 title: 'Inventory per Branch',
                 subtitle: 'Enter price and quantity on hand (QOH) per selected branch',
               ),
@@ -46,7 +47,10 @@ class InventoryPerBranch extends StatelessWidget {
                   const Spacer(flex: 2),
                 ],
               ),
-              if (variant?.branchInventories?.isNotEmpty == true) const BranchInventoryDataGrid(),
+              if (variant?.branchInventories?.isNotEmpty == true) ...[
+                const UIVerticalSpace(16),
+                const BranchInventoryDataGrid(),
+              ],
             ],
           );
         },

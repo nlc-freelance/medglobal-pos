@@ -20,31 +20,32 @@ class _SideNavBarState extends State<SideNavBar> {
   final sidebarTree = IndexedTreeNode.root()
     ..addAll(
       [
-        // ...[SideMenuTree.products, SideMenuTree.stocks, SideMenuTree.transacions, SideMenuTree.returns]
-        //     .map((tree) => IndexedTreeNode(key: tree.title)
-        //       ..addAll(
-        //         tree.items.map((item) => IndexedTreeNode(key: item)).toList(),
-        //       )),
-        IndexedTreeNode(key: SideMenuTree.products.title)
+        IndexedTreeNode(key: SideMenuTree.PRODUCTS.title)
           ..addAll([
             IndexedTreeNode(key: 'Suppliers'),
             IndexedTreeNode(key: 'Products'),
             // IndexedTreeNode(key: 'Add Product'),
           ]),
-        IndexedTreeNode(key: SideMenuTree.stocks.title)
-          ..addAll(SideMenuTree.stocks.items.map((item) => IndexedTreeNode(key: item)).toList()),
-        IndexedTreeNode(key: SideMenuTree.transacions.title)
-          ..addAll(SideMenuTree.transacions.items.map((item) => IndexedTreeNode(key: item)).toList()),
-        IndexedTreeNode(key: SideMenuTree.returns.title),
-        IndexedTreeNode(key: SideMenuTree.reports.title)
+        IndexedTreeNode(key: SideMenuTree.STOCKS.title)
+          ..addAll([
+            IndexedTreeNode(key: 'Supply Needs'),
+            IndexedTreeNode(key: 'Purchase Orders'),
+            IndexedTreeNode(key: 'Stock Returns'),
+            IndexedTreeNode(key: 'Stock Takes'),
+            IndexedTreeNode(key: 'Stock Transfers'),
+          ]),
+        IndexedTreeNode(key: SideMenuTree.TRANSACTIONS.title)
+          ..addAll(SideMenuTree.TRANSACTIONS.items.map((item) => IndexedTreeNode(key: item)).toList()),
+        IndexedTreeNode(key: SideMenuTree.RETURNS.title),
+        IndexedTreeNode(key: SideMenuTree.REPORTS.title)
           ..addAll(
             [
-              IndexedTreeNode(key: SideMenuTree.reports.items[0]),
-              IndexedTreeNode(key: SideMenuTree.reports.items[1])
+              IndexedTreeNode(key: SideMenuTree.REPORTS.items[0]),
+              IndexedTreeNode(key: SideMenuTree.REPORTS.items[1])
                 ..addAll([
-                  IndexedTreeNode(key: SideMenuTree.reports.items[2]),
-                  IndexedTreeNode(key: SideMenuTree.reports.items[3]),
-                  IndexedTreeNode(key: SideMenuTree.reports.items[4]),
+                  IndexedTreeNode(key: SideMenuTree.REPORTS.items[2]),
+                  IndexedTreeNode(key: SideMenuTree.REPORTS.items[3]),
+                  IndexedTreeNode(key: SideMenuTree.REPORTS.items[4]),
                 ]),
             ],
           ),
