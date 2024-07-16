@@ -48,7 +48,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  UIText.heading5('Add new category'),
+                  UIText.heading6('Add new category'),
                   const Divider(color: UIColors.borderMuted),
                   const UIVerticalSpace(16),
                   if (state is CategoryError && !_isInitialRebuild) ...[

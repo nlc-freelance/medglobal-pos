@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/data_grid_util.dart';
-import 'package:medglobal_admin_portal/core/widgets/data_grid/loading_data_grid.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/pages/supplier_details/supplier_details_dialog.dart';
+import 'package:medglobal_admin_portal/features/supplier_management/presentation/pages/supplier_list/widgets/supplier_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SuppliersPage extends StatefulWidget {
-  static String route = SideMenuTreeItem.suppliers.route;
+  static String route = SideMenuTreeItem.SUPPLIERS.route;
 
   const SuppliersPage({super.key});
 
@@ -31,9 +30,6 @@ class _SuppliersPageState extends State<SuppliersPage> {
 
   @override
   Widget build(BuildContext context) {
-    final columns = DataGridUtil.getColumns(DataGridColumn.SUPPLIERS);
-    final style = DataGridUtil.baseStyle;
-
     return BlocListener<SupplierCubit, SupplierState>(
         listener: (_, state) {
           if (state is SupplierSuccess) {
@@ -64,19 +60,12 @@ class _SuppliersPageState extends State<SuppliersPage> {
                 }
                 if (state is SupplierListLoaded) {
                   return Expanded(
-                    child: DataGrid<Supplier>(
-                      data: state.suppliers,
-                      columns: columns,
-                      style: DataGridUtil.rowNavigationStyle,
-                      navigationMode: GridNavigationMode.row,
-                      onTap: (id) => SupplierDetailsDialog(state.suppliers.firstWhere((supplier) => supplier.id == id))
-                          .showSidePeek(context),
-                    ),
+                    child: SupplierDataGrid(state.suppliers),
                   );
                 }
-                return LoadingDataGrid<Supplier>(
-                  columns: columns,
-                  style: style,
+                return DataGridLoading(
+                  columns: DataGridUtil.getColumns(DataGridColumn.SUPPLIERS),
+                  source: SupplierDataSource([]),
                 );
               },
             ),

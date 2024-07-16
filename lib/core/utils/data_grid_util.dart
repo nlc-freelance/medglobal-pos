@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -13,9 +15,9 @@ class ColumnData {
 class DataGridUtil {
   DataGridUtil._();
 
-  static List<GridColumn> getColumns(List<ColumnData> columns) => columns
+  static List<GridColumn> getColumns(List<ColumnData> columns, {bool? showId}) => columns
       .map<GridColumn>((column) => GridColumn(
-            visible: column.name != 'id',
+            visible: showId ?? column.name != 'id',
             columnName: column.name,
             label: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -32,7 +34,7 @@ class DataGridUtil {
           ))
       .toList();
 
-  static SfDataGridThemeData get baseStyle => const SfDataGridThemeData(
+  static SfDataGridThemeData get baseStyle => SfDataGridThemeData(
         columnDragIndicatorStrokeWidth: 1.0,
         columnDragIndicatorColor: UIColors.primary,
         headerHoverColor: UIColors.transparent,
@@ -40,6 +42,11 @@ class DataGridUtil {
         selectionColor: UIColors.secondary,
         gridLineColor: UIColors.borderMuted,
         gridLineStrokeWidth: 0.8,
+
+        /// Column group icon indent
+        indentColumnWidth: 20,
+        indentColumnColor: UIColors.background,
+        groupExpanderIcon: Assets.icons.arrowDown.svg(width: 10, colorFilter: UIColors.textDark.toColorFilter),
       );
 
   static SfDataGridThemeData get rowNavigationStyle => baseStyle.copyWith(
@@ -67,4 +74,23 @@ class HorizontalBorderClipper extends CustomClipper<Rect> {
 
   @override
   bool shouldReclip(CustomClipper<Rect> oldClipper) => false;
+}
+
+class CustomSelectionManager extends RowSelectionManager {
+  CustomSelectionManager(this.dataGridController);
+  DataGridController dataGridController;
+
+  @override
+  Future<void> handleKeyEvent(KeyEvent keyEvent) async {
+    if (keyEvent.logicalKey == LogicalKeyboardKey.tab ||
+        keyEvent.logicalKey == LogicalKeyboardKey.arrowDown ||
+        keyEvent.logicalKey == LogicalKeyboardKey.arrowUp ||
+        keyEvent.logicalKey == LogicalKeyboardKey.arrowLeft ||
+        keyEvent.logicalKey == LogicalKeyboardKey.arrowRight) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        dataGridController.beginEdit(dataGridController.currentCell);
+      });
+    }
+    super.handleKeyEvent(keyEvent);
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'supplier.g.dart';
 
@@ -43,6 +44,15 @@ class Supplier extends Equatable {
 
   Map<String, dynamic> toJson() => _$SupplierToJson(this);
 
+  DataGridRow toDataGridRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'name', value: name),
+          DataGridCell<String>(columnName: 'email', value: email),
+          DataGridCell<String>(columnName: 'phone', value: phone),
+        ],
+      );
+
   Supplier copyWith({
     int? id,
     String? name,
@@ -73,6 +83,4 @@ class Supplier extends Equatable {
         zipCode: zipCode ?? this.zipCode,
         country: country ?? this.country,
       );
-
-  dynamic get(String prop) => prop;
 }

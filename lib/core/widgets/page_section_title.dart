@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PageSectionTitle extends StatelessWidget {
-  const PageSectionTitle(
-    this.title, {
+  const PageSectionTitle({
     super.key,
+    required this.title,
     this.isSubSection = false,
     this.isSubSectionWithSubtitleAndAction = false,
     this.action,
@@ -17,18 +17,15 @@ class PageSectionTitle extends StatelessWidget {
   final String? subtitle;
   final Widget? action;
 
-  factory PageSectionTitle.subsection(String title) => PageSectionTitle(title, isSubSection: true);
-
-  factory PageSectionTitle.subsectionWithSubtitle({
+  factory PageSectionTitle.subsection({
     required String title,
-    required String subtitle,
+    String? subtitle,
     Widget? action,
   }) =>
       PageSectionTitle(
-        title,
-        subtitle: subtitle,
+        title: title,
         isSubSection: true,
-        isSubSectionWithSubtitleAndAction: true,
+        subtitle: subtitle,
         action: action,
       );
 
@@ -36,22 +33,25 @@ class PageSectionTitle extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          isSubSection ? UIText.labelSemiBold(title) : UIText.heading5(title),
-          if (isSubSectionWithSubtitleAndAction) ...[
-            SizedBox(
-              height: 16.0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  UIText.subtitle(subtitle!),
-                  action ?? const SizedBox(),
-                ],
-              ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              isSubSection ? UIText.labelSemiBold(title) : UIText.heading5(title),
+              if (subtitle == null && action != null) action!,
+            ],
+          ),
+          if (subtitle != null) ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                UIText.subtitle(subtitle!),
+                if (action != null) action!,
+              ],
             ),
-            const UIVerticalSpace(8.0),
+            const UIVerticalSpace(4),
           ],
           const Divider(color: UIColors.borderMuted),
-          UIVerticalSpace(isSubSection ? 8 : 10),
+          const UIVerticalSpace(8),
         ],
       );
 }

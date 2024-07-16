@@ -1,0 +1,312 @@
+import 'package:flutter/material.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+
+class ItemsReceivedDataGrid extends StatefulWidget {
+  const ItemsReceivedDataGrid({super.key, required this.isReceiving});
+
+  final bool isReceiving;
+
+  @override
+  State<ItemsReceivedDataGrid> createState() => _ItemsReceivedDataGridState();
+}
+
+class _ItemsReceivedDataGridState extends State<ItemsReceivedDataGrid> {
+  List<PurchaseOrderItem> _itemsReceived = <PurchaseOrderItem>[];
+  late DataGridController _dataGridController;
+  late ItemsReceivedDataSource _itemsReceivedDataSoure;
+  late CustomSelectionManager customSelectionManager;
+
+  final mock = [
+    const PurchaseOrderItem(
+      id: 1,
+      name: 'Biogesic 500mg',
+      sku: 'BG0001',
+      qtyOnHand: 5,
+      qtyToOrder: 20,
+      supplierPrice: 20,
+      total: 400,
+    ),
+    const PurchaseOrderItem(
+      id: 2,
+      name: 'Biogesic 1000mg',
+      sku: 'BG0002',
+      qtyOnHand: 5,
+      qtyToOrder: 20,
+      supplierPrice: 20,
+      total: 400,
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _dataGridController = DataGridController();
+    _itemsReceivedDataSoure = ItemsReceivedDataSource(mock, context, widget.isReceiving);
+    customSelectionManager = CustomSelectionManager(_dataGridController);
+  }
+
+  @override
+  void dispose() {
+    _dataGridController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const PageSectionTitle(title: 'Items Received'),
+        ClipRect(
+          clipper: HorizontalBorderClipper(),
+          child: SfDataGridTheme(
+            data: DataGridUtil.cellNavigationStyle,
+            child: SfDataGrid(
+              source: _itemsReceivedDataSoure,
+              columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS_RECEIVED),
+              controller: _dataGridController,
+              selectionManager: customSelectionManager,
+              shrinkWrapRows: true,
+              allowEditing: true,
+              navigationMode: GridNavigationMode.cell,
+              selectionMode: SelectionMode.single,
+              columnWidthMode: ColumnWidthMode.fill,
+              headerGridLinesVisibility: GridLinesVisibility.none,
+              editingGestureType: EditingGestureType.tap,
+              tableSummaryRows: [
+                GridTableSummaryRow(
+                  color: UIColors.background,
+                  position: GridTableSummaryRowPosition.bottom,
+                  showSummaryInRow: false,
+                  title: 'Subtotal',
+                  columns: [
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'supplier_price',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'total',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                  ],
+                ),
+                GridTableSummaryRow(
+                  color: UIColors.background,
+                  position: GridTableSummaryRowPosition.bottom,
+                  showSummaryInRow: false,
+                  title: 'Tax',
+                  columns: [
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'supplier_price',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'total',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                  ],
+                ),
+                GridTableSummaryRow(
+                  color: UIColors.background,
+                  position: GridTableSummaryRowPosition.bottom,
+                  showSummaryInRow: false,
+                  title: 'Discount',
+                  columns: [
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'supplier_price',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'total',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                  ],
+                ),
+                GridTableSummaryRow(
+                  color: UIColors.background,
+                  position: GridTableSummaryRowPosition.bottom,
+                  showSummaryInRow: false,
+                  title: 'Total',
+                  columns: [
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'supplier_price',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'total',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ItemsReceivedDataSource extends DataGridSource {
+  ItemsReceivedDataSource(List<PurchaseOrderItem> itemsReceived, BuildContext context, bool isReceiving) {
+    _itemsReceived = itemsReceived;
+    _context = context;
+    _isReceiving = isReceiving;
+    buildDataGridRows();
+  }
+
+  List<PurchaseOrderItem> _itemsReceived = [];
+
+  List<DataGridRow> dataGridRows = [];
+
+  late bool _isReceiving;
+
+  late BuildContext _context;
+
+  void buildDataGridRows() => dataGridRows = _itemsReceived.map((item) => item.toDataGridRowItemsReceived()).toList();
+
+  void updateDataGridSource() => notifyListeners();
+
+  @override
+  List<DataGridRow> get rows => dataGridRows;
+
+  @override
+  DataGridRowAdapter? buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+      cells: row.getCells().map<Widget>((cell) {
+        return Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: cellBuilder(cell.columnName, cell, row.getCells().first.value),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget cellBuilder(String key, DataGridCell cell, int id) => switch (key) {
+        'qty_received' => _isReceiving
+            ? Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: UIColors.background,
+                  border: Border.all(color: UIColors.borderRegular),
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                ),
+                child: UIText.bodyRegular(cell.value.toString()),
+              )
+            : UIText.bodyRegular(cell.value.toString()),
+        _ => UIText.bodyRegular(cell.value.toString()),
+      };
+
+  /// Helps to hold the new value of all editable widget.
+  /// Based on the new value we will commit the new value into the corresponding
+  /// [DataGridCell] on [onSubmitCell] method.
+  dynamic newCellValue;
+
+  /// Help to control the editable text in [TextField] widget.
+  TextEditingController editingController = TextEditingController();
+
+  @override
+  bool onCellBeginEdit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) {
+    if (column.columnName == 'qty_received' && _isReceiving) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  Future<void> onCellSubmit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
+    final dynamic oldValue = dataGridRow
+            .getCells()
+            .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
+            .value ??
+        '';
+
+    final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
+
+    if (newCellValue == null || oldValue == newCellValue) {
+      return;
+    }
+
+    if (column.columnName == 'qty_received') {
+      final newReceivedQty = int.tryParse(newCellValue);
+
+      dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
+          DataGridCell<int>(columnName: 'qty_received', value: newReceivedQty);
+      _itemsReceived[dataRowIndex].copyWith(qtyReceived: newReceivedQty);
+
+      // _context.read<VariantFormCubit>().setPricePerBranch(_itemsReceived[dataRowIndex].id!, newPrice!);
+    }
+  }
+
+  @override
+  Widget? buildEditWidget(
+      DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
+    // Text going to display on editable widget
+    final String displayText = dataGridRow
+            .getCells()
+            .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
+            .value
+            ?.toString() ??
+        '';
+
+    // The new cell value must be reset.
+    // To avoid committing the [DataGridCell] value that was previously edited
+    // into the current non-modified [DataGridCell].
+    newCellValue = null;
+
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: TextField(
+        controller: editingController..text = displayText,
+        autofocus: true,
+        cursorHeight: 15.0,
+        style: UIStyleText.bodyRegular,
+        decoration: const InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            borderSide: BorderSide(color: UIColors.textGray),
+          ),
+        ),
+        onTapOutside: (event) => submitCell(),
+        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : null,
+        onSubmitted: (String value) {
+          /// Call [CellSubmit] callback to fire the canSubmitCell and
+          /// onCellSubmit to commit the new value in single place.
+          submitCell();
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget? buildTableSummaryCellWidget(GridTableSummaryRow summaryRow, GridSummaryColumn? summaryColumn,
+      RowColumnIndex rowColumnIndex, String summaryValue) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: summaryColumn?.columnName == 'supplier_price'
+          ? UIText.labelSemiBold(
+              summaryRow.title!,
+              align: TextAlign.end,
+            )
+          // Tax, Discount, Total get from state
+          : UIText.labelSemiBold(summaryValue),
+    );
+  }
+}

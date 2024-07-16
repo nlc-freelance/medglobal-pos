@@ -19,6 +19,7 @@ class HoverBuilderState extends State<HoverBuilder> {
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
+      cursor: SystemMouseCursors.click,
       onEnter: (PointerEnterEvent event) => _onHoverChanged(enabled: true),
       onExit: (PointerExitEvent event) => _onHoverChanged(enabled: false),
       child: widget.builder(_isHovered),

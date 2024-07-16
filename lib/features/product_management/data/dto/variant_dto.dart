@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/constants/strings.dart';
 import 'package:medglobal_admin_portal/features/product_management/data/dto/branch_inventory_dto.dart';
+import 'package:medglobal_admin_portal/features/product_management/data/dto/product_dto.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/variant.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
 
@@ -19,6 +20,11 @@ class VariantDto extends Equatable {
   @JsonKey(name: 'variantStoreDetails')
   final List<BranchInventoryDto>? branchInventories;
 
+  /// Variant objects in Stock management
+  final ProductDto? product;
+  @JsonKey(name: 'currentStock')
+  final int? qtyOnHand;
+
   const VariantDto({
     this.id,
     this.name,
@@ -28,10 +34,13 @@ class VariantDto extends Equatable {
     this.idealStock,
     this.cost,
     this.branchInventories,
+    this.product,
+    this.qtyOnHand,
   });
 
   @override
-  List<Object?> get props => [id, name, sku, warningStock, idealStock, cost, suppliers, branchInventories];
+  List<Object?> get props =>
+      [id, name, sku, warningStock, idealStock, cost, suppliers, branchInventories, product, qtyOnHand];
 
   factory VariantDto.fromJson(Map<String, dynamic> json) => _$VariantDtoFromJson(json);
 

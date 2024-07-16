@@ -27,7 +27,7 @@ class AddressInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        PageSectionTitle.subsection('Address'),
+        PageSectionTitle.subsection(title: 'Address'),
         GridView(
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

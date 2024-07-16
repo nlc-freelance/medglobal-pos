@@ -47,25 +47,29 @@ class VariantDataGridState extends State<VariantDataGrid> {
         _variantDataSource.buildDataGridRows();
         _variantDataSource.updateDataGridSource();
       },
-      child: ClipRect(
-        clipper: HorizontalBorderClipper(),
-        child: SfDataGridTheme(
-          data: DataGridUtil.rowNavigationStyle,
-          child: SfDataGrid(
-              source: _variantDataSource,
-              columns: DataGridUtil.getColumns(DataGridColumn.VARIANTS),
-              controller: _dataGridController,
-              shrinkWrapRows: true,
-              navigationMode: GridNavigationMode.row,
-              selectionMode: SelectionMode.single,
-              columnWidthMode: ColumnWidthMode.fill,
-              onCellTap: (details) {
-                final id = _variantDataSource.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value;
+      child: Container(
+        decoration: UIStyleContainer.topBorder,
+        child: ClipRect(
+          clipper: HorizontalBorderClipper(),
+          child: SfDataGridTheme(
+            data: DataGridUtil.rowNavigationStyle,
+            child: SfDataGrid(
+                source: _variantDataSource,
+                columns: DataGridUtil.getColumns(DataGridColumn.VARIANTS),
+                controller: _dataGridController,
+                shrinkWrapRows: true,
+                navigationMode: GridNavigationMode.row,
+                selectionMode: SelectionMode.single,
+                columnWidthMode: ColumnWidthMode.fill,
+                headerGridLinesVisibility: GridLinesVisibility.none,
+                onCellTap: (details) {
+                  final id = _variantDataSource.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value;
 
-                context.read<VariantFormCubit>().resetForm();
-                context.read<VariantFormCubit>().setVariant(_variants.firstWhere((variant) => variant.id == id));
-                context.read<VariantFormUiCubit>().showVariantFormUi();
-              }),
+                  context.read<VariantFormCubit>().resetForm();
+                  context.read<VariantFormCubit>().setVariant(_variants.firstWhere((variant) => variant.id == id));
+                  context.read<VariantFormUiCubit>().showVariantFormUi();
+                }),
+          ),
         ),
       ),
     );
@@ -102,7 +106,7 @@ class VariantDataSource extends DataGridSource {
     );
   }
 
-  Widget _buildCell(String key, DataGridCell cell, int id) => switch (key) {
+  Widget _buildCell(String column, DataGridCell cell, int id) => switch (column) {
         'name' => HoverBuilder(
             builder: (isHover) => UIText.bodyRegular(
               cell.value.toString(),

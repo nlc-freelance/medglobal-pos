@@ -49,7 +49,7 @@ class Variant extends Equatable {
 
   bool get hasBranchInventories {
     if (branchInventories?.isNotEmpty == true) {
-      return branchInventories?.every((inventory) => inventory.price! > 0 && inventory.qtyOnHand! > 0) == true;
+      return branchInventories?.every((inventory) => inventory.price! > 0) == true;
     } else {
       return false;
     }
