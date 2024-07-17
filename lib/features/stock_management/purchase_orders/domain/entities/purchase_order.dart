@@ -1,10 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'purchase_order.g.dart';
 
@@ -18,6 +20,8 @@ class PurchaseOrder extends Equatable {
   final double? tax;
   final double? discount;
   final String? notes;
+  final List<PurchaseOrderItem>? items;
+
   @DateTimeConverter()
   final DateTime? estimatedDateOfArrival;
   @DateTimeConverter()
@@ -35,13 +39,26 @@ class PurchaseOrder extends Equatable {
     this.discount,
     this.estimatedDateOfArrival,
     this.notes,
+    this.items,
     this.createdAt,
     this.updatedAt,
   });
 
   @override
-  List<Object?> get props =>
-      [id, estimatedDateOfArrival, branch, supplier, status, totalAmount, tax, discount, notes, createdAt, updatedAt];
+  List<Object?> get props => [
+        id,
+        estimatedDateOfArrival,
+        branch,
+        supplier,
+        status,
+        totalAmount,
+        tax,
+        discount,
+        notes,
+        items,
+        createdAt,
+        updatedAt
+      ];
 
   factory PurchaseOrder.fromJson(Map<String, dynamic> json) => _$PurchaseOrderFromJson(json);
 
@@ -64,4 +81,88 @@ class PurchaseOrder extends Equatable {
           DataGridCell<StockActionStatus>(columnName: 'status', value: status),
         ],
       );
+
+  JSON toSavePayload() => {
+        'status': 'new',
+        'purchaseOrderDetails': items
+            ?.map((item) => {
+                  'variantId': item.variantId,
+                  'orderedQuantity': item.qtyToOrder,
+                  'supplierPrice': item.supplierPrice,
+                  'estimatedDateOfArrival': estimatedDateOfArrival?.toIso8601String(),
+                  'tax': tax,
+                  'discount': discount,
+                })
+            .toList(),
+      };
+
+  JSON toSaveAndMarkAsShippedWithNewItemsPayload() => {
+        'status': 'for receiving',
+        'purchaseOrderDetails': items
+            ?.map((item) => {
+                  'variantId': item.variantId,
+                  'orderedQuantity': item.qtyToOrder,
+                  'supplierPrice': item.supplierPrice,
+                  'estimatedDateOfArrival': estimatedDateOfArrival?.toIso8601String(),
+                  'tax': tax,
+                  'discount': discount,
+                })
+            .toList(),
+      };
+
+  JSON toSaveAndMarkAsShippedPayload() => {
+        'status': 'for receiving',
+        'purchaseOrderDetails': items
+            ?.map((item) => {
+                  'id': item.id,
+                  'orderedQuantity': item.qtyToOrder,
+                  'supplierPrice': item.supplierPrice,
+                  'estimatedDateOfArrival': estimatedDateOfArrival?.toIso8601String(),
+                  'tax': tax,
+                  'discount': discount,
+                })
+            .toList(),
+      };
+
+  JSON toSaveAndReceivedPayload() => {
+        'status': 'completed',
+        'purchaseOrderDetails': items
+            ?.map((item) => {
+                  'id': item.id,
+                  'receivedQuantity': item.qtyReceived,
+                })
+            .toList(),
+      };
+
+  JSON toCancelPayload() => {'status': 'cancelled'};
+
+  PurchaseOrder copyWith({
+    int? id,
+    Branch? branch,
+    Supplier? supplier,
+    StockActionStatus? status,
+    double? totalAmount,
+    double? tax,
+    double? discount,
+    String? notes,
+    List<PurchaseOrderItem>? items,
+    DateTime? estimatedDateOfArrival,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return PurchaseOrder(
+      id: id ?? this.id,
+      branch: branch ?? this.branch,
+      supplier: supplier ?? this.supplier,
+      status: status ?? this.status,
+      totalAmount: totalAmount ?? this.totalAmount,
+      tax: tax ?? this.tax,
+      discount: discount ?? this.discount,
+      notes: notes ?? this.notes,
+      items: items ?? this.items,
+      estimatedDateOfArrival: estimatedDateOfArrival ?? this.estimatedDateOfArrival,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

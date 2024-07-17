@@ -13,11 +13,7 @@ class ProductFormCubit extends Cubit<ProductFormState> {
 
   void setProduct(Product product) => emit(ProductFormState(product));
 
-  void setName(String value) {
-    print(value);
-    print(state.product);
-    emit(ProductFormState(state.product?.copyWith(name: value)));
-  }
+  void setName(String value) => emit(ProductFormState(state.product?.copyWith(name: value)));
 
   void setCategory(Category value) => emit(ProductFormState(state.product?.copyWith(category: value)));
   void setImageUrl(String value) => emit(ProductFormState(state.product?.copyWith(imageUrl: value)));

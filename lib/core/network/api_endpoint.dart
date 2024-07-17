@@ -6,7 +6,9 @@ class ApiEndpoint {
   static String baseUrl(path) {
     String url = '';
     if (path.contains('/suppliers')) url = 'https://7ayvpkcn48.execute-api.ap-southeast-1.amazonaws.com/dev';
-    if (path.contains('/product')) url = 'https://i4pqwf8ek2.execute-api.ap-southeast-1.amazonaws.com/dev';
+    if (path.contains('/product') || path.contains('/purchase-orders')) {
+      url = 'https://i4pqwf8ek2.execute-api.ap-southeast-1.amazonaws.com/dev';
+    }
     if (path.contains('/store')) url = 'https://im3929rlc9.execute-api.ap-southeast-1.amazonaws.com/dev';
     return url;
   }

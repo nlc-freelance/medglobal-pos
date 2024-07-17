@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list/purchase_order_list_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_data_grid.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -20,7 +23,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    // Get ALL purchase orders
+    context.read<PurchaseOrderListCubit>().getProducts();
   }
 
   @override
@@ -31,19 +34,19 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
 
   void onChangeTab(int index) {
     if (index == 0) {
-      // Get ALL purchase orders
+      context.read<PurchaseOrderListCubit>().getProducts();
     }
     if (index == 1) {
-      // Get all NEW purchase orders
+      context.read<PurchaseOrderListCubit>().getProducts(status: StockActionStatus.NEW);
     }
     if (index == 2) {
-      // Get all FOR RECEIVING purchase orders
+      context.read<PurchaseOrderListCubit>().getProducts(status: StockActionStatus.FOR_RECEIVING);
     }
     if (index == 3) {
-      // Get all COMPLETED purchase orders
+      context.read<PurchaseOrderListCubit>().getProducts(status: StockActionStatus.COMPLETED);
     }
     if (index == 4) {
-      // Get all CANCELLED purchase orders
+      context.read<PurchaseOrderListCubit>().getProducts(status: StockActionStatus.CANCELLED);
     }
   }
 
@@ -113,25 +116,22 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
             ),
           ],
         ),
-        Expanded(child: PurchaseOrderDataGrid(purchaseOrderMock)),
-
-        // PurchaseOrderDataGrid(),
-        // BlocBuilder<PurchaseOrderListCubit, PurchaseOrderListState>(
-        //   builder: (context, state) {
-        //     if (state is PurchaseOrderListError) {
-        //       return Text(state.message);
-        //     }
-        //     if (state is PurchaseOrderListLoaded) {
-        // return const Expanded(
-        //   child: PurchaseOrderDataGrid(),
-        //   );
-        // }
-        // return DataGridLoading(
-        //   columns: columns,
-        //   source: VariantDataSource([]),
-        // );
-        // },
-        // ),
+        BlocBuilder<PurchaseOrderListCubit, PurchaseOrderListState>(
+          builder: (context, state) {
+            if (state is PurchaseOrderListError) {
+              return Text(state.message);
+            }
+            if (state is PurchaseOrderListLoaded) {
+              return Expanded(
+                child: PurchaseOrderDataGrid(state.purchaseOrders),
+              );
+            }
+            return DataGridLoading(
+              columns: columns,
+              source: PurchaseOrderDataSource([]),
+            );
+          },
+        ),
       ],
     );
   }

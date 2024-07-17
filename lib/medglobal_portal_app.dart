@@ -11,6 +11,11 @@ import 'package:medglobal_admin_portal/features/product_management/presentation/
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_list/product_list_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list/purchase_order_list_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -34,6 +39,10 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<ProductFormCubit>()),
         BlocProvider(create: (_) => GetIt.I<VariantFormCubit>()),
         BlocProvider(create: (_) => GetIt.I<VariantFormUiCubit>()),
+        BlocProvider(create: (_) => GetIt.I<PurchaseOrderListCubit>()),
+        BlocProvider(create: (_) => GetIt.I<PurchaseOrderCubit>()),
+        BlocProvider(create: (_) => GetIt.I<PurchaseOrderRemoteCubit>()),
+        BlocProvider(create: (_) => GetIt.I<NewPurchaseOrderCubit>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) => AppRouter.router.refresh(),

@@ -1,0 +1,27 @@
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/usecases/get_purchase_orders_usecase.dart';
+
+part 'purchase_order_list_state.dart';
+
+class PurchaseOrderListCubit extends Cubit<PurchaseOrderListState> {
+  final GetPurchaseOrdersUsecase _getPurchaseOrdersUsecase;
+
+  PurchaseOrderListCubit(this._getPurchaseOrdersUsecase) : super(PurchaseOrderListInitial());
+
+  Future<void> getProducts({int? page, StockActionStatus? status}) async {
+    emit(PurchaseOrderListLoading());
+
+    try {
+      final result = await _getPurchaseOrdersUsecase.call(GetPurchaseOrdersParams(status: status));
+      result.fold(
+        (error) => emit(PurchaseOrderListError(message: error.message)),
+        (data) => emit(PurchaseOrderListLoaded(purchaseOrders: data.purchaseOrders!)),
+      );
+    } catch (e) {
+      emit(PurchaseOrderListError(message: e.toString()));
+    }
+  }
+}

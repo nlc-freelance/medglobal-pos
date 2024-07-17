@@ -23,11 +23,11 @@ import 'package:medglobal_admin_portal/features/product_management/domain/reposi
 import 'package:medglobal_admin_portal/features/product_management/domain/usecases/category/add_category_usecase.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/bulk_delete_products_usecase.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/bulk_update_products_usecase.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/create_product.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/delete_product.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/get_product_by_id.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/create_product_usecase.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/delete_product_usecase.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/get_product_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/get_products_usecase.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/update_product.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/update_product_usecase.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/category/category_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product/product_cubit.dart';
@@ -36,6 +36,17 @@ import 'package:medglobal_admin_portal/features/product_management/presentation/
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_list/product_list_cubit.dart';
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/data/api/purchase_order_api.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/data/repositories/purchase_order_repository_impl.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/usecases/create_purchase_order_usecase.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/usecases/get_purchase_order_by_id_usecase.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/usecases/get_purchase_orders_usecase.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/usecases/update_purchase_order_usecase.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list/purchase_order_list_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/api/supplier_api.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/repositories/supplier_repository_impl.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/repositories/supplier_repository.dart';
@@ -67,6 +78,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<CategoryApi>(() => CategoryApiImpl(injector()))
     ..registerLazySingleton<ProductApi>(() => ProductApiImpl(injector()))
     ..registerLazySingleton<BranchApi>(() => BranchApiImpl(injector()))
+    ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(injector()))
 
     /// Repository
     ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(injector()))
@@ -74,6 +86,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(injector()))
     ..registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(injector()))
     ..registerLazySingleton<BranchRepository>(() => BranchRepositoryImpl(injector()))
+    ..registerLazySingleton<PurchaseOrderRepository>(() => PurchaseOrderRepositoryImpl(injector()))
 
     /// Usecases
     /// Authentication UseCase
@@ -101,6 +114,13 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => UpdateProductUseCase(injector()))
     ..registerLazySingleton(() => DeleteProductUseCase(injector()))
 
+    /// Stock Management
+    /// Purchase Order
+    ..registerLazySingleton(() => GetPurchaseOrdersUsecase(injector()))
+    ..registerLazySingleton(() => GetPurchaseOrderByIdUsecase(injector()))
+    ..registerLazySingleton(() => CreatePurchaseOrderUsecase(injector()))
+    ..registerLazySingleton(() => UpdatePurchaseOrderUsecase(injector()))
+
     /// Bloc
     ..registerFactory(() => AuthBloc(injector(), injector(), injector(), injector()))
     ..registerFactory(() => SidebarCubit())
@@ -113,5 +133,9 @@ void initDependencyInjection() {
     ..registerFactory(() => ProductCubit(injector(), injector(), injector(), injector()))
     ..registerFactory(() => ProductFormCubit())
     ..registerFactory(() => VariantFormCubit())
-    ..registerFactory(() => VariantFormUiCubit());
+    ..registerFactory(() => VariantFormUiCubit())
+    ..registerFactory(() => PurchaseOrderListCubit(injector()))
+    ..registerFactory(() => PurchaseOrderCubit())
+    ..registerFactory(() => PurchaseOrderRemoteCubit(injector(), injector(), injector()))
+    ..registerFactory(() => NewPurchaseOrderCubit());
 }

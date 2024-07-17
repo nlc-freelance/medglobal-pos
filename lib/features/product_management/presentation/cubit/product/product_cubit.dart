@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/product.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/create_product.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/delete_product.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/get_product_by_id.dart';
-import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/update_product.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/create_product_usecase.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/delete_product_usecase.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/get_product_by_id_usecase.dart';
+import 'package:medglobal_admin_portal/features/product_management/domain/usecases/products/update_product_usecase.dart';
 
 part 'product_state.dart';
 

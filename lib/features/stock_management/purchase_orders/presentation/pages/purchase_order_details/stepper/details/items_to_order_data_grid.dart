@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/add_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -15,34 +17,23 @@ class ItemsToOrderDataGrid extends StatefulWidget {
 
 class _ItemsToOrderDataGridState extends State<ItemsToOrderDataGrid> {
   List<PurchaseOrderItem> _itemsToOrder = <PurchaseOrderItem>[];
+
   late DataGridController _dataGridController;
   late ItemsToOrderDataSource _itemsToOrderDataSource;
   late CustomSelectionManager customSelectionManager;
-
-  final mock = [
-    const PurchaseOrderItem(
-      id: 1,
-      name: 'Biogesic 500mg',
-      sku: 'BG0001',
-      qtyOnHand: 5,
-      supplierPrice: 20,
-      total: 400,
-    ),
-    const PurchaseOrderItem(
-      id: 2,
-      name: 'Biogesic 1000mg',
-      sku: 'BG0002',
-      qtyOnHand: 5,
-      total: 400,
-    ),
-  ];
 
   @override
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    _itemsToOrderDataSource = ItemsToOrderDataSource(mock, context);
     customSelectionManager = CustomSelectionManager(_dataGridController);
+
+    final purchaseOrder = context.read<PurchaseOrderCubit>().state.purchaseOrder;
+    final tax = purchaseOrder.tax ?? 0;
+    final discount = purchaseOrder.discount ?? 0;
+
+    _itemsToOrder = purchaseOrder.items ?? [];
+    _itemsToOrderDataSource = ItemsToOrderDataSource(_itemsToOrder, context, tax, discount);
   }
 
   @override
@@ -53,138 +44,154 @@ class _ItemsToOrderDataGridState extends State<ItemsToOrderDataGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        PageSectionTitle(
-          title: 'Items to Order',
-          action: AddItem(
-            onSelectItems: (products) {
-              // Add the product/variant to the data source here
-              // final itemsToAdd = products.map((product) => PurchaseOrderItem());
-              // _itemsToOrderDataSource._itemsToOrder.addAll(const PurchaseOrderItem(
+    return BlocListener<PurchaseOrderCubit, PurchaseOrderState>(
+      listenWhen: (previous, current) => previous.purchaseOrder != current.purchaseOrder,
+      listener: (context, state) {
+        _itemsToOrderDataSource._itemsToOrder = state.purchaseOrder.items ?? [];
+        _itemsToOrderDataSource._tax = state.purchaseOrder.tax ?? 0;
+        _itemsToOrderDataSource._discount = state.purchaseOrder.discount ?? 0;
 
-              _itemsToOrderDataSource._itemsToOrder.add(const PurchaseOrderItem(
-                id: 3,
-                name: 'Biogesic 200mg',
-                sku: 'BG0003',
-                qtyOnHand: 5,
-                supplierPrice: 20,
-                total: 400,
-              ));
-              _itemsToOrderDataSource.buildDataGridRows();
-              _itemsToOrderDataSource.updateDataGridSource();
-            },
-          ),
-        ),
-        ClipRect(
-          clipper: HorizontalBorderClipper(),
-          child: SfDataGridTheme(
-            data: DataGridUtil.cellNavigationStyle,
-            child: SfDataGrid(
-              source: _itemsToOrderDataSource,
-              columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS),
-              controller: _dataGridController,
-              selectionManager: customSelectionManager,
-              shrinkWrapRows: true,
-              allowEditing: true,
-              navigationMode: GridNavigationMode.cell,
-              selectionMode: SelectionMode.single,
-              columnWidthMode: ColumnWidthMode.fill,
-              headerGridLinesVisibility: GridLinesVisibility.none,
-              editingGestureType: EditingGestureType.tap,
-              tableSummaryRows: [
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Subtotal',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Tax',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Discount',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Total',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-              ],
+        _itemsToOrderDataSource.buildDataGridRows();
+        _itemsToOrderDataSource.updateDataGridSource();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          PageSectionTitle(
+            title: 'Items to Order',
+            action: AddItem(
+              onSelectItems: (products) {
+                // Add the product/variant to the data source here
+                // final itemsToAdd = products.map((product) => PurchaseOrderItem());
+                // _itemsToOrderDataSource._itemsToOrder.addAll(const PurchaseOrderItem(
+
+                _itemsToOrderDataSource._itemsToOrder.add(const PurchaseOrderItem(
+                  id: 3,
+                  name: 'Biogesic 200mg',
+                  sku: 'BG0003',
+                  qtyOnHand: 5,
+                  supplierPrice: 20,
+                  total: 400,
+                ));
+                _itemsToOrderDataSource.buildDataGridRows();
+                _itemsToOrderDataSource.updateDataGridSource();
+              },
             ),
           ),
-        ),
-      ],
+          ClipRect(
+            clipper: HorizontalBorderClipper(),
+            child: SfDataGridTheme(
+              data: DataGridUtil.cellNavigationStyle,
+              child: SfDataGrid(
+                source: _itemsToOrderDataSource,
+                columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS),
+                controller: _dataGridController,
+                selectionManager: customSelectionManager,
+                shrinkWrapRows: true,
+                allowEditing: true,
+                navigationMode: GridNavigationMode.cell,
+                selectionMode: SelectionMode.single,
+                columnWidthMode: ColumnWidthMode.fill,
+                headerGridLinesVisibility: GridLinesVisibility.none,
+                editingGestureType: EditingGestureType.tap,
+                tableSummaryRows: [
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Subtotal',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Tax',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Discount',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Total',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 class ItemsToOrderDataSource extends DataGridSource {
-  ItemsToOrderDataSource(List<PurchaseOrderItem> itemsToOrder, BuildContext context) {
+  ItemsToOrderDataSource(List<PurchaseOrderItem> itemsToOrder, BuildContext context, double tax, double discount) {
     _itemsToOrder = itemsToOrder;
     _context = context;
+    _tax = tax;
+    _discount = discount;
     buildDataGridRows();
   }
 
   List<PurchaseOrderItem> _itemsToOrder = [];
 
   List<DataGridRow> dataGridRows = [];
+
+  late double _tax;
+  late double _discount;
 
   late BuildContext _context;
 
@@ -223,7 +230,11 @@ class ItemsToOrderDataSource extends DataGridSource {
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
               'Delete',
               iconBuilder: (isHover) => Assets.icons.trash.setColorOnHover(isHover),
-              onClick: () {},
+              onClick: () {
+                context.read<PurchaseOrderCubit>().removeItem(id);
+                buildDataGridRows();
+                updateDataGridSource();
+              },
             ),
           ),
         _ => UIText.bodyRegular(cell.value.toString()),
@@ -262,21 +273,37 @@ class ItemsToOrderDataSource extends DataGridSource {
 
     if (column.columnName == 'qty_to_order') {
       final newQtyToOrder = int.tryParse(newCellValue);
+      double supplierPrice = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_to_order', value: newQtyToOrder);
-      _itemsToOrder[dataRowIndex].copyWith(qtyToOrder: newQtyToOrder);
 
-      // _context.read<VariantFormCubit>().setPricePerBranch(_itemsToOrder[dataRowIndex].id!, newPrice!);
+      /// Compute new total and update the value in the DataGridRows
+      double newTotal = (newQtyToOrder ?? 0) * (supplierPrice);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotal);
+
+      _context.read<PurchaseOrderCubit>().setQuantityToOrderPerItem(
+            id: _itemsToOrder[dataRowIndex].id!,
+            qty: newQtyToOrder!,
+            total: newTotal,
+          );
     }
     if (column.columnName == 'supplier_price') {
       final newSupplierPrice = double.tryParse(newCellValue);
+      double qtyToOrder = dataGridRows[dataRowIndex].getCells()[4].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<double>(columnName: 'supplier_price', value: newSupplierPrice);
-      _itemsToOrder[dataRowIndex].copyWith(supplierPrice: newSupplierPrice);
 
-      // _context.read<VariantFormCubit>().setQohPerBranch(_itemsToOrder[dataRowIndex].id!, newQtyOnHand!);
+      /// Compute new total and update the value in the DataGridRows
+      double newTotal = (newSupplierPrice ?? 0) * (qtyToOrder);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotal);
+
+      _context.read<PurchaseOrderCubit>().setSupplierPricePerItem(
+            id: _itemsToOrder[dataRowIndex].id!,
+            price: newSupplierPrice!,
+            total: newTotal,
+          );
     }
   }
 

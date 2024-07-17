@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -70,7 +71,10 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
             children: [
               Assets.icons.calendar.setColorOnHover(isHover),
               const UIHorizontalSpace(10),
-              UIText.labelMedium('Select date', color: isHover ? UIColors.primary : UIColors.textRegular),
+              UIText.labelMedium(
+                _selectedDate != null ? DateFormat.yMd().format(_selectedDate!) : 'Select date',
+                color: isHover ? UIColors.primary : UIColors.textRegular,
+              ),
               const Spacer(),
               Assets.icons.arrowDown.setColorOnHover(isHover)
             ],
