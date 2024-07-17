@@ -7,6 +7,7 @@ part 'purchase_order_item.g.dart';
 @JsonSerializable()
 class PurchaseOrderItem extends Equatable {
   final int? id;
+  final int? variantId;
   final String? name;
   final String? sku;
   final int? qtyOnHand;
@@ -17,6 +18,7 @@ class PurchaseOrderItem extends Equatable {
 
   const PurchaseOrderItem({
     this.id,
+    this.variantId,
     this.name,
     this.sku,
     this.qtyOnHand,
@@ -27,7 +29,7 @@ class PurchaseOrderItem extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, name, sku, qtyOnHand, qtyToOrder, qtyReceived, supplierPrice, total];
+  List<Object?> get props => [id, name, sku, qtyOnHand, qtyToOrder, supplierPrice, qtyReceived, total];
 
   factory PurchaseOrderItem.fromJson(Map<String, dynamic> json) => _$PurchaseOrderItemFromJson(json);
 
@@ -57,6 +59,7 @@ class PurchaseOrderItem extends Equatable {
 
   PurchaseOrderItem copyWith({
     int? id,
+    int? variantId,
     String? name,
     String? sku,
     int? qtyOnHand,
@@ -67,6 +70,7 @@ class PurchaseOrderItem extends Equatable {
   }) {
     return PurchaseOrderItem(
       id: id ?? this.id,
+      variantId: variantId ?? this.variantId,
       name: name ?? this.name,
       sku: sku ?? this.sku,
       qtyOnHand: qtyOnHand ?? this.qtyOnHand,

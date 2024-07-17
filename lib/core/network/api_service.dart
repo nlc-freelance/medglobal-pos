@@ -30,7 +30,6 @@ class ApiService {
     } on DioException catch (e) {
       throw _handleDioException(e);
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -59,11 +58,8 @@ class ApiService {
       final response = await _dioService.post<JSON>(endpoint, data: data);
       return converter(response.data!);
     } on DioException catch (e) {
-      print(e.response?.data.toString());
-      print(e);
       throw _handleDioException(e);
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -78,11 +74,8 @@ class ApiService {
       if (response.data != null) return converter(response.data!);
       return null;
     } on DioException catch (e) {
-      print(e.response?.data.toString());
-
       throw _handleDioException(e);
     } catch (e) {
-      print(e);
       rethrow;
     }
   }

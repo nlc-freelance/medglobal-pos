@@ -30,7 +30,7 @@ class PageHeader extends StatelessWidget {
                 children: [
                   UIText.heading4(title),
                   if (titleTrailings != null) ...[
-                    const UIHorizontalSpace(12),
+                    const UIHorizontalSpace(16),
                     ...?titleTrailings,
                   ],
                 ],

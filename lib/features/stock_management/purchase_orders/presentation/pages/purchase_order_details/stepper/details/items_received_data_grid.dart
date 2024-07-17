@@ -1,51 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 
 class ItemsReceivedDataGrid extends StatefulWidget {
-  const ItemsReceivedDataGrid({super.key, required this.isReceiving});
+  const ItemsReceivedDataGrid(
+      {super.key, required this.itemsReceived, required this.isReceiving, required this.tax, required this.discount});
 
+  final List<PurchaseOrderItem> itemsReceived;
   final bool isReceiving;
+  final double tax;
+  final double discount;
 
   @override
   State<ItemsReceivedDataGrid> createState() => _ItemsReceivedDataGridState();
 }
 
 class _ItemsReceivedDataGridState extends State<ItemsReceivedDataGrid> {
+  /// Move itemsReceived here using bloc listener like ItemsToOrderDataGrid
   List<PurchaseOrderItem> _itemsReceived = <PurchaseOrderItem>[];
   late DataGridController _dataGridController;
   late ItemsReceivedDataSource _itemsReceivedDataSoure;
   late CustomSelectionManager customSelectionManager;
 
-  final mock = [
-    const PurchaseOrderItem(
-      id: 1,
-      name: 'Biogesic 500mg',
-      sku: 'BG0001',
-      qtyOnHand: 5,
-      qtyToOrder: 20,
-      supplierPrice: 20,
-      total: 400,
-    ),
-    const PurchaseOrderItem(
-      id: 2,
-      name: 'Biogesic 1000mg',
-      sku: 'BG0002',
-      qtyOnHand: 5,
-      qtyToOrder: 20,
-      supplierPrice: 20,
-      total: 400,
-    ),
-  ];
-
   @override
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    _itemsReceivedDataSoure = ItemsReceivedDataSource(mock, context, widget.isReceiving);
+    _itemsReceivedDataSoure =
+        ItemsReceivedDataSource(widget.itemsReceived, context, widget.isReceiving, widget.tax, widget.discount);
     customSelectionManager = CustomSelectionManager(_dataGridController);
   }
 
@@ -160,10 +147,13 @@ class _ItemsReceivedDataGridState extends State<ItemsReceivedDataGrid> {
 }
 
 class ItemsReceivedDataSource extends DataGridSource {
-  ItemsReceivedDataSource(List<PurchaseOrderItem> itemsReceived, BuildContext context, bool isReceiving) {
+  ItemsReceivedDataSource(
+      List<PurchaseOrderItem> itemsReceived, BuildContext context, bool isReceiving, double tax, double discount) {
     _itemsReceived = itemsReceived;
     _context = context;
     _isReceiving = isReceiving;
+    _tax = tax;
+    _discount = discount;
     buildDataGridRows();
   }
 
@@ -172,6 +162,8 @@ class ItemsReceivedDataSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
 
   late bool _isReceiving;
+  late double _tax;
+  late double _discount;
 
   late BuildContext _context;
 
@@ -249,7 +241,10 @@ class ItemsReceivedDataSource extends DataGridSource {
           DataGridCell<int>(columnName: 'qty_received', value: newReceivedQty);
       _itemsReceived[dataRowIndex].copyWith(qtyReceived: newReceivedQty);
 
-      // _context.read<VariantFormCubit>().setPricePerBranch(_itemsReceived[dataRowIndex].id!, newPrice!);
+      _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
+            _itemsReceived[dataRowIndex].id!,
+            newReceivedQty!,
+          );
     }
   }
 
@@ -306,7 +301,17 @@ class ItemsReceivedDataSource extends DataGridSource {
               align: TextAlign.end,
             )
           // Tax, Discount, Total get from state
-          : UIText.labelSemiBold(summaryValue),
+          : UIText.labelSemiBold(summaryCellValue(_context, summaryRow.title!, summaryValue)),
     );
+  }
+
+  String summaryCellValue(BuildContext context, String summaryRowTitle, String summaryValue) {
+    if (summaryRowTitle == 'Tax') {
+      return _tax.toString();
+    }
+    if (summaryRowTitle == 'Discount') {
+      return _discount.toString();
+    }
+    return summaryValue;
   }
 }

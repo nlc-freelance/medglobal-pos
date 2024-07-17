@@ -127,3 +127,11 @@ enum StockTakeItemAction {
   final String label;
   const StockTakeItemAction(this.label);
 }
+
+enum PurchaseOrderUpdate {
+  SAVE,
+  SAVE_AND_MARK_AS_SHIPPED,
+  SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS,
+  SAVE_AND_RECEIVED,
+  CANCEL,
+}

@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/utils/datetime_converter.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/data/dto/purchase_order_item_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
@@ -12,6 +11,7 @@ part 'purchase_order_dto.g.dart';
 @JsonSerializable()
 class PurchaseOrderDto extends Equatable {
   final int? id;
+  @JsonKey(name: 'store')
   final Branch? branch;
   final Supplier? supplier;
   final String? status;
@@ -56,6 +56,7 @@ class PurchaseOrderDto extends Equatable {
         totalAmount: totalAmount,
         estimatedDateOfArrival: estimatedDateOfArrival,
         notes: notes,
+        items: items?.map((item) => item.toEntity()).toList() ?? [],
         createdAt: createdAt,
         updatedAt: updatedAt,
       );

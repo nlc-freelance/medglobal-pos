@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_order_details.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -41,57 +46,90 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
             return UIColors.borderMuted;
           }),
           controlsBuilder: (context, details) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (_currentStep != 3)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: UIButton.outlined(
-                      'Cancel',
-                      onClick: () => AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name),
-                    ),
-                  ),
-                if (_currentStep == 0)
-                  UIButton.filled(
-                    'Create',
-                    icon: Assets.icons.arrowRight.setSize(12),
-                    iconAlign: IconAlignment.end,
-                    onClick: () {
-                      // CREATE request for Purchase Order
-                      AppRouter.router
-                          .goNamed(SideMenuTreeItem.PURCHASE_ORDER_DETAILS.name, pathParameters: {'id': '1'});
-                      // Use a bloc listener to that and when success, get the ID and go to route PurchaseOrderDetails
-                    },
-                  ),
-                if (_currentStep == 1) ...[
-                  UIButton.filled(
-                    'Save',
-                    onClick: () {
-                      /// Status -> NEW
-                    },
-                  ),
-                  const UIHorizontalSpace(8),
-                  UIButton.filled(
-                    'Save and Mark as Shipped',
-                    icon: Assets.icons.arrowRight.setSize(12),
-                    iconAlign: IconAlignment.end,
-                    onClick: () {
-                      /// Status -> FOR RECEIVING ??
-                      setState(() => _currentStep = 2);
-                    },
-                  ),
-                ] else if (_currentStep == 2)
-                  UIButton.filled(
-                    'Save and Received',
-                    icon: Assets.icons.arrowRight.setSize(12),
-                    iconAlign: IconAlignment.end,
-                    onClick: () {
-                      /// Status -> COMPLETED
-                      setState(() => _currentStep = 3);
-                    },
-                  ),
-              ],
+            final payload = context.select((NewPurchaseOrderCubit cubit) => cubit.state.payload);
+            final purchaseOrder = context.select((PurchaseOrderCubit cubit) => cubit.state.purchaseOrder);
+
+            return BlocConsumer<PurchaseOrderRemoteCubit, PurchaseOrderRemoteState>(
+              listener: (context, state) {
+                if (state is PurchaseOrderCreateSuccess) {
+                  final id = state.purchaseOrder.id;
+                  AppRouter.router.goNamed(
+                    SideMenuTreeItem.PURCHASE_ORDER_DETAILS.name,
+                    pathParameters: {'id': id.toString()},
+                  );
+                }
+
+                // if (state is PurchaseOrderSuccess) {
+                //   AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name);
+                // }
+
+                if (state is PurchaseOrderError) {
+                  ToastNotification.error(context, state.message);
+                }
+              },
+              builder: (context, state) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (_currentStep != 3)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: UIButton.outlined(
+                          'Cancel',
+                          onClick: () => AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name),
+                        ),
+                      ),
+                    if (_currentStep == 0)
+                      UIButton.filled(
+                        'Create',
+                        icon: Assets.icons.arrowRight.setSize(12),
+                        iconAlign: IconAlignment.end,
+                        isLoading: state is PurchaseOrderCreateLoading,
+                        onClick: () => context.read<PurchaseOrderRemoteCubit>().create(payload),
+                      ),
+                    if (_currentStep == 1) ...[
+                      UIButton.filled(
+                        'Save',
+                        isLoading: state is PurchaseOrderSaveLoading,
+                        onClick: () => context.read<PurchaseOrderRemoteCubit>().update(
+                              PurchaseOrderUpdate.SAVE,
+                              id: purchaseOrder.id!,
+                              purchaseOrder: purchaseOrder,
+                            ),
+                      ),
+                      const UIHorizontalSpace(8),
+                      UIButton.filled(
+                        'Save and Mark as Shipped',
+                        icon: Assets.icons.arrowRight.setSize(12),
+                        iconAlign: IconAlignment.end,
+                        isLoading: state is PurchaseOrderSaveAndMarkAsShippedLoading,
+                        onClick: () {
+                          context.read<PurchaseOrderRemoteCubit>().update(
+                                /// if purchaseOrderItems has negative id (added locally) then pass PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS else PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
+
+                                PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
+                                id: purchaseOrder.id!,
+                                purchaseOrder: purchaseOrder,
+                              );
+                        },
+                      ),
+                    ] else if (_currentStep == 2)
+                      UIButton.filled(
+                        'Save and Received',
+                        icon: Assets.icons.arrowRight.setSize(12),
+                        iconAlign: IconAlignment.end,
+                        isLoading: state is PurchaseOrderSaveAndReceivedLoading,
+                        onClick: () {
+                          context.read<PurchaseOrderRemoteCubit>().update(
+                                PurchaseOrderUpdate.SAVE_AND_RECEIVED,
+                                id: purchaseOrder.id!,
+                                purchaseOrder: purchaseOrder,
+                              );
+                        },
+                      ),
+                  ],
+                );
+              },
             );
           },
           steps: [
@@ -105,13 +143,13 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
               isActive: _currentStep >= 1,
               state: _currentStep > 1 ? StepState.complete : StepState.indexed,
               title: const Text('Edit'),
-              content: const PurchaseOrderDetails(StockActionStatus.NEW),
+              content: const PurchaseOrderDetails(),
             ),
             Step(
               isActive: _currentStep >= 2,
               state: _currentStep > 2 ? StepState.complete : StepState.indexed,
               title: const Text('Receive'),
-              content: const PurchaseOrderDetails(StockActionStatus.FOR_RECEIVING),
+              content: const PurchaseOrderDetails(),
             ),
             Step(
               isActive: _currentStep >= 3,

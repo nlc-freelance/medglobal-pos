@@ -80,7 +80,6 @@ class ProductApiImpl implements ProductApi {
 
   @override
   Future<void> create(Product product) async {
-    print(product.toProductPostRequest());
     try {
       await _apiService.post<ProductDto>(
         ApiEndpoint.products(),
@@ -88,7 +87,6 @@ class ProductApiImpl implements ProductApi {
         converter: ProductDto.fromJson,
       );
     } catch (e) {
-      print(e);
       rethrow;
     }
   }

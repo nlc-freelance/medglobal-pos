@@ -23,7 +23,7 @@ class LabelValue extends StatelessWidget {
 
   factory LabelValue.text({
     required String label,
-    required String value,
+    required String? value,
   }) =>
       LabelValue._(type: LabelValueType.text, label: label, value: value);
 
@@ -51,7 +51,7 @@ class LabelValue extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         UIText.labelSemiBold(label),
-        if (type == LabelValueType.text) UIText.bodyRegular(value!),
+        if (type == LabelValueType.text) UIText.bodyRegular(value ?? Strings.empty),
         if (type == LabelValueType.status) ...[
           const UIVerticalSpace(6),
           Chip(

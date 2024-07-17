@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:medglobal_admin_portal/core/core.dart';
 
 class ApiResponse<T> {
@@ -17,9 +18,14 @@ class ApiResponse<T> {
     return ApiResponse(
       message: json['message'],
       data: json.keys.contains('data') ? json['data'] : null,
-      items: json.keys.contains('data') ? json['data']['items'] : null,
+      // items: json.keys.contains('data') ? json['data']['items'] : null,
       pageInfo: json.keys.contains('data') && json['data']['page'] != null ? PageInfo.fromJson(json['data']) : null,
     );
+  }
+
+  @override
+  String toString() {
+    return 'ApiResponse(message: $message, data: $data, items: $items, pageInfo: $pageInfo)';
   }
 }
 

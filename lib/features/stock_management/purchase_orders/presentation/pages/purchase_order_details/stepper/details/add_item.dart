@@ -26,7 +26,7 @@ class _AddItemState extends State<AddItem> {
         // Add the variant to the data source
         showDialog(
           context: context,
-          barrierDismissible: false,
+          barrierDismissible: true,
           builder: (context) {
             List<Supplier>? _selectedItems;
 

@@ -30,6 +30,7 @@ class PurchaseOrderItemDto extends Equatable {
 
   PurchaseOrderItem toEntity() => PurchaseOrderItem(
         id: id,
+        variantId: variant?.id,
         name: '${variant?.product?.name} ${variant?.name}',
         sku: variant?.sku,
         qtyOnHand: variant?.qtyOnHand,
