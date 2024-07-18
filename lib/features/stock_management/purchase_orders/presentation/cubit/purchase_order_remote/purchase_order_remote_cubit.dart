@@ -10,9 +10,9 @@ import 'package:medglobal_admin_portal/features/stock_management/purchase_orders
 part 'purchase_order_remote_state.dart';
 
 class PurchaseOrderRemoteCubit extends Cubit<PurchaseOrderRemoteState> {
-  final GetPurchaseOrderByIdUsecase _getPurchaseOrderByIdUsecase;
-  final CreatePurchaseOrderUsecase _createPurchaseOrderUsecase;
-  final UpdatePurchaseOrderUsecase _updatePurchaseOrderUsecase;
+  final GetPurchaseOrderByIdUseCase _getPurchaseOrderByIdUsecase;
+  final CreatePurchaseOrderUseCase _createPurchaseOrderUsecase;
+  final UpdatePurchaseOrderUseCase _updatePurchaseOrderUsecase;
 
   PurchaseOrderRemoteCubit(
     this._getPurchaseOrderByIdUsecase,
@@ -20,7 +20,7 @@ class PurchaseOrderRemoteCubit extends Cubit<PurchaseOrderRemoteState> {
     this._updatePurchaseOrderUsecase,
   ) : super(PurchaseOrderInitial());
 
-  Future<void> getProductById(int id) async {
+  Future<void> getPurchaseOrderById(int id) async {
     emit(PurchaseOrderByIdLoading());
 
     try {
@@ -48,14 +48,14 @@ class PurchaseOrderRemoteCubit extends Cubit<PurchaseOrderRemoteState> {
     }
   }
 
-  Future<void> update(PurchaseOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder}) async {
-    if (type == PurchaseOrderUpdate.SAVE) emit(PurchaseOrderSaveLoading());
-    if (type == PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED ||
-        type == PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS) {
+  Future<void> update(StockOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder}) async {
+    if (type == StockOrderUpdate.SAVE) emit(PurchaseOrderSaveLoading());
+    if (type == StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED ||
+        type == StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS) {
       emit(PurchaseOrderSaveAndMarkAsShippedLoading());
     }
-    if (type == PurchaseOrderUpdate.SAVE_AND_RECEIVED) emit(PurchaseOrderSaveAndReceivedLoading());
-    if (type == PurchaseOrderUpdate.CANCEL) emit(PurchaseOrderCancelLoading());
+    if (type == StockOrderUpdate.SAVE_AND_RECEIVED) emit(PurchaseOrderSaveAndReceivedLoading());
+    if (type == StockOrderUpdate.CANCEL) emit(PurchaseOrderCancelLoading());
 
     try {
       final result =

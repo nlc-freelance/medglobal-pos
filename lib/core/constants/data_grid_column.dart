@@ -89,11 +89,21 @@ class DataGridColumn {
     ColumnData('id', 'ID'),
     ColumnData('name', 'Variant Name'),
     ColumnData('sku', 'SKU'),
-    ColumnData('qty_on_hand', 'Qty on Hanf'),
+    ColumnData('qty_on_hand', 'Qty on Hand'),
     ColumnData('qty_to_return', 'Qty to Return'),
     ColumnData('supplier_price', 'Supplier Price (PHP)'),
     ColumnData('total', 'Total (PHP)'),
     ColumnData('action', 'Action'),
+  ];
+
+  static List<ColumnData> SR_ITEMS_RETURNED = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Variant Name'),
+    ColumnData('sku', 'SKU'),
+    ColumnData('qty_on_hand', 'Qty on Hand'),
+    ColumnData('qty_to_return', 'Qty Returned'),
+    ColumnData('supplier_price', 'Supplier Price (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
   ];
 
   static List<ColumnData> STOCK_TAKES = [

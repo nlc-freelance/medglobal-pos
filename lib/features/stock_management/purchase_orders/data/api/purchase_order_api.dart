@@ -6,10 +6,10 @@ import 'package:medglobal_admin_portal/features/stock_management/purchase_orders
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_request.dart';
 
 abstract class PurchaseOrderApi {
-  Future<PurchaseOrderPaginatedList> getPurchaseOrders({int? page, StockActionStatus? status});
+  Future<PurchaseOrderPaginatedList> getPurchaseOrders({int? page, StockOrderStatus? status});
   Future<PurchaseOrderDto> getPurchaseOrderById(int id);
   Future<PurchaseOrderDto> create(PurchaseOrderRequest payload);
-  Future<void> update(PurchaseOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder});
+  Future<void> update(StockOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder});
 }
 
 class PurchaseOrderApiImpl implements PurchaseOrderApi {
@@ -18,7 +18,7 @@ class PurchaseOrderApiImpl implements PurchaseOrderApi {
   PurchaseOrderApiImpl(this._apiService);
 
   @override
-  Future<PurchaseOrderPaginatedList> getPurchaseOrders({int? page, StockActionStatus? status}) async {
+  Future<PurchaseOrderPaginatedList> getPurchaseOrders({int? page, StockOrderStatus? status}) async {
     try {
       final response = await _apiService.collection<PurchaseOrderDto>(
         '/purchase-orders',
@@ -63,16 +63,16 @@ class PurchaseOrderApiImpl implements PurchaseOrderApi {
   }
 
   @override
-  Future<void> update(PurchaseOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder}) async {
+  Future<void> update(StockOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder}) async {
     try {
       JSON payload = {};
-      if (type == PurchaseOrderUpdate.SAVE) payload = purchaseOrder.toSavePayload();
-      if (type == PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED) payload = purchaseOrder.toSaveAndMarkAsShippedPayload();
-      if (type == PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS) {
+      if (type == StockOrderUpdate.SAVE) payload = purchaseOrder.toSavePayload();
+      if (type == StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED) payload = purchaseOrder.toSaveAndMarkAsShippedPayload();
+      if (type == StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS) {
         payload = purchaseOrder.toSaveAndMarkAsShippedWithNewItemsPayload();
       }
-      if (type == PurchaseOrderUpdate.SAVE_AND_RECEIVED) payload = purchaseOrder.toSaveAndReceivedPayload();
-      if (type == PurchaseOrderUpdate.CANCEL) payload = purchaseOrder.toCancelPayload();
+      if (type == StockOrderUpdate.SAVE_AND_RECEIVED) payload = purchaseOrder.toSaveAndReceivedPayload();
+      if (type == StockOrderUpdate.CANCEL) payload = purchaseOrder.toCancelPayload();
 
       await _apiService.update<PurchaseOrderDto>(
         '/purchase-orders/$id',

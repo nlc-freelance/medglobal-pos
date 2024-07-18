@@ -115,7 +115,7 @@ class StockTakeDataSource extends DataGridSource {
           ),
         'status' => Chip(
             label: Text(
-              (cell.value as StockActionStatus).label,
+              (cell.value as StockOrderStatus).label,
               style: UIStyleText.chip.copyWith(color: StatusMapper.textColor(cell.value)),
             ),
             backgroundColor: StatusMapper.color(cell.value),

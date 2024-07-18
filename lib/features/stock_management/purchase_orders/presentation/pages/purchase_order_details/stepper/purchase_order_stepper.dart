@@ -58,11 +58,6 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                     pathParameters: {'id': id.toString()},
                   );
                 }
-
-                // if (state is PurchaseOrderSuccess) {
-                //   AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name);
-                // }
-
                 if (state is PurchaseOrderError) {
                   ToastNotification.error(context, state.message);
                 }
@@ -92,7 +87,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                         'Save',
                         isLoading: state is PurchaseOrderSaveLoading,
                         onClick: () => context.read<PurchaseOrderRemoteCubit>().update(
-                              PurchaseOrderUpdate.SAVE,
+                              StockOrderUpdate.SAVE,
                               id: purchaseOrder.id!,
                               purchaseOrder: purchaseOrder,
                             ),
@@ -108,8 +103,8 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                                 /// If purchaseOrderItems has negative id (added locally)
                                 /// Pass SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS else SAVE_AND_MARK_AS_SHIPPED
                                 purchaseOrder.items?.any((item) => item.id! < 0) == true
-                                    ? PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS
-                                    : PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
+                                    ? StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS
+                                    : StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
                                 id: purchaseOrder.id!,
                                 purchaseOrder: purchaseOrder,
                               );
@@ -123,7 +118,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                         isLoading: state is PurchaseOrderSaveAndReceivedLoading,
                         onClick: () {
                           context.read<PurchaseOrderRemoteCubit>().update(
-                                PurchaseOrderUpdate.SAVE_AND_RECEIVED,
+                                StockOrderUpdate.SAVE_AND_RECEIVED,
                                 id: purchaseOrder.id!,
                                 purchaseOrder: purchaseOrder,
                               );

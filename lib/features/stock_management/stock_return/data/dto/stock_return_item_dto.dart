@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/features/product_management/data/dto/variant_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/variants/product_variant_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_item.dart';
 
@@ -28,6 +27,7 @@ class StockReturnItemDto extends Equatable {
 
   StockReturnItem toEntity() => StockReturnItem(
         id: id,
+        variantId: variant?.id,
         name: '${variant?.product?.name} ${variant?.name}',
         sku: variant?.sku,
         qtyOnHand: variant?.qtyOnHand,

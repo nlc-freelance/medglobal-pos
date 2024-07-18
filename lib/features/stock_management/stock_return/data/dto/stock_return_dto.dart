@@ -1,10 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/utils/datetime_converter.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/data/dto/purchase_order_item_dto.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/data/dto/stock_return_item_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
 
@@ -13,6 +11,7 @@ part 'stock_return_dto.g.dart';
 @JsonSerializable()
 class StockReturnDto extends Equatable {
   final int? id;
+  @JsonKey(name: 'store')
   final Branch? branch;
   final Supplier? supplier;
   final String? status;
@@ -20,9 +19,7 @@ class StockReturnDto extends Equatable {
   final double? tax;
   final double? discount;
   final String? notes;
-  final List<PurchaseOrderItemDto>? items;
-  @DateTimeConverter()
-  final DateTime? estimatedDateOfArrival;
+  final List<StockReturnItemDto>? items;
   @DateTimeConverter()
   final DateTime? createdAt;
   @DateTimeConverter()
@@ -38,14 +35,13 @@ class StockReturnDto extends Equatable {
     this.discount,
     this.notes,
     this.items,
-    this.estimatedDateOfArrival,
     this.createdAt,
     this.updatedAt,
   });
 
   @override
   List<Object?> get props =>
-      [id, estimatedDateOfArrival, branch, supplier, status, totalAmount, items, notes, createdAt, updatedAt];
+      [id, branch, supplier, status, totalAmount, items, notes, tax, discount, items, createdAt, updatedAt];
 
   factory StockReturnDto.fromJson(Map<String, dynamic> json) => _$StockReturnDtoFromJson(json);
 
@@ -54,8 +50,11 @@ class StockReturnDto extends Equatable {
         branch: branch,
         supplier: supplier,
         status: StatusMapper.status(status),
+        tax: tax,
+        discount: discount,
         totalAmount: totalAmount,
         notes: notes,
+        items: items?.map((item) => item.toEntity()).toList() ?? [],
         createdAt: createdAt,
         updatedAt: updatedAt,
       );

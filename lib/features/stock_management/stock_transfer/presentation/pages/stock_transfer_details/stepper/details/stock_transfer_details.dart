@@ -8,7 +8,7 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 class StockTransferDetails extends StatelessWidget {
   const StockTransferDetails(this.status, {super.key});
 
-  final StockActionStatus status;
+  final StockOrderStatus status;
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +45,8 @@ class StockTransferDetails extends StatelessWidget {
           ],
         ),
         const UIVerticalSpace(40),
-        if (status == StockActionStatus.NEW || status == StockActionStatus.SHIPPED)
-          ItemsToTransferDataGrid(isShipped: status == StockActionStatus.SHIPPED),
+        if (status == StockOrderStatus.NEW || status == StockOrderStatus.SHIPPED)
+          ItemsToTransferDataGrid(isShipped: status == StockOrderStatus.SHIPPED),
         const UIVerticalSpace(60),
         const PageSectionTitle(title: 'Notes'),
         UITextField.noLabel(hint: 'Enter notes here'),

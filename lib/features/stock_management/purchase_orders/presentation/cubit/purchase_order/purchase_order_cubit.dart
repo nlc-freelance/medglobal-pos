@@ -65,7 +65,6 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
   void setDisount(double value) => emit(PurchaseOrderState(state.purchaseOrder.copyWith(discount: value)));
 
   void setTotal(double value) {
-    print(value);
     emit(PurchaseOrderState(state.purchaseOrder.copyWith(totalAmount: value)));
   }
 

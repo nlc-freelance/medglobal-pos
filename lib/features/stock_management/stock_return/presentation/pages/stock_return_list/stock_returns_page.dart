@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/utils/data_grid_util.dart';
-import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_data_grid.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_list/stock_return_data_grid.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class StockReturnsPage extends StatefulWidget {
@@ -23,7 +20,7 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    // Get ALL stock returns
+    context.read<StockReturnListRemoteCubit>().getStockReturns();
   }
 
   @override
@@ -34,20 +31,18 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
 
   void onChangeTab(int index) {
     if (index == 0) {
-      // Get ALL stock returns
+      context.read<StockReturnListRemoteCubit>().getStockReturns();
     }
     if (index == 1) {
-      // Get all NEW stock returns
+      context.read<StockReturnListRemoteCubit>().getStockReturns(status: StockOrderStatus.NEW);
     }
     if (index == 2) {
-      // Get all COMPLETED stock returns
+      context.read<StockReturnListRemoteCubit>().getStockReturns(status: StockOrderStatus.COMPLETED);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final columns = DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -67,8 +62,8 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
           onTap: onChangeTab,
           tabs: [
             const Tab(text: 'All Returns'),
-            Tab(text: StockActionStatus.NEW.label),
-            Tab(text: StockActionStatus.COMPLETED.label),
+            Tab(text: StockOrderStatus.NEW.label),
+            Tab(text: StockOrderStatus.COMPLETED.label),
           ],
           isScrollable: true,
           tabAlignment: TabAlignment.start,
@@ -108,77 +103,23 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
             ),
           ],
         ),
-        Expanded(child: StockReturnDataGrid(stockReturnMock)),
-
-        // StockReturnDataGrid(),
-        // BlocBuilder<StockReturnListCubit, StockReturnListState>(
-        //   builder: (context, state) {
-        //     if (state is StockReturnListError) {
-        //       return Text(state.message);
-        //     }
-        //     if (state is StockReturnListLoaded) {
-        // return const Expanded(
-        //   child: StockReturnDataGrid(),
-        //   );
-        // }
-        // return DataGridLoading(
-        //   columns: columns,
-        //   source: VariantDataSource([]),
-        // );
-        // },
-        // ),
+        BlocBuilder<StockReturnListRemoteCubit, StockReturnListRemoteState>(
+          builder: (context, state) {
+            if (state is StockReturnListError) {
+              return Text(state.message);
+            }
+            if (state is StockReturnListLoaded) {
+              return Expanded(
+                child: StockReturnDataGrid(state.stockReturns),
+              );
+            }
+            return DataGridLoading(
+              columns: DataGridUtil.getColumns(DataGridColumn.STOCK_RETURNS),
+              source: StockReturnDataSource([]),
+            );
+          },
+        ),
       ],
     );
   }
 }
-
-final stockReturnMock = [
-  StockReturn(
-    id: 1,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.NEW,
-    createdAt: DateTime.now(),
-  ),
-  StockReturn(
-    id: 2,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.FOR_RECEIVING,
-    createdAt: DateTime.now(),
-  ),
-  StockReturn(
-    id: 3,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.COMPLETED,
-    createdAt: DateTime.now(),
-  ),
-  StockReturn(
-    id: 4,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.CANCELLED,
-    createdAt: DateTime.now(),
-  ),
-  StockReturn(
-    id: 4,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.SHIPPED,
-    createdAt: DateTime.now(),
-  ),
-  StockReturn(
-    id: 4,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.IN_PROGRESS,
-    createdAt: DateTime.now(),
-  ),
-];

@@ -6,57 +6,57 @@ class StatusMapper {
   StatusMapper._();
 
   /// Convert String [status] from DTO to enum
-  static StockActionStatus status(String? status) {
+  static StockOrderStatus status(String? status) {
     switch (status) {
       case 'new':
-        return StockActionStatus.NEW;
+        return StockOrderStatus.NEW;
       case 'for receiving':
-        return StockActionStatus.FOR_RECEIVING;
+        return StockOrderStatus.FOR_RECEIVING;
       case 'in progress':
-        return StockActionStatus.IN_PROGRESS;
+        return StockOrderStatus.IN_PROGRESS;
       case 'shipped':
-        return StockActionStatus.SHIPPED;
+        return StockOrderStatus.SHIPPED;
       case 'completed':
-        return StockActionStatus.COMPLETED;
+        return StockOrderStatus.COMPLETED;
       case 'cancelled':
-        return StockActionStatus.CANCELLED;
+        return StockOrderStatus.CANCELLED;
       default:
         throw Exception('Invalid status: $status');
     }
   }
 
-  static Color color(StockActionStatus status) {
+  static Color color(StockOrderStatus status) {
     switch (status) {
-      case StockActionStatus.NEW:
+      case StockOrderStatus.NEW:
         return UIColors.borderMuted;
-      case StockActionStatus.FOR_RECEIVING:
+      case StockOrderStatus.FOR_RECEIVING:
         return UIColors.forReceivingBg;
-      case StockActionStatus.IN_PROGRESS:
+      case StockOrderStatus.IN_PROGRESS:
         return UIColors.inProgressBg;
-      case StockActionStatus.SHIPPED:
+      case StockOrderStatus.SHIPPED:
         return UIColors.shippedBg;
-      case StockActionStatus.COMPLETED:
+      case StockOrderStatus.COMPLETED:
         return UIColors.completedBg;
-      case StockActionStatus.CANCELLED:
+      case StockOrderStatus.CANCELLED:
         return UIColors.cancelledBg;
       default:
         throw Exception('Invalid status: $status');
     }
   }
 
-  static Color textColor(StockActionStatus status) {
+  static Color textColor(StockOrderStatus status) {
     switch (status) {
-      case StockActionStatus.NEW:
+      case StockOrderStatus.NEW:
         return UIColors.textLight;
-      case StockActionStatus.FOR_RECEIVING:
+      case StockOrderStatus.FOR_RECEIVING:
         return UIColors.forReceiving;
-      case StockActionStatus.IN_PROGRESS:
+      case StockOrderStatus.IN_PROGRESS:
         return UIColors.inProgress;
-      case StockActionStatus.SHIPPED:
+      case StockOrderStatus.SHIPPED:
         return UIColors.shipped;
-      case StockActionStatus.COMPLETED:
+      case StockOrderStatus.COMPLETED:
         return UIColors.completed;
-      case StockActionStatus.CANCELLED:
+      case StockOrderStatus.CANCELLED:
         return UIColors.cancelled;
       default:
         throw Exception('Invalid status: $status');

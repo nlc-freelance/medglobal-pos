@@ -24,16 +24,16 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<PurchaseOrderRemoteCubit>().getProductById(int.parse(widget.id));
+    context.read<PurchaseOrderRemoteCubit>().getPurchaseOrderById(int.parse(widget.id));
   }
 
   String get _title {
     switch (_purchaseOrder.status) {
-      case StockActionStatus.NEW:
+      case StockOrderStatus.NEW:
         return 'Edit Purchase Order';
-      case StockActionStatus.FOR_RECEIVING:
+      case StockOrderStatus.FOR_RECEIVING:
         return 'Receive Purchase Order';
-      case StockActionStatus.COMPLETED || StockActionStatus.CANCELLED:
+      case StockOrderStatus.COMPLETED || StockOrderStatus.CANCELLED:
         return 'Purchase Order Details';
       default:
         return Strings.empty;
@@ -84,13 +84,13 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
                   ),
                 ),
                 const UIHorizontalSpace(12),
-                if (_purchaseOrder.status == StockActionStatus.NEW ||
-                    _purchaseOrder.status == StockActionStatus.FOR_RECEIVING)
+                if (_purchaseOrder.status == StockOrderStatus.NEW ||
+                    _purchaseOrder.status == StockOrderStatus.FOR_RECEIVING)
                   UIPopupMenuButton.icon(
                     onSelect: (menu) {
                       if (menu == 'Cancel Purchase Order') {
                         context.read<PurchaseOrderRemoteCubit>().update(
-                              PurchaseOrderUpdate.CANCEL,
+                              StockOrderUpdate.CANCEL,
                               id: _purchaseOrder.id!,
                               purchaseOrder: _purchaseOrder,
                             );
@@ -110,13 +110,13 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
                 ],
               ],
             ),
-            if (_purchaseOrder.status == StockActionStatus.NEW ||
-                _purchaseOrder.status == StockActionStatus.FOR_RECEIVING) ...[
+            if (_purchaseOrder.status == StockOrderStatus.NEW ||
+                _purchaseOrder.status == StockOrderStatus.FOR_RECEIVING) ...[
               UIText.heading5(
-                  _purchaseOrder.status == StockActionStatus.NEW ? 'Step 2 of 4 - Editing' : 'Step 3 of 4 - Receiving'),
+                  _purchaseOrder.status == StockOrderStatus.NEW ? 'Step 2 of 4 - Editing' : 'Step 3 of 4 - Receiving'),
               const UIVerticalSpace(12),
-              if (_purchaseOrder.status == StockActionStatus.NEW) const PurchaseOrderStepper(currentStep: 1),
-              if (_purchaseOrder.status == StockActionStatus.FOR_RECEIVING) const PurchaseOrderStepper(currentStep: 2)
+              if (_purchaseOrder.status == StockOrderStatus.NEW) const PurchaseOrderStepper(currentStep: 1),
+              if (_purchaseOrder.status == StockOrderStatus.FOR_RECEIVING) const PurchaseOrderStepper(currentStep: 2)
             ] else
               const Expanded(
                 child: SingleChildScrollView(
