@@ -40,8 +40,8 @@ class PurchaseOrderItem extends Equatable {
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand ?? 0),
           DataGridCell<int>(columnName: 'qty_to_order', value: qtyToOrder ?? 0),
-          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice ?? 0.00),
-          DataGridCell<double>(columnName: 'total', value: total),
+          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice ?? 0),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
           const DataGridCell(columnName: 'action', value: null),
         ],
       );
@@ -52,8 +52,8 @@ class PurchaseOrderItem extends Equatable {
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'qty_ordered', value: qtyToOrder ?? 0),
           DataGridCell<int>(columnName: 'qty_received', value: qtyReceived ?? 0),
-          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice ?? 0.00),
-          DataGridCell<double>(columnName: 'total', value: total),
+          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice ?? 0),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
         ],
       );
 

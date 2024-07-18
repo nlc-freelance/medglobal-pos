@@ -68,7 +68,7 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
               subtitle: Strings.subtitlePlaceholder,
               titleTrailings: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 2),
+                  padding: const EdgeInsets.only(top: 1),
                   child: Chip(
                     label: Text(
                       _purchaseOrder.status!.label,
@@ -110,7 +110,6 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
                 ],
               ],
             ),
-
             if (_purchaseOrder.status == StockActionStatus.NEW ||
                 _purchaseOrder.status == StockActionStatus.FOR_RECEIVING) ...[
               UIText.heading5(
@@ -124,20 +123,6 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
                   child: PurchaseOrderDetails(),
                 ),
               )
-
-            /// If Status is 'New' -> 'Step 2 of 4 - Editing', if 'For Receiving' -> 'Step 3 of 4 - Receiving'
-            // UIText.heading5(_purchaseOrder.status == StockActionStatus.NEW ? 'Step 2 of 4 - Editing' : ),
-            // const UIVerticalSpace(12),
-
-            /// If status is 'New' pass 1, 2 if 'For Receiving', 3 if 'Completed'/'Cancelled'
-            // const PurchaseOrderStepper(currentStep: 1),
-
-            /// If status is 'Completed'/'Cancelled'
-            // const Expanded(
-            //   child: SingleChildScrollView(
-            //     child: PurchaseOrderDetails(StockActionStatus.COMPLETED),
-            //   ),
-            // )
           ],
         );
       },

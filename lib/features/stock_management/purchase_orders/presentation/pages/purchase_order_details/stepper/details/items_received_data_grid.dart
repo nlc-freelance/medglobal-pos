@@ -8,32 +8,32 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 
 class ItemsReceivedDataGrid extends StatefulWidget {
-  const ItemsReceivedDataGrid(
-      {super.key, required this.itemsReceived, required this.isReceiving, required this.tax, required this.discount});
+  const ItemsReceivedDataGrid({super.key, required this.isReceiving});
 
-  final List<PurchaseOrderItem> itemsReceived;
   final bool isReceiving;
-  final double tax;
-  final double discount;
 
   @override
   State<ItemsReceivedDataGrid> createState() => _ItemsReceivedDataGridState();
 }
 
 class _ItemsReceivedDataGridState extends State<ItemsReceivedDataGrid> {
-  /// Move itemsReceived here using bloc listener like ItemsToOrderDataGrid
   List<PurchaseOrderItem> _itemsReceived = <PurchaseOrderItem>[];
   late DataGridController _dataGridController;
-  late ItemsReceivedDataSource _itemsReceivedDataSoure;
+  late ItemsReceivedDataSource _itemsReceivedDataSource;
   late CustomSelectionManager customSelectionManager;
 
   @override
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    _itemsReceivedDataSoure =
-        ItemsReceivedDataSource(widget.itemsReceived, context, widget.isReceiving, widget.tax, widget.discount);
     customSelectionManager = CustomSelectionManager(_dataGridController);
+
+    final purchaseOrder = context.read<PurchaseOrderCubit>().state.purchaseOrder;
+    final tax = purchaseOrder.tax ?? 0;
+    final discount = purchaseOrder.discount ?? 0;
+
+    _itemsReceived = purchaseOrder.items ?? [];
+    _itemsReceivedDataSource = ItemsReceivedDataSource(_itemsReceived, context, widget.isReceiving, tax, discount);
   }
 
   @override
@@ -48,96 +48,107 @@ class _ItemsReceivedDataGridState extends State<ItemsReceivedDataGrid> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageSectionTitle(title: 'Items Received'),
-        ClipRect(
-          clipper: HorizontalBorderClipper(),
-          child: SfDataGridTheme(
-            data: DataGridUtil.cellNavigationStyle,
-            child: SfDataGrid(
-              source: _itemsReceivedDataSoure,
-              columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS_RECEIVED),
-              controller: _dataGridController,
-              selectionManager: customSelectionManager,
-              shrinkWrapRows: true,
-              allowEditing: true,
-              navigationMode: GridNavigationMode.cell,
-              selectionMode: SelectionMode.single,
-              columnWidthMode: ColumnWidthMode.fill,
-              headerGridLinesVisibility: GridLinesVisibility.none,
-              editingGestureType: EditingGestureType.tap,
-              tableSummaryRows: [
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Subtotal',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Tax',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Discount',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Total',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-              ],
+        BlocListener<PurchaseOrderCubit, PurchaseOrderState>(
+          listenWhen: (previous, current) =>
+              previous.purchaseOrder.items != current.purchaseOrder.items ||
+              previous.purchaseOrder.totalAmount != current.purchaseOrder.totalAmount,
+          listener: (context, state) {
+            _itemsReceivedDataSource._itemsReceived = state.purchaseOrder.items ?? [];
+
+            _itemsReceivedDataSource.buildDataGridRows();
+            _itemsReceivedDataSource.updateDataGridSource();
+          },
+          child: ClipRect(
+            clipper: HorizontalBorderClipper(),
+            child: SfDataGridTheme(
+              data: DataGridUtil.cellNavigationStyle,
+              child: SfDataGrid(
+                source: _itemsReceivedDataSource,
+                columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS_RECEIVED),
+                controller: _dataGridController,
+                selectionManager: customSelectionManager,
+                shrinkWrapRows: true,
+                allowEditing: true,
+                navigationMode: GridNavigationMode.cell,
+                selectionMode: SelectionMode.single,
+                columnWidthMode: ColumnWidthMode.fill,
+                headerGridLinesVisibility: GridLinesVisibility.none,
+                editingGestureType: EditingGestureType.tap,
+                tableSummaryRows: [
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Subtotal',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Tax',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Discount',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Total',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -296,12 +307,15 @@ class ItemsReceivedDataSource extends DataGridSource {
     return Container(
       padding: const EdgeInsets.all(16),
       child: summaryColumn?.columnName == 'supplier_price'
-          ? UIText.labelSemiBold(
+          ? Text(
               summaryRow.title!,
-              align: TextAlign.end,
+              textAlign: TextAlign.end,
+              style: summaryRow.title == 'Total' ? UIStyleText.heading6 : UIStyleText.labelSemiBold,
             )
-          // Tax, Discount, Total get from state
-          : UIText.labelSemiBold(summaryCellValue(_context, summaryRow.title!, summaryValue)),
+          : Text(
+              summaryCellValue(_context, summaryRow.title!, summaryValue),
+              style: summaryRow.title == 'Total' ? UIStyleText.heading6 : UIStyleText.bodyRegular,
+            ),
     );
   }
 

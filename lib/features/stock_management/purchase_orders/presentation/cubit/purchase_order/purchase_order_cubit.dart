@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 
 part 'purchase_order_state.dart';
 
@@ -45,6 +46,13 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
     emit(PurchaseOrderState(state.purchaseOrder.copyWith(items: updatedItems)));
   }
 
+  void addItem(PurchaseOrderItem value) {
+    final purchaseOrderItems = state.purchaseOrder.items?.toList() ?? [];
+    final updatedPurchaseOrderItems = [...purchaseOrderItems, value];
+
+    emit(PurchaseOrderState(state.purchaseOrder.copyWith(items: updatedPurchaseOrderItems)));
+  }
+
   void removeItem(int id) {
     final purchaseOrderItems = state.purchaseOrder.items?.toList() ?? [];
     purchaseOrderItems.removeWhere((variant) => variant.id == id);
@@ -55,6 +63,11 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
   void setTax(double value) => emit(PurchaseOrderState(state.purchaseOrder.copyWith(tax: value)));
 
   void setDisount(double value) => emit(PurchaseOrderState(state.purchaseOrder.copyWith(discount: value)));
+
+  void setTotal(double value) {
+    print(value);
+    emit(PurchaseOrderState(state.purchaseOrder.copyWith(totalAmount: value)));
+  }
 
   void setNotes(String value) => emit(PurchaseOrderState(state.purchaseOrder.copyWith(notes: value)));
 }

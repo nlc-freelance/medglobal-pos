@@ -71,7 +71,7 @@ class _CategoryDropdownState extends State<CategoryDropdown> {
                 selectedItem: widget.selectedItem ?? _addedCategoryAsSelectedItem,
                 onSelectItem: (value) => widget.onChanged(value),
                 itemAsString: (item) => item.name!,
-                asyncItemsCallback: GetIt.I<CategoryRepository>().getAllCategories(),
+                asyncItemsCallback: (_) => GetIt.I<CategoryRepository>().getAllCategories(),
               ),
             ),
           ),

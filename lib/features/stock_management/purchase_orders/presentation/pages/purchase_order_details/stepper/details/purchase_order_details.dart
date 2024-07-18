@@ -17,20 +17,30 @@ class PurchaseOrderDetails extends StatefulWidget {
 }
 
 class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
+  late TextEditingController _notesController;
+
+  @override
+  void initState() {
+    super.initState();
+    final purchaseOrder = context.read<PurchaseOrderCubit>().state.purchaseOrder;
+
+    _notesController = TextEditingController(text: purchaseOrder.notes)
+      ..addListener(() => context.read<PurchaseOrderCubit>().setNotes(_notesController.text));
+  }
+
   @override
   void dispose() {
+    _notesController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final tax = context.select((PurchaseOrderCubit cubit) => cubit.state.purchaseOrder.tax);
-    final discount = context.select((PurchaseOrderCubit cubit) => cubit.state.purchaseOrder.tax);
-
     return BlocSelector<PurchaseOrderCubit, PurchaseOrderState, PurchaseOrder>(
       selector: (state) => state.purchaseOrder,
       builder: (context, purchaseOrder) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const UIVerticalSpace(20),
             const PageSectionTitle(title: 'General Information'),
@@ -54,13 +64,18 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
                       ? DateFormat.yMd().format(purchaseOrder.createdAt!)
                       : Strings.empty,
                 ),
-
-                /// If status is For Receiving / Completed / Cancelled
-                if (purchaseOrder.status != StockActionStatus.NEW)
+                if (purchaseOrder.status == StockActionStatus.FOR_RECEIVING)
                   LabelValue.text(
-                    label: 'Received Date',
+                    label: 'Estimated Date of Arrival',
                     value: purchaseOrder.estimatedDateOfArrival != null
                         ? DateFormat.yMd().format(purchaseOrder.estimatedDateOfArrival!)
+                        : Strings.empty,
+                  ),
+                if (purchaseOrder.status == StockActionStatus.COMPLETED)
+                  LabelValue.text(
+                    label: 'Received Date',
+                    value: purchaseOrder.updatedAt != null
+                        ? DateFormat.yMd().format(purchaseOrder.updatedAt!)
                         : Strings.empty,
                   ),
                 LabelValue.text(
@@ -71,12 +86,11 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
                   label: 'Target Branch',
                   value: purchaseOrder.branch?.name,
                 ),
-
-                /// If status is 'New'
                 if (purchaseOrder.status == StockActionStatus.NEW)
                   LabelValue.button(
                     label: 'Estimated Date of Arrival',
                     button: DatePickerPopup(
+                      selectedDate: purchaseOrder.estimatedDateOfArrival,
                       onSelect: (date) => context.read<PurchaseOrderCubit>().setEstimatedDateOfArrival(date),
                     ),
                   )
@@ -85,19 +99,15 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
             const UIVerticalSpace(40),
             purchaseOrder.status == StockActionStatus.NEW
                 ? const ItemsToOrderDataGrid()
-                : ItemsReceivedDataGrid(
-                    itemsReceived: purchaseOrder.items ?? [],
-                    isReceiving: purchaseOrder.status == StockActionStatus.FOR_RECEIVING,
-                    tax: tax ?? 0,
-                    discount: discount ?? 0,
-                  ),
+                : ItemsReceivedDataGrid(isReceiving: purchaseOrder.status == StockActionStatus.FOR_RECEIVING),
             const UIVerticalSpace(60),
             const PageSectionTitle(title: 'Notes'),
-            UITextField.noLabel(
-              hint: 'Enter notes here',
-
-              ///
-            ),
+            purchaseOrder.status == StockActionStatus.COMPLETED || purchaseOrder.status == StockActionStatus.CANCELLED
+                ? UIText.bodyRegular(purchaseOrder.notes ?? Strings.empty)
+                : UITextField.noLabel(
+                    controller: _notesController,
+                    hint: 'Enter notes here',
+                  ),
             const UIVerticalSpace(60),
           ],
         );

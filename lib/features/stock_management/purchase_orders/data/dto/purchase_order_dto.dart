@@ -43,8 +43,20 @@ class PurchaseOrderDto extends Equatable {
   });
 
   @override
-  List<Object?> get props =>
-      [id, estimatedDateOfArrival, branch, supplier, status, totalAmount, items, notes, createdAt, updatedAt];
+  List<Object?> get props => [
+        id,
+        estimatedDateOfArrival,
+        branch,
+        supplier,
+        status,
+        totalAmount,
+        tax,
+        discount,
+        items,
+        notes,
+        createdAt,
+        updatedAt
+      ];
 
   factory PurchaseOrderDto.fromJson(Map<String, dynamic> json) => _$PurchaseOrderDtoFromJson(json);
 
@@ -54,6 +66,8 @@ class PurchaseOrderDto extends Equatable {
         supplier: supplier,
         status: StatusMapper.status(status),
         totalAmount: totalAmount,
+        tax: tax,
+        discount: discount,
         estimatedDateOfArrival: estimatedDateOfArrival,
         notes: notes,
         items: items?.map((item) => item.toEntity()).toList() ?? [],
