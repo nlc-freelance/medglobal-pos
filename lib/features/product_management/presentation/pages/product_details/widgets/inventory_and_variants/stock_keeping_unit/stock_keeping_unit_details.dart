@@ -79,7 +79,7 @@ class StockKeepingUnitDetails extends StatelessWidget {
                         hint: 'Select suppliers',
                         isRequired: true,
                         itemAsString: (supplier) => supplier.name,
-                        asyncItemsCallback: (_) => GetIt.I<SupplierRepository>().getAllSuppliers(),
+                        asyncItemsCallback: GetIt.I<SupplierRepository>().getAllSuppliers(),
                         onSelectItems: (suppliers) => context.read<VariantFormCubit>().setSuppliers(suppliers),
                         selectedItems: variant?.suppliers ?? [],
                         validator: (_) {

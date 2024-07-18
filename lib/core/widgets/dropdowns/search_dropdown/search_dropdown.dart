@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/search_dropdown/single_select_dropdown.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
-import 'package:medglobal_shared/styles/exports.dart';
 
 enum DropdownType { single, multi }
 
@@ -19,7 +18,6 @@ class SearchDropdown<T> extends StatefulWidget {
     this.isLeftLabel = false,
     this.isLeftLabelInDialog = false,
     this.showSelectedItems = true,
-    this.isSearchViaApiRequest = false,
     this.selectedItem,
     this.selectedItems,
     this.onSelectItem,
@@ -34,9 +32,8 @@ class SearchDropdown<T> extends StatefulWidget {
   final bool isLeftLabel;
   final bool isLeftLabelInDialog;
   final bool showSelectedItems;
-  final bool isSearchViaApiRequest;
   final String Function(T item) itemAsString;
-  final Future<List<T>> Function(String search) asyncItemsCallback;
+  final Future<List<T>> asyncItemsCallback;
   final Function(T value)? onSelectItem;
   final Function(List<T> value)? onSelectItems;
   final T? selectedItem;
@@ -47,7 +44,7 @@ class SearchDropdown<T> extends StatefulWidget {
     required String hint,
     required String label,
     required String Function(T item) itemAsString,
-    required Future<List<T>> Function(String search) asyncItemsCallback,
+    required Future<List<T>> asyncItemsCallback,
     required Function(List<T> value)? onSelectItems,
     bool isSearchViaApiRequest = false,
     bool isRequired = false,
@@ -61,7 +58,6 @@ class SearchDropdown<T> extends StatefulWidget {
         label: label,
         itemAsString: itemAsString,
         asyncItemsCallback: asyncItemsCallback,
-        isSearchViaApiRequest: isSearchViaApiRequest,
         showSelectedItems: showSelectedItems,
         onSelectItems: onSelectItems,
         selectedItems: selectedItems,
@@ -73,7 +69,7 @@ class SearchDropdown<T> extends StatefulWidget {
     required String hint,
     required String label,
     required String Function(T item) itemAsString,
-    required Future<List<T>> Function(String search) asyncItemsCallback,
+    required Future<List<T>> asyncItemsCallback,
     required Function(T value) onSelectItem,
     bool isRequired = false,
     bool isLeftLabel = false,
@@ -173,7 +169,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
                       selectedItem: widget.selectedItem,
                     )
                   : DropdownSearch<T>.multiSelection(
-                      asyncItems: (value) async => await widget.asyncItemsCallback(value),
+                      asyncItems: (_) async => await widget.asyncItemsCallback,
                       itemAsString: (item) => widget.itemAsString(item),
                       compareFn: (item1, item2) => item1 == item2,
                       autoValidateMode: AutovalidateMode.onUserInteraction,
@@ -183,7 +179,7 @@ class _SearchDropdownState<T> extends State<SearchDropdown<T>> {
                         fit: FlexFit.loose,
                         constraints: const BoxConstraints(maxHeight: 240),
                         // Local search, change if going to search via API request
-                        searchDelay: Duration(milliseconds: widget.isSearchViaApiRequest ? 3 : 0),
+                        searchDelay: const Duration(milliseconds: 0),
                         itemBuilder: (context, item, isSelected) => ListTile(
                           dense: true,
                           title: Text(widget.itemAsString(item), style: UIStyleText.chip),

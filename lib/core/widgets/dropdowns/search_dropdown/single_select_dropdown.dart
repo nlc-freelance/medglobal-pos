@@ -17,13 +17,13 @@ class SingleSelectDropdown<T> extends StatelessWidget {
   final String hint;
   final String label;
   final String Function(T item) itemAsString;
-  final Future<List<T>> Function(String search) asyncItemsCallback;
+  final Future<List<T>> asyncItemsCallback;
   final Function(T value) onSelectItem;
   final T? selectedItem;
 
   @override
   Widget build(BuildContext context) => DropdownSearch<T>(
-        asyncItems: (value) async => await asyncItemsCallback(value),
+        asyncItems: (_) async => await asyncItemsCallback,
         itemAsString: (item) => itemAsString(item),
         onChanged: (value) => onSelectItem(value as T),
         selectedItem: selectedItem,

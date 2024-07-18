@@ -35,7 +35,7 @@ class InventoryPerBranch extends StatelessWidget {
                       isRequired: true,
                       showSelectedItems: false,
                       itemAsString: (branch) => branch.name,
-                      asyncItemsCallback: (_) => GetIt.I<BranchRepository>().getAllBranches(),
+                      asyncItemsCallback: GetIt.I<BranchRepository>().getAllBranches(),
                       onSelectItems: (branches) => context.read<VariantFormCubit>().addBranchInventory(branches),
                       selectedItems: variant?.getAllBranches() ?? [],
                       validator: (_) {
