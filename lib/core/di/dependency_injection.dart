@@ -47,6 +47,11 @@ import 'package:medglobal_admin_portal/features/stock_management/purchase_orders
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list/purchase_order_list_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/supply_needs/data/api/supply_needs_api.dart';
+import 'package:medglobal_admin_portal/features/stock_management/supply_needs/data/repositories/supply_needs_repository_impl.dart';
+import 'package:medglobal_admin_portal/features/stock_management/supply_needs/domain/repository/supply_needs_repository.dart';
+import 'package:medglobal_admin_portal/features/stock_management/supply_needs/domain/usecases/get_supply_needs_usecase.dart';
+import 'package:medglobal_admin_portal/features/stock_management/supply_needs/presentation/cubit/supply_needs/supply_needs_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/variants/product_variant_api.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/api/supplier_api.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/repositories/supplier_repository_impl.dart';
@@ -79,8 +84,9 @@ void initDependencyInjection() {
     ..registerLazySingleton<CategoryApi>(() => CategoryApiImpl(injector()))
     ..registerLazySingleton<ProductApi>(() => ProductApiImpl(injector()))
     ..registerLazySingleton<BranchApi>(() => BranchApiImpl(injector()))
-    ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(injector()))
     ..registerLazySingleton<ProductVariantApi>(() => ProductVariantApiImpl(injector()))
+    ..registerLazySingleton<SupplyNeedsApi>(() => SupplyNeedsApiImpl(injector()))
+    ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(injector()))
 
     /// Repository
     ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(injector()))
@@ -88,6 +94,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(injector()))
     ..registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(injector()))
     ..registerLazySingleton<BranchRepository>(() => BranchRepositoryImpl(injector()))
+    ..registerLazySingleton<SupplyNeedsRepository>(() => SupplyNeedsRepositoryImpl(injector()))
     ..registerLazySingleton<PurchaseOrderRepository>(() => PurchaseOrderRepositoryImpl(injector()))
 
     /// Usecases
@@ -117,6 +124,9 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => DeleteProductUseCase(injector()))
 
     /// Stock Management
+    /// Supply Needs
+    ..registerLazySingleton(() => GetSupplyNeedsUseCase(injector()))
+
     /// Purchase Order
     ..registerLazySingleton(() => GetPurchaseOrdersUsecase(injector()))
     ..registerLazySingleton(() => GetPurchaseOrderByIdUsecase(injector()))
@@ -139,5 +149,6 @@ void initDependencyInjection() {
     ..registerFactory(() => PurchaseOrderListCubit(injector()))
     ..registerFactory(() => PurchaseOrderCubit())
     ..registerFactory(() => PurchaseOrderRemoteCubit(injector(), injector(), injector()))
-    ..registerFactory(() => NewPurchaseOrderCubit());
+    ..registerFactory(() => NewPurchaseOrderCubit())
+    ..registerFactory(() => SupplyNeedsCubit(injector()));
 }

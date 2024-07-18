@@ -34,6 +34,28 @@ class ApiService {
     }
   }
 
+  /// 'data' in json response is List of objects instead of just an object
+  Future<ApiResponse<T>> data<T>(
+    String endpoint, {
+    JSON? queryParams,
+    required T Function(JSON responseBody) converter,
+  }) async {
+    try {
+      final response = await _dioService.get(endpoint, queryParams: queryParams);
+      List<Object?> data = response.data;
+      final items = data.map((item) => converter(item as JSON)).toList();
+
+      return ApiResponse(
+        message: response.message,
+        items: items,
+      );
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<T> get<T>(
     String endpoint, {
     JSON? queryParams,

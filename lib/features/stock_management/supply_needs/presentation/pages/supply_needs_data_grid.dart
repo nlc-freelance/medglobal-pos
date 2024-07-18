@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
-import 'package:medglobal_admin_portal/features/stock_management/supply_needs/domain/supply_need.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
+import 'package:medglobal_admin_portal/features/stock_management/supply_needs/domain/entities/supply_need.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class SupplyNeedsDataGrid extends StatefulWidget {
-  const SupplyNeedsDataGrid({super.key});
+  const SupplyNeedsDataGrid(this.supplyNeeds, {super.key});
+
+  final List<SupplyNeed> supplyNeeds;
 
   @override
   State<SupplyNeedsDataGrid> createState() => _SupplyNeedsDataGridState();
@@ -22,7 +22,7 @@ class _SupplyNeedsDataGridState extends State<SupplyNeedsDataGrid> {
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    _supplyNeedsDataSource = SupplyNeedsDataSource(supplyNeedsMock);
+    _supplyNeedsDataSource = SupplyNeedsDataSource(widget.supplyNeeds);
     _supplyNeedsDataSource.addColumnGroup(ColumnGroup(name: 'branch', sortGroupRows: false));
   }
 
@@ -35,16 +35,17 @@ class _SupplyNeedsDataGridState extends State<SupplyNeedsDataGrid> {
         child: SfDataGridTheme(
           data: DataGridUtil.baseStyle,
           child: SfDataGrid(
-              source: _supplyNeedsDataSource,
-              controller: _dataGridController,
-              columns: DataGridUtil.getColumns(DataGridColumn.SUPPLY_NEEDS),
-              shrinkWrapRows: true,
-              allowExpandCollapseGroup: true,
-              navigationMode: GridNavigationMode.row,
-              columnWidthMode: ColumnWidthMode.fill,
-              headerGridLinesVisibility: GridLinesVisibility.none,
-              groupCaptionTitleFormat: '{Key} ({ItemsCount})',
-              onQueryRowHeight: (details) => details.getIntrinsicRowHeight(details.rowIndex)),
+            source: _supplyNeedsDataSource,
+            controller: _dataGridController,
+            columns: DataGridUtil.getColumns(DataGridColumn.SUPPLY_NEEDS),
+            shrinkWrapRows: true,
+            // allowExpandCollapseGroup: true,
+            columnWidthMode: ColumnWidthMode.fill,
+            headerGridLinesVisibility: GridLinesVisibility.none,
+            gridLinesVisibility: GridLinesVisibility.none,
+            groupCaptionTitleFormat: '{Key} ({ItemsCount})',
+            onQueryRowHeight: (details) => details.getIntrinsicRowHeight(details.rowIndex),
+          ),
         ),
       ),
     );
@@ -69,12 +70,12 @@ class SupplyNeedsDataSource extends DataGridSource {
 
   @override
   Widget? buildGroupCaptionCellWidget(RowColumnIndex rowColumnIndex, String summaryValue) {
-    return HoverBuilder(
-      builder: (isHover) => Container(
-        color: UIColors.background,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-        child: UIText.labelSemiBold(summaryValue, color: UIColors.textRegular),
-      ),
+    return Container(
+      decoration: rowColumnIndex.rowIndex == 1
+          ? const BoxDecoration(color: UIColors.background)
+          : UIStyleContainer.topBorder.copyWith(color: UIColors.background),
+      padding: const EdgeInsets.only(left: 15, bottom: 0, top: 16),
+      child: UIText.labelSemiBold(summaryValue, color: UIColors.textDark),
     );
   }
 
@@ -111,49 +112,3 @@ class SupplyNeedsDataSource extends DataGridSource {
         _ => UIText.bodyRegular(cell.value.toString()),
       };
 }
-
-final supplyNeedsMock = [
-  const SupplyNeed(
-    id: 1,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    variantName: 'Product Variant 1',
-    sku: 'PDV0001',
-    qty: 10,
-    warningStock: 20,
-    idealStock: 50,
-    suppliers: [],
-  ),
-  const SupplyNeed(
-    id: 2,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    variantName: 'Product Variant 2',
-    sku: 'PDV0002',
-    qty: 15,
-    warningStock: 20,
-    idealStock: 80,
-    suppliers: [],
-  ),
-  const SupplyNeed(
-    id: 3,
-    branch: Branch(id: 2, name: 'Pasig Branch'),
-    variantName: 'Product 1 Variant 1',
-    sku: 'PDV0011',
-    qty: 10,
-    warningStock: 30,
-    idealStock: 50,
-    suppliers: [
-      Supplier(id: 1, name: 'ABC Mart'),
-      Supplier(id: 2, name: 'UNILAB'),
-    ],
-  ),
-  const SupplyNeed(
-    id: 4,
-    branch: Branch(id: 2, name: 'Pasig Branch'),
-    variantName: 'Product 1 Variant 2',
-    sku: 'PDV0022',
-    qty: 15,
-    warningStock: 30,
-    idealStock: 70,
-    suppliers: [],
-  ),
-];
