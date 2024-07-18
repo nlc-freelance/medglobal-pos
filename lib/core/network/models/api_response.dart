@@ -19,7 +19,8 @@ class ApiResponse<T> {
       message: json['message'],
       data: json.keys.contains('data') ? json['data'] : null,
       // items: json.keys.contains('data') ? json['data']['items'] : null,
-      pageInfo: json.keys.contains('data') && json['data']['page'] != null ? PageInfo.fromJson(json['data']) : null,
+      pageInfo: json.keys.contains('page') ? PageInfo.fromJson(json['data']) : null,
+      // pageInfo: json.keys.contains('data') && json['data']['page'] != null ? PageInfo.fromJson(json['data']) : null,
     );
   }
 

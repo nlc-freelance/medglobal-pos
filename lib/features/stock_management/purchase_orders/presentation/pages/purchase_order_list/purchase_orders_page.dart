@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
-import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list/purchase_order_list_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_data_grid.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PurchaseOrdersPage extends StatefulWidget {
@@ -52,8 +49,6 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    final columns = DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -127,7 +122,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
               );
             }
             return DataGridLoading(
-              columns: columns,
+              columns: DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS, showId: true),
               source: PurchaseOrderDataSource([]),
             );
           },
@@ -136,60 +131,3 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
     );
   }
 }
-
-final purchaseOrderMock = [
-  PurchaseOrder(
-    id: 1,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.NEW,
-    estimatedDateOfArrival: DateTime.now(),
-    createdAt: DateTime.now(),
-  ),
-  PurchaseOrder(
-    id: 2,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.FOR_RECEIVING,
-    estimatedDateOfArrival: DateTime.now(),
-    createdAt: DateTime.now(),
-  ),
-  PurchaseOrder(
-    id: 3,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.COMPLETED,
-    estimatedDateOfArrival: DateTime.now(),
-    createdAt: DateTime.now(),
-  ),
-  PurchaseOrder(
-    id: 4,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.CANCELLED,
-    estimatedDateOfArrival: DateTime.now(),
-    createdAt: DateTime.now(),
-  ),
-  PurchaseOrder(
-    id: 4,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.SHIPPED,
-    estimatedDateOfArrival: DateTime.now(),
-    createdAt: DateTime.now(),
-  ),
-  PurchaseOrder(
-    id: 4,
-    branch: Branch(id: 1, name: 'Manila Branch'),
-    supplier: Supplier(id: 1, name: 'UNILAB'),
-    totalAmount: 100,
-    status: StockActionStatus.IN_PROGRESS,
-    estimatedDateOfArrival: DateTime.now(),
-    createdAt: DateTime.now(),
-  ),
-];

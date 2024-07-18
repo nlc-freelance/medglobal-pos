@@ -44,7 +44,7 @@ class DataGridUtil {
         gridLineStrokeWidth: 0.8,
 
         /// Column group icon indent
-        indentColumnWidth: 20,
+        indentColumnWidth: 0,
         indentColumnColor: UIColors.background,
         groupExpanderIcon: Assets.icons.arrowDown.svg(width: 10, colorFilter: UIColors.textDark.toColorFilter),
       );
