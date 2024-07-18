@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/search_dropdown/single_select_dropdown.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
-import 'package:medglobal_shared/styles/exports.dart';
 
 enum DropdownType { single, multi }
 
@@ -47,6 +46,7 @@ class SearchDropdown<T> extends StatefulWidget {
     required String Function(T item) itemAsString,
     required Future<List<T>> asyncItemsCallback,
     required Function(List<T> value)? onSelectItems,
+    bool isSearchViaApiRequest = false,
     bool isRequired = false,
     bool showSelectedItems = true,
     List<T>? selectedItems,

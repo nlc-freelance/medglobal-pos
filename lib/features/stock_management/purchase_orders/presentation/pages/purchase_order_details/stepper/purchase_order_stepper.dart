@@ -105,9 +105,11 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                         isLoading: state is PurchaseOrderSaveAndMarkAsShippedLoading,
                         onClick: () {
                           context.read<PurchaseOrderRemoteCubit>().update(
-                                /// if purchaseOrderItems has negative id (added locally) then pass PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS else PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
-
-                                PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
+                                /// If purchaseOrderItems has negative id (added locally)
+                                /// Pass SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS else SAVE_AND_MARK_AS_SHIPPED
+                                purchaseOrder.items?.any((item) => item.id! < 0) == true
+                                    ? PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS
+                                    : PurchaseOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
                                 id: purchaseOrder.id!,
                                 purchaseOrder: purchaseOrder,
                               );

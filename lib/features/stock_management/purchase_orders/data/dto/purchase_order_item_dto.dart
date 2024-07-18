@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/features/product_management/data/dto/variant_dto.dart';
+import 'package:medglobal_admin_portal/features/stock_management/variants/product_variant_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 
 part 'purchase_order_item_dto.g.dart';
@@ -8,7 +8,7 @@ part 'purchase_order_item_dto.g.dart';
 @JsonSerializable()
 class PurchaseOrderItemDto extends Equatable {
   final int? id;
-  final VariantDto? variant;
+  final ProductVariantDto? variant;
   @JsonKey(name: 'orderedQuantity')
   final int? qtyToOrder;
   @JsonKey(name: 'actualQuantity')

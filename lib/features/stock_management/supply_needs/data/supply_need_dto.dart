@@ -10,30 +10,30 @@ part 'supply_need_dto.g.dart';
 class SupplyNeedDto extends Equatable {
   final int? id;
   final Branch? branch;
-  final List<SupplyNeedItemDto>? products;
+  final List<SupplyNeedItemDto>? items;
 
   const SupplyNeedDto({
     this.id,
     this.branch,
-    this.products,
+    this.items,
   });
 
   @override
-  List<Object?> get props => [id, branch, products];
+  List<Object?> get props => [id, branch, items];
 
   factory SupplyNeedDto.fromJson(Map<String, dynamic> json) => _$SupplyNeedDtoFromJson(json);
 
   List<SupplyNeed> toEntity() =>
-      products
-          ?.map((product) => SupplyNeed(
+      items
+          ?.map((item) => SupplyNeed(
                 id: id,
                 branch: branch,
-                variantName: '${product.variant?.product?.name} ${product.variant?.name}',
-                sku: product.variant?.sku,
-                qty: product.qty,
-                warningStock: product.variant?.warningStock ?? 0,
-                idealStock: product.variant?.idealStock ?? 0,
-                suppliers: product.variant?.suppliers ?? [],
+                variantName: '${item.variant?.product?.name} ${item.variant?.name}',
+                sku: item.variant?.sku,
+                qty: item.qty,
+                warningStock: item.variant?.warningStock ?? 0,
+                idealStock: item.variant?.idealStock ?? 0,
+                // suppliers: item.variant?.suppliers ?? [],
               ))
           .toList() ??
       [];

@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/utils/datetime_converter.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/category.dart';
 import 'package:medglobal_admin_portal/features/product_management/domain/entities/product/variant.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -36,6 +35,8 @@ class Product extends Equatable {
 
   @override
   List<Object?> get props => [id, name, category, imageUrl, variants, createdAt, updatedAt, isSelected];
+
+  factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductToJson(this);
 

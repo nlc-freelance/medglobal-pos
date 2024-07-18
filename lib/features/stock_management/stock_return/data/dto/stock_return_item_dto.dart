@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/features/product_management/data/dto/variant_dto.dart';
+import 'package:medglobal_admin_portal/features/stock_management/variants/product_variant_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_item.dart';
 
 part 'stock_return_item_dto.g.dart';
@@ -8,7 +9,7 @@ part 'stock_return_item_dto.g.dart';
 @JsonSerializable()
 class StockReturnItemDto extends Equatable {
   final int? id;
-  final VariantDto? variant;
+  final ProductVariantDto? variant;
   @JsonKey(name: 'quantity')
   final int? qtyToReturn;
   final double? supplierPrice;

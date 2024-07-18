@@ -21,7 +21,6 @@ class PurchaseOrder extends Equatable {
   final double? discount;
   final String? notes;
   final List<PurchaseOrderItem>? items;
-
   @DateTimeConverter()
   final DateTime? estimatedDateOfArrival;
   @DateTimeConverter()
@@ -89,11 +88,12 @@ class PurchaseOrder extends Equatable {
                   'variantId': item.variantId,
                   'orderedQuantity': item.qtyToOrder,
                   'supplierPrice': item.supplierPrice,
-                  'estimatedDateOfArrival': estimatedDateOfArrival?.toIso8601String(),
-                  'tax': tax,
-                  'discount': discount,
                 })
             .toList(),
+        'estimatedDateOfArrival': estimatedDateOfArrival?.toIso8601String(),
+        'tax': tax,
+        'discount': discount,
+        'notes': notes,
       };
 
   JSON toSaveAndMarkAsShippedWithNewItemsPayload() => {
@@ -103,11 +103,12 @@ class PurchaseOrder extends Equatable {
                   'variantId': item.variantId,
                   'orderedQuantity': item.qtyToOrder,
                   'supplierPrice': item.supplierPrice,
-                  'estimatedDateOfArrival': estimatedDateOfArrival?.toIso8601String(),
-                  'tax': tax,
-                  'discount': discount,
                 })
             .toList(),
+        'estimatedDateOfArrival': estimatedDateOfArrival?.toIso8601String(),
+        'tax': tax,
+        'discount': discount,
+        'notes': notes,
       };
 
   JSON toSaveAndMarkAsShippedPayload() => {
@@ -117,11 +118,12 @@ class PurchaseOrder extends Equatable {
                   'id': item.id,
                   'orderedQuantity': item.qtyToOrder,
                   'supplierPrice': item.supplierPrice,
-                  'estimatedDateOfArrival': estimatedDateOfArrival?.toIso8601String(),
-                  'tax': tax,
-                  'discount': discount,
                 })
             .toList(),
+        'estimatedDateOfArrival': estimatedDateOfArrival?.toIso8601String(),
+        'tax': tax,
+        'discount': discount,
+        'notes': notes,
       };
 
   JSON toSaveAndReceivedPayload() => {
@@ -132,6 +134,7 @@ class PurchaseOrder extends Equatable {
                   'receivedQuantity': item.qtyReceived,
                 })
             .toList(),
+        'notes': notes,
       };
 
   JSON toCancelPayload() => {'status': 'cancelled'};

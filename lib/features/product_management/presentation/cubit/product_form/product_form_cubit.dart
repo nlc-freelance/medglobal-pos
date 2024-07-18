@@ -20,9 +20,9 @@ class ProductFormCubit extends Cubit<ProductFormState> {
 
   void addVariant(Variant value) {
     final variants = state.product?.variants?.toList();
-    final addedVariants = [...?variants, value];
+    final updatedVariants = [...?variants, value];
 
-    emit(ProductFormState(state.product?.copyWith(variants: addedVariants)));
+    emit(ProductFormState(state.product?.copyWith(variants: updatedVariants)));
   }
 
   void updateVariant(int id, Variant value) {

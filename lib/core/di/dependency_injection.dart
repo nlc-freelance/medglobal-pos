@@ -47,6 +47,7 @@ import 'package:medglobal_admin_portal/features/stock_management/purchase_orders
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list/purchase_order_list_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/variants/product_variant_api.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/api/supplier_api.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/repositories/supplier_repository_impl.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/repositories/supplier_repository.dart';
@@ -72,13 +73,14 @@ void initDependencyInjection() {
     ..registerSingleton<ApiService>(ApiService(injector()))
     ..registerSingleton<AuthService>(AuthService())
 
-    /// Datasource
+    /// API
     ..registerLazySingleton<AuthApi>(() => AuthApiImpl(injector()))
     ..registerLazySingleton<SupplierApi>(() => SupplierApiImpl(injector()))
     ..registerLazySingleton<CategoryApi>(() => CategoryApiImpl(injector()))
     ..registerLazySingleton<ProductApi>(() => ProductApiImpl(injector()))
     ..registerLazySingleton<BranchApi>(() => BranchApiImpl(injector()))
     ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(injector()))
+    ..registerLazySingleton<ProductVariantApi>(() => ProductVariantApiImpl(injector()))
 
     /// Repository
     ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(injector()))
