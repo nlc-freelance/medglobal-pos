@@ -17,7 +17,7 @@ class LabelValue extends StatelessWidget {
   final LabelValueType type;
   final String label;
   final String? value;
-  final StockActionStatus? status;
+  final StockOrderStatus? status;
   final Widget? button;
   final double? chip;
 
@@ -29,7 +29,7 @@ class LabelValue extends StatelessWidget {
 
   factory LabelValue.status({
     required String label,
-    required StockActionStatus status,
+    required StockOrderStatus status,
   }) =>
       LabelValue._(type: LabelValueType.status, label: label, status: status);
 

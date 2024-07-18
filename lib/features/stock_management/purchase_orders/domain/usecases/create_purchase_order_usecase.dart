@@ -5,10 +5,10 @@ import 'package:medglobal_admin_portal/features/stock_management/purchase_orders
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_request.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
 
-class CreatePurchaseOrderUsecase implements UseCase<PurchaseOrder, CreatePurchaseOrderParams> {
+class CreatePurchaseOrderUseCase implements UseCase<PurchaseOrder, CreatePurchaseOrderParams> {
   final PurchaseOrderRepository repository;
 
-  const CreatePurchaseOrderUsecase(this.repository);
+  const CreatePurchaseOrderUseCase(this.repository);
 
   @override
   Future<Either<Failure, PurchaseOrder>> call(CreatePurchaseOrderParams params) =>

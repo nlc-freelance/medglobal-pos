@@ -71,7 +71,7 @@ class StockTakeDetailsPage extends StatelessWidget {
                     ),
                     LabelValue.status(
                       label: 'Status',
-                      status: StockActionStatus.IN_PROGRESS,
+                      status: StockOrderStatus.IN_PROGRESS,
                     ),
                     // if status is Completed
                     ...[

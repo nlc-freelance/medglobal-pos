@@ -34,7 +34,7 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
   }
 
   @override
-  Future<Either<Failure, PurchaseOrderPaginatedList>> getPurchaseOrders({int? page, StockActionStatus? status}) async {
+  Future<Either<Failure, PurchaseOrderPaginatedList>> getPurchaseOrders({int? page, StockOrderStatus? status}) async {
     try {
       final response = await _purchaseOrderApi.getPurchaseOrders(page: page, status: status);
       return Right(response);
@@ -44,7 +44,7 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
   }
 
   @override
-  Future<Either<Failure, void>> update(PurchaseOrderUpdate type,
+  Future<Either<Failure, void>> update(StockOrderUpdate type,
       {required int id, required PurchaseOrder purchaseOrder}) async {
     try {
       return Right(await _purchaseOrderApi.update(type, id: id, purchaseOrder: purchaseOrder));

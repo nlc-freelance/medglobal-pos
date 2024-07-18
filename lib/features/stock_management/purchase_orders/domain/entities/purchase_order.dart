@@ -15,7 +15,7 @@ class PurchaseOrder extends Equatable {
   final int? id;
   final Branch? branch;
   final Supplier? supplier;
-  final StockActionStatus? status;
+  final StockOrderStatus? status;
   final double? totalAmount;
   final double? tax;
   final double? discount;
@@ -77,7 +77,7 @@ class PurchaseOrder extends Equatable {
           DataGridCell<String>(columnName: 'target_branch', value: branch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'supplier', value: supplier?.name ?? Strings.empty),
           DataGridCell<double>(columnName: 'total_amount', value: totalAmount ?? 0),
-          DataGridCell<StockActionStatus>(columnName: 'status', value: status),
+          DataGridCell<StockOrderStatus>(columnName: 'status', value: status),
         ],
       );
 
@@ -143,7 +143,7 @@ class PurchaseOrder extends Equatable {
     int? id,
     Branch? branch,
     Supplier? supplier,
-    StockActionStatus? status,
+    StockOrderStatus? status,
     double? totalAmount,
     double? tax,
     double? discount,

@@ -14,7 +14,7 @@ class StockTake extends Equatable {
   final Branch? branch;
   final Supplier? supplier;
   final bool? isAllSupplier;
-  final StockActionStatus? status;
+  final StockOrderStatus? status;
   final String? description;
   final double? totalQtyDifference;
   final double? totalCostDifference;
@@ -73,7 +73,7 @@ class StockTake extends Equatable {
             columnName: 'supplier',
             value: isAllSupplier == true ? 'All Suppliers' : supplier?.name ?? Strings.empty,
           ),
-          DataGridCell<StockActionStatus>(columnName: 'status', value: status),
+          DataGridCell<StockOrderStatus>(columnName: 'status', value: status),
         ],
       );
 }

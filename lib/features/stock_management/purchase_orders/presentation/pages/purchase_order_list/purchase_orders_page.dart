@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list/purchase_order_list_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -20,7 +20,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    context.read<PurchaseOrderListCubit>().getProducts();
+    context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
   }
 
   @override
@@ -31,19 +31,19 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
 
   void onChangeTab(int index) {
     if (index == 0) {
-      context.read<PurchaseOrderListCubit>().getProducts();
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
     }
     if (index == 1) {
-      context.read<PurchaseOrderListCubit>().getProducts(status: StockActionStatus.NEW);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.NEW);
     }
     if (index == 2) {
-      context.read<PurchaseOrderListCubit>().getProducts(status: StockActionStatus.FOR_RECEIVING);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.FOR_RECEIVING);
     }
     if (index == 3) {
-      context.read<PurchaseOrderListCubit>().getProducts(status: StockActionStatus.COMPLETED);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.COMPLETED);
     }
     if (index == 4) {
-      context.read<PurchaseOrderListCubit>().getProducts(status: StockActionStatus.CANCELLED);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.CANCELLED);
     }
   }
 
@@ -68,10 +68,10 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
           onTap: onChangeTab,
           tabs: [
             const Tab(text: 'All Orders'),
-            Tab(text: StockActionStatus.NEW.label),
-            Tab(text: StockActionStatus.FOR_RECEIVING.label),
-            Tab(text: StockActionStatus.COMPLETED.label),
-            Tab(text: StockActionStatus.CANCELLED.label),
+            Tab(text: StockOrderStatus.NEW.label),
+            Tab(text: StockOrderStatus.FOR_RECEIVING.label),
+            Tab(text: StockOrderStatus.COMPLETED.label),
+            Tab(text: StockOrderStatus.CANCELLED.label),
           ],
           isScrollable: true,
           tabAlignment: TabAlignment.start,
@@ -111,7 +111,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
             ),
           ],
         ),
-        BlocBuilder<PurchaseOrderListCubit, PurchaseOrderListState>(
+        BlocBuilder<PurchaseOrderListRemoteCubit, PurchaseOrderListRemoteState>(
           builder: (context, state) {
             if (state is PurchaseOrderListError) {
               return Text(state.message);

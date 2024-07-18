@@ -29,7 +29,7 @@ class PurchaseOrderItem extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, name, sku, qtyOnHand, qtyToOrder, supplierPrice, qtyReceived, total];
+  List<Object?> get props => [id, variantId, name, sku, qtyOnHand, qtyToOrder, supplierPrice, qtyReceived, total];
 
   factory PurchaseOrderItem.fromJson(Map<String, dynamic> json) => _$PurchaseOrderItemFromJson(json);
 

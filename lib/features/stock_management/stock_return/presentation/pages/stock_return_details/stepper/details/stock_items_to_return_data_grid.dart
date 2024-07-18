@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_item.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/variants/autocomplete_dropdown.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 
-class ItemsToOrderDataGrid extends StatefulWidget {
-  const ItemsToOrderDataGrid({super.key});
+class StockItemsToReturnDataGrid extends StatefulWidget {
+  const StockItemsToReturnDataGrid({super.key});
 
   @override
-  State<ItemsToOrderDataGrid> createState() => _ItemsToOrderDataGridState();
+  State<StockItemsToReturnDataGrid> createState() => _StockItemsToReturnDataGridState();
 }
 
-class _ItemsToOrderDataGridState extends State<ItemsToOrderDataGrid> {
-  List<PurchaseOrderItem> _itemsToOrder = <PurchaseOrderItem>[];
+class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid> {
+  List<StockReturnItem> _itemsToReturn = <StockReturnItem>[];
 
   late DataGridController _dataGridController;
-  late ItemsToOrderDataSource _itemsToOrderDataSource;
+  late StockItemsToReturnDataSource _stockItemsToReturnDataSource;
   late CustomSelectionManager customSelectionManager;
 
   @override
@@ -29,12 +29,12 @@ class _ItemsToOrderDataGridState extends State<ItemsToOrderDataGrid> {
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
-    final purchaseOrder = context.read<PurchaseOrderCubit>().state.purchaseOrder;
-    final tax = purchaseOrder.tax ?? 0;
-    final discount = purchaseOrder.discount ?? 0;
+    final stockReturn = context.read<StockReturnCubit>().state.stockReturn;
+    final tax = stockReturn.tax ?? 0;
+    final discount = stockReturn.discount ?? 0;
 
-    _itemsToOrder = purchaseOrder.items ?? [];
-    _itemsToOrderDataSource = ItemsToOrderDataSource(_itemsToOrder, context, tax, discount);
+    _itemsToReturn = stockReturn.items ?? [];
+    _stockItemsToReturnDataSource = StockItemsToReturnDataSource(_itemsToReturn, context, tax, discount);
   }
 
   @override
@@ -49,44 +49,44 @@ class _ItemsToOrderDataGridState extends State<ItemsToOrderDataGrid> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         PageSectionTitle(
-          title: 'Items to Order',
+          title: 'Items to Return',
           action: SizedBox(
             width: 226,
             child: AutocompleteDropdown(
-              supplierId: context.read<PurchaseOrderCubit>().state.purchaseOrder.supplier?.id,
-              branchId: context.read<PurchaseOrderCubit>().state.purchaseOrder.branch?.id,
+              supplierId: context.read<StockReturnCubit>().state.stockReturn.supplier?.id,
+              branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
               onSelected: (value) {
-                final purchaseOrderItem = value.toPurchaseOrderItem();
+                final purchaseOrderItem = value.toStockReturnItem();
 
                 /// Add newly added items to the current PO in state
-                context.read<PurchaseOrderCubit>().addItem(purchaseOrderItem);
+                context.read<StockReturnCubit>().addItem(purchaseOrderItem);
               },
             ),
           ),
         ),
-        BlocConsumer<PurchaseOrderCubit, PurchaseOrderState>(
+        BlocConsumer<StockReturnCubit, StockReturnState>(
           listenWhen: (previous, current) =>
-              previous.purchaseOrder.items != current.purchaseOrder.items ||
-              previous.purchaseOrder.totalAmount != current.purchaseOrder.totalAmount,
+              previous.stockReturn.items != current.stockReturn.items ||
+              previous.stockReturn.totalAmount != current.stockReturn.totalAmount,
           listener: (context, state) {
-            _itemsToOrderDataSource._itemsToOrder = state.purchaseOrder.items ?? [];
-            _itemsToOrderDataSource._tax = state.purchaseOrder.tax ?? 0;
-            _itemsToOrderDataSource._discount = state.purchaseOrder.discount ?? 0;
+            _stockItemsToReturnDataSource._itemsToReturn = state.stockReturn.items ?? [];
+            _stockItemsToReturnDataSource._tax = state.stockReturn.tax ?? 0;
+            _stockItemsToReturnDataSource._discount = state.stockReturn.discount ?? 0;
 
-            _itemsToOrderDataSource.buildDataGridRows();
-            _itemsToOrderDataSource.updateDataGridSource();
+            _stockItemsToReturnDataSource.buildDataGridRows();
+            _stockItemsToReturnDataSource.updateDataGridSource();
           },
-          buildWhen: (previous, current) => previous.purchaseOrder.items != current.purchaseOrder.items,
-          builder: (_, state) => state.purchaseOrder.items?.isEmpty == true
+          buildWhen: (previous, current) => previous.stockReturn.items != current.stockReturn.items,
+          builder: (_, state) => state.stockReturn.items?.isEmpty == true
               ? DataGridNoData(
-                  columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS), source: _itemsToOrderDataSource)
+                  columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS), source: _stockItemsToReturnDataSource)
               : ClipRect(
                   clipper: HorizontalBorderClipper(),
                   child: SfDataGridTheme(
                     data: DataGridUtil.cellNavigationStyle,
                     child: SfDataGrid(
-                      source: _itemsToOrderDataSource,
-                      columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS),
+                      source: _stockItemsToReturnDataSource,
+                      columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS),
                       controller: _dataGridController,
                       selectionManager: customSelectionManager,
                       shrinkWrapRows: true,
@@ -96,22 +96,6 @@ class _ItemsToOrderDataGridState extends State<ItemsToOrderDataGrid> {
                       columnWidthMode: ColumnWidthMode.fill,
                       headerGridLinesVisibility: GridLinesVisibility.none,
                       editingGestureType: EditingGestureType.tap,
-                      // footerHeight: showNoItemsPlaceholder ? 100 : 0,
-                      // footer: _itemsToOrderDataSource.rows.isEmpty
-                      //     ? Padding(
-                      //         padding: const EdgeInsets.all(8.0),
-                      //         child: Column(
-                      //           children: [
-                      //             Assets.icons.cube.svg(),
-                      //             const UIVerticalSpace(12),
-                      //             UIText.labelMedium(
-                      //               'No data available, please add items to your order.',
-                      //               color: UIColors.textMuted,
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       )
-                      //     : const SizedBox.shrink(),
                       tableSummaryRows: [
                         GridTableSummaryRow(
                           color: UIColors.background,
@@ -195,16 +179,16 @@ class _ItemsToOrderDataGridState extends State<ItemsToOrderDataGrid> {
   }
 }
 
-class ItemsToOrderDataSource extends DataGridSource {
-  ItemsToOrderDataSource(List<PurchaseOrderItem> itemsToOrder, BuildContext context, double tax, double discount) {
-    _itemsToOrder = itemsToOrder;
+class StockItemsToReturnDataSource extends DataGridSource {
+  StockItemsToReturnDataSource(List<StockReturnItem> itemsToReturn, BuildContext context, double tax, double discount) {
+    _itemsToReturn = itemsToReturn;
     _context = context;
     _tax = tax;
     _discount = discount;
     buildDataGridRows();
   }
 
-  List<PurchaseOrderItem> _itemsToOrder = [];
+  List<StockReturnItem> _itemsToReturn = [];
 
   List<DataGridRow> dataGridRows = [];
 
@@ -213,7 +197,7 @@ class ItemsToOrderDataSource extends DataGridSource {
 
   late BuildContext _context;
 
-  void buildDataGridRows() => dataGridRows = _itemsToOrder.map((item) => item.toDataGridRowItems()).toList();
+  void buildDataGridRows() => dataGridRows = _itemsToReturn.map((item) => item.toDataGridRowItemsToReturn()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -234,7 +218,7 @@ class ItemsToOrderDataSource extends DataGridSource {
   }
 
   Widget cellBuilder(String key, DataGridCell cell, int id) => switch (key) {
-        'qty_to_order' || 'supplier_price' => Container(
+        'qty_to_return' || 'supplier_price' => Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -248,11 +232,7 @@ class ItemsToOrderDataSource extends DataGridSource {
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
               'Delete',
               iconBuilder: (isHover) => Assets.icons.trash.setColorOnHover(isHover),
-              onClick: () {
-                context.read<PurchaseOrderCubit>().removeItem(id);
-                buildDataGridRows();
-                updateDataGridSource();
-              },
+              onClick: () => context.read<StockReturnCubit>().removeItem(id),
             ),
           ),
         _ => UIText.bodyRegular(cell.value.toString()),
@@ -268,7 +248,7 @@ class ItemsToOrderDataSource extends DataGridSource {
 
   @override
   bool onCellBeginEdit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) {
-    if (column.columnName == 'qty_to_order' || column.columnName == 'supplier_price') {
+    if (column.columnName == 'qty_to_return' || column.columnName == 'supplier_price') {
       return true;
     } else {
       return false;
@@ -289,36 +269,36 @@ class ItemsToOrderDataSource extends DataGridSource {
       return;
     }
 
-    if (column.columnName == 'qty_to_order') {
+    if (column.columnName == 'qty_to_return') {
       final newQtyToOrder = int.tryParse(newCellValue);
       double supplierPrice = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
-          DataGridCell<int>(columnName: 'qty_to_order', value: newQtyToOrder);
+          DataGridCell<int>(columnName: 'qty_to_return', value: newQtyToOrder);
 
       /// Compute new total and update the value in the DataGridRows
       double newTotal = (newQtyToOrder ?? 0) * (supplierPrice);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotal);
 
-      _context.read<PurchaseOrderCubit>().setQuantityToOrderPerItem(
-            id: _itemsToOrder[dataRowIndex].id!,
+      _context.read<StockReturnCubit>().setQuantityToReturnPerItem(
+            id: _itemsToReturn[dataRowIndex].id!,
             qty: newQtyToOrder!,
             total: newTotal,
           );
     }
     if (column.columnName == 'supplier_price') {
       final newSupplierPrice = double.tryParse(newCellValue);
-      double qtyToOrder = dataGridRows[dataRowIndex].getCells()[4].value;
+      double qtyToReturn = dataGridRows[dataRowIndex].getCells()[4].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<double>(columnName: 'supplier_price', value: newSupplierPrice);
 
       /// Compute new total and update the value in the DataGridRows
-      double newTotal = (newSupplierPrice ?? 0) * (qtyToOrder);
+      double newTotal = (newSupplierPrice ?? 0) * (qtyToReturn);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotal);
 
-      _context.read<PurchaseOrderCubit>().setSupplierPricePerItem(
-            id: _itemsToOrder[dataRowIndex].id!,
+      _context.read<StockReturnCubit>().setSupplierPricePerItem(
+            id: _itemsToReturn[dataRowIndex].id!,
             price: newSupplierPrice!,
             total: newTotal,
           );
@@ -367,7 +347,6 @@ class ItemsToOrderDataSource extends DataGridSource {
     );
   }
 
-  /// Find a way to display exisiting tax and discount value in the textfield
   TextEditingController taxController = TextEditingController();
   TextEditingController discountController = TextEditingController();
 
@@ -391,7 +370,7 @@ class ItemsToOrderDataSource extends DataGridSource {
       return Focus(
         onFocusChange: (value) {
           if (value == false) {
-            _context.read<PurchaseOrderCubit>().setTotal(
+            _context.read<StockReturnCubit>().setTotal(
                 ((double.parse(summaryValue) + (double.tryParse(taxController.text) ?? 0)) -
                     (double.tryParse(discountController.text) ?? 0)));
           }
@@ -402,8 +381,8 @@ class ItemsToOrderDataSource extends DataGridSource {
               : (discountController..text = discount.toString()),
           cursorHeight: 10.0,
           onChanged: (value) {
-            if (title == 'Tax') _context.read<PurchaseOrderCubit>().setTax(double.tryParse(value) ?? 0);
-            if (title == 'Discount') _context.read<PurchaseOrderCubit>().setDisount(double.tryParse(value) ?? 0);
+            if (title == 'Tax') _context.read<StockReturnCubit>().setTax(double.tryParse(value) ?? 0);
+            if (title == 'Discount') _context.read<StockReturnCubit>().setDisount(double.tryParse(value) ?? 0);
           },
           style: UIStyleText.bodyRegular,
           decoration: const InputDecoration(

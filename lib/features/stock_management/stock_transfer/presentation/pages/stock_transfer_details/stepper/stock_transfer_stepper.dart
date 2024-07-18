@@ -105,13 +105,13 @@ class _StockTransferStepperState extends State<StockTransferStepper> {
               isActive: _currentStep >= 1,
               state: _currentStep > 1 ? StepState.complete : StepState.indexed,
               title: const Text('Edit'),
-              content: const StockTransferDetails(StockActionStatus.NEW),
+              content: const StockTransferDetails(StockOrderStatus.NEW),
             ),
             Step(
               isActive: _currentStep >= 2,
               state: _currentStep > 2 ? StepState.complete : StepState.indexed,
               title: const Text('Shipped'),
-              content: const StockTransferDetails(StockActionStatus.SHIPPED),
+              content: const StockTransferDetails(StockOrderStatus.SHIPPED),
             ),
             Step(
               isActive: _currentStep >= 3,

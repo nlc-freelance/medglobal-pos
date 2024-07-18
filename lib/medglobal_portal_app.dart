@@ -13,8 +13,12 @@ import 'package:medglobal_admin_portal/features/product_management/presentation/
 import 'package:medglobal_admin_portal/features/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list/purchase_order_list_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/new_stock_return/new_stock_return_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/supply_needs/presentation/cubit/supply_needs/supply_needs_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
@@ -40,10 +44,14 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<VariantFormCubit>()),
         BlocProvider(create: (_) => GetIt.I<VariantFormUiCubit>()),
         BlocProvider(create: (_) => GetIt.I<SupplyNeedsCubit>()),
-        BlocProvider(create: (_) => GetIt.I<PurchaseOrderListCubit>()),
-        BlocProvider(create: (_) => GetIt.I<PurchaseOrderCubit>()),
+        BlocProvider(create: (_) => GetIt.I<PurchaseOrderListRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<PurchaseOrderRemoteCubit>()),
+        BlocProvider(create: (_) => GetIt.I<PurchaseOrderCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewPurchaseOrderCubit>()),
+        BlocProvider(create: (_) => GetIt.I<StockReturnListRemoteCubit>()),
+        BlocProvider(create: (_) => GetIt.I<StockReturnRemoteCubit>()),
+        BlocProvider(create: (_) => GetIt.I<StockReturnCubit>()),
+        BlocProvider(create: (_) => GetIt.I<NewStockReturnCubit>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) => AppRouter.router.refresh(),

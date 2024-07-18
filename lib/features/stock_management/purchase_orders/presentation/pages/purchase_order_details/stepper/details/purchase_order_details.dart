@@ -5,8 +5,8 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/items_received_data_grid.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/items_to_order_data_grid.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_items_received_data_grid.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_items_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PurchaseOrderDetails extends StatefulWidget {
@@ -64,14 +64,14 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
                       ? DateFormat.yMd().format(purchaseOrder.createdAt!)
                       : Strings.empty,
                 ),
-                if (purchaseOrder.status == StockActionStatus.FOR_RECEIVING)
+                if (purchaseOrder.status == StockOrderStatus.FOR_RECEIVING)
                   LabelValue.text(
                     label: 'Estimated Date of Arrival',
                     value: purchaseOrder.estimatedDateOfArrival != null
                         ? DateFormat.yMd().format(purchaseOrder.estimatedDateOfArrival!)
                         : Strings.empty,
                   ),
-                if (purchaseOrder.status == StockActionStatus.COMPLETED)
+                if (purchaseOrder.status == StockOrderStatus.COMPLETED)
                   LabelValue.text(
                     label: 'Received Date',
                     value: purchaseOrder.updatedAt != null
@@ -86,7 +86,7 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
                   label: 'Target Branch',
                   value: purchaseOrder.branch?.name,
                 ),
-                if (purchaseOrder.status == StockActionStatus.NEW)
+                if (purchaseOrder.status == StockOrderStatus.NEW)
                   LabelValue.button(
                     label: 'Estimated Date of Arrival',
                     button: DatePickerPopup(
@@ -97,12 +97,12 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
               ],
             ),
             const UIVerticalSpace(40),
-            purchaseOrder.status == StockActionStatus.NEW
-                ? const ItemsToOrderDataGrid()
-                : ItemsReceivedDataGrid(isReceiving: purchaseOrder.status == StockActionStatus.FOR_RECEIVING),
+            purchaseOrder.status == StockOrderStatus.NEW
+                ? const PurchaseItemsDataGrid()
+                : PurchaseItemsReceivedDataGrid(isReceiving: purchaseOrder.status == StockOrderStatus.FOR_RECEIVING),
             const UIVerticalSpace(60),
             const PageSectionTitle(title: 'Notes'),
-            purchaseOrder.status == StockActionStatus.COMPLETED || purchaseOrder.status == StockActionStatus.CANCELLED
+            purchaseOrder.status == StockOrderStatus.COMPLETED || purchaseOrder.status == StockOrderStatus.CANCELLED
                 ? UIText.bodyRegular(purchaseOrder.notes ?? Strings.empty)
                 : UITextField.noLabel(
                     controller: _notesController,

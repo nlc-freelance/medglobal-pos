@@ -108,7 +108,7 @@ enum SupplyNeedsAction {
   const SupplyNeedsAction(this.label);
 }
 
-enum StockActionStatus {
+enum StockOrderStatus {
   NEW('New'),
   FOR_RECEIVING('For Receiving'),
   IN_PROGRESS('In Progress'),
@@ -117,7 +117,15 @@ enum StockActionStatus {
   CANCELLED('Cancelled');
 
   final String label;
-  const StockActionStatus(this.label);
+  const StockOrderStatus(this.label);
+}
+
+enum StockOrderUpdate {
+  SAVE,
+  SAVE_AND_MARK_AS_SHIPPED,
+  SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS,
+  SAVE_AND_RECEIVED,
+  CANCEL,
 }
 
 enum StockTakeItemAction {
@@ -126,12 +134,4 @@ enum StockTakeItemAction {
 
   final String label;
   const StockTakeItemAction(this.label);
-}
-
-enum PurchaseOrderUpdate {
-  SAVE,
-  SAVE_AND_MARK_AS_SHIPPED,
-  SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS,
-  SAVE_AND_RECEIVED,
-  CANCEL,
 }

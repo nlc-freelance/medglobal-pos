@@ -12,7 +12,7 @@ class StockTransfer extends Equatable {
   final int? id;
   final Branch? sourceBranch;
   final Branch? destinationBranch;
-  final StockActionStatus? status;
+  final StockOrderStatus? status;
   @DateTimeConverter()
   final DateTime? completedAt;
   @DateTimeConverter()
@@ -44,7 +44,7 @@ class StockTransfer extends Equatable {
           ),
           DataGridCell<String>(columnName: 'source_branch', value: sourceBranch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'destination_branch', value: destinationBranch?.name ?? Strings.empty),
-          DataGridCell<StockActionStatus>(columnName: 'status', value: status),
+          DataGridCell<StockOrderStatus>(columnName: 'status', value: status),
         ],
       );
 }

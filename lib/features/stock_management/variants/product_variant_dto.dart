@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/features/product_management/data/dto/product_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_item.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/dto/supplier_dto.dart';
 import 'package:uuid/uuid.dart';
 
@@ -47,6 +48,14 @@ class ProductVariantDto extends Equatable {
   /// Add a temporary ID for they are not yet added in the database as products of the current PO.
   /// Used negative to keep track of local vs remote data
   PurchaseOrderItem toPurchaseOrderItem() => PurchaseOrderItem(
+        id: -(const Uuid().v4().hashCode),
+        variantId: id,
+        name: displayName,
+        sku: sku,
+        qtyOnHand: qtyOnHand,
+      );
+
+  StockReturnItem toStockReturnItem() => StockReturnItem(
         id: -(const Uuid().v4().hashCode),
         variantId: id,
         name: displayName,
