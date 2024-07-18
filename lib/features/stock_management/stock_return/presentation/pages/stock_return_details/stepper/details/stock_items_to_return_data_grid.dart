@@ -9,18 +9,18 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 
-class StockReturnOrderDataGrid extends StatefulWidget {
-  const StockReturnOrderDataGrid({super.key});
+class StockItemsToReturnDataGrid extends StatefulWidget {
+  const StockItemsToReturnDataGrid({super.key});
 
   @override
-  State<StockReturnOrderDataGrid> createState() => _StockReturnOrderDataGridState();
+  State<StockItemsToReturnDataGrid> createState() => _StockItemsToReturnDataGridState();
 }
 
-class _StockReturnOrderDataGridState extends State<StockReturnOrderDataGrid> {
+class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid> {
   List<StockReturnItem> _itemsToReturn = <StockReturnItem>[];
 
   late DataGridController _dataGridController;
-  late StockReturnOrderDataSource _stockReturnOrderDataSource;
+  late StockItemsToReturnDataSource _stockItemsToReturnDataSource;
   late CustomSelectionManager customSelectionManager;
 
   @override
@@ -34,7 +34,7 @@ class _StockReturnOrderDataGridState extends State<StockReturnOrderDataGrid> {
     final discount = stockReturn.discount ?? 0;
 
     _itemsToReturn = stockReturn.items ?? [];
-    _stockReturnOrderDataSource = StockReturnOrderDataSource(_itemsToReturn, context, tax, discount);
+    _stockItemsToReturnDataSource = StockItemsToReturnDataSource(_itemsToReturn, context, tax, discount);
   }
 
   @override
@@ -69,23 +69,23 @@ class _StockReturnOrderDataGridState extends State<StockReturnOrderDataGrid> {
               previous.stockReturn.items != current.stockReturn.items ||
               previous.stockReturn.totalAmount != current.stockReturn.totalAmount,
           listener: (context, state) {
-            _stockReturnOrderDataSource._itemsToReturn = state.stockReturn.items ?? [];
-            _stockReturnOrderDataSource._tax = state.stockReturn.tax ?? 0;
-            _stockReturnOrderDataSource._discount = state.stockReturn.discount ?? 0;
+            _stockItemsToReturnDataSource._itemsToReturn = state.stockReturn.items ?? [];
+            _stockItemsToReturnDataSource._tax = state.stockReturn.tax ?? 0;
+            _stockItemsToReturnDataSource._discount = state.stockReturn.discount ?? 0;
 
-            _stockReturnOrderDataSource.buildDataGridRows();
-            _stockReturnOrderDataSource.updateDataGridSource();
+            _stockItemsToReturnDataSource.buildDataGridRows();
+            _stockItemsToReturnDataSource.updateDataGridSource();
           },
           buildWhen: (previous, current) => previous.stockReturn.items != current.stockReturn.items,
           builder: (_, state) => state.stockReturn.items?.isEmpty == true
               ? DataGridNoData(
-                  columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS), source: _stockReturnOrderDataSource)
+                  columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS), source: _stockItemsToReturnDataSource)
               : ClipRect(
                   clipper: HorizontalBorderClipper(),
                   child: SfDataGridTheme(
                     data: DataGridUtil.cellNavigationStyle,
                     child: SfDataGrid(
-                      source: _stockReturnOrderDataSource,
+                      source: _stockItemsToReturnDataSource,
                       columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS),
                       controller: _dataGridController,
                       selectionManager: customSelectionManager,
@@ -179,8 +179,8 @@ class _StockReturnOrderDataGridState extends State<StockReturnOrderDataGrid> {
   }
 }
 
-class StockReturnOrderDataSource extends DataGridSource {
-  StockReturnOrderDataSource(List<StockReturnItem> itemsToReturn, BuildContext context, double tax, double discount) {
+class StockItemsToReturnDataSource extends DataGridSource {
+  StockItemsToReturnDataSource(List<StockReturnItem> itemsToReturn, BuildContext context, double tax, double discount) {
     _itemsToReturn = itemsToReturn;
     _context = context;
     _tax = tax;

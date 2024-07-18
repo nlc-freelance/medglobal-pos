@@ -101,7 +101,7 @@ class DataGridColumn {
     ColumnData('name', 'Variant Name'),
     ColumnData('sku', 'SKU'),
     ColumnData('qty_on_hand', 'Qty on Hand'),
-    ColumnData('qty_to_return', 'Qty Returned'),
+    ColumnData('qty_to_return', 'Returned Qty'),
     ColumnData('supplier_price', 'Supplier Price (PHP)'),
     ColumnData('total', 'Total (PHP)'),
   ];

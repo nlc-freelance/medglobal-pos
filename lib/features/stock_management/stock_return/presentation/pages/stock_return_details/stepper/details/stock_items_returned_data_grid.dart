@@ -7,18 +7,18 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 
-class StockReturnedDataGrid extends StatefulWidget {
-  const StockReturnedDataGrid({super.key});
+class StockItemsReturnedDataGrid extends StatefulWidget {
+  const StockItemsReturnedDataGrid({super.key});
 
   @override
-  State<StockReturnedDataGrid> createState() => _StockReturnedDataGridState();
+  State<StockItemsReturnedDataGrid> createState() => _StockItemsReturnedDataGridState();
 }
 
-class _StockReturnedDataGridState extends State<StockReturnedDataGrid> {
+class _StockItemsReturnedDataGridState extends State<StockItemsReturnedDataGrid> {
   List<StockReturnItem> _itemsReturned = <StockReturnItem>[];
 
   late DataGridController _dataGridController;
-  late StockReturnedDataSource _stockReturnedDataSource;
+  late StockItemsReturnedDataSource _stockItemsReturnedDataSource;
   late CustomSelectionManager customSelectionManager;
 
   @override
@@ -32,7 +32,7 @@ class _StockReturnedDataGridState extends State<StockReturnedDataGrid> {
     final discount = stockReturn.discount ?? 0;
 
     _itemsReturned = stockReturn.items ?? [];
-    _stockReturnedDataSource = StockReturnedDataSource(_itemsReturned, context, tax, discount);
+    _stockItemsReturnedDataSource = StockItemsReturnedDataSource(_itemsReturned, context, tax, discount);
   }
 
   @override
@@ -52,7 +52,7 @@ class _StockReturnedDataGridState extends State<StockReturnedDataGrid> {
           child: SfDataGridTheme(
             data: DataGridUtil.cellNavigationStyle,
             child: SfDataGrid(
-              source: _stockReturnedDataSource,
+              source: _stockItemsReturnedDataSource,
               columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS_RETURNED),
               controller: _dataGridController,
               selectionManager: customSelectionManager,
@@ -142,8 +142,8 @@ class _StockReturnedDataGridState extends State<StockReturnedDataGrid> {
   }
 }
 
-class StockReturnedDataSource extends DataGridSource {
-  StockReturnedDataSource(List<StockReturnItem> itemsReturned, BuildContext context, double tax, double discount) {
+class StockItemsReturnedDataSource extends DataGridSource {
+  StockItemsReturnedDataSource(List<StockReturnItem> itemsReturned, BuildContext context, double tax, double discount) {
     _itemsReturned = itemsReturned;
     _context = context;
     _tax = tax;

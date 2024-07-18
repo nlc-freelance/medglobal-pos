@@ -7,19 +7,20 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 
-class PurchaseReceivedDataGrid extends StatefulWidget {
-  const PurchaseReceivedDataGrid({super.key, required this.isReceiving});
+class PurchaseItemsReceivedDataGrid extends StatefulWidget {
+  const PurchaseItemsReceivedDataGrid({super.key, required this.isReceiving});
 
   final bool isReceiving;
 
   @override
-  State<PurchaseReceivedDataGrid> createState() => _PurchaseReceivedDataGridState();
+  State<PurchaseItemsReceivedDataGrid> createState() => _PurchaseItemsReceivedDataGridState();
 }
 
-class _PurchaseReceivedDataGridState extends State<PurchaseReceivedDataGrid> {
+class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDataGrid> {
   List<PurchaseOrderItem> _itemsReceived = <PurchaseOrderItem>[];
+
   late DataGridController _dataGridController;
-  late PurchaseReceivedDataSource _purchaseReceivedDataSource;
+  late PurchaseItemsReceivedDataSource _purchaseItemsReceivedDataSource;
   late CustomSelectionManager customSelectionManager;
 
   @override
@@ -33,8 +34,8 @@ class _PurchaseReceivedDataGridState extends State<PurchaseReceivedDataGrid> {
     final discount = purchaseOrder.discount ?? 0;
 
     _itemsReceived = purchaseOrder.items ?? [];
-    _purchaseReceivedDataSource =
-        PurchaseReceivedDataSource(_itemsReceived, context, widget.isReceiving, tax, discount);
+    _purchaseItemsReceivedDataSource =
+        PurchaseItemsReceivedDataSource(_itemsReceived, context, widget.isReceiving, tax, discount);
   }
 
   @override
@@ -54,17 +55,17 @@ class _PurchaseReceivedDataGridState extends State<PurchaseReceivedDataGrid> {
               previous.purchaseOrder.items != current.purchaseOrder.items ||
               previous.purchaseOrder.totalAmount != current.purchaseOrder.totalAmount,
           listener: (context, state) {
-            _purchaseReceivedDataSource._itemsReceived = state.purchaseOrder.items ?? [];
+            _purchaseItemsReceivedDataSource._itemsReceived = state.purchaseOrder.items ?? [];
 
-            _purchaseReceivedDataSource.buildDataGridRows();
-            _purchaseReceivedDataSource.updateDataGridSource();
+            _purchaseItemsReceivedDataSource.buildDataGridRows();
+            _purchaseItemsReceivedDataSource.updateDataGridSource();
           },
           child: ClipRect(
             clipper: HorizontalBorderClipper(),
             child: SfDataGridTheme(
               data: DataGridUtil.cellNavigationStyle,
               child: SfDataGrid(
-                source: _purchaseReceivedDataSource,
+                source: _purchaseItemsReceivedDataSource,
                 columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS_RECEIVED),
                 controller: _dataGridController,
                 selectionManager: customSelectionManager,
@@ -158,8 +159,8 @@ class _PurchaseReceivedDataGridState extends State<PurchaseReceivedDataGrid> {
   }
 }
 
-class PurchaseReceivedDataSource extends DataGridSource {
-  PurchaseReceivedDataSource(
+class PurchaseItemsReceivedDataSource extends DataGridSource {
+  PurchaseItemsReceivedDataSource(
       List<PurchaseOrderItem> itemsReceived, BuildContext context, bool isReceiving, double tax, double discount) {
     _itemsReceived = itemsReceived;
     _context = context;

@@ -9,18 +9,18 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 
-class PurchaseOrderDataGrid extends StatefulWidget {
-  const PurchaseOrderDataGrid({super.key});
+class PurchaseItemsDataGrid extends StatefulWidget {
+  const PurchaseItemsDataGrid({super.key});
 
   @override
-  State<PurchaseOrderDataGrid> createState() => _PurchaseOrderDataGridState();
+  State<PurchaseItemsDataGrid> createState() => _PurchaseItemsDataGridState();
 }
 
-class _PurchaseOrderDataGridState extends State<PurchaseOrderDataGrid> {
+class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
   List<PurchaseOrderItem> _itemsToOrder = <PurchaseOrderItem>[];
 
   late DataGridController _dataGridController;
-  late PurchaseOrderDataSource _purchaseOrderDataSource;
+  late PurchaseItemsDataSource _purchaseItemsDataSource;
   late CustomSelectionManager customSelectionManager;
 
   @override
@@ -34,7 +34,7 @@ class _PurchaseOrderDataGridState extends State<PurchaseOrderDataGrid> {
     final discount = purchaseOrder.discount ?? 0;
 
     _itemsToOrder = purchaseOrder.items ?? [];
-    _purchaseOrderDataSource = PurchaseOrderDataSource(_itemsToOrder, context, tax, discount);
+    _purchaseItemsDataSource = PurchaseItemsDataSource(_itemsToOrder, context, tax, discount);
   }
 
   @override
@@ -69,23 +69,23 @@ class _PurchaseOrderDataGridState extends State<PurchaseOrderDataGrid> {
               previous.purchaseOrder.items != current.purchaseOrder.items ||
               previous.purchaseOrder.totalAmount != current.purchaseOrder.totalAmount,
           listener: (context, state) {
-            _purchaseOrderDataSource._itemsToOrder = state.purchaseOrder.items ?? [];
-            _purchaseOrderDataSource._tax = state.purchaseOrder.tax ?? 0;
-            _purchaseOrderDataSource._discount = state.purchaseOrder.discount ?? 0;
+            _purchaseItemsDataSource._itemsToOrder = state.purchaseOrder.items ?? [];
+            _purchaseItemsDataSource._tax = state.purchaseOrder.tax ?? 0;
+            _purchaseItemsDataSource._discount = state.purchaseOrder.discount ?? 0;
 
-            _purchaseOrderDataSource.buildDataGridRows();
-            _purchaseOrderDataSource.updateDataGridSource();
+            _purchaseItemsDataSource.buildDataGridRows();
+            _purchaseItemsDataSource.updateDataGridSource();
           },
           buildWhen: (previous, current) => previous.purchaseOrder.items != current.purchaseOrder.items,
           builder: (_, state) => state.purchaseOrder.items?.isEmpty == true
               ? DataGridNoData(
-                  columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS), source: _purchaseOrderDataSource)
+                  columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS), source: _purchaseItemsDataSource)
               : ClipRect(
                   clipper: HorizontalBorderClipper(),
                   child: SfDataGridTheme(
                     data: DataGridUtil.cellNavigationStyle,
                     child: SfDataGrid(
-                      source: _purchaseOrderDataSource,
+                      source: _purchaseItemsDataSource,
                       columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS),
                       controller: _dataGridController,
                       selectionManager: customSelectionManager,
@@ -179,8 +179,8 @@ class _PurchaseOrderDataGridState extends State<PurchaseOrderDataGrid> {
   }
 }
 
-class PurchaseOrderDataSource extends DataGridSource {
-  PurchaseOrderDataSource(List<PurchaseOrderItem> itemsToOrder, BuildContext context, double tax, double discount) {
+class PurchaseItemsDataSource extends DataGridSource {
+  PurchaseItemsDataSource(List<PurchaseOrderItem> itemsToOrder, BuildContext context, double tax, double discount) {
     _itemsToOrder = itemsToOrder;
     _context = context;
     _tax = tax;

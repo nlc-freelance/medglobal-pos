@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_details/stepper/details/stock_return_order_data_grid.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_details/stepper/details/stock_returned_data_grid.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_details/stepper/details/stock_items_to_return_data_grid.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_details/stepper/details/stock_items_returned_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class StockReturnDetails extends StatefulWidget {
@@ -73,8 +73,8 @@ class _StockReturnDetailsState extends State<StockReturnDetails> {
             ),
             const UIVerticalSpace(40),
             stockReturn.status == StockOrderStatus.COMPLETED
-                ? const StockReturnedDataGrid()
-                : const StockReturnOrderDataGrid(),
+                ? const StockItemsReturnedDataGrid()
+                : const StockItemsToReturnDataGrid(),
             const UIVerticalSpace(60),
             const PageSectionTitle(title: 'Notes'),
             stockReturn.status == StockOrderStatus.COMPLETED
