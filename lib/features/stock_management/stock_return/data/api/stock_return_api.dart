@@ -1,6 +1,5 @@
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/data/dto/purchase_order_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/data/dto/stock_return_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_paginated_list.dart';
@@ -73,10 +72,10 @@ class StockReturnApiImpl implements StockReturnApi {
         payload = stockReturn.toSaveAndMarkAsShippedWithNewItemsPayload();
       }
 
-      await _apiService.update<PurchaseOrderDto>(
+      await _apiService.update<StockReturnDto>(
         '/stock-returns/$id',
         data: payload,
-        converter: PurchaseOrderDto.fromJson,
+        converter: StockReturnDto.fromJson,
       );
     } catch (_) {
       rethrow;

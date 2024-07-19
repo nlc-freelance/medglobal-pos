@@ -9,7 +9,8 @@ class ApiEndpoint {
     if (path.contains('/product') ||
         path.contains('/purchase-orders') ||
         path.contains('/stock-returns') ||
-        path.contains('/stock-transfers')) {
+        path.contains('/stock-transfers') ||
+        path.contains('/stock-takes')) {
       url = 'https://i4pqwf8ek2.execute-api.ap-southeast-1.amazonaws.com/dev';
     }
     if (path.contains('/store')) url = 'https://im3929rlc9.execute-api.ap-southeast-1.amazonaws.com/dev';

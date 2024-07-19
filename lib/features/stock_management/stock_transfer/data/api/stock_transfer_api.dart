@@ -52,6 +52,7 @@ class StockTransferApiImpl implements StockTransferApi {
   @override
   Future<StockTransferDto> create(NewStockTransfer payload) async {
     try {
+      print(payload.toJson());
       return await _apiService.post<StockTransferDto>(
         '/stock-transfers',
         data: payload.toJson(),

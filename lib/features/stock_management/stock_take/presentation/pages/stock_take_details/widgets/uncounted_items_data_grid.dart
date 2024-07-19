@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take_item.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -14,29 +16,21 @@ class UncountedItemsDataGrid extends StatefulWidget {
 
 class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
   List<StockTakeItem> _uncountedItems = <StockTakeItem>[];
+
   late DataGridController _dataGridController;
   late UncountedItemsDataSource _uncountedItemsDataSource;
   late CustomSelectionManager customSelectionManager;
-
-  final mock = [
-    const StockTakeItem(
-      id: 1,
-      name: 'Biogesic 500mg',
-      sku: 'BG0001',
-    ),
-    const StockTakeItem(
-      id: 2,
-      name: 'Biogesic 1000mg',
-      sku: 'BG0002',
-    ),
-  ];
 
   @override
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    _uncountedItemsDataSource = UncountedItemsDataSource(mock, context);
     customSelectionManager = CustomSelectionManager(_dataGridController);
+
+    final stockTake = context.read<StockTakeCubit>().state.stockTake;
+
+    _uncountedItems = stockTake.items ?? [];
+    _uncountedItemsDataSource = UncountedItemsDataSource(_uncountedItems, context);
   }
 
   @override
@@ -166,12 +160,20 @@ class UncountedItemsDataSource extends DataGridSource {
 
     if (column.columnName == 'qty_counted') {
       final newQtyCounted = int.tryParse(newCellValue);
+      int qtyExpected = dataGridRows[dataRowIndex].getCells()[4].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_counted', value: newQtyCounted);
-      _uncountedItems[dataRowIndex].copyWith(qtyCounted: newQtyCounted);
 
-      // _context.read<VariantFormCubit>().setPricePerBranch(_uncountedItems[dataRowIndex].id!, newPrice!);
+      /// Compute new difference and update the value in the DataGridRows
+      int newDiffrence = (newQtyCounted ?? 0) - (qtyExpected);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<int>(columnName: 'difference', value: newDiffrence);
+
+      _context.read<StockTakeCubit>().setCountedQuantityPerItem(
+            id: _uncountedItems[dataRowIndex].id!,
+            qty: newQtyCounted!,
+            difference: newDiffrence,
+          );
     }
   }
 

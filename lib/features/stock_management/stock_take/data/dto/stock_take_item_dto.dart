@@ -25,6 +25,7 @@ class StockTakeItemDto extends Equatable {
 
   StockTakeItem toEntity() => StockTakeItem(
         id: id,
+        variantId: variant?.id,
         name: '${variant?.product?.name} ${variant?.name}',
         sku: variant?.sku,
         qtyCounted: qtyCounted,

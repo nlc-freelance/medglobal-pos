@@ -22,9 +22,9 @@ class _StockTransferDetailsState extends State<StockTransferDetails> {
   @override
   void initState() {
     super.initState();
-    final purchaseOrder = context.read<StockTransferCubit>().state.stockTransfer;
+    final stockTransfer = context.read<StockTransferCubit>().state.stockTransfer;
 
-    _notesController = TextEditingController(text: purchaseOrder.notes)
+    _notesController = TextEditingController(text: stockTransfer.notes)
       ..addListener(() => context.read<StockTransferCubit>().setNotes(_notesController.text));
   }
 

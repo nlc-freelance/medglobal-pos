@@ -168,14 +168,14 @@ class StockItemsShippedDataSource extends DataGridSource {
     }
 
     if (column.columnName == 'qty_received') {
-      final newQtyReceived = int.tryParse(newCellValue);
+      final newQtyReceived = int.tryParse(newCellValue) ?? 0;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_received', value: newQtyReceived);
 
       _context.read<StockTransferCubit>().setQuantityReceivedPerItem(
             id: _itemsShipped[dataRowIndex].id!,
-            qty: newQtyReceived!,
+            qty: newQtyReceived,
           );
     }
   }

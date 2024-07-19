@@ -1,10 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'stock_take.g.dart';
 
@@ -18,6 +20,7 @@ class StockTake extends Equatable {
   final String? description;
   final double? totalQtyDifference;
   final double? totalCostDifference;
+  final List<StockTakeItem>? items;
   @DateTimeConverter()
   final DateTime? completedAt;
   @DateTimeConverter()
@@ -34,6 +37,7 @@ class StockTake extends Equatable {
     this.description,
     this.totalQtyDifference,
     this.totalCostDifference,
+    this.items,
     this.completedAt,
     this.createdAt,
     this.updatedAt,
@@ -49,6 +53,7 @@ class StockTake extends Equatable {
         description,
         totalQtyDifference,
         totalCostDifference,
+        items,
         completedAt,
         createdAt,
         updatedAt
@@ -76,4 +81,52 @@ class StockTake extends Equatable {
           DataGridCell<StockOrderStatus>(columnName: 'status', value: status),
         ],
       );
+
+  JSON toPayload(StockOrderUpdate type) {
+    String? status;
+    if (type == StockOrderUpdate.SAVE) status = 'in progress';
+    if (type == StockOrderUpdate.MARK_AS_COMPLETE) status = 'completed';
+    if (type == StockOrderUpdate.CANCEL) status = 'cancelled';
+
+    return {
+      'status': status,
+      'stockTakeDetails': items
+          ?.map((item) => {
+                'id': item.id,
+                'countedQuantity': item.qtyCounted,
+              })
+          .toList(),
+      'description': description,
+    };
+  }
+
+  StockTake copyWith({
+    int? id,
+    Branch? branch,
+    Supplier? supplier,
+    bool? isAllSupplier,
+    StockOrderStatus? status,
+    String? description,
+    double? totalQtyDifference,
+    double? totalCostDifference,
+    List<StockTakeItem>? items,
+    DateTime? completedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return StockTake(
+      id: id ?? this.id,
+      branch: branch ?? this.branch,
+      supplier: supplier ?? this.supplier,
+      isAllSupplier: isAllSupplier ?? this.isAllSupplier,
+      status: status ?? this.status,
+      description: description ?? this.description,
+      totalQtyDifference: totalQtyDifference ?? this.totalQtyDifference,
+      totalCostDifference: totalCostDifference ?? this.totalCostDifference,
+      items: items ?? this.items,
+      completedAt: completedAt ?? this.completedAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }
