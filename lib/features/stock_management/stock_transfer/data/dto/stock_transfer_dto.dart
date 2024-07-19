@@ -10,9 +10,12 @@ part 'stock_transfer_dto.g.dart';
 @JsonSerializable()
 class StockTransferDto extends Equatable {
   final int? id;
+  @JsonKey(name: 'fromStore')
   final Branch? sourceBranch;
+  @JsonKey(name: 'toStore')
   final Branch? destinationBranch;
   final String? status;
+  @JsonKey(name: 'stockTransferDetails')
   final List<StockTransferItemDto>? items;
   @DateTimeConverter()
   final DateTime? completedAt;

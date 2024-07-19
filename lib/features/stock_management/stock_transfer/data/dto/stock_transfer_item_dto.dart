@@ -9,13 +9,14 @@ part 'stock_transfer_item_dto.g.dart';
 class StockTransferItemDto extends Equatable {
   final int? id;
   final ProductVariantDto? variant;
-  @JsonKey(name: 'currentStock')
+  @JsonKey(name: 'fromCurrentStock')
   final int? qtyAtSource;
-  @JsonKey(name: 'destinationQuantity')
+  @JsonKey(name: 'toCurrentStock')
   final int? qtyAtDestination;
-  @JsonKey(name: 'transferredQuantity')
+  @JsonKey(name: 'quantityToTransfer')
   final int? qtyToTransfer;
-  final double? cost;
+  @JsonKey(name: 'receivedQuantity')
+  final int? qtyReceived;
 
   const StockTransferItemDto({
     this.id,
@@ -23,11 +24,11 @@ class StockTransferItemDto extends Equatable {
     this.qtyAtSource,
     this.qtyAtDestination,
     this.qtyToTransfer,
-    this.cost,
+    this.qtyReceived,
   });
 
   @override
-  List<Object?> get props => [id, variant, qtyAtSource, qtyAtDestination, qtyToTransfer];
+  List<Object?> get props => [id, variant, qtyAtSource, qtyAtDestination, qtyToTransfer, qtyReceived];
 
   factory StockTransferItemDto.fromJson(Map<String, dynamic> json) => _$StockTransferItemDtoFromJson(json);
 
@@ -39,7 +40,7 @@ class StockTransferItemDto extends Equatable {
         qtyAtSource: qtyAtSource,
         qtyAtDestination: qtyAtDestination,
         qtyToTransfer: qtyToTransfer,
-        cost: cost,
-        subtotal: (qtyToTransfer ?? 0) * (cost ?? 0),
+        cost: variant?.cost,
+        subtotal: (qtyToTransfer ?? 0) * (variant?.cost ?? 0),
       );
 }

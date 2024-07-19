@@ -7,8 +7,7 @@ part 'new_stock_transfer_state.dart';
 class NewStockTransferCubit extends Cubit<NewStockTransferState> {
   NewStockTransferCubit() : super(NewStockTransferState.initial());
 
-  void setSourceBranchId(int value) => emit(NewStockTransferState(state.payload.copyWith(sourceBranchId: value)));
-  void setDestinationBranchId(int value) =>
-      emit(NewStockTransferState(state.payload.copyWith(destinationBranchId: value)));
+  void setSourceBranchId(int value) => emit(NewStockTransferState(state.payload.copyWith(fromBranch: value)));
+  void setDestinationBranchId(int value) => emit(NewStockTransferState(state.payload.copyWith(toBranch: value)));
   void setAutoFill(bool value) => emit(NewStockTransferState(state.payload.copyWith(isAutoFill: value)));
 }

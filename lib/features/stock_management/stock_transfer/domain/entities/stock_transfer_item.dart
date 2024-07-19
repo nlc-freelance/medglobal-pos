@@ -80,6 +80,7 @@ class StockTransferItem extends Equatable {
     int? qtyAtSource,
     int? qtyAtDestination,
     int? qtyToTransfer,
+    int? qtyReceived,
     double? cost,
     double? subtotal,
   }) {
@@ -91,6 +92,7 @@ class StockTransferItem extends Equatable {
       qtyAtSource: qtyAtSource ?? this.qtyAtSource,
       qtyAtDestination: qtyAtDestination ?? this.qtyAtDestination,
       qtyToTransfer: qtyToTransfer ?? this.qtyToTransfer,
+      qtyReceived: qtyReceived ?? this.qtyReceived,
       cost: cost ?? this.cost,
       subtotal: subtotal ?? this.subtotal,
     );
