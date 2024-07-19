@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/variants/autocomplete_dropdown.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -7,42 +10,30 @@ import 'package:medglobal_admin_portal/core/core.dart';
 
 // isShipped, all columns same qty at source deducted but qty at destination not yet. no more editable field
 
-class ItemsToTransferDataGrid extends StatefulWidget {
-  const ItemsToTransferDataGrid({super.key, required this.isShipped});
-
-  final bool isShipped;
+class StockItemsToTransferDataGrid extends StatefulWidget {
+  const StockItemsToTransferDataGrid({super.key});
 
   @override
-  State<ItemsToTransferDataGrid> createState() => _ItemsToTransferDataGridState();
+  State<StockItemsToTransferDataGrid> createState() => _StockItemsToTransferDataGridState();
 }
 
-class _ItemsToTransferDataGridState extends State<ItemsToTransferDataGrid> {
+class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataGrid> {
   List<StockTransferItem> _itemsToTransfer = <StockTransferItem>[];
-  late DataGridController _dataGridController;
-  late ItemsToTransferDataSource _itemsToTransferDataSource;
-  late CustomSelectionManager customSelectionManager;
 
-  final mock = [
-    const StockTransferItem(
-      id: 1,
-      name: 'Biogesic 500mg',
-      sku: 'BG0001',
-    ),
-    const StockTransferItem(
-      id: 2,
-      name: 'Biogesic 1000mg',
-      sku: 'BG0002',
-      qtyToTransfer: 20,
-      cost: 30.25,
-    ),
-  ];
+  late DataGridController _dataGridController;
+  late StockItemsToTransferDataSource _stockItemsToTransferDataSource;
+  late CustomSelectionManager customSelectionManager;
 
   @override
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    _itemsToTransferDataSource = ItemsToTransferDataSource(mock, context, widget.isShipped);
     customSelectionManager = CustomSelectionManager(_dataGridController);
+
+    final stockTransfer = context.read<StockTransferCubit>().state.stockTransfer;
+
+    _itemsToTransfer = stockTransfer.items ?? [];
+    _stockItemsToTransferDataSource = StockItemsToTransferDataSource(_itemsToTransfer, context);
   }
 
   @override
@@ -58,30 +49,25 @@ class _ItemsToTransferDataGridState extends State<ItemsToTransferDataGrid> {
       children: [
         PageSectionTitle(
           title: 'Items to Transfer',
-          action: widget.isShipped
-              ? null
-              : UIButton.text(
-                  'Add item',
-                  iconBuilder: (isHover) => Assets.icons.add.setColorOnHover(isHover),
-                  onClick: () {
-                    // Show Dialog with dropdown fetching the products available from the current supplier PO
-                    // Add the variant to the data source
-                    _itemsToTransferDataSource._itemsToTransfer.add(const StockTransferItem(
-                      id: 3,
-                      name: 'Biogesic 200mg',
-                      sku: 'BG0003',
-                    ));
-                    _itemsToTransferDataSource.buildDataGridRows();
-                    _itemsToTransferDataSource.updateDataGridSource();
-                  },
-                ),
+          action: SizedBox(
+            width: 226,
+            child: AutocompleteDropdown(
+              branchId: context.read<StockTransferCubit>().state.stockTransfer.sourceBranch?.id,
+              onSelected: (value) {
+                final stockTransferItem = value.toStockTransferItem();
+
+                /// Add newly added items to the current PO in state
+                context.read<StockTransferCubit>().addItem(stockTransferItem);
+              },
+            ),
+          ),
         ),
         ClipRect(
           clipper: HorizontalBorderClipper(),
           child: SfDataGridTheme(
             data: DataGridUtil.cellNavigationStyle,
             child: SfDataGrid(
-              source: _itemsToTransferDataSource,
+              source: _stockItemsToTransferDataSource,
               columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFER_ITEMS),
               controller: _dataGridController,
               selectionManager: customSelectionManager,
@@ -120,11 +106,10 @@ class _ItemsToTransferDataGridState extends State<ItemsToTransferDataGrid> {
   }
 }
 
-class ItemsToTransferDataSource extends DataGridSource {
-  ItemsToTransferDataSource(List<StockTransferItem> itemsToTransfer, BuildContext context, bool isShipped) {
+class StockItemsToTransferDataSource extends DataGridSource {
+  StockItemsToTransferDataSource(List<StockTransferItem> itemsToTransfer, BuildContext context) {
     _itemsToTransfer = itemsToTransfer;
     _context = context;
-    _isShipped = isShipped;
     buildDataGridRows();
   }
 
@@ -132,11 +117,10 @@ class ItemsToTransferDataSource extends DataGridSource {
 
   List<DataGridRow> dataGridRows = [];
 
-  late bool _isShipped;
-
   late BuildContext _context;
 
-  void buildDataGridRows() => dataGridRows = _itemsToTransfer.map((item) => item.toDataGridRow()).toList();
+  void buildDataGridRows() =>
+      dataGridRows = _itemsToTransfer.map((item) => item.toDataGridRowItemsToTransfer()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -157,18 +141,16 @@ class ItemsToTransferDataSource extends DataGridSource {
   }
 
   Widget cellBuilder(String key, DataGridCell cell, int id) => switch (key) {
-        'qty_to_transfer' => _isShipped
-            ? UIText.bodyRegular(cell.value.toString())
-            : Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: UIColors.background,
-                  border: Border.all(color: UIColors.borderRegular),
-                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                ),
-                child: UIText.bodyRegular(cell.value.toString()),
-              ),
+        'qty_to_transfer' => Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: UIColors.background,
+              border: Border.all(color: UIColors.borderRegular),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+            ),
+            child: UIText.bodyRegular(cell.value.toString()),
+          ),
         _ => UIText.bodyRegular(cell.value.toString()),
       };
 
@@ -182,7 +164,7 @@ class ItemsToTransferDataSource extends DataGridSource {
 
   @override
   bool onCellBeginEdit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) {
-    if (column.columnName == 'qty_to_transfer' && !_isShipped) {
+    if (column.columnName == 'qty_to_transfer') {
       return true;
     } else {
       return false;
@@ -205,12 +187,20 @@ class ItemsToTransferDataSource extends DataGridSource {
 
     if (column.columnName == 'qty_to_transfer') {
       final newQtyToTransfer = int.tryParse(newCellValue);
+      double cost = dataGridRows[dataRowIndex].getCells()[6].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_to_transfer', value: newQtyToTransfer);
-      _itemsToTransfer[dataRowIndex].copyWith(qtyToTransfer: newQtyToTransfer);
 
-      // _context.read<VariantFormCubit>().setPricePerBranch(_itemsToTransfer[dataRowIndex].id!, newPrice!);
+      /// Compute new subtotal and update the value in the DataGridRows
+      double newSubtotal = (newQtyToTransfer ?? 0) * (cost);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'subtotal', value: newSubtotal);
+
+      _context.read<StockTransferCubit>().setQuantityToTransferPerItem(
+            id: _itemsToTransfer[dataRowIndex].id!,
+            qty: newQtyToTransfer!,
+            subtotal: newSubtotal,
+          );
     }
   }
 

@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/data/api/purchase_order_api.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_paginated_list.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_request.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
 
 class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
@@ -14,7 +14,7 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
   PurchaseOrderRepositoryImpl(this._purchaseOrderApi);
 
   @override
-  Future<Either<Failure, PurchaseOrder>> create(PurchaseOrderRequest payload) async {
+  Future<Either<Failure, PurchaseOrder>> create(NewPurchaseOrder payload) async {
     try {
       final response = await _purchaseOrderApi.create(payload);
       return Right(response.toEntity());

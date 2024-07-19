@@ -4,12 +4,12 @@ import 'package:medglobal_admin_portal/features/stock_management/purchase_orders
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/data/dto/stock_return_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_paginated_list.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_request.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/new_stock_return.dart';
 
 abstract class StockReturnApi {
   Future<StockReturnPaginatedList> getStockReturns({int? page, StockOrderStatus? status});
   Future<StockReturnDto> getStockReturnById(int id);
-  Future<StockReturnDto> create(StockReturnRequest payload);
+  Future<StockReturnDto> create(NewStockReturn payload);
   Future<void> update(StockOrderUpdate type, {required int id, required StockReturn stockReturn});
 }
 
@@ -51,7 +51,7 @@ class StockReturnApiImpl implements StockReturnApi {
   }
 
   @override
-  Future<StockReturnDto> create(StockReturnRequest payload) async {
+  Future<StockReturnDto> create(NewStockReturn payload) async {
     try {
       return await _apiService.post<StockReturnDto>(
         '/stock-returns',

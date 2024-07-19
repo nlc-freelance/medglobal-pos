@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_remote/stock_transfer_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfer_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -19,7 +23,7 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    // Get ALL stock transfers
+    context.read<StockTransferListRemoteCubit>().getStockTransfers();
   }
 
   @override
@@ -30,19 +34,19 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
 
   void onChangeTab(int index) {
     if (index == 0) {
-      // Get ALL stock transfers
+      context.read<StockTransferListRemoteCubit>().getStockTransfers();
     }
     if (index == 1) {
-      // Get all NEW stock transfers
+      context.read<StockTransferListRemoteCubit>().getStockTransfers(status: StockOrderStatus.NEW);
     }
     if (index == 2) {
-      // Get all SHIPPED stock transfers
+      context.read<StockTransferListRemoteCubit>().getStockTransfers(status: StockOrderStatus.SHIPPED);
     }
     if (index == 3) {
-      // Get all COMPLETED stock transfers
+      context.read<StockTransferListRemoteCubit>().getStockTransfers(status: StockOrderStatus.COMPLETED);
     }
     if (index == 4) {
-      // Get all CANCELLED stock transfers
+      context.read<StockTransferListRemoteCubit>().getStockTransfers(status: StockOrderStatus.CANCELLED);
     }
   }
 
@@ -112,25 +116,23 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
             ),
           ],
         ),
-        Expanded(child: StockTransferDataGrid(stockTransfersMock)),
-
-        // StockTransferDataGrid(),
-        // BlocBuilder<StockTransferListCubit, StockTransferListState>(
-        //   builder: (context, state) {
-        //     if (state is StockTransferListError) {
-        //       return Text(state.message);
-        //     }
-        //     if (state is StockTransferListLoaded) {
-        // return const Expanded(
-        //   child: StockTransferDataGrid(),
-        //   );
-        // }
-        // return DataGridLoading(
-        //   columns: columns,
-        //   source: VariantDataSource([]),
-        // );
-        // },
-        // ),
+        // Expanded(child: StockTransferDataGrid(stockTransfersMock)),
+        BlocBuilder<StockTransferListRemoteCubit, StockTransferListRemoteState>(
+          builder: (context, state) {
+            if (state is StockTransferListError) {
+              return Text(state.message);
+            }
+            if (state is StockTransferListLoaded) {
+              return Expanded(
+                child: StockTransferDataGrid(state.stockTransfers),
+              );
+            }
+            return DataGridLoading(
+              columns: columns,
+              source: StockTransferDataSource([]),
+            );
+          },
+        ),
       ],
     );
   }

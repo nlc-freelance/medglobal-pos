@@ -5,8 +5,8 @@ import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_order_details.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_form.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 /// Pass currentStep as 1 when calling this widget on DetailsPage to increment the step on continue
@@ -134,7 +134,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
               isActive: _currentStep >= 0,
               state: _currentStep > 0 ? StepState.complete : StepState.indexed,
               title: const Text('Create'),
-              content: Theme(data: Theme.of(context), child: const NewPurchaseOrder()),
+              content: Theme(data: Theme.of(context), child: const NewPurchaseOrderForm()),
             ),
             Step(
               isActive: _currentStep >= 1,

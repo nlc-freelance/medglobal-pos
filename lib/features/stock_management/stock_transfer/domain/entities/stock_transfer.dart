@@ -1,9 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 
 part 'stock_transfer.g.dart';
 
@@ -13,6 +15,8 @@ class StockTransfer extends Equatable {
   final Branch? sourceBranch;
   final Branch? destinationBranch;
   final StockOrderStatus? status;
+  final List<StockTransferItem>? items;
+  final String? notes;
   @DateTimeConverter()
   final DateTime? completedAt;
   @DateTimeConverter()
@@ -25,13 +29,16 @@ class StockTransfer extends Equatable {
     this.sourceBranch,
     this.destinationBranch,
     this.status,
+    this.items,
+    this.notes,
     this.completedAt,
     this.createdAt,
     this.updatedAt,
   });
 
   @override
-  List<Object?> get props => [id, sourceBranch, destinationBranch, status, completedAt, createdAt, updatedAt];
+  List<Object?> get props =>
+      [id, sourceBranch, destinationBranch, status, items, notes, completedAt, createdAt, updatedAt];
 
   factory StockTransfer.fromJson(Map<String, dynamic> json) => _$StockTransferFromJson(json);
 
@@ -47,4 +54,77 @@ class StockTransfer extends Equatable {
           DataGridCell<StockOrderStatus>(columnName: 'status', value: status),
         ],
       );
+
+  JSON toSavePayload() => {
+        'status': 'new',
+        'stockTransferDetails': items
+            ?.map((item) => {
+                  'variantId': item.variantId,
+                  'quantity': item.qtyToTransfer,
+                  'cost': item.cost, // cost or supplierPrice
+                })
+            .toList(),
+        'notes': notes,
+      };
+
+  JSON toSaveAndMarkAsShippedWithNewItemsPayload() => {
+        'status': 'shipped',
+        'stockTransferDetails': items
+            ?.map((item) => {
+                  'variantId': item.variantId,
+                  'quantity': item.qtyToTransfer,
+                  'cost': item.cost,
+                })
+            .toList(),
+        'notes': notes,
+      };
+
+  JSON toSaveAndMarkAsShippedPayload() => {
+        'status': 'shipped',
+        'stockTransferDetails': items
+            ?.map((item) => {
+                  'id': item.id,
+                  'quantity': item.qtyToTransfer,
+                  'cost': item.cost,
+                })
+            .toList(),
+        'notes': notes,
+      };
+
+  JSON toSaveAndReceivedPayload() => {
+        'status': 'completed',
+        'stockTransferDetails': items
+            ?.map((item) => {
+                  'id': item.id,
+                  'quantity': item.qtyReceived,
+                })
+            .toList(),
+        'notes': notes,
+      };
+
+  JSON toCancelPayload() => {'status': 'cancelled'};
+
+  StockTransfer copyWith({
+    int? id,
+    Branch? sourceBranch,
+    Branch? destinationBranch,
+    StockOrderStatus? status,
+    List<StockTransferItem>? items,
+    String? notes,
+    DateTime? completedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return StockTransfer(
+      id: id ?? this.id,
+      sourceBranch: sourceBranch ?? this.sourceBranch,
+      destinationBranch: destinationBranch ?? this.destinationBranch,
+      status: status ?? this.status,
+      items: items ?? this.items,
+      notes: notes ?? this.notes,
+      completedAt: completedAt ?? this.completedAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

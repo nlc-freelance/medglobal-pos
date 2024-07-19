@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_request.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/new_stock_return.dart';
 
 part 'new_stock_return_state.dart';
 

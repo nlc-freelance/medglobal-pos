@@ -1,27 +1,27 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'purchase_order_request.g.dart';
+part 'new_purchase_order.g.dart';
 
 @JsonSerializable()
-class PurchaseOrderRequest {
+class NewPurchaseOrder {
   final int? branchId;
   final int? supplierId;
   final bool? isAutoFill;
 
-  PurchaseOrderRequest({
+  NewPurchaseOrder({
     this.branchId,
     this.supplierId,
     this.isAutoFill = false,
   });
 
-  Map<String, dynamic> toJson() => _$PurchaseOrderRequestToJson(this);
+  Map<String, dynamic> toJson() => _$NewPurchaseOrderToJson(this);
 
-  PurchaseOrderRequest copyWith({
+  NewPurchaseOrder copyWith({
     int? branchId,
     int? supplierId,
     bool? isAutoFill,
   }) {
-    return PurchaseOrderRequest(
+    return NewPurchaseOrder(
       branchId: branchId ?? this.branchId,
       supplierId: supplierId ?? this.supplierId,
       isAutoFill: isAutoFill ?? this.isAutoFill,

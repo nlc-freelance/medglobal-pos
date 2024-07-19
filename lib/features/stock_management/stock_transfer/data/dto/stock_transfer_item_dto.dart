@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/features/product_management/data/dto/variant_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/variants/product_variant_dto.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 
 part 'stock_transfer_item_dto.g.dart';
@@ -11,13 +9,14 @@ part 'stock_transfer_item_dto.g.dart';
 class StockTransferItemDto extends Equatable {
   final int? id;
   final ProductVariantDto? variant;
-  @JsonKey(name: 'currentStock')
+  @JsonKey(name: 'fromCurrentStock')
   final int? qtyAtSource;
-  @JsonKey(name: 'destinationQuantity')
+  @JsonKey(name: 'toCurrentStock')
   final int? qtyAtDestination;
-  @JsonKey(name: 'transferredQuantity')
+  @JsonKey(name: 'quantityToTransfer')
   final int? qtyToTransfer;
-  final double? cost;
+  @JsonKey(name: 'receivedQuantity')
+  final int? qtyReceived;
 
   const StockTransferItemDto({
     this.id,
@@ -25,21 +24,23 @@ class StockTransferItemDto extends Equatable {
     this.qtyAtSource,
     this.qtyAtDestination,
     this.qtyToTransfer,
-    this.cost,
+    this.qtyReceived,
   });
 
   @override
-  List<Object?> get props => [id, variant, qtyAtSource, qtyAtDestination, qtyToTransfer];
+  List<Object?> get props => [id, variant, qtyAtSource, qtyAtDestination, qtyToTransfer, qtyReceived];
 
   factory StockTransferItemDto.fromJson(Map<String, dynamic> json) => _$StockTransferItemDtoFromJson(json);
 
   StockTransferItem toEntity() => StockTransferItem(
         id: id,
+        variantId: variant?.id,
         name: '${variant?.product?.name} ${variant?.name}',
         sku: variant?.sku,
         qtyAtSource: qtyAtSource,
         qtyAtDestination: qtyAtDestination,
         qtyToTransfer: qtyToTransfer,
-        cost: cost,
+        cost: variant?.cost,
+        subtotal: (qtyToTransfer ?? 0) * (variant?.cost ?? 0),
       );
 }

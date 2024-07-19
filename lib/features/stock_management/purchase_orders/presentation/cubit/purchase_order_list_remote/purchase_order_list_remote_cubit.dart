@@ -15,7 +15,7 @@ class PurchaseOrderListRemoteCubit extends Cubit<PurchaseOrderListRemoteState> {
     emit(PurchaseOrderListLoading());
 
     try {
-      final result = await _getPurchaseOrdersUsecase.call(GetPurchaseOrdersParams(status: status));
+      final result = await _getPurchaseOrdersUsecase.call(GetPurchaseOrdersParams(page: page, status: status));
       result.fold(
         (error) => emit(PurchaseOrderListError(message: error.message)),
         (data) => emit(PurchaseOrderListLoaded(purchaseOrders: data.purchaseOrders!)),

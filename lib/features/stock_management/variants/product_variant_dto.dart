@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/features/product_management/data/dto/product_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_item.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/data/dto/supplier_dto.dart';
 import 'package:uuid/uuid.dart';
 
@@ -61,5 +62,13 @@ class ProductVariantDto extends Equatable {
         name: displayName,
         sku: sku,
         qtyOnHand: qtyOnHand,
+      );
+
+  StockTransferItem toStockTransferItem() => StockTransferItem(
+        id: -(const Uuid().v4().hashCode),
+        variantId: id,
+        name: displayName,
+        sku: sku,
+        qtyAtSource: qtyOnHand,
       );
 }

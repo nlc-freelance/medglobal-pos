@@ -5,8 +5,8 @@ import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch_repository.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class NewStockTransfer extends StatelessWidget {
-  const NewStockTransfer({super.key});
+class NewStockTransferForm extends StatelessWidget {
+  const NewStockTransferForm({super.key});
 
   @override
   Widget build(BuildContext context) {
