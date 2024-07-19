@@ -169,7 +169,7 @@ class DataGridColumn {
     ColumnData('name', 'Variant Name'),
     ColumnData('sku', 'SKU'),
     ColumnData('qty_to_transfer', 'Transferred Qty'),
-    ColumnData('qty_to_transfer', 'Received Qty'),
+    ColumnData('qty_received', 'Received Qty'),
     ColumnData('cost', 'Cost (PHP)'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
   ];
@@ -179,6 +179,7 @@ class DataGridColumn {
     ColumnData('name', 'Variant Name'),
     ColumnData('sku', 'SKU'),
     ColumnData('qty_transferred', 'Transferred Quantity'),
+    ColumnData('qty_received', 'Received Quantity'),
     ColumnData('cost', 'Cost (PHP)'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
   ];

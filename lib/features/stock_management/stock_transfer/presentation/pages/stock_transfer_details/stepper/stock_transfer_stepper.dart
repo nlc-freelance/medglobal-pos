@@ -54,7 +54,7 @@ class _StockTransferStepperState extends State<StockTransferStepper> {
                 if (state is StockTransferCreateSuccess) {
                   final id = state.stockTransfer.id;
                   AppRouter.router.goNamed(
-                    SideMenuTreeItem.PURCHASE_ORDER_DETAILS.name,
+                    SideMenuTreeItem.STOCK_TRANSFER_DETAILS.name,
                     pathParameters: {'id': id.toString()},
                   );
                 }

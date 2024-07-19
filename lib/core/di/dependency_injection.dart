@@ -58,6 +58,17 @@ import 'package:medglobal_admin_portal/features/stock_management/stock_return/pr
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/data/api/stock_take_api.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/data/repositories/stock_take_repository_impl.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/repositories/stock_take_repository.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/usecases/create_stock_take_usecase.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/usecases/get_stock_take_by_id_usecase.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/usecases/get_stock_takes_usecase.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/usecases/update_stock_take_usecase.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take_remote/stock_take_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/data/api/stock_transfer_api.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/data/repositories/stock_transfer_repository_impl.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/domain/repositories/stock_transfer_repository.dart';
@@ -111,6 +122,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(injector()))
     ..registerLazySingleton<StockReturnApi>(() => StockReturnApiImpl(injector()))
     ..registerLazySingleton<StockTransferApi>(() => StockTransferApiImpl(injector()))
+    ..registerLazySingleton<StockTakeApi>(() => StockTakeApiImpl(injector()))
 
     /// Repository
     ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(injector()))
@@ -122,6 +134,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<PurchaseOrderRepository>(() => PurchaseOrderRepositoryImpl(injector()))
     ..registerLazySingleton<StockReturnRepository>(() => StockReturnRepositoryImpl(injector()))
     ..registerLazySingleton<StockTransferRepository>(() => StockTransferRepositoryImpl(injector()))
+    ..registerLazySingleton<StockTakeRepository>(() => StockTakeRepositoryImpl(injector()))
 
     /// Usecases
     /// Authentication UseCase
@@ -171,6 +184,12 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => CreateStockTransferUseCase(injector()))
     ..registerLazySingleton(() => UpdateStockTransferUseCase(injector()))
 
+    /// Stock Take
+    ..registerLazySingleton(() => GetStockTakesUseCase(injector()))
+    ..registerLazySingleton(() => GetStockTakeByIdUseCase(injector()))
+    ..registerLazySingleton(() => CreateStockTakeUseCase(injector()))
+    ..registerLazySingleton(() => UpdateStockTakeUseCase(injector()))
+
     /// Bloc
     ..registerFactory(() => AuthBloc(injector(), injector(), injector(), injector()))
     ..registerFactory(() => SidebarCubit())
@@ -196,5 +215,9 @@ void initDependencyInjection() {
     ..registerFactory(() => StockTransferListRemoteCubit(injector()))
     ..registerFactory(() => StockTransferRemoteCubit(injector(), injector(), injector()))
     ..registerFactory(() => StockTransferCubit())
-    ..registerFactory(() => NewStockTransferCubit());
+    ..registerFactory(() => NewStockTransferCubit())
+    ..registerFactory(() => StockTakeListRemoteCubit(injector()))
+    ..registerFactory(() => StockTakeRemoteCubit(injector(), injector(), injector()))
+    ..registerFactory(() => StockTakeCubit())
+    ..registerFactory(() => NewStockTakeCubit());
 }

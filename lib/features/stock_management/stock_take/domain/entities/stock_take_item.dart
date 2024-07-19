@@ -7,23 +7,27 @@ part 'stock_take_item.g.dart';
 @JsonSerializable()
 class StockTakeItem extends Equatable {
   final int? id;
+  final int? variantId;
   final String? name;
   final String? sku;
   final int? qtyCounted;
   final int? qtyExpected;
-  final double? cost;
+  final int? difference;
+  final double? costDifference;
 
   const StockTakeItem({
     this.id,
+    this.variantId,
     this.name,
     this.sku,
     this.qtyCounted,
     this.qtyExpected,
-    this.cost,
+    this.difference,
+    this.costDifference,
   });
 
   @override
-  List<Object?> get props => [id, name, sku, qtyCounted, qtyExpected, cost];
+  List<Object?> get props => [id, variantId, name, sku, qtyCounted, qtyExpected, difference, costDifference];
 
   factory StockTakeItem.fromJson(Map<String, dynamic> json) => _$StockTakeItemFromJson(json);
 
@@ -55,25 +59,30 @@ class StockTakeItem extends Equatable {
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'qty_expected', value: qtyExpected ?? 0),
           DataGridCell<int>(columnName: 'qty_counted', value: qtyCounted ?? 0),
-          DataGridCell<int>(columnName: 'difference', value: (qtyExpected ?? 0) - (qtyCounted ?? 0)),
-          DataGridCell<double>(
-            columnName: 'cost_difference',
-            value: (cost ?? 0) * ((qtyExpected ?? 0) - (qtyCounted ?? 0)),
-          ),
+          DataGridCell<int>(columnName: 'difference', value: difference ?? 0),
+          DataGridCell<double>(columnName: 'cost_difference', value: costDifference),
         ],
       );
 
   StockTakeItem copyWith({
     int? id,
+    int? variantId,
     String? name,
     String? sku,
     int? qtyCounted,
+    int? qtyExpected,
+    int? difference,
+    double? costDifference,
   }) {
     return StockTakeItem(
       id: id ?? this.id,
+      variantId: variantId ?? this.variantId,
       name: name ?? this.name,
       sku: sku ?? this.sku,
       qtyCounted: qtyCounted ?? this.qtyCounted,
+      qtyExpected: qtyExpected ?? this.qtyExpected,
+      difference: difference ?? this.difference,
+      costDifference: costDifference ?? this.costDifference,
     );
   }
 }

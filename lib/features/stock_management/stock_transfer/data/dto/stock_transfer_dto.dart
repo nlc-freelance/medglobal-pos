@@ -17,6 +17,7 @@ class StockTransferDto extends Equatable {
   final String? status;
   @JsonKey(name: 'stockTransferDetails')
   final List<StockTransferItemDto>? items;
+  final String? notes;
   @DateTimeConverter()
   final DateTime? completedAt;
   @DateTimeConverter()
@@ -30,13 +31,15 @@ class StockTransferDto extends Equatable {
     this.destinationBranch,
     this.status,
     this.items,
+    this.notes,
     this.completedAt,
     this.createdAt,
     this.updatedAt,
   });
 
   @override
-  List<Object?> get props => [id, sourceBranch, destinationBranch, status, items, completedAt, createdAt, updatedAt];
+  List<Object?> get props =>
+      [id, sourceBranch, destinationBranch, status, items, notes, completedAt, createdAt, updatedAt];
 
   factory StockTransferDto.fromJson(Map<String, dynamic> json) => _$StockTransferDtoFromJson(json);
 
@@ -49,5 +52,6 @@ class StockTransferDto extends Equatable {
         completedAt: completedAt,
         createdAt: createdAt,
         updatedAt: updatedAt,
+        notes: notes,
       );
 }

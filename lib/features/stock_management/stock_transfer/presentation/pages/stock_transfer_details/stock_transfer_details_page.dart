@@ -30,11 +30,11 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
   String get _title {
     switch (_stockTransfer.status) {
       case StockOrderStatus.NEW:
-        return 'Edit Purchase Order';
-      case StockOrderStatus.FOR_RECEIVING:
-        return 'Receive Purchase Order';
+        return 'Edit Stock Transfer';
+      case StockOrderStatus.SHIPPED:
+        return 'Confirm Stock Transfer';
       case StockOrderStatus.COMPLETED || StockOrderStatus.CANCELLED:
-        return 'Purchase Order Details';
+        return 'Stock Transfer Details';
       default:
         return Strings.empty;
     }
@@ -49,7 +49,7 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
           context.read<StockTransferCubit>().setStockTransfer(state.stockTransfer);
         }
         if (state is StockTransferSuccess) {
-          AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name);
+          AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TRANSFERS.name);
           ToastNotification.success(context, state.message);
         }
       },

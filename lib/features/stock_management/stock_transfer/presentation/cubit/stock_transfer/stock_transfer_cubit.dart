@@ -25,7 +25,7 @@ class StockTransferCubit extends Cubit<StockTransferState> {
     final items = state.stockTransfer.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
-      if (item.id == id) return item.copyWith(qtyToTransfer: qty);
+      if (item.id == id) return item.copyWith(qtyReceived: qty);
       return item;
     }).toList();
 

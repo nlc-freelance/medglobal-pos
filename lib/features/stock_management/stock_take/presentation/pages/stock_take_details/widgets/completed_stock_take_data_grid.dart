@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take_item.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -14,29 +16,21 @@ class CompletedStockTakeDataGrid extends StatefulWidget {
 
 class _CompletedStockTakeDataGridState extends State<CompletedStockTakeDataGrid> {
   List<StockTakeItem> _completedStockTakeItems = <StockTakeItem>[];
+
   late DataGridController _dataGridController;
   late CompletedStockTakeDataSource _completedStockTakeDataSource;
   late CustomSelectionManager customSelectionManager;
-
-  final mock = [
-    const StockTakeItem(
-      id: 1,
-      name: 'Biogesic 500mg',
-      sku: 'BG0001',
-    ),
-    const StockTakeItem(
-      id: 2,
-      name: 'Biogesic 1000mg',
-      sku: 'BG0002',
-    ),
-  ];
 
   @override
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    _completedStockTakeDataSource = CompletedStockTakeDataSource(mock);
     customSelectionManager = CustomSelectionManager(_dataGridController);
+
+    final stockTake = context.read<StockTakeCubit>().state.stockTake;
+
+    _completedStockTakeItems = stockTake.items ?? [];
+    _completedStockTakeDataSource = CompletedStockTakeDataSource(_completedStockTakeItems);
   }
 
   @override
