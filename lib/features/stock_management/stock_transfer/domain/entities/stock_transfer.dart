@@ -73,7 +73,7 @@ class StockTransfer extends Equatable {
             ?.map((item) => {
                   'variantId': item.variantId,
                   'quantity': item.qtyToTransfer,
-                  'cost': item.cost, // cost or supplierPrice
+                  'cost': item.cost,
                 })
             .toList(),
         'notes': notes,
@@ -85,7 +85,7 @@ class StockTransfer extends Equatable {
             ?.map((item) => {
                   'id': item.id,
                   'quantity': item.qtyToTransfer,
-                  'cost': item.cost, // cost or supplierPrice
+                  'cost': item.cost,
                 })
             .toList(),
         'notes': notes,
@@ -96,7 +96,7 @@ class StockTransfer extends Equatable {
         'stockTransferDetails': items
             ?.map((item) => {
                   'id': item.id,
-                  'quantity': item.qtyAtDestination, // which qty to pass
+                  'quantity': item.qtyReceived,
                 })
             .toList(),
         'notes': notes,
