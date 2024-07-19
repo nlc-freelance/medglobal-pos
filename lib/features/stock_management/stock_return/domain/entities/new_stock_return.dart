@@ -1,24 +1,24 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'stock_return_request.g.dart';
+part 'new_stock_return.g.dart';
 
 @JsonSerializable()
-class StockReturnRequest {
+class NewStockReturn {
   final int? branch;
   final int? supplier;
 
-  StockReturnRequest({
+  NewStockReturn({
     this.branch,
     this.supplier,
   });
 
-  Map<String, dynamic> toJson() => _$StockReturnRequestToJson(this);
+  Map<String, dynamic> toJson() => _$NewStockReturnToJson(this);
 
-  StockReturnRequest copyWith({
+  NewStockReturn copyWith({
     int? branch,
     int? supplier,
   }) {
-    return StockReturnRequest(
+    return NewStockReturn(
       branch: branch ?? this.branch,
       supplier: supplier ?? this.supplier,
     );

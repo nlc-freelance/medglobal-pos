@@ -19,6 +19,10 @@ import 'package:medglobal_admin_portal/features/stock_management/stock_return/pr
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/cubit/new_stock_transfer/new_stock_transfer_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_remote/stock_transfer_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/cubit/stock_transfer_remote/stock_transfer_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/supply_needs/presentation/cubit/supply_needs/supply_needs_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
@@ -52,6 +56,10 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<StockReturnRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewStockReturnCubit>()),
+        BlocProvider(create: (_) => GetIt.I<StockTransferListRemoteCubit>()),
+        BlocProvider(create: (_) => GetIt.I<StockTransferRemoteCubit>()),
+        BlocProvider(create: (_) => GetIt.I<StockTransferCubit>()),
+        BlocProvider(create: (_) => GetIt.I<NewStockTransferCubit>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) => AppRouter.router.refresh(),

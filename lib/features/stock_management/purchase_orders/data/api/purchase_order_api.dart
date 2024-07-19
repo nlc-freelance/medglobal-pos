@@ -3,12 +3,12 @@ import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/data/dto/purchase_order_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_paginated_list.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_request.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/new_purchase_order.dart';
 
 abstract class PurchaseOrderApi {
   Future<PurchaseOrderPaginatedList> getPurchaseOrders({int? page, StockOrderStatus? status});
   Future<PurchaseOrderDto> getPurchaseOrderById(int id);
-  Future<PurchaseOrderDto> create(PurchaseOrderRequest payload);
+  Future<PurchaseOrderDto> create(NewPurchaseOrder payload);
   Future<void> update(StockOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder});
 }
 
@@ -50,7 +50,7 @@ class PurchaseOrderApiImpl implements PurchaseOrderApi {
   }
 
   @override
-  Future<PurchaseOrderDto> create(PurchaseOrderRequest payload) async {
+  Future<PurchaseOrderDto> create(NewPurchaseOrder payload) async {
     try {
       return await _apiService.post<PurchaseOrderDto>(
         '/purchase-orders',

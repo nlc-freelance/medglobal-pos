@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/data/api/stock_return_api.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_paginated_list.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_request.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/new_stock_return.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/repositories/stock_return_repository.dart';
 
 class StockReturnRepositoryImpl implements StockReturnRepository {
@@ -14,7 +14,7 @@ class StockReturnRepositoryImpl implements StockReturnRepository {
   StockReturnRepositoryImpl(this._stockReturnApi);
 
   @override
-  Future<Either<Failure, StockReturn>> create(StockReturnRequest payload) async {
+  Future<Either<Failure, StockReturn>> create(NewStockReturn payload) async {
     try {
       final response = await _stockReturnApi.create(payload);
       return Right(response.toEntity());

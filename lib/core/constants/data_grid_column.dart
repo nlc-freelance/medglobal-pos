@@ -163,6 +163,17 @@ class DataGridColumn {
     ColumnData('cost', 'Cost (PHP)'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
   ];
+
+  static List<ColumnData> STOCK_TRANSFER_ITEMS_SHIPPED = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Variant Name'),
+    ColumnData('sku', 'SKU'),
+    ColumnData('qty_to_transfer', 'Transferred Qty'),
+    ColumnData('qty_to_transfer', 'Received Qty'),
+    ColumnData('cost', 'Cost (PHP)'),
+    ColumnData('subtotal', 'Subtotal (PHP)'),
+  ];
+
   static List<ColumnData> STOCK_ITEMS_TRANSFERRED = [
     ColumnData('id', 'ID'),
     ColumnData('name', 'Variant Name'),

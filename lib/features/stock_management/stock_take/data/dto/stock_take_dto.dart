@@ -10,6 +10,7 @@ part 'stock_take_dto.g.dart';
 @JsonSerializable()
 class StockTakeDto extends Equatable {
   final int? id;
+  @JsonKey(name: 'store')
   final Branch? branch;
   final Supplier? supplier;
   final bool? isAllSupplier;

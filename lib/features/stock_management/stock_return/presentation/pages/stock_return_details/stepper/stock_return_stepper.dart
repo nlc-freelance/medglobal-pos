@@ -6,7 +6,7 @@ import 'package:medglobal_admin_portal/features/stock_management/stock_return/pr
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_details/stepper/details/stock_return_details.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_details/stepper/new/new_stock_return.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_details/stepper/new/new_stock_return_form.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 /// Pass currentStep as 1 when calling this widget on DetailsPage to increment the step on continue
@@ -123,7 +123,7 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
               isActive: _currentStep >= 0,
               state: _currentStep > 0 ? StepState.complete : StepState.indexed,
               title: const Text('Create'),
-              content: Theme(data: Theme.of(context), child: const NewStockReturn()),
+              content: Theme(data: Theme.of(context), child: const NewStockReturnForm()),
             ),
             Step(
               isActive: _currentStep >= 1,

@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/usecases/usecase.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_request.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
 
 class CreatePurchaseOrderUseCase implements UseCase<PurchaseOrder, CreatePurchaseOrderParams> {
@@ -12,11 +12,11 @@ class CreatePurchaseOrderUseCase implements UseCase<PurchaseOrder, CreatePurchas
 
   @override
   Future<Either<Failure, PurchaseOrder>> call(CreatePurchaseOrderParams params) =>
-      repository.create(params.purchaseOrderRequest);
+      repository.create(params.purchaseOrder);
 }
 
 class CreatePurchaseOrderParams {
-  final PurchaseOrderRequest purchaseOrderRequest;
+  final NewPurchaseOrder purchaseOrder;
 
-  CreatePurchaseOrderParams(this.purchaseOrderRequest);
+  CreatePurchaseOrderParams(this.purchaseOrder);
 }

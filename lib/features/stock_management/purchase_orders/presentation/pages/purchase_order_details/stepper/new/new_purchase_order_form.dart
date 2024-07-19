@@ -9,8 +9,8 @@ import 'package:medglobal_admin_portal/features/supplier_management/domain/entit
 import 'package:medglobal_admin_portal/features/supplier_management/domain/repositories/supplier_repository.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class NewPurchaseOrder extends StatelessWidget {
-  const NewPurchaseOrder({super.key});
+class NewPurchaseOrderForm extends StatelessWidget {
+  const NewPurchaseOrderForm({super.key});
 
   @override
   Widget build(BuildContext context) {

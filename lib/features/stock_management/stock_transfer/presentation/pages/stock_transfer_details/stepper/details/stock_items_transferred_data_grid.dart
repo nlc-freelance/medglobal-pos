@@ -1,42 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 
-class ItemsTransferredDataGrid extends StatefulWidget {
-  const ItemsTransferredDataGrid({super.key});
+class StockItemsTransferredDataGrid extends StatefulWidget {
+  const StockItemsTransferredDataGrid({super.key});
 
   @override
-  State<ItemsTransferredDataGrid> createState() => _ItemsTransferredDataGridState();
+  State<StockItemsTransferredDataGrid> createState() => _StockItemsTransferredDataGridState();
 }
 
-class _ItemsTransferredDataGridState extends State<ItemsTransferredDataGrid> {
+class _StockItemsTransferredDataGridState extends State<StockItemsTransferredDataGrid> {
   List<StockTransferItem> _itemsTransferred = <StockTransferItem>[];
-  late DataGridController _dataGridController;
-  late ItemsTransferredDataSource _itemsTransferredDataSoure;
-  late CustomSelectionManager customSelectionManager;
 
-  final mock = [
-    const StockTransferItem(
-      id: 1,
-      name: 'Biogesic 500mg',
-      sku: 'BG0001',
-    ),
-    const StockTransferItem(
-      id: 2,
-      name: 'Biogesic 1000mg',
-      sku: 'BG0002',
-    ),
-  ];
+  late DataGridController _dataGridController;
+  late StockItemsTransferredDataSource _stockItemsTransferredDataSource;
+  late CustomSelectionManager customSelectionManager;
 
   @override
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    _itemsTransferredDataSoure = ItemsTransferredDataSource(mock, context);
     customSelectionManager = CustomSelectionManager(_dataGridController);
+
+    final stockTransfer = context.read<StockTransferCubit>().state.stockTransfer;
+
+    _itemsTransferred = stockTransfer.items ?? [];
+    _stockItemsTransferredDataSource = StockItemsTransferredDataSource(_itemsTransferred);
   }
 
   @override
@@ -56,7 +50,7 @@ class _ItemsTransferredDataGridState extends State<ItemsTransferredDataGrid> {
           child: SfDataGridTheme(
             data: DataGridUtil.cellNavigationStyle,
             child: SfDataGrid(
-              source: _itemsTransferredDataSoure,
+              source: _stockItemsTransferredDataSource,
               columns: DataGridUtil.getColumns(DataGridColumn.STOCK_ITEMS_TRANSFERRED),
               controller: _dataGridController,
               selectionManager: customSelectionManager,
@@ -95,10 +89,9 @@ class _ItemsTransferredDataGridState extends State<ItemsTransferredDataGrid> {
   }
 }
 
-class ItemsTransferredDataSource extends DataGridSource {
-  ItemsTransferredDataSource(List<StockTransferItem> itemsReceived, BuildContext context) {
+class StockItemsTransferredDataSource extends DataGridSource {
+  StockItemsTransferredDataSource(List<StockTransferItem> itemsReceived) {
     _itemsTransferred = itemsReceived;
-    _context = context;
     buildDataGridRows();
   }
 
@@ -106,9 +99,8 @@ class ItemsTransferredDataSource extends DataGridSource {
 
   List<DataGridRow> dataGridRows = [];
 
-  late BuildContext _context;
-
-  void buildDataGridRows() => dataGridRows = _itemsTransferred.map((item) => item.toDataGridRow()).toList();
+  void buildDataGridRows() =>
+      dataGridRows = _itemsTransferred.map((item) => item.toDataGridRowItemsTransferred()).toList();
 
   void updateDataGridSource() => notifyListeners();
 

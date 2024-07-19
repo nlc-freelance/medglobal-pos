@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/core/enums/enums.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/purchase_order_request.dart';
+import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/entities/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/usecases/create_purchase_order_usecase.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/usecases/get_purchase_order_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/domain/usecases/update_purchase_order_usecase.dart';
@@ -34,7 +34,7 @@ class PurchaseOrderRemoteCubit extends Cubit<PurchaseOrderRemoteState> {
     }
   }
 
-  Future<void> create(PurchaseOrderRequest payload) async {
+  Future<void> create(NewPurchaseOrder payload) async {
     emit(PurchaseOrderCreateLoading());
 
     try {

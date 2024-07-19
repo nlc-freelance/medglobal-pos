@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/features/product_management/data/dto/variant_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/variants/product_variant_dto.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 
 part 'stock_transfer_item_dto.g.dart';
@@ -35,11 +33,13 @@ class StockTransferItemDto extends Equatable {
 
   StockTransferItem toEntity() => StockTransferItem(
         id: id,
+        variantId: variant?.id,
         name: '${variant?.product?.name} ${variant?.name}',
         sku: variant?.sku,
         qtyAtSource: qtyAtSource,
         qtyAtDestination: qtyAtDestination,
         qtyToTransfer: qtyToTransfer,
         cost: cost,
+        subtotal: (qtyToTransfer ?? 0) * (cost ?? 0),
       );
 }

@@ -9,10 +9,10 @@ class GetPurchaseOrdersUseCase implements UseCase<PurchaseOrderPaginatedList, Ge
   GetPurchaseOrdersUseCase(this._repository);
 
   @override
-  Future<Either<Failure, PurchaseOrderPaginatedList>> call(GetPurchaseOrdersParams? params) =>
+  Future<Either<Failure, PurchaseOrderPaginatedList>> call(GetPurchaseOrdersParams params) =>
       _repository.getPurchaseOrders(
-        page: params?.page,
-        status: params?.status,
+        page: params.page,
+        status: params.status,
       );
 }
 

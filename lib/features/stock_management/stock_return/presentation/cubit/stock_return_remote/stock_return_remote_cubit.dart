@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/stock_return_request.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/entities/new_stock_return.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/usecases/create_stock_return_usecase.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/usecases/get_stock_return_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/domain/usecases/update_stock_return_usecase.dart';
@@ -34,7 +34,7 @@ class StockReturnRemoteCubit extends Cubit<StockReturnRemoteState> {
     }
   }
 
-  Future<void> create(StockReturnRequest payload) async {
+  Future<void> create(NewStockReturn payload) async {
     emit(StockReturnCreateLoading());
 
     try {
