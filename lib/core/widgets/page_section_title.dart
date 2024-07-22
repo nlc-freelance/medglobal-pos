@@ -44,7 +44,7 @@ class PageSectionTitle extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                UIText.subtitle(subtitle!),
+                Text(subtitle!, style: UIStyleText.hint.copyWith(color: UIColors.textMuted)),
                 if (action != null) action!,
               ],
             ),

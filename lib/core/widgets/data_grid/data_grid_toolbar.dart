@@ -7,17 +7,23 @@ class DataGridToolbar extends StatelessWidget {
     this.searchPlaceholder = 'Search',
     this.isDownloadable = true,
     this.filters,
+    this.onChanged,
+    this.searchController,
+    this.padding,
     super.key,
   });
 
   final bool isDownloadable;
   final String searchPlaceholder;
   final List<Widget>? filters;
+  final Function(String value)? onChanged;
+  final TextEditingController? searchController;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
+      padding: padding ?? const EdgeInsets.only(bottom: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -28,7 +34,8 @@ class DataGridToolbar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Assets.icons.search.svg(),
             ),
-            controller: TextEditingController(),
+            controller: searchController,
+            onChanged: onChanged != null ? (value) => onChanged!(value) : (_) => {},
           ),
           Row(
             children: [

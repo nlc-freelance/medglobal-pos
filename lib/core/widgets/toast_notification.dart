@@ -33,8 +33,8 @@ class ToastNotification {
           content: Align(
             alignment: Alignment.bottomRight,
             child: Container(
-              constraints: const BoxConstraints(minWidth: 300),
-              padding: const EdgeInsets.all(16),
+              constraints: const BoxConstraints(maxWidth: 400),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: UIColors.background,
                 border: Border.all(color: UIColors.borderMuted, width: 2),
@@ -44,16 +44,18 @@ class ToastNotification {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisSize: MainAxisSize.min,
+                    // mainAxisSize: MainAxisSize.min,
                     children: [
-                      type == ToastType.SUCCESS ? Assets.icons.checkCircle.svg() : Assets.icons.infoCircle.svg(),
+                      type == ToastType.SUCCESS
+                          ? Assets.icons.checkCircle.svg(width: 20)
+                          : Assets.icons.infoCircle.svg(width: 20),
                       const UIHorizontalSpace(8),
-                      UIText.labelSemiBold(type.title),
+                      UIText.heading6(type.title),
                       const UIHorizontalSpace(16),
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
+                    padding: const EdgeInsets.only(left: 28.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

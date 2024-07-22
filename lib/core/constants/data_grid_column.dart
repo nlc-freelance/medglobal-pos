@@ -118,7 +118,7 @@ class DataGridColumn {
 
   static List<ColumnData> ST_UNCOUNTED_ITEMS = [
     ColumnData('id', 'ID'),
-    ColumnData('name', 'Variant Name'),
+    ColumnData('variant_name', 'Variant Name'),
     ColumnData('sku', 'SKU'),
     ColumnData('qty_expected', 'Expected Qty'),
     ColumnData('qty_counted', 'Counted Qty'),
@@ -127,7 +127,7 @@ class DataGridColumn {
 
   static List<ColumnData> ST_COUNTED_ITEMS = [
     ColumnData('id', 'ID'),
-    ColumnData('name', 'Variant Name'),
+    ColumnData('variant_name', 'Variant Name'),
     ColumnData('sku', 'SKU'),
     ColumnData('qty_expected', 'Expected Qty'),
     ColumnData('qty_counted', 'Counted Qty'),
@@ -137,7 +137,7 @@ class DataGridColumn {
 
   static List<ColumnData> ST_COMPLETED_COUNTED_ITEMS = [
     ColumnData('id', 'ID'),
-    ColumnData('name', 'Variant Name'),
+    ColumnData('variant_name', 'Variant Name'),
     ColumnData('sku', 'SKU'),
     ColumnData('qty_expected', 'Expected Qty'),
     ColumnData('qty_counted', 'Counted Qty'),
