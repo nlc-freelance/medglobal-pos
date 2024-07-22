@@ -66,11 +66,13 @@ class StockTake extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(
             columnName: 'start_time',
-            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!) : Strings.empty,
+            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
           ),
           DataGridCell<String>(
             columnName: 'complete_time',
-            value: completedAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(completedAt!) : Strings.empty,
+            value: status == StockOrderStatus.COMPLETED
+                ? DateFormat('MM/dd/yyyy HH:mm').format(updatedAt!.toLocal())
+                : Strings.empty,
           ),
           DataGridCell<String>(columnName: 'description', value: description ?? Strings.empty),
           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),

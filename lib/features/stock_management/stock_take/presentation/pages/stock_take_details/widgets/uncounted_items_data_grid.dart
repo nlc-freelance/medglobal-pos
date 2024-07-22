@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/uncounted_items/uncounted_items_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -30,13 +31,26 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
     final stockTake = context.read<StockTakeCubit>().state.stockTake;
 
     _uncountedItems = stockTake.items?.where((item) => item.qtyCounted == null).toList() ?? [];
-    _uncountedItemsDataSource = UncountedItemsDataSource(_uncountedItems);
+    _uncountedItemsDataSource = UncountedItemsDataSource(_uncountedItems, context);
+
+    context.read<UncountedItemsCubit>().setUncountedItemsTemp(_uncountedItems);
   }
 
   @override
   void dispose() {
     _dataGridController.dispose();
     super.dispose();
+  }
+
+  StockTakeItem mapCountedQtyFromDraft(StockTakeItem item) {
+    final draftItems = context.read<UncountedItemsCubit>().state.uncountedItems?.toList() ?? [];
+
+    for (var draftItem in draftItems) {
+      if (draftItem.id == item.id && draftItem.qtyCounted != null) {
+        return item.copyWith(qtyCounted: draftItem.qtyCounted);
+      }
+    }
+    return item;
   }
 
   @override
@@ -48,8 +62,15 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
         const DataGridToolbar(searchPlaceholder: 'Search variant name'),
         BlocConsumer<StockTakeCubit, StockTakeState>(
           listener: (context, state) {
-            _uncountedItemsDataSource._uncountedItems =
-                state.stockTake.items?.where((item) => item.qtyCounted == null).toList() ?? [];
+            _uncountedItemsDataSource._uncountedItems = state.stockTake.items
+                    ?.where((item) => item.qtyCounted == null)
+                    .toList()
+
+                    /// draft - set input counted qty of items from the temp list
+                    /// (happens when input, input input instead of input confirm, input confirm)
+                    .map((e) => mapCountedQtyFromDraft(e))
+                    .toList() ??
+                [];
 
             _uncountedItemsDataSource.buildDataGridRows();
             _uncountedItemsDataSource.updateDataGridSource();
@@ -85,14 +106,17 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
 }
 
 class UncountedItemsDataSource extends DataGridSource {
-  UncountedItemsDataSource(List<StockTakeItem> itemsToOrder) {
+  UncountedItemsDataSource(List<StockTakeItem> itemsToOrder, BuildContext context) {
     _uncountedItems = itemsToOrder;
+    _context = context;
     buildDataGridRows();
   }
 
   List<StockTakeItem> _uncountedItems = [];
 
   List<DataGridRow> dataGridRows = [];
+
+  late BuildContext _context;
 
   void buildDataGridRows() => dataGridRows = _uncountedItems.map((item) => item.toDataGridRowUncountedItems()).toList();
 
@@ -123,11 +147,11 @@ class UncountedItemsDataSource extends DataGridSource {
               border: Border.all(color: UIColors.borderRegular),
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
-            child: UIText.bodyRegular(cell.value.toString(),
-                color: cell.value == 0 ? UIColors.textMuted : UIColors.textRegular),
+            child: UIText.bodyRegular(
+              (cell.value ?? '0').toString(),
+              color: cell.value == null ? UIColors.textMuted : UIColors.textRegular,
+            ),
           ),
-
-        /// Todo: Entering counted qty for all field and then clicking one confirm clears all values from the counted qty field
         'action' => LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
               'Confirm',
@@ -142,8 +166,6 @@ class UncountedItemsDataSource extends DataGridSource {
                       qty: newQtyCounted,
                       difference: newDiffrence,
                     );
-
-                // dataGridRows.removeAt(rowIndex);
               },
             ),
           ),
@@ -186,6 +208,9 @@ class UncountedItemsDataSource extends DataGridSource {
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_counted', value: newQtyCounted);
+
+      /// Save the inputs on qty_counted field in a temp list so we can put it back to the data grid later after updating the rows
+      _context.read<UncountedItemsCubit>().updateItem(_uncountedItems[dataRowIndex].id!, newQtyCounted ?? 0);
     }
   }
 
@@ -209,7 +234,7 @@ class UncountedItemsDataSource extends DataGridSource {
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: TextField(
-        controller: editingController..text = (displayText == '0' ? '' : displayText),
+        controller: editingController..text = displayText,
         autofocus: true,
         cursorHeight: 15.0,
         style: UIStyleText.bodyRegular,

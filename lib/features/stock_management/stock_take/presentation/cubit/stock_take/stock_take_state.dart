@@ -6,7 +6,7 @@ class StockTakeState extends Equatable {
   final StockTake stockTake;
 
   @override
-  List<Object> get props => [stockTake];
+  List<Object?> get props => [stockTake];
 
   factory StockTakeState.initial() => const StockTakeState(StockTake());
 }

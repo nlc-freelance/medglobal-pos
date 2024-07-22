@@ -88,14 +88,14 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> {
                         LabelValue.text(
                           label: 'Start Time',
                           value: _stockTake.createdAt != null
-                              ? DateFormat('MM/dd/yyyy HH:mm').format(_stockTake.createdAt!)
+                              ? DateFormat('MM/dd/yyyy HH:mm').format(_stockTake.createdAt!.toLocal())
                               : Strings.empty,
                         ),
                         if (_stockTake.status == StockOrderStatus.COMPLETED)
                           LabelValue.text(
                             label: 'Completed Time',
                             value: _stockTake.updatedAt != null
-                                ? DateFormat('MM/dd/yyyy HH:mm').format(_stockTake.updatedAt!)
+                                ? DateFormat('MM/dd/yyyy HH:mm').format(_stockTake.updatedAt!.toLocal())
                                 : Strings.empty,
                           ),
                         LabelValue.text(

@@ -21,6 +21,7 @@ import 'package:medglobal_admin_portal/features/stock_management/stock_return/pr
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/uncounted_items/uncounted_items_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take_remote/stock_take_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/cubit/new_stock_transfer/new_stock_transfer_cubit.dart';
@@ -68,6 +69,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<StockTakeRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockTakeCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewStockTakeCubit>()),
+        BlocProvider(create: (_) => GetIt.I<UncountedItemsCubit>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) => AppRouter.router.refresh(),

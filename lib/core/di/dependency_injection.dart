@@ -67,6 +67,7 @@ import 'package:medglobal_admin_portal/features/stock_management/stock_take/doma
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/usecases/update_stock_take_usecase.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/uncounted_items/uncounted_items_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take_remote/stock_take_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/data/api/stock_transfer_api.dart';
@@ -219,5 +220,6 @@ void initDependencyInjection() {
     ..registerFactory(() => StockTakeListRemoteCubit(injector()))
     ..registerFactory(() => StockTakeRemoteCubit(injector(), injector(), injector()))
     ..registerFactory(() => StockTakeCubit())
-    ..registerFactory(() => NewStockTakeCubit());
+    ..registerFactory(() => NewStockTakeCubit())
+    ..registerFactory(() => UncountedItemsCubit());
 }

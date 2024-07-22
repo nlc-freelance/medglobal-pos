@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take/uncounted_items/uncounted_items_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -153,6 +154,7 @@ class CountedItemsDataSource extends DataGridSource {
               iconBuilder: (isHover) => Assets.icons.undo.setColorOnHover(isHover),
               onClick: () {
                 _context.read<StockTakeCubit>().undoCountedItem(id: id);
+                _context.read<UncountedItemsCubit>().updateItem(id, null);
               },
             ),
           ),

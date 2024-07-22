@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take_item.dart';
 
 part 'stock_take_state.dart';
 
@@ -21,24 +20,6 @@ class StockTakeCubit extends Cubit<StockTakeState> {
     }).toList();
 
     emit(StockTakeState(state.stockTake.copyWith(items: updatedItems)));
-  }
-
-  // void setAllUncountedItemQuantityToZero() {
-  //   final items = state.stockTake.items?.toList() ?? [];
-
-  //   final updatedItems = items.map((item) {
-  //     return item.copyWith(qtyCounted: item.qtyCounted ?? 0, difference: item.qtyExpected);
-  //   }).toList();
-
-  //   emit(StockTakeState(state.stockTake.copyWith(items: updatedItems)));
-  // }
-
-  void setAllUncountedItemQuantityToZero(List<StockTakeItem> items) {
-    emit(StockTakeState(state.stockTake.copyWith(items: items)));
-  }
-
-  void doNothing(List<StockTakeItem> items) {
-    emit(StockTakeState(state.stockTake.copyWith(items: items)));
   }
 
   void undoCountedItem({required int id}) {
