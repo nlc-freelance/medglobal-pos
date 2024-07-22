@@ -28,7 +28,7 @@ class ToastNotification {
         SnackBar(
           behavior: SnackBarBehavior.floating,
           backgroundColor: UIColors.transparent,
-          duration: const Duration(milliseconds: 5000),
+          duration: const Duration(milliseconds: 10000),
           elevation: 0,
           content: Align(
             alignment: Alignment.bottomRight,
@@ -57,7 +57,7 @@ class ToastNotification {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        UIText.labelRegular(message),
+                        UIText.bodyRegular(message),
                       ],
                     ),
                   ),

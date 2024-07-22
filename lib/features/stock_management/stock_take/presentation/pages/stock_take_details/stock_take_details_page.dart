@@ -9,6 +9,7 @@ import 'package:medglobal_admin_portal/features/stock_management/stock_take/pres
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/cubit/stock_take_remote/stock_take_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/pages/stock_take_details/widgets/completed_stock_take_data_grid.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/pages/stock_take_details/widgets/counted_items_data_grid.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/pages/stock_take_details/widgets/stock_take_mark_as_completed_dialog.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/pages/stock_take_details/widgets/uncounted_items_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -142,7 +143,18 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> {
                 ),
               ),
             ),
-            const UIVerticalSpace(60),
+            const UIVerticalSpace(40),
+            if (state is! StockTakeError) ...[
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Assets.icons.infoCircle.svg(),
+                  const UIHorizontalSpace(8),
+                  UIText.labelSemiBold('Something went wrong. ', color: UIColors.buttonDanger),
+                ],
+              ),
+              const UIVerticalSpace(20),
+            ],
             if (_stockTake.status == StockOrderStatus.IN_PROGRESS)
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -167,75 +179,13 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> {
                           stockTake: context.read<StockTakeCubit>().state.stockTake,
                         ),
                   ),
-                  const UIHorizontalSpace(12),
+                  const UIHorizontalSpace(8),
                   UIButton.filled(
                     'Mark as Completed',
                     onClick: () => showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) => BlocConsumer<StockTakeRemoteCubit, StockTakeRemoteState>(
-                        listener: (context, state) {
-                          if (state is StockTakeMarkAsCompletedSuccess) {
-                            Navigator.pop(context);
-                            AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TAKES.name);
-                            ToastNotification.success(context, state.message);
-                          }
-                          if (state is StockTakeMarkAsCompletedError) {
-                            Navigator.pop(context);
-                            ToastNotification.error(context, state.message);
-                          }
-                        },
-                        builder: (_, state) => Dialog(
-                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                          child: Container(
-                            width: MediaQuery.sizeOf(context).width * 0.35,
-                            color: UIColors.background,
-                            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                UIText.heading6('Please select an action for uncounted items'),
-                                const Divider(color: UIColors.borderMuted),
-                                const UIVerticalSpace(16),
-                                UIRadioGroup<StockTakeItemAction>(
-                                  direction: Axis.vertical,
-                                  items: StockTakeItemAction.values,
-                                  onSelect: (value) {
-                                    final currentItems =
-                                        context.read<StockTakeCubit>().state.stockTake.items?.toList() ?? [];
-
-                                    if (value == StockTakeItemAction.SET_QTY_TO_ZERO) {
-                                      _items = currentItems.map((item) {
-                                        return item.copyWith(
-                                            qtyCounted: item.qtyCounted ?? 0, difference: item.qtyExpected);
-                                      }).toList();
-                                    }
-                                    if (value == StockTakeItemAction.DO_NOTHING) {
-                                      _items = currentItems;
-                                    }
-                                  },
-                                  itemAsString: (item) => item.label,
-                                ),
-                                const UIVerticalSpace(30),
-                                CancelActionButton(
-                                  actionLabel: 'Continue',
-                                  isLoading: state is StockTakeMarkAsCompletedLoading,
-                                  onCancel: () => Navigator.pop(context),
-                                  onAction: () => context.read<StockTakeRemoteCubit>().update(
-                                        StockOrderUpdate.MARK_AS_COMPLETE,
-                                        id: _stockTake.id!,
-                                        stockTake: context.read<StockTakeCubit>().state.stockTake.copyWith(
-                                              items: _items,
-                                            ),
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => StockTakeMarkAsCompletedDialog(items: _items ?? [])),
                   ),
                 ],
               ),

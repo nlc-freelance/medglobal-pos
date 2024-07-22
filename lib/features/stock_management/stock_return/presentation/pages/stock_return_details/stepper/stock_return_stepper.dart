@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/new_stock_return/new_stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
@@ -26,6 +25,7 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
   void initState() {
     super.initState();
     if (widget.currentStep != null) _currentStep = widget.currentStep!;
+    context.read<StockReturnRemoteCubit>().reset();
   }
 
   @override
@@ -58,14 +58,23 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
                     pathParameters: {'id': id.toString()},
                   );
                 }
-                if (state is StockReturnError) {
-                  ToastNotification.error(context, state.message);
-                }
               },
               builder: (context, state) {
                 return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    if (state is StockReturnError) ...[
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Assets.icons.infoCircle.svg(),
+                          const UIHorizontalSpace(8),
+                          UIText.labelSemiBold('Something went wrong. ${state.message}', color: UIColors.buttonDanger),
+                        ],
+                      ),
+                      const Spacer(),
+                    ],
                     if (_currentStep != 2)
                       Padding(
                         padding: const EdgeInsets.only(right: 8),

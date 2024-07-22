@@ -20,6 +20,8 @@ class StockReturnRemoteCubit extends Cubit<StockReturnRemoteState> {
     this._updateStockReturnUsecase,
   ) : super(StockReturnInitial());
 
+  void reset() => emit(StockReturnInitial());
+
   Future<void> getStockReturnById(int id) async {
     emit(StockReturnByIdLoading());
 

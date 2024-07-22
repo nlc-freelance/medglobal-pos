@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
@@ -26,6 +25,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
   void initState() {
     super.initState();
     if (widget.currentStep != null) _currentStep = widget.currentStep!;
+    context.read<PurchaseOrderRemoteCubit>().reset();
   }
 
   @override
@@ -58,14 +58,23 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                     pathParameters: {'id': id.toString()},
                   );
                 }
-                if (state is PurchaseOrderError) {
-                  ToastNotification.error(context, state.message);
-                }
               },
               builder: (context, state) {
                 return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    if (state is PurchaseOrderError) ...[
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Assets.icons.infoCircle.svg(),
+                          const UIHorizontalSpace(8),
+                          UIText.labelSemiBold('Something went wrong. ${state.message}', color: UIColors.buttonDanger),
+                        ],
+                      ),
+                      const Spacer(),
+                    ],
                     if (_currentStep != 3)
                       Padding(
                         padding: const EdgeInsets.only(right: 8),

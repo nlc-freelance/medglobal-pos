@@ -20,6 +20,8 @@ class StockTransferRemoteCubit extends Cubit<StockTransferRemoteState> {
     this._updateStockTransferUsecase,
   ) : super(StockTransferInitial());
 
+  void reset() => emit(StockTransferInitial());
+
   Future<void> getStockTransferById(int id) async {
     emit(StockTransferByIdLoading());
 
