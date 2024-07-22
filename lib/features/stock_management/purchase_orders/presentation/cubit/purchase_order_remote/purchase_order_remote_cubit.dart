@@ -20,6 +20,8 @@ class PurchaseOrderRemoteCubit extends Cubit<PurchaseOrderRemoteState> {
     this._updatePurchaseOrderUsecase,
   ) : super(PurchaseOrderInitial());
 
+  void reset() => emit(PurchaseOrderInitial());
+
   Future<void> getPurchaseOrderById(int id) async {
     emit(PurchaseOrderByIdLoading());
 
