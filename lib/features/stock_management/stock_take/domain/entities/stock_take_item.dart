@@ -48,7 +48,7 @@ class StockTakeItem extends Equatable {
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'qty_expected', value: qtyExpected ?? 0),
           DataGridCell<int>(columnName: 'qty_counted', value: qtyCounted ?? 0),
-          DataGridCell<int>(columnName: 'difference', value: (qtyExpected ?? 0) - (qtyCounted ?? 0)),
+          DataGridCell<int>(columnName: 'difference', value: (qtyCounted ?? 0) - (qtyExpected ?? 0)),
           const DataGridCell(columnName: 'action', value: null),
         ],
       );
@@ -79,7 +79,7 @@ class StockTakeItem extends Equatable {
       variantId: variantId ?? this.variantId,
       name: name ?? this.name,
       sku: sku ?? this.sku,
-      qtyCounted: qtyCounted ?? this.qtyCounted,
+      qtyCounted: qtyCounted,
       qtyExpected: qtyExpected ?? this.qtyExpected,
       difference: difference ?? this.difference,
       costDifference: costDifference ?? this.costDifference,

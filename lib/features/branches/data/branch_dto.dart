@@ -31,7 +31,7 @@ class BranchDto extends Equatable {
   Map<String, dynamic> toJson() => _$BranchDtoToJson(this);
 
   Branch toEntity() => Branch(
-        id: id!,
+        id: id,
         name: name ?? Strings.empty,
         accountId: accountId,
         createdAt: createdAt,

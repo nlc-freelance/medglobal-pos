@@ -36,7 +36,7 @@ class NewStockReturnForm extends StatelessWidget {
             isRequired: true,
             itemAsString: (branch) => branch.name,
             asyncItemsCallback: GetIt.I<BranchRepository>().getAllBranches(),
-            onSelectItem: (Branch value) => context.read<NewStockReturnCubit>().setBranchId(value.id),
+            onSelectItem: (Branch value) => context.read<NewStockReturnCubit>().setBranchId(value.id!),
           ),
           const UIVerticalSpace(40),
           const Divider(color: UIColors.borderMuted, thickness: 0.8),

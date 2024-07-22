@@ -22,7 +22,7 @@ class DataGridToolbar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           UISearchField(
-            fieldWidth: 320.0,
+            fieldWidth: 500.0,
             hint: searchPlaceholder,
             icon: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),

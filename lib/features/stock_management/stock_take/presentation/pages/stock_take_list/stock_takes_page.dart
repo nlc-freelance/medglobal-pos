@@ -31,6 +31,9 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     context.read<StockTakeListRemoteCubit>().getStockTakes();
+
+    /// Reset NewStockTakeCubit
+    context.read<NewStockTakeCubit>().reset();
   }
 
   @override
@@ -77,6 +80,7 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
                         SideMenuTreeItem.STOCK_TAKE_DETAILS.name,
                         pathParameters: {'id': id.toString()},
                       );
+                      Navigator.pop(context);
                     }
                     if (state is StockTakeError) {
                       Navigator.pop(context);
@@ -84,8 +88,6 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
                     }
                   },
                   builder: (context, state) {
-                    final payload = context.read<NewStockTakeCubit>().state.payload;
-
                     return Dialog(
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
                       child: Container(
@@ -107,7 +109,7 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
                               isLeftLabelInDialog: true,
                               itemAsString: (branch) => branch.name,
                               asyncItemsCallback: GetIt.I<BranchRepository>().getAllBranches(),
-                              onSelectItem: (Branch value) => context.read<NewStockTakeCubit>().setBranchId(value.id),
+                              onSelectItem: (Branch value) => context.read<NewStockTakeCubit>().setBranchId(value.id!),
                             ),
                             const UIVerticalSpace(16),
                             SearchDropdown<Supplier>.single(
@@ -131,8 +133,11 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
                             const UIVerticalSpace(30),
                             CancelActionButton(
                               actionLabel: 'Start',
+                              isLoading: state is StockTakeCreateLoading,
                               onCancel: () => Navigator.pop(context),
-                              onAction: () => context.read<StockTakeRemoteCubit>().create(payload),
+                              onAction: () => context
+                                  .read<StockTakeRemoteCubit>()
+                                  .create(context.read<NewStockTakeCubit>().state.payload),
                             ),
                           ],
                         ),

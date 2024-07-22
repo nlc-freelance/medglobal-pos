@@ -22,7 +22,7 @@ class NewStockTransferForm extends StatelessWidget {
           isRequired: true,
           itemAsString: (branch) => branch.name,
           asyncItemsCallback: GetIt.I<BranchRepository>().getAllBranches(),
-          onSelectItem: (Branch value) => context.read<NewStockTransferCubit>().setSourceBranchId(value.id),
+          onSelectItem: (Branch value) => context.read<NewStockTransferCubit>().setSourceBranchId(value.id!),
         ),
         const UIVerticalSpace(16),
         SearchDropdown<Branch>.single(
@@ -32,7 +32,7 @@ class NewStockTransferForm extends StatelessWidget {
           isRequired: true,
           itemAsString: (branch) => branch.name,
           asyncItemsCallback: GetIt.I<BranchRepository>().getAllBranches(),
-          onSelectItem: (Branch value) => context.read<NewStockTransferCubit>().setDestinationBranchId(value.id),
+          onSelectItem: (Branch value) => context.read<NewStockTransferCubit>().setDestinationBranchId(value.id!),
         ),
         const UIVerticalSpace(40),
         UICheckboxListTile(

@@ -29,8 +29,8 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
 
     final stockTake = context.read<StockTakeCubit>().state.stockTake;
 
-    _uncountedItems = stockTake.items ?? [];
-    _uncountedItemsDataSource = UncountedItemsDataSource(_uncountedItems, context);
+    _uncountedItems = stockTake.items?.where((item) => item.qtyCounted == null).toList() ?? [];
+    _uncountedItemsDataSource = UncountedItemsDataSource(_uncountedItems);
   }
 
   @override
@@ -46,27 +46,38 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
       children: [
         const PageSectionTitle(title: 'Uncounted Items'),
         const DataGridToolbar(searchPlaceholder: 'Search variant name'),
-        Container(
-          decoration: UIStyleContainer.topBorder,
-          child: ClipRect(
-            clipper: HorizontalBorderClipper(),
-            child: SfDataGridTheme(
-              data: DataGridUtil.cellNavigationStyle,
-              child: SfDataGrid(
-                source: _uncountedItemsDataSource,
-                columns: DataGridUtil.getColumns(DataGridColumn.ST_UNCOUNTED_ITEMS),
-                controller: _dataGridController,
-                selectionManager: customSelectionManager,
-                shrinkWrapRows: true,
-                allowEditing: true,
-                navigationMode: GridNavigationMode.cell,
-                selectionMode: SelectionMode.single,
-                columnWidthMode: ColumnWidthMode.fill,
-                headerGridLinesVisibility: GridLinesVisibility.none,
-                editingGestureType: EditingGestureType.tap,
+        BlocConsumer<StockTakeCubit, StockTakeState>(
+          listener: (context, state) {
+            _uncountedItemsDataSource._uncountedItems =
+                state.stockTake.items?.where((item) => item.qtyCounted == null).toList() ?? [];
+
+            _uncountedItemsDataSource.buildDataGridRows();
+            _uncountedItemsDataSource.updateDataGridSource();
+          },
+          builder: (context, state) {
+            return Container(
+              decoration: UIStyleContainer.topBorder,
+              child: ClipRect(
+                clipper: HorizontalBorderClipper(),
+                child: SfDataGridTheme(
+                  data: DataGridUtil.cellNavigationStyle,
+                  child: SfDataGrid(
+                    source: _uncountedItemsDataSource,
+                    columns: DataGridUtil.getColumns(DataGridColumn.ST_UNCOUNTED_ITEMS),
+                    controller: _dataGridController,
+                    selectionManager: customSelectionManager,
+                    shrinkWrapRows: true,
+                    allowEditing: true,
+                    navigationMode: GridNavigationMode.cell,
+                    selectionMode: SelectionMode.single,
+                    columnWidthMode: ColumnWidthMode.fill,
+                    headerGridLinesVisibility: GridLinesVisibility.none,
+                    editingGestureType: EditingGestureType.tap,
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );
@@ -74,17 +85,14 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
 }
 
 class UncountedItemsDataSource extends DataGridSource {
-  UncountedItemsDataSource(List<StockTakeItem> itemsToOrder, BuildContext context) {
+  UncountedItemsDataSource(List<StockTakeItem> itemsToOrder) {
     _uncountedItems = itemsToOrder;
-    _context = context;
     buildDataGridRows();
   }
 
   List<StockTakeItem> _uncountedItems = [];
 
   List<DataGridRow> dataGridRows = [];
-
-  late BuildContext _context;
 
   void buildDataGridRows() => dataGridRows = _uncountedItems.map((item) => item.toDataGridRowUncountedItems()).toList();
 
@@ -100,13 +108,13 @@ class UncountedItemsDataSource extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: cellBuilder(cell.columnName, cell, row.getCells().first.value),
+          child: cellBuilder(cell.columnName, cell, row.getCells().first.value, dataGridRows.indexOf(row)),
         );
       }).toList(),
     );
   }
 
-  Widget cellBuilder(String key, DataGridCell cell, int id) => switch (key) {
+  Widget cellBuilder(String key, DataGridCell cell, int id, int rowIndex) => switch (key) {
         'qty_counted' => Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -115,13 +123,28 @@ class UncountedItemsDataSource extends DataGridSource {
               border: Border.all(color: UIColors.borderRegular),
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
-            child: UIText.bodyRegular(cell.value.toString()),
+            child: UIText.bodyRegular(cell.value.toString(),
+                color: cell.value == 0 ? UIColors.textMuted : UIColors.textRegular),
           ),
+
+        /// Todo: Entering counted qty for all field and then clicking one confirm clears all values from the counted qty field
         'action' => LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
               'Confirm',
               iconBuilder: (isHover) => Assets.icons.send.setColorOnHover(isHover),
-              onClick: () {},
+              onClick: () {
+                int newQtyCounted = dataGridRows[rowIndex].getCells()[4].value;
+                int qtyExpected = dataGridRows[rowIndex].getCells()[3].value;
+                int newDiffrence = (newQtyCounted) - (qtyExpected);
+
+                context.read<StockTakeCubit>().setCountedQuantityPerItem(
+                      id: id,
+                      qty: newQtyCounted,
+                      difference: newDiffrence,
+                    );
+
+                // dataGridRows.removeAt(rowIndex);
+              },
             ),
           ),
         _ => UIText.bodyRegular(cell.value.toString()),
@@ -160,20 +183,9 @@ class UncountedItemsDataSource extends DataGridSource {
 
     if (column.columnName == 'qty_counted') {
       final newQtyCounted = int.tryParse(newCellValue);
-      int qtyExpected = dataGridRows[dataRowIndex].getCells()[4].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_counted', value: newQtyCounted);
-
-      /// Compute new difference and update the value in the DataGridRows
-      int newDiffrence = (newQtyCounted ?? 0) - (qtyExpected);
-      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<int>(columnName: 'difference', value: newDiffrence);
-
-      _context.read<StockTakeCubit>().setCountedQuantityPerItem(
-            id: _uncountedItems[dataRowIndex].id!,
-            qty: newQtyCounted!,
-            difference: newDiffrence,
-          );
     }
   }
 
@@ -197,7 +209,7 @@ class UncountedItemsDataSource extends DataGridSource {
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: TextField(
-        controller: editingController..text = displayText,
+        controller: editingController..text = (displayText == '0' ? '' : displayText),
         autofocus: true,
         cursorHeight: 15.0,
         style: UIStyleText.bodyRegular,

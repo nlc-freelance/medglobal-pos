@@ -18,7 +18,7 @@ class StockTake extends Equatable {
   final bool? isAllSupplier;
   final StockOrderStatus? status;
   final String? description;
-  final double? totalQtyDifference;
+  final int? totalQtyDifference;
   final double? totalCostDifference;
   final List<StockTakeItem>? items;
   @DateTimeConverter()
@@ -96,7 +96,7 @@ class StockTake extends Equatable {
                 'countedQuantity': item.qtyCounted,
               })
           .toList(),
-      'description': description,
+      'notes': description,
     };
   }
 
@@ -107,7 +107,7 @@ class StockTake extends Equatable {
     bool? isAllSupplier,
     StockOrderStatus? status,
     String? description,
-    double? totalQtyDifference,
+    int? totalQtyDifference,
     double? totalCostDifference,
     List<StockTakeItem>? items,
     DateTime? completedAt,

@@ -33,6 +33,8 @@ class BranchApiImpl implements BranchApi {
         }
       }
 
+      print('AAA ${branches}');
+
       return branches;
     } catch (_) {
       rethrow;

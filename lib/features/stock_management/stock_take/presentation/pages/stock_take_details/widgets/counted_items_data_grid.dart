@@ -29,7 +29,7 @@ class _CountedItemsDataGridState extends State<CountedItemsDataGrid> {
 
     final stockTake = context.read<StockTakeCubit>().state.stockTake;
 
-    _countedItems = stockTake.items ?? [];
+    _countedItems = stockTake.items?.where((item) => item.qtyCounted != null).toList() ?? [];
     _countedItemsDataSource = CountedItemsDataSource(_countedItems, context);
   }
 
@@ -49,27 +49,38 @@ class _CountedItemsDataGridState extends State<CountedItemsDataGrid> {
           subtitle: 'Quantity on hand is only updated when mark completed.',
         ),
         const DataGridToolbar(searchPlaceholder: 'Search variant name'),
-        Container(
-          decoration: UIStyleContainer.topBorder,
-          child: ClipRect(
-            clipper: HorizontalBorderClipper(),
-            child: SfDataGridTheme(
-              data: DataGridUtil.cellNavigationStyle,
-              child: SfDataGrid(
-                source: _countedItemsDataSource,
-                columns: DataGridUtil.getColumns(DataGridColumn.ST_COUNTED_ITEMS),
-                controller: _dataGridController,
-                selectionManager: customSelectionManager,
-                shrinkWrapRows: true,
-                allowEditing: true,
-                navigationMode: GridNavigationMode.cell,
-                selectionMode: SelectionMode.single,
-                columnWidthMode: ColumnWidthMode.fill,
-                headerGridLinesVisibility: GridLinesVisibility.none,
-                editingGestureType: EditingGestureType.tap,
+        BlocConsumer<StockTakeCubit, StockTakeState>(
+          listener: (context, state) {
+            _countedItemsDataSource._countedItems =
+                state.stockTake.items?.where((item) => item.qtyCounted != null).toList() ?? [];
+
+            _countedItemsDataSource.buildDataGridRows();
+            _countedItemsDataSource.updateDataGridSource();
+          },
+          builder: (context, state) {
+            return Container(
+              decoration: UIStyleContainer.topBorder,
+              child: ClipRect(
+                clipper: HorizontalBorderClipper(),
+                child: SfDataGridTheme(
+                  data: DataGridUtil.cellNavigationStyle,
+                  child: SfDataGrid(
+                    source: _countedItemsDataSource,
+                    columns: DataGridUtil.getColumns(DataGridColumn.ST_COUNTED_ITEMS),
+                    controller: _dataGridController,
+                    selectionManager: customSelectionManager,
+                    shrinkWrapRows: true,
+                    allowEditing: true,
+                    navigationMode: GridNavigationMode.cell,
+                    selectionMode: SelectionMode.single,
+                    columnWidthMode: ColumnWidthMode.fill,
+                    headerGridLinesVisibility: GridLinesVisibility.none,
+                    editingGestureType: EditingGestureType.tap,
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );
@@ -103,13 +114,13 @@ class CountedItemsDataSource extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: cellBuilder(cell.columnName, cell, row.getCells().first.value),
+          child: cellBuilder(cell.columnName, cell, row.getCells().first.value, dataGridRows.indexOf(row)),
         );
       }).toList(),
     );
   }
 
-  Widget cellBuilder(String key, DataGridCell cell, int id) => switch (key) {
+  Widget cellBuilder(String key, DataGridCell cell, int id, int rowIndex) => switch (key) {
         'qty_counted' => Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -120,11 +131,29 @@ class CountedItemsDataSource extends DataGridSource {
             ),
             child: UIText.bodyRegular(cell.value.toString()),
           ),
+        'difference' => cell.value == 0
+            ? UIText.bodyRegular(cell.value.toString())
+            : Chip(
+                label: Text(
+                  cell.value.toString(),
+                  style: UIStyleText.bodyRegular
+                      .copyWith(color: cell.value! > 0 ? UIColors.completed : UIColors.cancelled),
+                ),
+                backgroundColor: cell.value! > 0 ? UIColors.completedBg : UIColors.cancelledBg,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: const BorderSide(color: UIColors.transparent),
+                ),
+              ),
         'action' => LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
               'Undo',
               iconBuilder: (isHover) => Assets.icons.undo.setColorOnHover(isHover),
-              onClick: () {},
+              onClick: () {
+                _context.read<StockTakeCubit>().undoCountedItem(id: id);
+              },
             ),
           ),
         _ => UIText.bodyRegular(cell.value.toString()),

@@ -7,7 +7,9 @@ part 'new_stock_take_state.dart';
 class NewStockTakeCubit extends Cubit<NewStockTakeState> {
   NewStockTakeCubit() : super(NewStockTakeState.initial());
 
-  void setBranchId(int value) => emit(NewStockTakeState(state.payload.copyWith(targetBranch: value)));
-  void setSupplierId(int value) => emit(NewStockTakeState(state.payload.copyWith(targetSupplier: value)));
+  void setBranchId(int value) => emit(NewStockTakeState(state.payload.copyWith(branch: value)));
+  void setSupplierId(int value) => emit(NewStockTakeState(state.payload.copyWith(supplier: value)));
   void setIsAllSupplier(bool value) => emit(NewStockTakeState(state.payload.copyWith(isAllSupplier: value)));
+
+  void reset() => emit(NewStockTakeState.initial());
 }

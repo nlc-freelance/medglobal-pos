@@ -34,7 +34,7 @@ class NewPurchaseOrderForm extends StatelessWidget {
           isRequired: true,
           itemAsString: (branch) => branch.name,
           asyncItemsCallback: GetIt.I<BranchRepository>().getAllBranches(),
-          onSelectItem: (Branch value) => context.read<NewPurchaseOrderCubit>().setBranchId(value.id),
+          onSelectItem: (Branch value) => context.read<NewPurchaseOrderCubit>().setBranchId(value.id!),
         ),
         const UIVerticalSpace(40),
         UICheckboxListTile(

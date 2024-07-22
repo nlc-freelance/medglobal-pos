@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take_item.dart';
 
 part 'stock_take_state.dart';
 
@@ -14,10 +15,7 @@ class StockTakeCubit extends Cubit<StockTakeState> {
 
     final updatedItems = items.map((item) {
       if (item.id == id) {
-        return item.copyWith(
-          qtyCounted: qty,
-          difference: difference,
-        );
+        return item.copyWith(qtyCounted: qty, difference: difference);
       }
       return item;
     }).toList();
@@ -25,15 +23,22 @@ class StockTakeCubit extends Cubit<StockTakeState> {
     emit(StockTakeState(state.stockTake.copyWith(items: updatedItems)));
   }
 
-  void setAllUncountedItemQuantityToZero({required int id}) {
-    final items = state.stockTake.items?.toList() ?? [];
+  // void setAllUncountedItemQuantityToZero() {
+  //   final items = state.stockTake.items?.toList() ?? [];
 
-    final updatedItems = items.map((item) {
-      if (item.id == id) return item.copyWith(qtyCounted: 0, difference: item.qtyExpected);
-      return item;
-    }).toList();
+  //   final updatedItems = items.map((item) {
+  //     return item.copyWith(qtyCounted: item.qtyCounted ?? 0, difference: item.qtyExpected);
+  //   }).toList();
 
-    emit(StockTakeState(state.stockTake.copyWith(items: updatedItems)));
+  //   emit(StockTakeState(state.stockTake.copyWith(items: updatedItems)));
+  // }
+
+  void setAllUncountedItemQuantityToZero(List<StockTakeItem> items) {
+    emit(StockTakeState(state.stockTake.copyWith(items: items)));
+  }
+
+  void doNothing(List<StockTakeItem> items) {
+    emit(StockTakeState(state.stockTake.copyWith(items: items)));
   }
 
   void undoCountedItem({required int id}) {

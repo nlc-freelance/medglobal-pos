@@ -52,6 +52,7 @@ class StockTakeApiImpl implements StockTakeApi {
   @override
   Future<StockTakeDto> create(NewStockTake payload) async {
     try {
+      print('BBB ${payload.toJson()}');
       return await _apiService.post<StockTakeDto>(
         '/stock-takes',
         data: payload.toJson(),

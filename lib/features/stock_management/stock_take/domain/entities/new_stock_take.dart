@@ -4,26 +4,26 @@ part 'new_stock_take.g.dart';
 
 @JsonSerializable()
 class NewStockTake {
-  final int? targetBranch;
-  final int? targetSupplier;
+  final int? branch;
+  final int? supplier;
   final bool isAllSupplier;
 
   NewStockTake({
-    this.targetBranch,
-    this.targetSupplier,
+    this.branch,
+    this.supplier,
     this.isAllSupplier = false,
   });
 
   Map<String, dynamic> toJson() => _$NewStockTakeToJson(this);
 
   NewStockTake copyWith({
-    int? targetBranch,
-    int? targetSupplier,
+    int? branch,
+    int? supplier,
     bool? isAllSupplier,
   }) {
     return NewStockTake(
-      targetBranch: targetBranch ?? this.targetBranch,
-      targetSupplier: targetSupplier ?? this.targetSupplier,
+      branch: branch ?? this.branch,
+      supplier: supplier ?? this.supplier,
       isAllSupplier: isAllSupplier ?? this.isAllSupplier,
     );
   }

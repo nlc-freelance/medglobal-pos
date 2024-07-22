@@ -40,13 +40,21 @@ final class StockTakeSuccess extends StockTakeRemoteState {
   List<Object?> get props => [message];
 }
 
+final class StockTakeMarkAsCompletedSuccess extends StockTakeRemoteState {
+  final String message;
+  const StockTakeMarkAsCompletedSuccess({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
 /// Loading
 ///
 final class StockTakeByIdLoading extends StockTakeRemoteState {}
 
 final class StockTakeSaveLoading extends StockTakeRemoteState {}
 
-final class StockTakeMarkAsCompleteLoading extends StockTakeRemoteState {}
+final class StockTakeMarkAsCompletedLoading extends StockTakeRemoteState {}
 
 final class StockTakeCancelLoading extends StockTakeRemoteState {}
 
@@ -63,6 +71,14 @@ final class StockTakeByIdError extends StockTakeRemoteState {
 final class StockTakeError extends StockTakeRemoteState {
   final String message;
   const StockTakeError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+final class StockTakeMarkAsCompletedError extends StockTakeRemoteState {
+  final String message;
+  const StockTakeMarkAsCompletedError({required this.message});
 
   @override
   List<Object?> get props => [message];

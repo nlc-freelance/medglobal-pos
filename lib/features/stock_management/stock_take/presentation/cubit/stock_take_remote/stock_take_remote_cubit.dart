@@ -50,17 +50,19 @@ class StockTakeRemoteCubit extends Cubit<StockTakeRemoteState> {
 
   Future<void> update(StockOrderUpdate type, {required int id, required StockTake stockTake}) async {
     if (type == StockOrderUpdate.SAVE) emit(StockTakeSaveLoading());
-    if (type == StockOrderUpdate.MARK_AS_COMPLETE) emit(StockTakeMarkAsCompleteLoading());
+    if (type == StockOrderUpdate.MARK_AS_COMPLETE) emit(StockTakeMarkAsCompletedLoading());
     if (type == StockOrderUpdate.CANCEL) emit(StockTakeCancelLoading());
 
     try {
       final result = await _updateStockTakeUsecase.call(UpdateStockTakeParams(type, id: id, stockTake: stockTake));
       result.fold(
-        (error) => emit(StockTakeError(message: error.message)),
-        (_) => emit(const StockTakeSuccess(message: 'Stock Take updated successfully.')),
+        (error) => emit(StockTakeMarkAsCompletedError(message: error.message)),
+        (_) => emit(type == StockOrderUpdate.MARK_AS_COMPLETE
+            ? const StockTakeMarkAsCompletedSuccess(message: 'Stock Take updated successfully.')
+            : const StockTakeSuccess(message: 'Stock Take updated successfully.')),
       );
     } catch (e) {
-      emit(StockTakeError(message: e.toString()));
+      emit(StockTakeMarkAsCompletedError(message: e.toString()));
     }
   }
 }

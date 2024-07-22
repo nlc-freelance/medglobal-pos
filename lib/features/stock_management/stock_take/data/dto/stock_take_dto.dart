@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/features/stock_management/stock_take/data/dto/stock_take_item_dto.dart';
 import 'package:medglobal_admin_portal/features/stock_management/stock_take/domain/entities/stock_take.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
 
@@ -15,8 +16,12 @@ class StockTakeDto extends Equatable {
   final Supplier? supplier;
   final bool? isAllSupplier;
   final String? status;
-  final double? totalQtyDifference;
+  @JsonKey(name: 'totalQuantityDifference')
+  final int? totalQtyDifference;
+  @JsonKey(name: 'totalCostDifference')
   final double? totalCostDifference;
+  @JsonKey(name: 'stockTakeDetails')
+  final List<StockTakeItemDto>? items;
   @JsonKey(name: 'notes')
   final String? description;
   @DateTimeConverter()
@@ -35,6 +40,7 @@ class StockTakeDto extends Equatable {
     this.description,
     this.totalQtyDifference,
     this.totalCostDifference,
+    this.items,
     this.completedAt,
     this.createdAt,
     this.updatedAt,
@@ -50,6 +56,7 @@ class StockTakeDto extends Equatable {
         description,
         totalQtyDifference,
         totalCostDifference,
+        items,
         completedAt,
         createdAt,
         updatedAt
@@ -66,6 +73,7 @@ class StockTakeDto extends Equatable {
         description: description,
         totalQtyDifference: totalQtyDifference,
         totalCostDifference: totalCostDifference,
+        items: items?.map((item) => item.toEntity()).toList() ?? [],
         completedAt: completedAt,
         createdAt: createdAt,
         updatedAt: updatedAt,

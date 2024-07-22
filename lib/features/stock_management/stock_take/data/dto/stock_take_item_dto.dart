@@ -9,13 +9,18 @@ part 'stock_take_item_dto.g.dart';
 class StockTakeItemDto extends Equatable {
   final int? id;
   final ProductVariantDto? variant;
-  @JsonKey(name: 'countedQuantity')
+  @JsonKey(name: 'quantity')
   final int? qtyCounted;
+  @JsonKey(name: 'quantityDifference')
+  final int? difference;
+  final double? costDifference;
 
   const StockTakeItemDto({
     this.id,
     this.variant,
     this.qtyCounted,
+    this.difference,
+    this.costDifference,
   });
 
   @override
@@ -29,5 +34,8 @@ class StockTakeItemDto extends Equatable {
         name: '${variant?.product?.name} ${variant?.name}',
         sku: variant?.sku,
         qtyCounted: qtyCounted,
+        qtyExpected: variant?.qtyOnHand,
+        difference: difference,
+        costDifference: costDifference,
       );
 }
