@@ -18,6 +18,9 @@ class UncountedItemsDataGrid extends StatefulWidget {
 class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
   List<StockTakeItem> _uncountedItems = <StockTakeItem>[];
 
+  int? _filteredRowsCount;
+  final _searchController = TextEditingController();
+
   late DataGridController _dataGridController;
   late UncountedItemsDataSource _uncountedItemsDataSource;
   late CustomSelectionManager customSelectionManager;
@@ -39,6 +42,7 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
   @override
   void dispose() {
     _dataGridController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -55,28 +59,64 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const PageSectionTitle(title: 'Uncounted Items'),
-        const DataGridToolbar(searchPlaceholder: 'Search variant name'),
-        BlocConsumer<StockTakeCubit, StockTakeState>(
-          listener: (context, state) {
-            _uncountedItemsDataSource._uncountedItems = state.stockTake.items
-                    ?.where((item) => item.qtyCounted == null)
-                    .toList()
+    return BlocConsumer<StockTakeCubit, StockTakeState>(
+      listener: (context, state) {
+        _uncountedItemsDataSource._uncountedItems = state.stockTake.items
+                ?.where((item) => item.qtyCounted == null)
+                .toList()
 
-                    /// draft - set input counted qty of items from the temp list
-                    /// (happens when input, input input instead of input confirm, input confirm)
-                    .map((e) => mapCountedQtyFromDraft(e))
-                    .toList() ??
-                [];
+                /// draft - set input counted qty of items from the temp list
+                /// (happens when input, input input instead of input confirm, input confirm)
+                .map((e) => mapCountedQtyFromDraft(e))
+                .toList() ??
+            [];
 
-            _uncountedItemsDataSource.buildDataGridRows();
-            _uncountedItemsDataSource.updateDataGridSource();
-          },
-          builder: (context, state) {
-            return Container(
+        _uncountedItemsDataSource.buildDataGridRows();
+        _uncountedItemsDataSource.updateDataGridSource();
+      },
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                UIText.heading5('Uncounted Items'),
+                const UIHorizontalSpace(8),
+                Text(
+                  '(${_uncountedItemsDataSource.rows.length} total items)',
+                  style: UIStyleText.hint.copyWith(fontSize: 14, color: UIColors.textGray),
+                ),
+              ],
+            ),
+            const Divider(color: UIColors.borderMuted),
+            const UIVerticalSpace(8),
+            DataGridToolbar(
+              padding: const EdgeInsets.only(bottom: 12),
+              searchPlaceholder: 'Search variant name',
+              searchController: _searchController,
+              onChanged: (value) {
+                _uncountedItemsDataSource.clearFilters(columnName: 'variant_name');
+                if (value.isNotEmpty) {
+                  _uncountedItemsDataSource.addFilter(
+                    'variant_name',
+                    FilterCondition(
+                      value: value,
+                      filterBehavior: FilterBehavior.stringDataType,
+                      type: FilterType.contains,
+                    ),
+                  );
+                }
+                _uncountedItemsDataSource.updateDataGridSource();
+                setState(() => _filteredRowsCount = _uncountedItemsDataSource.effectiveRows.length);
+              },
+            ),
+            if (_searchController.text.isNotEmpty)
+              Text(
+                '(${(_filteredRowsCount ?? 0).toString()}) Search results found for \'${_searchController.text}\'',
+                style: UIStyleText.hint.copyWith(fontSize: 14, color: UIColors.textGray),
+              ),
+            const UIVerticalSpace(10),
+            Container(
               decoration: UIStyleContainer.topBorder,
               child: ClipRect(
                 clipper: HorizontalBorderClipper(),
@@ -94,13 +134,18 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
                     columnWidthMode: ColumnWidthMode.fill,
                     headerGridLinesVisibility: GridLinesVisibility.none,
                     editingGestureType: EditingGestureType.tap,
+                    footer: _filteredRowsCount != null
+                        ? _filteredRowsCount! == 0
+                            ? Center(child: UIText.bodyRegular('No results found'))
+                            : null
+                        : null,
                   ),
                 ),
               ),
-            );
-          },
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -157,7 +202,7 @@ class UncountedItemsDataSource extends DataGridSource {
               'Confirm',
               iconBuilder: (isHover) => Assets.icons.send.setColorOnHover(isHover),
               onClick: () {
-                int newQtyCounted = dataGridRows[rowIndex].getCells()[4].value;
+                int newQtyCounted = dataGridRows[rowIndex].getCells()[4].value ?? 0;
                 int qtyExpected = dataGridRows[rowIndex].getCells()[3].value;
                 int newDiffrence = (newQtyCounted) - (qtyExpected);
 

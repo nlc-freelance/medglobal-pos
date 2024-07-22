@@ -17,6 +17,9 @@ class CompletedStockTakeDataGrid extends StatefulWidget {
 class _CompletedStockTakeDataGridState extends State<CompletedStockTakeDataGrid> {
   List<StockTakeItem> _completedStockTakeItems = <StockTakeItem>[];
 
+  int? _filteredRowsCount;
+  final _searchController = TextEditingController();
+
   late DataGridController _dataGridController;
   late CompletedStockTakeDataSource _completedStockTakeDataSource;
   late CustomSelectionManager customSelectionManager;
@@ -44,8 +47,44 @@ class _CompletedStockTakeDataGridState extends State<CompletedStockTakeDataGrid>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const PageSectionTitle(title: 'Counted Items'),
-        const DataGridToolbar(searchPlaceholder: 'Search variant name'),
+        Row(
+          children: [
+            UIText.heading5('Uncounted Items'),
+            const UIHorizontalSpace(8),
+            Text(
+              '(${_completedStockTakeDataSource.rows.length} total items)',
+              style: UIStyleText.hint.copyWith(fontSize: 14, color: UIColors.textGray),
+            ),
+          ],
+        ),
+        const Divider(color: UIColors.borderMuted),
+        const UIVerticalSpace(8),
+        DataGridToolbar(
+          padding: const EdgeInsets.only(bottom: 12),
+          searchPlaceholder: 'Search variant name',
+          searchController: _searchController,
+          onChanged: (value) {
+            _completedStockTakeDataSource.clearFilters(columnName: 'variant_name');
+            if (value.isNotEmpty) {
+              _completedStockTakeDataSource.addFilter(
+                'variant_name',
+                FilterCondition(
+                  value: value,
+                  filterBehavior: FilterBehavior.stringDataType,
+                  type: FilterType.contains,
+                ),
+              );
+            }
+            _completedStockTakeDataSource.updateDataGridSource();
+            setState(() => _filteredRowsCount = _completedStockTakeDataSource.effectiveRows.length);
+          },
+        ),
+        if (_searchController.text.isNotEmpty)
+          Text(
+            '(${(_filteredRowsCount ?? 0).toString()}) Search results found for \'${_searchController.text}\'',
+            style: UIStyleText.hint.copyWith(fontSize: 14, color: UIColors.textGray),
+          ),
+        const UIVerticalSpace(10),
         Container(
           decoration: UIStyleContainer.topBorder,
           child: ClipRect(
@@ -62,6 +101,11 @@ class _CompletedStockTakeDataGridState extends State<CompletedStockTakeDataGrid>
                 selectionMode: SelectionMode.single,
                 columnWidthMode: ColumnWidthMode.fill,
                 headerGridLinesVisibility: GridLinesVisibility.none,
+                footer: _filteredRowsCount != null
+                    ? _filteredRowsCount! == 0
+                        ? Center(child: UIText.bodyRegular('No results found'))
+                        : null
+                    : null,
               ),
             ),
           ),

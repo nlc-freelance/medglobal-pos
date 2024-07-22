@@ -18,6 +18,9 @@ class CountedItemsDataGrid extends StatefulWidget {
 class _CountedItemsDataGridState extends State<CountedItemsDataGrid> {
   List<StockTakeItem> _countedItems = <StockTakeItem>[];
 
+  int? _filteredRowsCount;
+  final _searchController = TextEditingController();
+
   late DataGridController _dataGridController;
   late CountedItemsDataSource _countedItemsDataSource;
   late CustomSelectionManager customSelectionManager;
@@ -42,24 +45,57 @@ class _CountedItemsDataGridState extends State<CountedItemsDataGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const PageSectionTitle(
-          title: 'Counted Items',
-          subtitle: 'Quantity on hand is only updated when mark completed.',
-        ),
-        const DataGridToolbar(searchPlaceholder: 'Search variant name'),
-        BlocConsumer<StockTakeCubit, StockTakeState>(
-          listener: (context, state) {
-            _countedItemsDataSource._countedItems =
-                state.stockTake.items?.where((item) => item.qtyCounted != null).toList() ?? [];
+    return BlocConsumer<StockTakeCubit, StockTakeState>(
+      listener: (context, state) {
+        _countedItemsDataSource._countedItems =
+            state.stockTake.items?.where((item) => item.qtyCounted != null).toList() ?? [];
 
-            _countedItemsDataSource.buildDataGridRows();
-            _countedItemsDataSource.updateDataGridSource();
-          },
-          builder: (context, state) {
-            return Container(
+        _countedItemsDataSource.buildDataGridRows();
+        _countedItemsDataSource.updateDataGridSource();
+      },
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                UIText.heading5('Uncounted Items'),
+                const UIHorizontalSpace(8),
+                Text(
+                  '(${_countedItemsDataSource.rows.length} total items)',
+                  style: UIStyleText.hint.copyWith(fontSize: 14, color: UIColors.textGray),
+                ),
+              ],
+            ),
+            const Divider(color: UIColors.borderMuted),
+            const UIVerticalSpace(8),
+            DataGridToolbar(
+              padding: const EdgeInsets.only(bottom: 12),
+              searchPlaceholder: 'Search variant name',
+              searchController: _searchController,
+              onChanged: (value) {
+                _countedItemsDataSource.clearFilters(columnName: 'variant_name');
+                if (value.isNotEmpty) {
+                  _countedItemsDataSource.addFilter(
+                    'variant_name',
+                    FilterCondition(
+                      value: value,
+                      filterBehavior: FilterBehavior.stringDataType,
+                      type: FilterType.contains,
+                    ),
+                  );
+                }
+                _countedItemsDataSource.updateDataGridSource();
+                setState(() => _filteredRowsCount = _countedItemsDataSource.effectiveRows.length);
+              },
+            ),
+            if (_searchController.text.isNotEmpty)
+              Text(
+                '(${(_filteredRowsCount ?? 0).toString()}) Search results found for \'${_searchController.text}\'',
+                style: UIStyleText.hint.copyWith(fontSize: 14, color: UIColors.textGray),
+              ),
+            const UIVerticalSpace(10),
+            Container(
               decoration: UIStyleContainer.topBorder,
               child: ClipRect(
                 clipper: HorizontalBorderClipper(),
@@ -77,13 +113,18 @@ class _CountedItemsDataGridState extends State<CountedItemsDataGrid> {
                     columnWidthMode: ColumnWidthMode.fill,
                     headerGridLinesVisibility: GridLinesVisibility.none,
                     editingGestureType: EditingGestureType.tap,
+                    footer: _filteredRowsCount != null
+                        ? _filteredRowsCount! == 0 && _searchController.text.isNotEmpty
+                            ? Center(child: UIText.bodyRegular('No results found'))
+                            : null
+                        : null,
                   ),
                 ),
               ),
-            );
-          },
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

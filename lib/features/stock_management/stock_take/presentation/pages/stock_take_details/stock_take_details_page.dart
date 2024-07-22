@@ -74,6 +74,7 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const PageSectionTitle(title: 'General Information'),
                     GridView(
@@ -144,13 +145,13 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> {
               ),
             ),
             const UIVerticalSpace(40),
-            if (state is! StockTakeError) ...[
+            if (state is StockTakeError) ...[
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Assets.icons.infoCircle.svg(),
                   const UIHorizontalSpace(8),
-                  UIText.labelSemiBold('Something went wrong. ', color: UIColors.buttonDanger),
+                  UIText.labelSemiBold('Something went wrong. ${state.message}', color: UIColors.buttonDanger),
                 ],
               ),
               const UIVerticalSpace(20),
