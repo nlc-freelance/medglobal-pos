@@ -46,16 +46,17 @@ class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataG
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        PageSectionTitle(
-          title: 'Items to Transfer',
-          action: SizedBox(
-            width: 226,
+        const PageSectionTitle(title: 'Items to Transfer'),
+        DataGridToolbar(
+          isImportCSV: true,
+          search: SizedBox(
+            width: MediaQuery.sizeOf(context).width * 0.3,
             child: AutocompleteDropdown(
               branchId: context.read<StockTransferCubit>().state.stockTransfer.destinationBranch?.id,
               onSelected: (value) {
                 final stockTransferItem = value.toStockTransferItem();
 
-                /// Add newly added items to the current PO in state
+                /// Add newly added items to the current stock transfer in state
                 context.read<StockTransferCubit>().addItem(stockTransferItem);
               },
             ),
@@ -69,49 +70,52 @@ class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataG
             _stockItemsToTransferDataSource.buildDataGridRows();
             _stockItemsToTransferDataSource.updateDataGridSource();
           },
-          builder: (_, state) => state.stockTransfer.items?.isEmpty == true
-              ? DataGridNoData(
-                  columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFER_ITEMS),
-                  source: _stockItemsToTransferDataSource)
-              : ClipRect(
-                  clipper: HorizontalBorderClipper(),
-                  child: SfDataGridTheme(
-                    data: DataGridUtil.cellNavigationStyle,
-                    child: SfDataGrid(
-                      source: _stockItemsToTransferDataSource,
-                      columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFER_ITEMS),
-                      controller: _dataGridController,
-                      selectionManager: customSelectionManager,
-                      shrinkWrapRows: true,
-                      allowEditing: true,
-                      navigationMode: GridNavigationMode.cell,
-                      selectionMode: SelectionMode.single,
-                      columnWidthMode: ColumnWidthMode.fill,
-                      headerGridLinesVisibility: GridLinesVisibility.none,
-                      editingGestureType: EditingGestureType.tap,
-                      tableSummaryRows: [
-                        GridTableSummaryRow(
-                          color: UIColors.background,
-                          position: GridTableSummaryRowPosition.bottom,
-                          showSummaryInRow: false,
-                          title: 'Total',
-                          columns: [
-                            const GridSummaryColumn(
-                              name: '',
-                              columnName: 'cost',
-                              summaryType: GridSummaryType.sum,
-                            ),
-                            const GridSummaryColumn(
-                              name: '',
-                              columnName: 'subtotal',
-                              summaryType: GridSummaryType.sum,
-                            ),
-                          ],
-                        ),
-                      ],
+          builder: (_, state) => Container(
+            decoration: UIStyleContainer.topBorder,
+            child: state.stockTransfer.items?.isEmpty == true
+                ? DataGridNoData(
+                    columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFER_ITEMS),
+                    source: _stockItemsToTransferDataSource)
+                : ClipRect(
+                    clipper: HorizontalBorderClipper(),
+                    child: SfDataGridTheme(
+                      data: DataGridUtil.cellNavigationStyle,
+                      child: SfDataGrid(
+                        source: _stockItemsToTransferDataSource,
+                        columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFER_ITEMS),
+                        controller: _dataGridController,
+                        selectionManager: customSelectionManager,
+                        shrinkWrapRows: true,
+                        allowEditing: true,
+                        navigationMode: GridNavigationMode.cell,
+                        selectionMode: SelectionMode.single,
+                        columnWidthMode: ColumnWidthMode.fill,
+                        headerGridLinesVisibility: GridLinesVisibility.none,
+                        editingGestureType: EditingGestureType.tap,
+                        tableSummaryRows: [
+                          GridTableSummaryRow(
+                            color: UIColors.background,
+                            position: GridTableSummaryRowPosition.bottom,
+                            showSummaryInRow: false,
+                            title: 'Total',
+                            columns: [
+                              const GridSummaryColumn(
+                                name: '',
+                                columnName: 'cost',
+                                summaryType: GridSummaryType.sum,
+                              ),
+                              const GridSummaryColumn(
+                                name: '',
+                                columnName: 'subtotal',
+                                summaryType: GridSummaryType.sum,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+          ),
         )
       ],
     );

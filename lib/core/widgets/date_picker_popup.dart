@@ -60,7 +60,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
       ],
       child: HoverBuilder(
         builder: (isHover) => Container(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+          padding: const EdgeInsets.symmetric(vertical: 6.5, horizontal: 16.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             color: UIColors.background,
@@ -72,7 +72,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
               Assets.icons.calendar.setColorOnHover(isHover),
               const UIHorizontalSpace(10),
               UIText.labelMedium(
-                _selectedDate != null ? DateFormat.yMd().format(_selectedDate!) : 'Select date',
+                _selectedDate != null ? DateFormat.yMd().format(_selectedDate!) : 'Date',
                 color: isHover ? UIColors.primary : UIColors.textRegular,
               ),
               const Spacer(),

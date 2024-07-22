@@ -70,6 +70,7 @@ class _CountedItemsDataGridState extends State<CountedItemsDataGrid> {
             const Divider(color: UIColors.borderMuted),
             const UIVerticalSpace(8),
             DataGridToolbar(
+              isDownloadable: true,
               padding: const EdgeInsets.only(bottom: 12),
               searchPlaceholder: 'Search variant name',
               searchController: _searchController,

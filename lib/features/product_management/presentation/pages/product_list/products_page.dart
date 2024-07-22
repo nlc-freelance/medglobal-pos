@@ -53,7 +53,7 @@ class _ProductsPageState extends State<ProductsPage> {
               ),
             ],
           ),
-          const DataGridToolbar(searchPlaceholder: 'Search product name / SKU / category'),
+          const DataGridToolbar(searchPlaceholder: 'Search product name / SKU / category', isDownloadable: true),
           BlocBuilder<ProductListCubit, ProductListState>(
             builder: (context, state) {
               if (state is ProductListError) {

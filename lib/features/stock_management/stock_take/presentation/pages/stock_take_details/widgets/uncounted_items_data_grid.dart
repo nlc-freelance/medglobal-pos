@@ -91,6 +91,8 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
             const Divider(color: UIColors.borderMuted),
             const UIVerticalSpace(8),
             DataGridToolbar(
+              isDownloadable: true,
+              isImportCSV: true,
               padding: const EdgeInsets.only(bottom: 12),
               searchPlaceholder: 'Search variant name',
               searchController: _searchController,

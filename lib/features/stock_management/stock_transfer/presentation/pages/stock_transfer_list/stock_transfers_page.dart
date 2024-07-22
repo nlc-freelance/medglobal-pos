@@ -99,6 +99,7 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
         const UIVerticalSpace(20),
         DataGridToolbar(
           searchPlaceholder: 'Search stock transfer ID',
+          isDownloadable: true,
           filters: [
             UIButton.outlined(
               'Date',

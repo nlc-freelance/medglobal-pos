@@ -8,8 +8,9 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 class ColumnData {
   final String name;
   final String label;
+  final double? minWidth;
 
-  ColumnData(this.name, this.label);
+  ColumnData(this.name, this.label, {this.minWidth});
 }
 
 class DataGridUtil {
@@ -19,6 +20,7 @@ class DataGridUtil {
       .map<GridColumn>((column) => GridColumn(
             visible: showId ?? column.name != 'id',
             columnName: column.name,
+            minimumWidth: column.minWidth ?? double.nan,
             label: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               alignment: Alignment.centerLeft,

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
+import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
+import 'package:medglobal_admin_portal/core/widgets/filter_popup.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -95,20 +97,23 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
         const UIVerticalSpace(20),
         DataGridToolbar(
           searchPlaceholder: 'Search purchase order ID',
+          isDownloadable: true,
           filters: [
-            UIButton.outlined(
-              'Date',
-              iconAlign: IconAlignment.end,
-              iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
-              onClick: () {},
+            SizedBox(
+              width: 150,
+              child: DatePickerPopup(onSelect: (date) {}),
             ),
             const UIHorizontalSpace(8),
-            UIButton.outlined(
-              'Filter',
-              iconAlign: IconAlignment.end,
-              iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
-              onClick: () {},
+            SizedBox(
+              width: 120,
+              child: FilterPopup(onSelect: (date) {}),
             ),
+            // UIButton.outlined(
+            //   'Filter',
+            //   iconAlign: IconAlignment.end,
+            //   iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
+            //   onClick: () {},
+            // ),
           ],
         ),
         BlocBuilder<PurchaseOrderListRemoteCubit, PurchaseOrderListRemoteState>(
