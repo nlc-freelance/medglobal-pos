@@ -28,6 +28,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_remote/stock_transfer_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_remote/stock_transfer_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_need/supply_need_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_needs/supply_needs_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
@@ -55,6 +56,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<VariantFormCubit>()),
         BlocProvider(create: (_) => GetIt.I<VariantFormUiCubit>()),
         BlocProvider(create: (_) => GetIt.I<SupplyNeedsCubit>()),
+        BlocProvider(create: (_) => GetIt.I<SupplyNeedCubit>()),
         BlocProvider(create: (_) => GetIt.I<PurchaseOrderListRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<PurchaseOrderRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<PurchaseOrderCubit>()),

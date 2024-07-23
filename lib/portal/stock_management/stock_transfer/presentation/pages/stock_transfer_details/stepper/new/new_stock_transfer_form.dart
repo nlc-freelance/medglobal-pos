@@ -5,6 +5,7 @@ import 'package:medglobal_admin_portal/core/widgets/dropdowns/search_dropdown/se
 import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/branch_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/new_stock_transfer/new_stock_transfer_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_need/supply_need_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class NewStockTransferForm extends StatelessWidget {
@@ -22,6 +23,7 @@ class NewStockTransferForm extends StatelessWidget {
           isRequired: true,
           itemAsString: (branch) => branch.name,
           asyncItemsCallback: GetIt.I<BranchRepository>().getAllBranches(),
+          selectedItem: context.read<SupplyNeedCubit>().state.stockTransferSourceBranch,
           onSelectItem: (Branch value) => context.read<NewStockTransferCubit>().setSourceBranchId(value.id!),
         ),
         const UIVerticalSpace(16),

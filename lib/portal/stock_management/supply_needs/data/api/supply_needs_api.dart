@@ -21,7 +21,7 @@ class SupplyNeedsApiImpl implements SupplyNeedsApi {
 
       // Map<int, List<SupplyNeedItemDto>> supplyNeedsByBranch = {};
       // response.items?.forEach((item) {
-      //   supplyNeedsByBranch[item.branch!.id] = item.items ?? [];
+      //   supplyNeedsByBranch[item.branch!.id!] = item.items ?? [];
       // });
 
       return response.items!;
