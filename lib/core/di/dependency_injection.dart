@@ -85,6 +85,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/data
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/data/repositories/supply_needs_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/domain/repository/supply_needs_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/domain/usecases/get_supply_needs_usecase.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_need/supply_need_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_needs/supply_needs_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_api.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/data/api/supplier_api.dart';
@@ -232,6 +233,7 @@ void initDependencyInjection() {
     ..registerFactory(() => VariantFormCubit())
     ..registerFactory(() => VariantFormUiCubit())
     ..registerFactory(() => SupplyNeedsCubit(injector()))
+    ..registerFactory(() => SupplyNeedCubit())
     ..registerFactory(() => PurchaseOrderListRemoteCubit(injector()))
     ..registerFactory(() => PurchaseOrderRemoteCubit(injector(), injector(), injector()))
     ..registerFactory(() => PurchaseOrderCubit())

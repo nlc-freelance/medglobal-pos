@@ -35,14 +35,14 @@ class DataGridColumn {
 
   static List<ColumnData> SUPPLY_NEEDS = [
     ColumnData('id', 'ID'),
-    ColumnData('branch', 'Branch'),
+    // ColumnData('branch', 'Branch'),
     ColumnData('variant_name', 'Variant Name'),
     ColumnData('sku', 'SKU'),
     ColumnData('qty', 'Qty'),
     ColumnData('warning_stock', 'Warning Stock Level'),
     ColumnData('ideal_stock', 'Ideal Stock Level'),
     ColumnData('suppliers', 'Suppliers'),
-    ColumnData('action', 'Action'),
+    // ColumnData('action', 'Action'),
   ];
 
   static List<ColumnData> PURCHASE_ORDERS = [
