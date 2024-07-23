@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/features/authentication/presentation/bloc/auth_bloc.dart';
-import 'package:medglobal_admin_portal/features/authentication/presentation/pages/login_page.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_details/product_details_page.dart';
-import 'package:medglobal_admin_portal/features/product_management/presentation/pages/product_list/products_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_details/purchase_order_details_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_orders_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_details/stepper/new/new_stock_return_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_details/stock_return_details_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_return/presentation/pages/stock_return_list/stock_returns_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/pages/stock_take_details/stock_take_details_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_take/presentation/pages/stock_take_list/stock_takes_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stepper/new/new_stock_transfer_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stock_transfer_details_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfers_page.dart';
-import 'package:medglobal_admin_portal/features/stock_management/supply_needs/presentation/pages/supply_needs_page.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/presentation/pages/supplier_list/suppliers_page.dart';
+import 'package:medglobal_admin_portal/core/widgets/route_guard.dart';
+import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/products_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/purchase_order_details_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_orders_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/new/new_stock_return_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stock_return_details_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_list/stock_returns_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_details/stock_take_details_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/stock_takes_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stepper/new/new_stock_transfer_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stock_transfer_details_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfers_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/pages/supply_needs_page.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/suppliers_page.dart';
+import 'package:medglobal_admin_portal/core/widgets/scaffold_layout/pos/pos_app_nav_bar.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/transactions/transactions_page.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_page.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
 
 abstract class AppRouter {
   static final GoRouter router = GoRouter(
@@ -29,9 +37,12 @@ abstract class AppRouter {
         pageBuilder: (context, state) => const NoTransitionPage(child: LoginPage()),
       ),
       StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) => ScaffoldLayout(
-          routerState: state,
-          navigationShell: navigationShell,
+        builder: (context, state, navigationShell) => RouteGuard(
+          allowedTypes: const [UserType.ADMIN],
+          child: ScaffoldLayout(
+            routerState: state,
+            navigationShell: navigationShell,
+          ),
         ),
         branches: [
           StatefulShellBranch(
@@ -242,6 +253,138 @@ abstract class AppRouter {
           ),
         ],
       ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) => RouteGuard(
+          allowedTypes: const [UserType.CASHIER],
+          child: Portal(
+            child: Scaffold(
+              drawerScrimColor: UIColors.transparent,
+              drawer: Container(
+                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
+                decoration: const BoxDecoration(
+                  color: UIColors.background,
+                  boxShadow: [
+                    BoxShadow(
+                      color: UIColors.borderMuted,
+                      blurRadius: 2.0,
+                      offset: Offset(1, 0),
+                    ),
+                  ],
+                ),
+                width: 300,
+                child: ListView(
+                  children: [
+                    ListTile(
+                      title: BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, state) => state is AuthenticatedState
+                            ? UIText.heading5('${state.user.firstName} ${state.user.lastName}')
+                            : const SizedBox(),
+                      ),
+                      subtitle: UIText.bodyRegular('Cashier', color: UIColors.textMuted),
+                    ),
+                    const UIVerticalSpace(60),
+                    Material(
+                      type: MaterialType.transparency,
+                      child: ListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        selected: state.matchedLocation == '/point-of-sale/register',
+                        selectedTileColor: UIColors.primary,
+                        title: UIText.bodyRegular(
+                          'Register',
+                          color: state.matchedLocation == '/point-of-sale/register'
+                              ? UIColors.background
+                              : UIColors.textRegular,
+                        ),
+                        onTap: () => AppRouter.router.goNamed('Register'),
+                      ),
+                    ),
+                    const UIVerticalSpace(12),
+                    Material(
+                      type: MaterialType.transparency,
+                      child: ListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        selected: state.matchedLocation == '/point-of-sale/transactions',
+                        selectedTileColor: UIColors.primary,
+                        title: UIText.bodyRegular(
+                          'Transactions',
+                          color: state.matchedLocation == '/point-of-sale/transactions'
+                              ? UIColors.background
+                              : UIColors.textRegular,
+                        ),
+                        onTap: () => AppRouter.router.goNamed('POS Transactions'),
+                      ),
+                    ),
+                    BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
+                      builder: (context, state) => state is RegisterShiftOpen
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 12),
+                              child: Material(
+                                type: MaterialType.transparency,
+                                child: ListTile(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  title: UIText.bodyRegular('Close Shift'),
+                                  onTap: () => context.read<RegisterShiftBloc>().add(ShowClosingShiftDialogEvent()),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                    ),
+                    const UIVerticalSpace(12),
+                    Material(
+                      type: MaterialType.transparency,
+                      child: ListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        title: UIText.bodyRegular('Logout'),
+                        onTap: () {
+                          context.read<RegisterCubit>().clear();
+                          context.read<RegisterShiftBloc>().add(ClearRegisterShiftStateEvent());
+                          context.read<AuthBloc>().add(const LogoutEvent());
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(80),
+                child: Container(margin: const EdgeInsets.all(16), child: POSAppNavBar(state)),
+              ),
+              body: Padding(
+                padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
+                child: navigationShell,
+              ),
+            ),
+          ),
+        ),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: 'Register',
+                path: '/point-of-sale/register',
+                pageBuilder: (context, state) => const NoTransitionPage(child: RegisterPage()),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: 'POS Transactions',
+                path: '/point-of-sale/transactions',
+                pageBuilder: (context, state) => const NoTransitionPage(child: TransactionsPage()),
+              ),
+            ],
+          ),
+        ],
+      ),
     ],
     redirect: (context, state) {
       final authState = context.read<AuthBloc>().state;
@@ -250,7 +393,7 @@ abstract class AppRouter {
       if (authState is UnauthenticatedState && !isLoginRoute) {
         return LoginPage.route;
       } else if (authState is AuthenticatedState && isLoginRoute) {
-        return ProductsPage.route;
+        return authState.user.type == UserType.CASHIER ? RegisterPage.route : ProductsPage.route;
       }
 
       return null;
