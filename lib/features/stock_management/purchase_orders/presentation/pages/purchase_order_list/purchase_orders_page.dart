@@ -108,12 +108,6 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
               width: 120,
               child: FilterPopup(onSelect: (date) {}),
             ),
-            // UIButton.outlined(
-            //   'Filter',
-            //   iconAlign: IconAlignment.end,
-            //   iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
-            //   onClick: () {},
-            // ),
           ],
         ),
         BlocBuilder<PurchaseOrderListRemoteCubit, PurchaseOrderListRemoteState>(

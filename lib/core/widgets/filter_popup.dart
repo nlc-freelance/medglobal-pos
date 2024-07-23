@@ -7,7 +7,6 @@ import 'package:medglobal_admin_portal/features/branches/domain/branch_repositor
 import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/features/supplier_management/domain/repositories/supplier_repository.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class FilterPopup extends StatefulWidget {
   const FilterPopup({
@@ -22,8 +21,6 @@ class FilterPopup extends StatefulWidget {
 }
 
 class _FilterPopupState extends State<FilterPopup> {
-  DateTime? _selectedDate;
-
   @override
   void initState() {
     super.initState();
@@ -36,6 +33,7 @@ class _FilterPopupState extends State<FilterPopup> {
       tooltip: Strings.empty,
       itemBuilder: (BuildContext context) => [
         PopupMenuItem(
+          enabled: false,
           child: Container(
             padding: const EdgeInsets.all(8),
             width: 500,
@@ -75,6 +73,7 @@ class _FilterPopupState extends State<FilterPopup> {
                   asyncItemsCallback: GetIt.I<SupplierRepository>().getAllSuppliers(),
                   onSelectItem: (Supplier value) => {},
                 ),
+                const UIVerticalSpace(12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
