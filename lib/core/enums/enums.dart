@@ -136,3 +136,5 @@ enum StockTakeItemAction {
   final String label;
   const StockTakeItemAction(this.label);
 }
+
+enum UserType { CASHIER, ADMIN }

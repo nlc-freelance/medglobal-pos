@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/search_dropdown/search_dropdown.dart';
-import 'package:medglobal_admin_portal/features/branches/domain/branch.dart';
-import 'package:medglobal_admin_portal/features/branches/domain/branch_repository.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/domain/entities/supplier.dart';
-import 'package:medglobal_admin_portal/features/supplier_management/domain/repositories/supplier_repository.dart';
+import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/portal/branches/domain/branch_repository.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/domain/repositories/supplier_repository.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class FilterPopup extends StatefulWidget {
