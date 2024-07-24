@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/usecases/close_shift_usecase.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/usecases/open_shift_usecase.dart';
@@ -7,17 +8,21 @@ import 'package:medglobal_admin_portal/pos/register/domain/usecases/open_shift_u
 part 'register_shift_event.dart';
 part 'register_shift_state.dart';
 
-class RegisterShiftBloc extends HydratedBloc<RegisterShiftEvent, RegisterShiftState> {
+class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
   final OpenShiftUseCase _openShiftUseCase;
   final CloseShiftUseCase _closeShiftUseCase;
 
   RegisterShiftBloc(this._openShiftUseCase, this._closeShiftUseCase) : super(RegisterShiftInitial()) {
     on<OpenRegisterShiftEvent>(_onOpenRegisterShift);
     on<CloseRegisterShiftEvent>(_onCloseRegisterShift);
-    on<ClearRegisterShiftStateEvent>(_onClearRegisterShiftState);
+    on<ShowClosingShiftDialogEvent>(_onShowClosingShiftDialog);
+    on<HideClosingShiftDialogEvent>(_onHideClosingShiftDialog);
+    on<ResetRegisterShiftOnLogoutEvent>(_reset);
   }
 
   Future<void> _onOpenRegisterShift(OpenRegisterShiftEvent event, emit) async {
+    emit(RegisterShiftLoading());
+
     try {
       final result = await _openShiftUseCase.call(
         OpenShiftParams(
@@ -29,8 +34,14 @@ class RegisterShiftBloc extends HydratedBloc<RegisterShiftEvent, RegisterShiftSt
         ),
       );
       result.fold(
-        (error) => emit(RegisterShiftError(message: error.message)),
-        (data) => emit(RegisterShiftOpen()),
+        (error) {
+          if (error.message.contains('once a day')) _setHasReachedMaxShiftOpen();
+          emit(RegisterShiftError(message: error.message));
+        },
+        (data) {
+          _setShiftOpenDetails(data);
+          emit(RegisterShiftOpen());
+        },
       );
     } catch (e) {
       emit(RegisterShiftError(message: e.toString()));
@@ -38,34 +49,51 @@ class RegisterShiftBloc extends HydratedBloc<RegisterShiftEvent, RegisterShiftSt
   }
 
   Future<void> _onCloseRegisterShift(CloseRegisterShiftEvent event, emit) async {
+    emit(RegisterShiftLoading());
+
     try {
       final result = await _closeShiftUseCase.call(
         CloseShiftParams(
           RegisterShift(
             register: event.registerId,
             status: 'close',
-            openingAmount: event.closingAmount,
+            closingAmount: event.closingAmount,
           ),
         ),
       );
       result.fold(
         (error) => emit(RegisterShiftError(message: error.message)),
-        (data) => emit(RegisterShiftOpen()),
+        (data) {
+          _setShiftCloseDetails(data);
+          emit(RegisterShiftClose());
+        },
       );
     } catch (e) {
       emit(RegisterShiftError(message: e.toString()));
     }
   }
 
-  @override
-  RegisterShiftState? fromJson(Map<String, dynamic> json) =>
-      json['status'] == 'open' ? RegisterShiftOpen() : RegisterShiftClosed();
-
-  @override
-  Map<String, dynamic>? toJson(RegisterShiftState state) => {'status': state is RegisterShiftOpen ? 'open' : 'close'};
-
-  Future<void> _onClearRegisterShiftState(event, emit) async {
-    emit(RegisterShiftInitial());
-    await super.clear();
+  Future<void> _onShowClosingShiftDialog(ShowClosingShiftDialogEvent event, emit) async {
+    final openSince = DateTime.parse(await SharedPreferencesService.getShiftOpenSince());
+    emit(ShowClosingShiftDialog(openSince: openSince));
   }
+
+  void _onHideClosingShiftDialog(event, emit) async {
+    final isOpen = await SharedPreferencesService.isShiftOpen();
+    emit(isOpen ? RegisterShiftOpen() : RegisterShiftClose());
+  }
+
+  void _setShiftOpenDetails(RegisterShift data) async {
+    await SharedPreferencesService.setShiftOpenAt(data.createdAt!.toIso8601String());
+    await SharedPreferencesService.setShiftStatus(true);
+  }
+
+  void _setShiftCloseDetails(RegisterShift data) async {
+    await SharedPreferencesService.setShiftClosedAt(data.updatedAt!.toIso8601String());
+    await SharedPreferencesService.setShiftStatus(false);
+  }
+
+  void _setHasReachedMaxShiftOpen() async => await SharedPreferencesService.setHasReachedMaxShiftOpen(true);
+
+  void _reset(event, emit) => emit(RegisterShiftInitial());
 }

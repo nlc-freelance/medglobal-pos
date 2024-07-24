@@ -12,6 +12,8 @@ class RequestInterceptor extends Interceptor {
     String token = await AuthService().getToken();
     options.headers['Authorization'] = 'Bearer $token';
 
+    print('Bearer $token');
+
     super.onRequest(options, handler);
   }
 }

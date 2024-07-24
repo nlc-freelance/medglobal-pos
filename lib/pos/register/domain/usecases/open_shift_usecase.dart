@@ -4,13 +4,13 @@ import 'package:medglobal_admin_portal/core/usecases/usecase.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/repositories/register_shift_repository.dart';
 
-class OpenShiftUseCase implements UseCase<void, OpenShiftParams> {
+class OpenShiftUseCase implements UseCase<RegisterShift, OpenShiftParams> {
   final RegisterShiftRepository repository;
 
   const OpenShiftUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(OpenShiftParams params) => repository.openShift(params.shift);
+  Future<Either<Failure, RegisterShift>> call(OpenShiftParams params) => repository.openShift(params.shift);
 }
 
 class OpenShiftParams {

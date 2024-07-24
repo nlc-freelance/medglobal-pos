@@ -33,7 +33,7 @@ class ToastNotification {
           content: Align(
             alignment: Alignment.bottomRight,
             child: Container(
-              constraints: const BoxConstraints(maxWidth: 400),
+              constraints: const BoxConstraints(maxWidth: 500),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: UIColors.background,
@@ -44,7 +44,6 @@ class ToastNotification {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    // mainAxisSize: MainAxisSize.min,
                     children: [
                       type == ToastType.SUCCESS
                           ? Assets.icons.checkCircle.svg(width: 20)

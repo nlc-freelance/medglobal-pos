@@ -1,9 +1,10 @@
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
+import 'package:medglobal_admin_portal/pos/register/data/dto/register_shift_dto.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift.dart';
 
 abstract class RegisterShiftApi {
-  Future<void> openShift(RegisterShift shift);
-  Future<void> closeShift(RegisterShift shift);
+  Future<RegisterShiftDto> openShift(RegisterShift shift);
+  Future<RegisterShiftDto> closeShift(RegisterShift shift);
 }
 
 class RegisterShiftApiImpl implements RegisterShiftApi {
@@ -12,25 +13,25 @@ class RegisterShiftApiImpl implements RegisterShiftApi {
   RegisterShiftApiImpl(this._apiService);
 
   @override
-  Future<void> openShift(RegisterShift shift) async {
+  Future<RegisterShiftDto> openShift(RegisterShift shift) async {
     try {
-      await _apiService.post(
+      return await _apiService.post(
         '/shifts',
         data: shift.toJson(),
-        converter: (response) => response,
+        converter: RegisterShiftDto.fromJson,
       );
-    } catch (_) {
+    } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<void> closeShift(RegisterShift shift) async {
+  Future<RegisterShiftDto> closeShift(RegisterShift shift) async {
     try {
-      await _apiService.post(
+      return await _apiService.post(
         '/shifts',
         data: shift.toJson(),
-        converter: (response) => response,
+        converter: RegisterShiftDto.fromJson,
       );
     } catch (_) {
       rethrow;

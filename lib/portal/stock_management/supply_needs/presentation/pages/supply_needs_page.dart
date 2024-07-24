@@ -64,8 +64,8 @@ class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
                                       Text(
                                         '${supplyNeed.branch?.name} (${supplyNeed.items?.length})',
                                         style: UIStyleText.labelSemiBold.copyWith(
-                                          color: UIColors.textLight,
-                                          fontWeight: FontWeight.w700,
+                                          color: UIColors.textDark,
+                                          fontWeight: FontWeight.w600,
                                           decoration: TextDecoration.none,
                                         ),
                                       ),

@@ -11,18 +11,20 @@ class RegisterShiftRepositoryImpl implements RegisterShiftRepository {
   RegisterShiftRepositoryImpl(this._registerShiftApi);
 
   @override
-  Future<Either<Failure, void>> openShift(RegisterShift shift) async {
+  Future<Either<Failure, RegisterShift>> openShift(RegisterShift shift) async {
     try {
-      return Right(await _registerShiftApi.openShift(shift));
+      final response = await _registerShiftApi.openShift(shift);
+      return Right(response.toEntity());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
   }
 
   @override
-  Future<Either<Failure, void>> closeShift(RegisterShift shift) async {
+  Future<Either<Failure, RegisterShift>> closeShift(RegisterShift shift) async {
     try {
-      return Right(await _registerShiftApi.openShift(shift));
+      final response = await _registerShiftApi.openShift(shift);
+      return Right(response.toEntity());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
