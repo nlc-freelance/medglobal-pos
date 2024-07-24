@@ -113,9 +113,9 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> {
                           status: _stockTake.status!,
                         ),
                         if (_stockTake.status == StockOrderStatus.COMPLETED) ...[
-                          LabelValue.chip(
+                          LabelValue.text(
                             label: 'Total Quantity Difference',
-                            chip: _stockTake.totalQtyDifference?.toDouble() ?? 0,
+                            value: _stockTake.totalQtyDifference?.toDouble().toString() ?? Strings.empty,
                           ),
                           LabelValue.chip(
                             label: 'Total Cost Difference',
@@ -184,9 +184,10 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> {
                   UIButton.filled(
                     'Mark as Completed',
                     onClick: () => showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) => StockTakeMarkAsCompletedDialog(items: _items ?? [])),
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) => StockTakeMarkAsCompletedDialog(items: _items ?? []),
+                    ),
                   ),
                 ],
               ),

@@ -13,7 +13,7 @@ class LoginForm extends StatelessWidget {
     TextEditingController passwordController = TextEditingController();
     TextEditingController newPasswordController = TextEditingController();
 
-    return BlocListener<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthLoadingState) UIPageLoader.show(context);
         if (state is FirstTimeLoginState) {
@@ -54,17 +54,9 @@ class LoginForm extends StatelessWidget {
                 );
               });
         }
-        if (state is AuthErrorState) {
-          UIPageLoader.close(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: const Color(0xFFD92F58),
-              content: Text(state.message),
-            ),
-          );
-        }
+        if (state is AuthErrorState) UIPageLoader.close(context);
       },
-      child: Column(
+      builder: (context, state) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -74,6 +66,15 @@ class LoginForm extends StatelessWidget {
           const UIVerticalSpace(20.0),
           UIText.heading2(Strings.loginToYourAccount),
           const UIVerticalSpace(60.0),
+          if (state is AuthErrorState) ...[
+            SizedBox(
+                width: 330,
+                child: UIText.labelSemiBold(
+                  state.message,
+                  color: UIColors.buttonDanger,
+                )),
+            const UIVerticalSpace(20.0),
+          ],
           UITextField.noLabel(
             width: 345.0,
             hint: Strings.emailAddress,

@@ -167,6 +167,13 @@ class StockItemsToTransferDataSource extends DataGridSource {
             ),
             child: UIText.bodyRegular(cell.value.toString()),
           ),
+        'action' => LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
+              'Delete',
+              iconBuilder: (isHover) => Assets.icons.trash.setColorOnHover(isHover),
+              onClick: () => context.read<StockTransferCubit>().removeItem(id),
+            ),
+          ),
         _ => UIText.bodyRegular(cell.value.toString()),
       };
 

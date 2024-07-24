@@ -94,23 +94,30 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> {
               isDownloadable: true,
               isImportCSV: true,
               padding: const EdgeInsets.only(bottom: 12),
-              searchPlaceholder: 'Search variant name',
-              searchController: _searchController,
-              onChanged: (value) {
-                _uncountedItemsDataSource.clearFilters(columnName: 'variant_name');
-                if (value.isNotEmpty) {
-                  _uncountedItemsDataSource.addFilter(
-                    'variant_name',
-                    FilterCondition(
-                      value: value,
-                      filterBehavior: FilterBehavior.stringDataType,
-                      type: FilterType.contains,
-                    ),
-                  );
-                }
-                _uncountedItemsDataSource.updateDataGridSource();
-                setState(() => _filteredRowsCount = _uncountedItemsDataSource.effectiveRows.length);
-              },
+              search: UISearchField(
+                fieldWidth: 500.0,
+                hint: 'Search variant name',
+                icon: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Assets.icons.search.svg(),
+                ),
+                controller: _searchController,
+                onChanged: (value) {
+                  _uncountedItemsDataSource.clearFilters(columnName: 'variant_name');
+                  if (value.isNotEmpty) {
+                    _uncountedItemsDataSource.addFilter(
+                      'variant_name',
+                      FilterCondition(
+                        value: value,
+                        filterBehavior: FilterBehavior.stringDataType,
+                        type: FilterType.contains,
+                      ),
+                    );
+                  }
+                  _uncountedItemsDataSource.updateDataGridSource();
+                  setState(() => _filteredRowsCount = _uncountedItemsDataSource.effectiveRows.length);
+                },
+              ),
             ),
             if (_searchController.text.isNotEmpty)
               Text(

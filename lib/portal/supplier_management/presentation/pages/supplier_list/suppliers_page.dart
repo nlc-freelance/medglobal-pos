@@ -52,7 +52,16 @@ class _SuppliersPageState extends State<SuppliersPage> {
                 ),
               ],
             ),
-            const DataGridToolbar(isDownloadable: false, searchPlaceholder: 'Search supplier name'),
+            DataGridToolbar(
+              search: UISearchField(
+                fieldWidth: 500.0,
+                hint: 'Search supplier name',
+                icon: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Assets.icons.search.svg(),
+                ),
+              ),
+            ),
             BlocBuilder<SupplierListCubit, SupplierListState>(
               builder: (_, state) {
                 if (state is SupplierListError) {

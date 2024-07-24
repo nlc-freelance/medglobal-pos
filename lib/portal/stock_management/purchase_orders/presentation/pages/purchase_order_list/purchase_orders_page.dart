@@ -96,7 +96,6 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          searchPlaceholder: 'Search purchase order ID',
           isDownloadable: true,
           filters: [
             SizedBox(

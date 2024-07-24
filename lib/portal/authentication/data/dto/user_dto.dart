@@ -46,7 +46,7 @@ class UserDto extends Equatable {
       case 'admin':
         return UserType.ADMIN;
       default:
-        throw Exception('Invalid status: $type');
+        throw 'Your account does not have the necessary type for access.';
     }
   }
 }

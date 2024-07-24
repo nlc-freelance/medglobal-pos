@@ -160,6 +160,7 @@ class DataGridColumn {
     ColumnData('qty_to_transfer', 'Qty to Transfer'),
     ColumnData('cost', 'Cost (PHP)'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('action', 'Action'),
   ];
 
   static List<ColumnData> STOCK_TRANSFER_ITEMS_SHIPPED = [

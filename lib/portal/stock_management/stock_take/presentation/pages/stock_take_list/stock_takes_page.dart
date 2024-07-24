@@ -99,7 +99,6 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          searchPlaceholder: 'Search branch name',
           isDownloadable: true,
           filters: [
             UIButton.outlined(

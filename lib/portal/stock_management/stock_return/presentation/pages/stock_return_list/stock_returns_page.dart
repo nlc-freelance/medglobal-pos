@@ -86,7 +86,6 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          searchPlaceholder: 'Search stock return ID',
           isDownloadable: true,
           filters: [
             UIButton.outlined(

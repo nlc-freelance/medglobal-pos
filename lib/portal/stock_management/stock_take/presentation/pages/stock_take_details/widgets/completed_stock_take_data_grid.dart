@@ -49,7 +49,7 @@ class _CompletedStockTakeDataGridState extends State<CompletedStockTakeDataGrid>
       children: [
         Row(
           children: [
-            UIText.heading5('Uncounted Items'),
+            UIText.heading5('Counted Items'),
             const UIHorizontalSpace(8),
             Text(
               '(${_completedStockTakeDataSource.rows.length} total items)',
@@ -61,23 +61,30 @@ class _CompletedStockTakeDataGridState extends State<CompletedStockTakeDataGrid>
         const UIVerticalSpace(8),
         DataGridToolbar(
           padding: const EdgeInsets.only(bottom: 12),
-          searchPlaceholder: 'Search variant name',
-          searchController: _searchController,
-          onChanged: (value) {
-            _completedStockTakeDataSource.clearFilters(columnName: 'variant_name');
-            if (value.isNotEmpty) {
-              _completedStockTakeDataSource.addFilter(
-                'variant_name',
-                FilterCondition(
-                  value: value,
-                  filterBehavior: FilterBehavior.stringDataType,
-                  type: FilterType.contains,
-                ),
-              );
-            }
-            _completedStockTakeDataSource.updateDataGridSource();
-            setState(() => _filteredRowsCount = _completedStockTakeDataSource.effectiveRows.length);
-          },
+          search: UISearchField(
+            fieldWidth: 500.0,
+            hint: 'Search variant name',
+            icon: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Assets.icons.search.svg(),
+            ),
+            controller: _searchController,
+            onChanged: (value) {
+              _completedStockTakeDataSource.clearFilters(columnName: 'variant_name');
+              if (value.isNotEmpty) {
+                _completedStockTakeDataSource.addFilter(
+                  'variant_name',
+                  FilterCondition(
+                    value: value,
+                    filterBehavior: FilterBehavior.stringDataType,
+                    type: FilterType.contains,
+                  ),
+                );
+              }
+              _completedStockTakeDataSource.updateDataGridSource();
+              setState(() => _filteredRowsCount = _completedStockTakeDataSource.effectiveRows.length);
+            },
+          ),
         ),
         if (_searchController.text.isNotEmpty)
           Text(

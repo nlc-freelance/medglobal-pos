@@ -46,6 +46,7 @@ class StockTransferItem extends Equatable {
           DataGridCell<int>(columnName: 'qty_to_transfer', value: qtyToTransfer ?? 0),
           DataGridCell<double>(columnName: 'cost', value: cost ?? 0),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          const DataGridCell(columnName: 'action', value: null),
         ],
       );
   DataGridRow toDataGridRowItemsShipped() => DataGridRow(

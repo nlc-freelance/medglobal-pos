@@ -52,7 +52,17 @@ class _ProductsPageState extends State<ProductsPage> {
               ),
             ],
           ),
-          const DataGridToolbar(searchPlaceholder: 'Search product name / SKU / category', isDownloadable: true),
+          DataGridToolbar(
+            isDownloadable: true,
+            search: UISearchField(
+              fieldWidth: 500.0,
+              hint: 'Search product name / SKU / category',
+              icon: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Assets.icons.search.svg(),
+              ),
+            ),
+          ),
           BlocBuilder<ProductListCubit, ProductListState>(
             builder: (context, state) {
               if (state is ProductListError) {

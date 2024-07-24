@@ -18,7 +18,7 @@ class RouteGuard extends StatelessWidget {
             ? child
             : Scaffold(
                 body: Center(
-                  child: state is AuthInitialState
+                  child: state is AuthInitialState || state is AuthLoadingState
                       ? const CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)
                       : UIText.heading6('Sorry, you do not have the correct role to access this page.'),
                 ),

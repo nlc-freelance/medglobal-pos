@@ -72,23 +72,30 @@ class _CountedItemsDataGridState extends State<CountedItemsDataGrid> {
             DataGridToolbar(
               isDownloadable: true,
               padding: const EdgeInsets.only(bottom: 12),
-              searchPlaceholder: 'Search variant name',
-              searchController: _searchController,
-              onChanged: (value) {
-                _countedItemsDataSource.clearFilters(columnName: 'variant_name');
-                if (value.isNotEmpty) {
-                  _countedItemsDataSource.addFilter(
-                    'variant_name',
-                    FilterCondition(
-                      value: value,
-                      filterBehavior: FilterBehavior.stringDataType,
-                      type: FilterType.contains,
-                    ),
-                  );
-                }
-                _countedItemsDataSource.updateDataGridSource();
-                setState(() => _filteredRowsCount = _countedItemsDataSource.effectiveRows.length);
-              },
+              search: UISearchField(
+                fieldWidth: 500.0,
+                hint: 'Search variant name',
+                icon: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Assets.icons.search.svg(),
+                ),
+                controller: _searchController,
+                onChanged: (value) {
+                  _countedItemsDataSource.clearFilters(columnName: 'variant_name');
+                  if (value.isNotEmpty) {
+                    _countedItemsDataSource.addFilter(
+                      'variant_name',
+                      FilterCondition(
+                        value: value,
+                        filterBehavior: FilterBehavior.stringDataType,
+                        type: FilterType.contains,
+                      ),
+                    );
+                  }
+                  _countedItemsDataSource.updateDataGridSource();
+                  setState(() => _filteredRowsCount = _countedItemsDataSource.effectiveRows.length);
+                },
+              ),
             ),
             if (_searchController.text.isNotEmpty)
               Text(
