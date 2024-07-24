@@ -54,57 +54,44 @@ class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
                     children: state.supplyNeeds
                         .map((supplyNeed) => Theme(
                               data: Theme.of(context).copyWith(dividerColor: UIColors.transparent),
-                              child: Container(
-                                decoration: UIStyleContainer.topBorder,
-                                child: ExpansionTile(
-                                  trailing: Assets.icons.arrowDown.setSize(12),
-                                  title: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        '${supplyNeed.branch?.name} (${supplyNeed.items?.length})',
-                                        style: UIStyleText.labelSemiBold.copyWith(
-                                          color: UIColors.textDark,
-                                          fontWeight: FontWeight.w600,
-                                          decoration: TextDecoration.none,
-                                        ),
-                                      ),
-                                      const UIHorizontalSpace(12),
-                                      UIPopupMenuButton<SupplyNeedsAction>.icon(
-                                        icon: Assets.icons.more.svg(),
-                                        menu: SupplyNeedsAction.values,
-                                        menuAsString: (option) => option.label,
-                                        onSelect: (action) {
-                                          if (action == SupplyNeedsAction.NEW_PURCHASE_ORDER) {
-                                            AppRouter.router.goNamed(SideMenuTreeItem.NEW_PURCHASE_ORDER.name);
-                                            // branch should be autopopulated in step 1
-                                            context
-                                                .read<SupplyNeedCubit>()
-                                                .setPurchaseOrderTargetBranch(supplyNeed.branch!);
+                              child: ExpansionTile(
+                                initiallyExpanded: true,
+                                leading: Assets.icons.arrowDown.setSize(12),
+                                trailing: UIPopupMenuButton<SupplyNeedsAction>.icon(
+                                  icon: Assets.icons.more.setSize(20),
+                                  menu: SupplyNeedsAction.values,
+                                  menuAsString: (option) => option.label,
+                                  onSelect: (action) {
+                                    if (action == SupplyNeedsAction.NEW_PURCHASE_ORDER) {
+                                      AppRouter.router.goNamed(SideMenuTreeItem.NEW_PURCHASE_ORDER.name);
+                                      // branch should be autopopulated in step 1
+                                      context.read<SupplyNeedCubit>().setPurchaseOrderTargetBranch(supplyNeed.branch!);
 
-                                            /// set the value
-                                            context.read<NewPurchaseOrderCubit>().setBranchId(supplyNeed.branch!.id!);
-                                          }
-                                          if (action == SupplyNeedsAction.NEW_STOCK_TRANSFER) {
-                                            AppRouter.router.goNamed(SideMenuTreeItem.NEW_STOCK_TRANSFER.name);
-                                            // source branch should be autopopulated in step 1
-                                            context
-                                                .read<SupplyNeedCubit>()
-                                                .setStockTransferSourceBranch(supplyNeed.branch!);
+                                      /// set the value
+                                      context.read<NewPurchaseOrderCubit>().setBranchId(supplyNeed.branch!.id!);
+                                    }
+                                    if (action == SupplyNeedsAction.NEW_STOCK_TRANSFER) {
+                                      AppRouter.router.goNamed(SideMenuTreeItem.NEW_STOCK_TRANSFER.name);
+                                      // source branch should be autopopulated in step 1
+                                      context.read<SupplyNeedCubit>().setStockTransferSourceBranch(supplyNeed.branch!);
 
-                                            /// set the value
-                                            context
-                                                .read<NewStockTransferCubit>()
-                                                .setSourceBranchId(supplyNeed.branch!.id!);
-                                          }
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                  children: [
-                                    SupplyNeedsDataGrid(supplyNeed.items ?? []),
-                                  ],
+                                      /// set the value
+                                      context.read<NewStockTransferCubit>().setSourceBranchId(supplyNeed.branch!.id!);
+                                    }
+                                  },
                                 ),
+                                title: Text(
+                                  '${supplyNeed.branch?.name} (${supplyNeed.items?.length})',
+                                  style: UIStyleText.heading6.copyWith(
+                                    color: UIColors.textRegular,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                                children: [
+                                  SupplyNeedsDataGrid(supplyNeed.items ?? []),
+                                ],
                               ),
                             ))
                         .toList(),

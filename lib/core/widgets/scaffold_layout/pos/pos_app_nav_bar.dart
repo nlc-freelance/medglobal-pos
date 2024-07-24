@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
@@ -58,7 +59,7 @@ class POSAppNavBar extends StatelessWidget {
           leading: Builder(
             builder: (context) {
               return IconButton(
-                icon: const Icon(Icons.menu),
+                icon: Assets.icons.menu.setSize(20),
                 onPressed: () => Scaffold.of(context).openDrawer(),
               );
             },

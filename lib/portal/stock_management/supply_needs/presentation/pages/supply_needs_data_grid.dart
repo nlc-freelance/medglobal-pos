@@ -28,7 +28,7 @@ class _SupplyNeedsDataGridState extends State<SupplyNeedsDataGrid> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 60),
+      padding: const EdgeInsets.only(bottom: 40),
       decoration: UIStyleContainer.topBorder,
       child: ClipRect(
         clipper: HorizontalBorderClipper(),
