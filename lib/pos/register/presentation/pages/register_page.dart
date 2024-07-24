@@ -3,11 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/search_dropdown/search_dropdown.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/register.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/repositories/register_repository.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_cart_closed.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_cart_open.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_items_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -22,17 +26,19 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late TextEditingController _amountController;
+  late TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
     _amountController = TextEditingController();
+    _searchController = TextEditingController();
 
     if (context.read<RegisterCubit>().state.register == null) {
       WidgetsBinding.instance.addPostFrameCallback(
         (timeStamp) => showDialog(
           context: context,
-          barrierDismissible: true, // false
+          barrierDismissible: false,
           builder: (BuildContext context) {
             return BlocBuilder<RegisterCubit, RegisterState>(
               builder: (context, state) {
@@ -88,6 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void dispose() {
     _amountController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -100,7 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
             context,
             formKey: _formKey,
             isOpening: false,
-            datetime: DateTime.now(),
+            datetime: state.openSince,
             amountController: _amountController,
             onAction: () => context.read<RegisterShiftBloc>().add(
                   CloseRegisterShiftEvent(
@@ -123,56 +130,61 @@ class _RegisterPageState extends State<RegisterPage> {
                 border: Border.all(color: UIColors.borderMuted, width: 1.0),
                 borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               ),
-              child: const Text('Register Data Grid'),
-            ),
-          ),
-          const UIHorizontalSpace(16),
-          Expanded(
-            flex: 2,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              decoration: BoxDecoration(
-                border: Border.all(color: UIColors.borderMuted, width: 1.0),
-                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-              ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Assets.icons.infoCircle.svg(width: 40, colorFilter: UIColors.borderRegular.toColorFilter),
-                  const UIVerticalSpace(8),
-                  Text('CLOSED', style: UIStyleText.headline.copyWith(fontSize: 48)),
-                  const UIVerticalSpace(30),
-                  Text('Open register shift', style: UIStyleText.bodyRegular.copyWith(fontSize: 14)),
-                  const UIVerticalSpace(4),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 60),
-                    child: Text(
-                      'To start making transactions, open shift and input the initial register cash.',
-                      style: UIStyleText.hint.copyWith(fontSize: 12.8),
-                      textAlign: TextAlign.center,
+                  UISearchField(
+                    fieldWidth: 500.0,
+                    hint: 'Search',
+                    icon: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Assets.icons.search.svg(),
                     ),
+                    controller: _searchController,
+                    onChanged: (_) => {},
                   ),
-                  const UIVerticalSpace(24),
-                  UIButton.filled(
-                    'Open Shift',
-                    onClick: () => _showOpeningClosingDialog(
-                      context,
-                      formKey: _formKey,
-                      isOpening: true,
-                      datetime: DateTime.now(),
-                      amountController: _amountController,
-                      onAction: () => context.read<RegisterShiftBloc>().add(
-                            OpenRegisterShiftEvent(
-                              /// we made sure that there is a register set after loggin in POS
-                              registerId: context.read<RegisterCubit>().state.register!.id!,
-                              openingAmount: double.tryParse(_amountController.text) ?? 0,
-                            ),
-                          ),
-                    ),
-                  ),
+                  const UIVerticalSpace(16),
+                  const Expanded(child: RegisterItemsDataGrid([])),
                 ],
               ),
             ),
+          ),
+          const UIHorizontalSpace(16),
+          BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
+            builder: (context, state) {
+              return Expanded(
+                flex: 2,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: UIColors.borderMuted, width: 1.0),
+                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  child: FutureBuilder(
+                      future: SharedPreferencesService.isShiftOpen(),
+                      builder: (context, snapshot) {
+                        return snapshot.data == true
+                            ? const RegisterCartOpen()
+                            : RegisterCartClosed(
+                                onOpenShift: () => _showOpeningClosingDialog(
+                                  context,
+                                  formKey: _formKey,
+                                  isOpening: true,
+                                  datetime: DateTime.now(), // replace with date from register
+                                  amountController: _amountController,
+                                  onAction: () => context.read<RegisterShiftBloc>().add(
+                                        OpenRegisterShiftEvent(
+                                          /// we made sure that there is a register set after loggin in POS
+                                          registerId: context.read<RegisterCubit>().state.register!.id!,
+                                          openingAmount: double.tryParse(_amountController.text) ?? 0,
+                                        ),
+                                      ),
+                                ),
+                              );
+                      }),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -195,7 +207,10 @@ void _showOpeningClosingDialog(
         key: formKey,
         child: BlocConsumer<RegisterShiftBloc, RegisterShiftState>(
           listener: (context, state) {
-            if (state is RegisterShiftOpen || state is RegisterShiftClosed) Navigator.pop(context);
+            if (state is RegisterShiftOpen || state is RegisterShiftClose) {
+              Navigator.pop(context);
+              amountController.clear();
+            }
           },
           builder: (context, state) {
             return Dialog(
@@ -212,7 +227,7 @@ void _showOpeningClosingDialog(
                     const Divider(color: UIColors.borderMuted),
                     const UIVerticalSpace(24),
                     Text(
-                      '${isOpening ? 'Opened' : 'Closed'} since ${DateFormat('EEEE, d MMMM yyyy h:mm a').format(datetime.toLocal())}',
+                      '${isOpening ? 'Closed' : 'Open'} since ${DateFormat('EEEE, d MMMM yyyy h:mm a').format(datetime.toLocal())}',
                       style: UIStyleText.bodyRegular.copyWith(fontWeight: FontWeight.w400, fontSize: 15),
                     ),
                     const UIVerticalSpace(30),
@@ -230,9 +245,14 @@ void _showOpeningClosingDialog(
                       },
                     ),
                     const UIVerticalSpace(30),
-                    if (state is RegisterShiftError) UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
+                    if (state is RegisterShiftError) ...[
+                      UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
+                      const UIVerticalSpace(30),
+                    ],
                     CancelActionButton(
-                      onCancel: () => Navigator.pop(context),
+                      onCancel: () => isOpening
+                          ? Navigator.pop(context)
+                          : context.read<RegisterShiftBloc>().add(HideClosingShiftDialogEvent()),
                       actionLabel: 'Confirm',
                       isLoading: state is RegisterShiftLoading,
                       onAction: () {

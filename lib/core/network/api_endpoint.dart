@@ -13,11 +13,12 @@ class ApiEndpoint {
         path.contains('/stock-takes')) {
       url = 'https://i4pqwf8ek2.execute-api.ap-southeast-1.amazonaws.com/dev';
     }
-    if (path.contains('/store')) url = 'https://im3929rlc9.execute-api.ap-southeast-1.amazonaws.com/dev';
+    if (path.contains('/store') || path.contains('/registers')) {
+      url = 'https://im3929rlc9.execute-api.ap-southeast-1.amazonaws.com/dev';
+    }
 
-    /// Mock
-    if (path.contains('/registers') || path.contains('/shifts')) {
-      url = 'https://019b7ae5-d4d0-4d69-8f0b-e98c552e4c11.mock.pstmn.io';
+    if (path.contains('/shifts')) {
+      url = 'https://u6r2va1rc1.execute-api.ap-southeast-1.amazonaws.com/dev';
     }
     return url;
   }

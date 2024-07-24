@@ -4,18 +4,37 @@ sealed class RegisterShiftState extends Equatable {
   const RegisterShiftState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class RegisterShiftInitial extends RegisterShiftState {}
 
 final class RegisterShiftLoading extends RegisterShiftState {}
 
-final class RegisterShiftOpen extends RegisterShiftState {}
+final class RegisterShiftOpen extends RegisterShiftState {
+  // final RegisterShift? shift;
+  // final DateTime? openSince;
+  // const RegisterShiftOpen({this.shift, this.openSince});
 
-final class ShowClosingShiftDialog extends RegisterShiftState {}
+  // @override
+  // List<Object?> get props => [shift, openSince];
+}
 
-final class RegisterShiftClosed extends RegisterShiftState {}
+final class RegisterShiftClose extends RegisterShiftState {
+  // final RegisterShift? shift;
+  // const RegisterShiftClose({this.shift});
+
+  // @override
+  // List<Object?> get props => [shift];
+}
+
+final class ShowClosingShiftDialog extends RegisterShiftState {
+  final DateTime openSince;
+  const ShowClosingShiftDialog({required this.openSince});
+
+  @override
+  List<Object> get props => [openSince];
+}
 
 final class RegisterShiftError extends RegisterShiftState {
   final String message;

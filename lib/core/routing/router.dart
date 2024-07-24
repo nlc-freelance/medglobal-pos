@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_portal/flutter_portal.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/route_guard.dart';
+import 'package:medglobal_admin_portal/core/widgets/scaffold_layout/pos/pos_scaffold_layout.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
@@ -21,12 +21,8 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfers_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/pages/supply_needs_page.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/suppliers_page.dart';
-import 'package:medglobal_admin_portal/core/widgets/scaffold_layout/pos/pos_app_nav_bar.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/transactions_page.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_page.dart';
-import 'package:medglobal_shared/medglobal_shared.dart';
 
 abstract class AppRouter {
   static final GoRouter router = GoRouter(
@@ -256,112 +252,9 @@ abstract class AppRouter {
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => RouteGuard(
           allowedTypes: const [UserType.CASHIER],
-          child: Portal(
-            child: Scaffold(
-              drawerScrimColor: UIColors.transparent,
-              drawer: Container(
-                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
-                decoration: const BoxDecoration(
-                  color: UIColors.background,
-                  boxShadow: [
-                    BoxShadow(
-                      color: UIColors.borderMuted,
-                      blurRadius: 2.0,
-                      offset: Offset(1, 0),
-                    ),
-                  ],
-                ),
-                width: 300,
-                child: ListView(
-                  children: [
-                    ListTile(
-                      title: BlocBuilder<AuthBloc, AuthState>(
-                        builder: (context, state) => state is AuthenticatedState
-                            ? UIText.heading5('${state.user.firstName} ${state.user.lastName}')
-                            : const SizedBox(),
-                      ),
-                      subtitle: UIText.bodyRegular('Cashier', color: UIColors.textMuted),
-                    ),
-                    const UIVerticalSpace(60),
-                    Material(
-                      type: MaterialType.transparency,
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        selected: state.matchedLocation == '/point-of-sale/register',
-                        selectedTileColor: UIColors.primary,
-                        title: UIText.bodyRegular(
-                          'Register',
-                          color: state.matchedLocation == '/point-of-sale/register'
-                              ? UIColors.background
-                              : UIColors.textRegular,
-                        ),
-                        onTap: () => AppRouter.router.goNamed('Register'),
-                      ),
-                    ),
-                    const UIVerticalSpace(12),
-                    Material(
-                      type: MaterialType.transparency,
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        selected: state.matchedLocation == '/point-of-sale/transactions',
-                        selectedTileColor: UIColors.primary,
-                        title: UIText.bodyRegular(
-                          'Transactions',
-                          color: state.matchedLocation == '/point-of-sale/transactions'
-                              ? UIColors.background
-                              : UIColors.textRegular,
-                        ),
-                        onTap: () => AppRouter.router.goNamed('POS Transactions'),
-                      ),
-                    ),
-                    BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
-                      builder: (context, state) => state is RegisterShiftOpen
-                          ? Padding(
-                              padding: const EdgeInsets.only(top: 12),
-                              child: Material(
-                                type: MaterialType.transparency,
-                                child: ListTile(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  title: UIText.bodyRegular('Close Shift'),
-                                  onTap: () => context.read<RegisterShiftBloc>().add(ShowClosingShiftDialogEvent()),
-                                ),
-                              ),
-                            )
-                          : const SizedBox(),
-                    ),
-                    const UIVerticalSpace(12),
-                    Material(
-                      type: MaterialType.transparency,
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        title: UIText.bodyRegular('Logout'),
-                        onTap: () {
-                          context.read<RegisterCubit>().clear();
-                          context.read<RegisterShiftBloc>().add(ClearRegisterShiftStateEvent());
-                          context.read<AuthBloc>().add(const LogoutEvent());
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(80),
-                child: Container(margin: const EdgeInsets.all(16), child: POSAppNavBar(state)),
-              ),
-              body: Padding(
-                padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
-                child: navigationShell,
-              ),
-            ),
+          child: POSScaffoldLayout(
+            routerState: state,
+            navigationShell: navigationShell,
           ),
         ),
         branches: [

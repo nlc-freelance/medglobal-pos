@@ -35,14 +35,12 @@ class DataGridColumn {
 
   static List<ColumnData> SUPPLY_NEEDS = [
     ColumnData('id', 'ID'),
-    // ColumnData('branch', 'Branch'),
     ColumnData('variant_name', 'Variant Name'),
     ColumnData('sku', 'SKU'),
     ColumnData('qty', 'Qty'),
     ColumnData('warning_stock', 'Warning Stock Level'),
     ColumnData('ideal_stock', 'Ideal Stock Level'),
     ColumnData('suppliers', 'Suppliers'),
-    // ColumnData('action', 'Action'),
   ];
 
   static List<ColumnData> PURCHASE_ORDERS = [
@@ -182,5 +180,14 @@ class DataGridColumn {
     ColumnData('qty_received', 'Received Quantity'),
     ColumnData('cost', 'Cost (PHP)'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
+  ];
+
+  /// POS
+  ///
+  static List<ColumnData> REGISTER_ITEMS = [
+    ColumnData('id', 'ID'),
+    ColumnData('product_name', 'Product'),
+    ColumnData('stock', 'Stock'),
+    ColumnData('price', 'Price (PHP)'),
   ];
 }

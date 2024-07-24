@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -16,6 +17,7 @@ class POSAppNavBar extends StatelessWidget {
     return BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
       builder: (context, state) {
         return AppBar(
+          surfaceTintColor: UIColors.transparent,
           backgroundColor: UIColors.background,
           centerTitle: false,
           title: BlocBuilder<RegisterCubit, RegisterState>(
@@ -57,30 +59,34 @@ class POSAppNavBar extends StatelessWidget {
             builder: (context) {
               return IconButton(
                 icon: const Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
+                onPressed: () => Scaffold.of(context).openDrawer(),
               );
             },
           ),
           actions: [
-            Chip(
-              label: Text(
-                '\u2022  ${state is RegisterShiftOpen ? 'Open' : 'Closed'}',
-                style: UIStyleText.labelMedium.copyWith(
-                  color: state is RegisterShiftOpen ? UIColors.completed : UIColors.accent,
-                  fontSize: 13,
-                ),
-              ),
-              backgroundColor: UIColors.whiteBg,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                side: const BorderSide(color: UIColors.transparent),
-              ),
-            ),
-            const UIHorizontalSpace(24),
+            FutureBuilder(
+                future: SharedPreferencesService.isShiftOpen(),
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                      ? Chip(
+                          label: Text(
+                            '\u2022  ${snapshot.data == true ? 'Open' : 'Closed'}',
+                            style: UIStyleText.labelSemiBold.copyWith(
+                              color: snapshot.data == true ? UIColors.completed : UIColors.buttonDanger,
+                              fontSize: 13,
+                            ),
+                          ),
+                          backgroundColor: UIColors.whiteBg,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: const BorderSide(color: UIColors.transparent),
+                          ),
+                        )
+                      : const SizedBox();
+                }),
+            const UIHorizontalSpace(16),
             UIText.bodyRegular(
               DateFormat('EEEE, d MMMM yyyy h:mm a').format(DateTime.now().toLocal()),
             ),

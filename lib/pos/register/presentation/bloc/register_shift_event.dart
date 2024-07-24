@@ -21,6 +21,8 @@ final class OpenRegisterShiftEvent extends RegisterShiftEvent {
 
 final class ShowClosingShiftDialogEvent extends RegisterShiftEvent {}
 
+final class HideClosingShiftDialogEvent extends RegisterShiftEvent {}
+
 final class CloseRegisterShiftEvent extends RegisterShiftEvent {
   final int registerId;
   final double closingAmount;
@@ -31,4 +33,4 @@ final class CloseRegisterShiftEvent extends RegisterShiftEvent {
   List<Object> get props => [registerId, closingAmount];
 }
 
-final class ClearRegisterShiftStateEvent extends RegisterShiftEvent {}
+final class ResetRegisterShiftOnLogoutEvent extends RegisterShiftEvent {}

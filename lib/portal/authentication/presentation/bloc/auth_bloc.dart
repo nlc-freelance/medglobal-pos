@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/confirm_first_time_login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/get_auth_session.dart';
@@ -28,6 +29,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<ConfirmFirstTimeLoginEvent>(_confirmFirstTimeLogin);
     on<LogoutEvent>(_logout);
   }
+
+  void _clearSharedPreferencesOnLogout() async => await SharedPreferencesService.clearPreferences();
 
   Future<void> _onAppInit(event, emit) async {
     try {
@@ -79,7 +82,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await logout.call(NoParams());
       result.fold(
         (error) => emit(AuthErrorState(message: error.message)),
-        (_) => emit(const UnauthenticatedState()),
+        (_) {
+          emit(const UnauthenticatedState());
+          _clearSharedPreferencesOnLogout();
+        },
       );
     } catch (e) {
       emit(AuthErrorState(message: e.toString()));

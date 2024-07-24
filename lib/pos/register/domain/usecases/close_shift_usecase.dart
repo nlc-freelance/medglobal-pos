@@ -4,13 +4,13 @@ import 'package:medglobal_admin_portal/core/usecases/usecase.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/repositories/register_shift_repository.dart';
 
-class CloseShiftUseCase implements UseCase<void, CloseShiftParams> {
+class CloseShiftUseCase implements UseCase<RegisterShift, CloseShiftParams> {
   final RegisterShiftRepository repository;
 
   const CloseShiftUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(CloseShiftParams params) => repository.closeShift(params.shift);
+  Future<Either<Failure, RegisterShift>> call(CloseShiftParams params) => repository.closeShift(params.shift);
 }
 
 class CloseShiftParams {
