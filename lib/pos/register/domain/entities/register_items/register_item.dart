@@ -1,21 +1,25 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'register_item.g.dart';
 
 @JsonSerializable()
-class RegisterItem {
+class RegisterItem extends Equatable {
   final int? id;
   final String? displayName;
   final int? stock;
   final double? price;
 
-  RegisterItem({
+  const RegisterItem({
     this.id,
     this.displayName,
     this.stock,
     this.price,
   });
+
+  @override
+  List<Object?> get props => [id, displayName, stock, price];
 
   Map<String, dynamic> toJson() => _$RegisterItemToJson(this);
 

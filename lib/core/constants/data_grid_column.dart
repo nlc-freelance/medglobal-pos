@@ -187,7 +187,7 @@ class DataGridColumn {
   ///
   static List<ColumnData> REGISTER_ITEMS = [
     ColumnData('id', 'ID'),
-    ColumnData('product_name', 'Product'),
+    ColumnData('product_name', 'Product', minWidth: 600),
     ColumnData('stock', 'Stock'),
     ColumnData('price', 'Price (PHP)'),
   ];

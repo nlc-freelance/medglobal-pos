@@ -33,7 +33,10 @@ import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/pres
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class MedGlobaPortalApp extends StatelessWidget {
@@ -76,6 +79,9 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<UncountedItemsCubit>()),
         BlocProvider(create: (_) => GetIt.I<RegisterCubit>()),
         BlocProvider(create: (_) => GetIt.I<RegisterShiftBloc>()),
+        BlocProvider(create: (_) => GetIt.I<RegisterItemListRemoteCubit>()),
+        BlocProvider(create: (_) => GetIt.I<OrderCubit>()),
+        BlocProvider(create: (_) => GetIt.I<SaleRemoteCubit>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) => AppRouter.router.refresh(),

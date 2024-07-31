@@ -138,3 +138,7 @@ enum StockTakeItemAction {
 }
 
 enum UserType { CASHIER, ADMIN }
+
+enum DiscountType { PESO, PERCENT }
+
+enum TransactionType { REFUND, SALE }

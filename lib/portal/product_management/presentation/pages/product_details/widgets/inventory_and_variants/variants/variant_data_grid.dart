@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/utils/data_grid_util.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/variant.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form/product_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
@@ -54,21 +53,24 @@ class VariantDataGridState extends State<VariantDataGrid> {
           child: SfDataGridTheme(
             data: DataGridUtil.rowNavigationStyle,
             child: SfDataGrid(
-                source: _variantDataSource,
-                columns: DataGridUtil.getColumns(DataGridColumn.VARIANTS),
-                controller: _dataGridController,
-                shrinkWrapRows: true,
-                navigationMode: GridNavigationMode.row,
-                selectionMode: SelectionMode.single,
-                columnWidthMode: ColumnWidthMode.fill,
-                headerGridLinesVisibility: GridLinesVisibility.none,
-                onCellTap: (details) {
+              source: _variantDataSource,
+              columns: DataGridUtil.getColumns(DataGridColumn.VARIANTS),
+              controller: _dataGridController,
+              shrinkWrapRows: true,
+              navigationMode: GridNavigationMode.row,
+              selectionMode: SelectionMode.single,
+              columnWidthMode: ColumnWidthMode.fill,
+              headerGridLinesVisibility: GridLinesVisibility.none,
+              onCellTap: (details) {
+                if (details.rowColumnIndex.rowIndex != 0) {
                   final id = _variantDataSource.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value;
 
                   context.read<VariantFormCubit>().resetForm();
                   context.read<VariantFormCubit>().setVariant(_variants.firstWhere((variant) => variant.id == id));
                   context.read<VariantFormUiCubit>().showVariantFormUi();
-                }),
+                }
+              },
+            ),
           ),
         ),
       ),

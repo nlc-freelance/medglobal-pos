@@ -1,6 +1,6 @@
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/pos/register/data/dto/register_shift_dto.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift/register_shift.dart';
 
 abstract class RegisterShiftApi {
   Future<RegisterShiftDto> openShift(RegisterShift shift);

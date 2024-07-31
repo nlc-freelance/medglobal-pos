@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/usecases/close_shift_usecase.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/usecases/open_shift_usecase.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift/register_shift.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/usecases/register_shift/close_shift_usecase.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/usecases/register_shift/open_shift_usecase.dart';
 
 part 'register_shift_event.dart';
 part 'register_shift_state.dart';
 
-class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
+class RegisterShiftBloc extends HydratedBloc<RegisterShiftEvent, RegisterShiftState> {
   final OpenShiftUseCase _openShiftUseCase;
   final CloseShiftUseCase _closeShiftUseCase;
 
@@ -96,4 +96,25 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
   void _setHasReachedMaxShiftOpen() async => await SharedPreferencesService.setHasReachedMaxShiftOpen(true);
 
   void _reset(event, emit) => emit(RegisterShiftInitial());
+
+  @override
+  RegisterShiftState? fromJson(Map<String, dynamic> json) {
+    switch (json['state']) {
+      case 'RegisterShiftLoading()':
+        return RegisterShiftLoading();
+      case 'RegisterShiftOpen()':
+        return RegisterShiftOpen();
+      case 'RegisterShiftClose()':
+        return RegisterShiftClose();
+      case 'RegisterShiftError()':
+        return RegisterShiftError(message: json['message']);
+      default:
+        return RegisterShiftInitial();
+    }
+  }
+
+  @override
+  Map<String, dynamic>? toJson(RegisterShiftState state) {
+    return {'state': state.toString(), 'message': state is RegisterShiftError ? state.message : null};
+  }
 }

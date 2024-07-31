@@ -23,6 +23,7 @@ class _ProductsPageState extends State<ProductsPage> {
   @override
   void initState() {
     super.initState();
+    print('init');
     _productListCubit = BlocProvider.of<ProductListCubit>(context)..getProducts();
   }
 

@@ -63,8 +63,11 @@ class _SupplierDataGridState extends State<SupplierDataGrid> {
                   )
                 : null,
             onCellTap: (details) {
-              final id = _supplierDataSource.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value;
-              SupplierDetailsDialog(widget.suppliers.firstWhere((supplier) => supplier.id == id)).showSidePeek(context);
+              if (details.rowColumnIndex.rowIndex != 0) {
+                final id = _supplierDataSource.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value;
+                SupplierDetailsDialog(widget.suppliers.firstWhere((supplier) => supplier.id == id))
+                    .showSidePeek(context);
+              }
             },
           ),
         ),

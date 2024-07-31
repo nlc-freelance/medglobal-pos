@@ -29,27 +29,15 @@ class POSAppNavBar extends StatelessWidget {
                   UIText.heading5(
                     routeState.matchedLocation == '/point-of-sale/transactions'
                         ? 'Transactions'
-                        : (routeState.matchedLocation == '/point-of-sale/register' ? 'Register' : ''),
+                        : (routeState.matchedLocation == '/point-of-sale/register' ? 'Register' : 'Order Payment'),
                   ),
                   const UIHorizontalSpace(16),
                   if (state.register != null) ...[
                     UIText.bodyRegular('|'),
                     const UIHorizontalSpace(16),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2.0),
-                      child: Chip(
-                        label: Text(
-                          state.register!.name!,
-                          style: UIStyleText.labelMedium.copyWith(fontSize: 13),
-                        ),
-                        backgroundColor: UIColors.whiteBg,
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: const BorderSide(color: UIColors.transparent),
-                        ),
-                      ),
+                    Text(
+                      state.register!.name!,
+                      style: UIStyleText.labelMedium.copyWith(fontSize: 14),
                     ),
                   ],
                 ],
@@ -70,15 +58,22 @@ class POSAppNavBar extends StatelessWidget {
                 builder: (context, snapshot) {
                   return snapshot.hasData
                       ? Chip(
+                          avatar: Container(
+                            width: 6.8,
+                            height: 6.8,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: snapshot.data == true ? UIColors.completed : UIColors.buttonDanger),
+                          ),
+                          labelPadding: const EdgeInsets.symmetric(horizontal: 6),
                           label: Text(
-                            '\u2022  ${snapshot.data == true ? 'Open' : 'Closed'}',
+                            snapshot.data == true ? 'Open' : 'Closed',
                             style: UIStyleText.labelSemiBold.copyWith(
                               color: snapshot.data == true ? UIColors.completed : UIColors.buttonDanger,
                               fontSize: 13,
                             ),
                           ),
                           backgroundColor: UIColors.whiteBg,
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

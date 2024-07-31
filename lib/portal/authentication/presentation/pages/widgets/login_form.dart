@@ -91,7 +91,7 @@ class LoginForm extends StatelessWidget {
           SizedBox(
             width: 345.0,
             child: UIButton.filled(
-              icon: Assets.icons.arrowRight.setSize(12.0),
+              icon: Assets.icons.arrowRight1.setSize(12.0),
               iconAlign: IconAlignment.end,
               Strings.login,
               onClick: () {
