@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/utils/datetime_converter.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift/register_shift.dart';
 
 part 'register_shift_dto.g.dart';
 

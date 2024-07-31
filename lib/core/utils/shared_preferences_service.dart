@@ -1,6 +1,16 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesService {
+  static Future<void> setRegisterBranchId(int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('register_branch_id', value);
+  }
+
+  static Future<int?> getRegisterBranchId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('register_branch_id');
+  }
+
   static Future<void> setShiftStatus(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('is_shift_open', value);

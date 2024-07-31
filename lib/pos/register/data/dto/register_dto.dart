@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/entities/register.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift/register.dart';
 
 part 'register_dto.g.dart';
 

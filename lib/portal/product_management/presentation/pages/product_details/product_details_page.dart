@@ -79,7 +79,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 _productNameController.text = state.product.name ?? '';
               }
               if (state is ProductSuccess) {
-                AppRouter.router.goNamed(SideMenuTreeItem.PRODUCTS.name);
+                AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PRODUCTS.name);
                 ToastNotification.success(context, state.message);
               }
               if (state is ProductError) ToastNotification.error(context, state.message);
@@ -125,10 +125,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               final initialProduct = _productFormCubit.state.product;
 
                               /// If product has no variants, add the default one
-                              if (initialProduct?.variants == null ||
-                                  initialProduct?.variants?.first.name == 'default') {
+                              if (initialProduct?.hasVariants != true) {
                                 final variant = _variantFormCubit.state.variant;
-                                if (variant != null) _productFormCubit.addVariant(variant);
+                                if (variant != null) _productFormCubit.addVariant(variant.copyWith(name: 'default'));
                               }
 
                               /// Else, call the product as is. The variants should already been added inside the Variant Form

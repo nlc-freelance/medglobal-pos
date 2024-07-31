@@ -86,7 +86,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                     if (_currentStep == 0)
                       UIButton.filled(
                         'Create',
-                        icon: Assets.icons.arrowRight.setSize(12),
+                        icon: Assets.icons.arrowRight1.setSize(12),
                         iconAlign: IconAlignment.end,
                         isLoading: state is PurchaseOrderCreateLoading,
                         onClick: () => context.read<PurchaseOrderRemoteCubit>().create(payload),
@@ -104,7 +104,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                       const UIHorizontalSpace(8),
                       UIButton.filled(
                         'Save and Mark as Shipped',
-                        icon: Assets.icons.arrowRight.setSize(12),
+                        icon: Assets.icons.arrowRight1.setSize(12),
                         iconAlign: IconAlignment.end,
                         isLoading: state is PurchaseOrderSaveAndMarkAsShippedLoading,
                         onClick: () {
@@ -122,7 +122,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                     ] else if (_currentStep == 2)
                       UIButton.filled(
                         'Save and Received',
-                        icon: Assets.icons.arrowRight.setSize(12),
+                        icon: Assets.icons.arrowRight1.setSize(12),
                         iconAlign: IconAlignment.end,
                         isLoading: state is PurchaseOrderSaveAndReceivedLoading,
                         onClick: () {

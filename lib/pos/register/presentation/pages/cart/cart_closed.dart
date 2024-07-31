@@ -3,8 +3,8 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class RegisterCartClosed extends StatelessWidget {
-  const RegisterCartClosed({super.key, required this.onOpenShift});
+class CartClosed extends StatelessWidget {
+  const CartClosed({super.key, required this.onOpenShift});
 
   final VoidCallback onOpenShift;
 

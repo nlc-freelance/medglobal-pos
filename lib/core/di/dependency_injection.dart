@@ -98,16 +98,27 @@ import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecase
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecases/update_supplier_usecase.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/data/api/create_sale_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_api.dart';
+import 'package:medglobal_admin_portal/pos/register/data/api/register_item_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_shift_api.dart';
+import 'package:medglobal_admin_portal/pos/register/data/repositories/register_item_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/register/data/repositories/register_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/register/data/repositories/register_shift_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/register/data/repositories/sale_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/repositories/register_item_repository.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/repositories/register_repository.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/repositories/register_shift_repository.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/usecases/close_shift_usecase.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/usecases/open_shift_usecase.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/repositories/sale_repository.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/usecases/create_sale_usecase.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/usecases/register_items/get_register_items_usecase.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/usecases/register_shift/close_shift_usecase.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/usecases/register_shift/open_shift_usecase.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
 
 /// lazySingleton are only initialized when needed while factory are always initialized
 
@@ -140,6 +151,8 @@ void initDependencyInjection() {
     /// POS
     ..registerLazySingleton<RegisterShiftApi>(() => RegisterShiftApiImpl(injector()))
     ..registerLazySingleton<RegisterApi>(() => RegisterApiImpl(injector()))
+    ..registerLazySingleton<RegisterItemApi>(() => RegisterItemApiImpl(injector()))
+    ..registerLazySingleton<SaleApi>(() => SaleApiImpl(injector()))
 
     /// Repository
     /// Portal
@@ -157,6 +170,8 @@ void initDependencyInjection() {
     /// POS
     ..registerLazySingleton<RegisterShiftRepository>(() => RegisterShiftRepositoryImpl(injector()))
     ..registerLazySingleton<RegisterRepository>(() => RegisterRepositoryImpl(injector()))
+    ..registerLazySingleton<RegisterItemRepository>(() => RegisterItemRepositoryImpl(injector()))
+    ..registerLazySingleton<SaleRepository>(() => SaleRepositoryImpl(injector()))
 
     /// Usecases
     ///
@@ -219,6 +234,11 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => OpenShiftUseCase(injector()))
     ..registerLazySingleton(() => CloseShiftUseCase(injector()))
 
+    ///
+    /// Register Items
+    ..registerLazySingleton(() => GetRegisterItemsUseCase(injector()))
+    ..registerLazySingleton(() => CreateSaleUseCase(injector()))
+
     /// Bloc
     ..registerFactory(() => AuthBloc(injector(), injector(), injector(), injector()))
     ..registerFactory(() => SidebarCubit())
@@ -254,5 +274,8 @@ void initDependencyInjection() {
 
     /// POS
     ..registerFactory(() => RegisterShiftBloc(injector(), injector()))
-    ..registerFactory(() => RegisterCubit());
+    ..registerFactory(() => RegisterCubit())
+    ..registerFactory(() => RegisterItemListRemoteCubit(injector()))
+    ..registerFactory(() => OrderCubit())
+    ..registerFactory(() => SaleRemoteCubit(injector()));
 }

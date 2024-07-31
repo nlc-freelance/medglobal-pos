@@ -34,6 +34,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
       tooltip: Strings.empty,
       itemBuilder: (BuildContext context) => [
         PopupMenuItem(
+          enabled: false,
           child: SizedBox(
             width: 500,
             height: 350,
@@ -60,6 +61,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
       ],
       child: HoverBuilder(
         builder: (isHover) => Container(
+          height: 38,
           padding: const EdgeInsets.symmetric(vertical: 6.5, horizontal: 16.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),

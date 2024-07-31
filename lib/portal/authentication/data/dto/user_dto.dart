@@ -39,14 +39,14 @@ class UserDto extends Equatable {
         type: mapUserType(),
       );
 
-  UserType mapUserType() {
+  UserType? mapUserType() {
     switch (type) {
       case 'cashier':
         return UserType.CASHIER;
       case 'admin':
         return UserType.ADMIN;
       default:
-        throw 'Your account does not have the necessary type for access.';
+        return null;
     }
   }
 }

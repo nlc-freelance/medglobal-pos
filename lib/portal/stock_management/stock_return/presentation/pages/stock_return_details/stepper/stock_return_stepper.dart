@@ -86,7 +86,7 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
                     if (_currentStep == 0)
                       UIButton.filled(
                         'Create',
-                        icon: Assets.icons.arrowRight.setSize(12),
+                        icon: Assets.icons.arrowRight1.setSize(12),
                         iconAlign: IconAlignment.end,
                         isLoading: state is StockReturnCreateLoading,
                         onClick: () => context.read<StockReturnRemoteCubit>().create(payload),
@@ -107,7 +107,7 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
                       UIButton.filled(
                         'Save and Mark as Shipped',
                         isLoading: state is StockReturnSaveAndMarkAsShippedLoading,
-                        icon: Assets.icons.arrowRight.setSize(12),
+                        icon: Assets.icons.arrowRight1.setSize(12),
                         iconAlign: IconAlignment.end,
                         onClick: () {
                           context.read<StockReturnRemoteCubit>().update(

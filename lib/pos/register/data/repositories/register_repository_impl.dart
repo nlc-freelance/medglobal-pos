@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_api.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/entities/register.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift/register.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/repositories/register_repository.dart';
 
 class RegisterRepositoryImpl implements RegisterRepository {

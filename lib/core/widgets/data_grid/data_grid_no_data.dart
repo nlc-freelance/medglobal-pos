@@ -9,12 +9,14 @@ class DataGridNoData extends StatefulWidget {
   final List<GridColumn> columns;
   final bool showCheckbox;
   final DataGridSource source;
+  final String? message;
 
   const DataGridNoData({
     super.key,
     required this.columns,
     required this.source,
     this.showCheckbox = false,
+    this.message,
   });
 
   @override
@@ -49,7 +51,7 @@ class _DataGridNoDataState extends State<DataGridNoData> {
                 Assets.icons.cube.svg(),
                 const UIVerticalSpace(12),
                 UIText.labelMedium(
-                  'No data available, please add items to your order.',
+                  'No data available, ${widget.message ?? 'please add items to your order'}.',
                   color: UIColors.textMuted,
                 ),
               ],

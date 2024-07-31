@@ -1,0 +1,83 @@
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order_item.dart';
+
+part 'order.g.dart';
+
+@JsonSerializable()
+class Order extends Equatable {
+  final int? id;
+  final double? subtotal;
+  final double? discount;
+  final double? discountInPeso;
+  final DiscountType? discountType;
+  final double? tax;
+  final double? total;
+  final List<OrderItem>? items;
+
+  const Order({
+    this.id,
+    this.subtotal,
+    this.discount,
+    this.discountInPeso,
+    this.discountType,
+    this.tax,
+    this.total,
+    this.items,
+  });
+
+  @override
+  List<Object?> get props => [id, subtotal, discount, discountInPeso, discountType, tax, total, items];
+
+  factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OrderToJson(this);
+
+  Order copyWith({
+    int? id,
+    double? subtotal,
+    double? discount,
+    double? discountInPeso,
+    DiscountType? discountType,
+    double? tax,
+    double? total,
+    List<OrderItem>? items,
+  }) {
+    return Order(
+      id: id ?? this.id,
+      subtotal: subtotal ?? this.subtotal,
+      discount: discount ?? this.discount,
+      discountInPeso: discountInPeso ?? this.discountInPeso,
+      discountType: discountType ?? this.discountType,
+      tax: tax ?? this.tax,
+      total: total ?? this.total,
+      items: items ?? this.items,
+    );
+  }
+
+  bool hasChangedInSubtotalDiscountOrType(Order other) {
+    return subtotal != other.subtotal ||
+        discount != other.discount ||
+        discountInPeso != other.discountInPeso ||
+        discountType != other.discountType;
+  }
+
+  JSON toPayload(int registerId) => {
+        'registerId': registerId,
+        'discount': discount,
+        'discountType': discountType == DiscountType.PERCENT ? 'percentage' : 'fixed',
+        'tax': tax,
+        'amountPaid': total,
+        'items': items
+                ?.map((item) => {
+                      'variantId': item.itemId,
+                      'quantity': item.qty,
+                      'discount': item.discount,
+                      'discountType': item.discountType == DiscountType.PERCENT ? 'percentage' : 'fixed',
+                    })
+                .toList() ??
+            [],
+      };
+}

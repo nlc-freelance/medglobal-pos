@@ -86,7 +86,7 @@ class _StockTransferStepperState extends State<StockTransferStepper> {
                     if (_currentStep == 0)
                       UIButton.filled(
                         'Create',
-                        icon: Assets.icons.arrowRight.setSize(12),
+                        icon: Assets.icons.arrowRight1.setSize(12),
                         iconAlign: IconAlignment.end,
                         isLoading: state is StockTransferCreateLoading,
                         onClick: () => context.read<StockTransferRemoteCubit>().create(payload),
@@ -104,7 +104,7 @@ class _StockTransferStepperState extends State<StockTransferStepper> {
                       const UIHorizontalSpace(8),
                       UIButton.filled(
                         'Save and Mark as Shipped',
-                        icon: Assets.icons.arrowRight.setSize(12),
+                        icon: Assets.icons.arrowRight1.setSize(12),
                         iconAlign: IconAlignment.end,
                         isLoading: state is StockTransferSaveAndMarkAsShippedLoading,
                         onClick: () {
@@ -122,7 +122,7 @@ class _StockTransferStepperState extends State<StockTransferStepper> {
                     ] else if (_currentStep == 2)
                       UIButton.filled(
                         'Mark Received',
-                        icon: Assets.icons.arrowRight.setSize(12),
+                        icon: Assets.icons.arrowRight1.setSize(12),
                         iconAlign: IconAlignment.end,
                         isLoading: state is StockTransferSaveAndReceivedLoading,
                         onClick: () {

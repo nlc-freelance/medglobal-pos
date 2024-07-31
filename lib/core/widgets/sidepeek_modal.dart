@@ -22,7 +22,7 @@ class SidePeekModal extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 20, top: 10),
                 child: IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: Assets.icons.arrowRight.svg(colorFilter: UIColors.textRegular.toColorFilter),
+                  icon: Assets.icons.arrowRight1.svg(colorFilter: UIColors.textRegular.toColorFilter),
                 ),
               ),
               Expanded(

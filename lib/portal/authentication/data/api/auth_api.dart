@@ -22,10 +22,17 @@ class AuthApiImpl implements AuthApi {
         return const LoginResponseDto(isFirstTimeLogin: true);
       } else {
         final user = await amplify.getUserDto();
-        return LoginResponseDto(
-          user: user,
-          isLoggedIn: response.isSignedIn,
-        );
+
+        /// Check if user has access role assigned and if it is accepted, if not or null logout the user and show error
+        if (user.mapUserType() != null) {
+          return LoginResponseDto(
+            user: user,
+            isLoggedIn: response.isSignedIn,
+          );
+        } else {
+          await amplify.logout();
+          throw 'Your account does not have the necessary user type for access.';
+        }
       }
     } on CognitoServiceException catch (e) {
       throw e.message;

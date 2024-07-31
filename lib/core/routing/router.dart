@@ -21,8 +21,9 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfers_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/pages/supply_needs_page.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/suppliers_page.dart';
-import 'package:medglobal_admin_portal/pos/transactions/transactions_page.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_page.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_billing/register_billing_page.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transactions_page.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/register/register_page.dart';
 
 abstract class AppRouter {
   static final GoRouter router = GoRouter(
@@ -264,6 +265,11 @@ abstract class AppRouter {
                 name: 'Register',
                 path: '/point-of-sale/register',
                 pageBuilder: (context, state) => const NoTransitionPage(child: RegisterPage()),
+              ),
+              GoRoute(
+                name: 'Billing',
+                path: '/point-of-sale/register/billing',
+                pageBuilder: (context, state) => const NoTransitionPage(child: RegisterBillingPage()),
               ),
             ],
           ),
