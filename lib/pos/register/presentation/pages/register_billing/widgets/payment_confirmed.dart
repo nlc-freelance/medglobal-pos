@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -58,6 +59,7 @@ class PaymentConfirmed extends StatelessWidget {
                   'New Sale',
                   onClick: () {
                     context.read<OrderCubit>().reset();
+                    context.read<SaleRemoteCubit>().reset();
                     AppRouter.router.goNamed('Register');
                   },
                   style: UIStyleButton.filled.style?.copyWith(
