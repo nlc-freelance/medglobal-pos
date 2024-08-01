@@ -84,7 +84,7 @@ class LabelValue extends StatelessWidget {
             ),
           ),
         ],
-        if (type == LabelValueType.button) ...[const UIVerticalSpace(6), button!],
+        if (type == LabelValueType.button) ...[const UIVerticalSpace(4), button!],
       ],
     );
   }

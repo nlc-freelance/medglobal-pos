@@ -39,6 +39,7 @@ class _StockReturnDetailsState extends State<StockReturnDetails> {
       selector: (state) => state.stockReturn,
       builder: (context, stockReturn) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const UIVerticalSpace(20),
             const PageSectionTitle(title: 'General Information'),
