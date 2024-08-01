@@ -41,7 +41,7 @@ class StockReturnDto extends Equatable {
 
   @override
   List<Object?> get props =>
-      [id, branch, supplier, status, totalAmount, items, notes, tax, discount, items, createdAt, updatedAt];
+      [id, branch, supplier, status, totalAmount, notes, items, tax, discount, createdAt, updatedAt];
 
   factory StockReturnDto.fromJson(Map<String, dynamic> json) => _$StockReturnDtoFromJson(json);
 
@@ -54,7 +54,7 @@ class StockReturnDto extends Equatable {
         discount: discount,
         totalAmount: totalAmount,
         notes: notes,
-        items: items?.map((item) => item.toEntity()).toList() ?? [],
+        items: items?.map((item) => item.toEntity()).toList() ?? List.empty(),
         createdAt: createdAt,
         updatedAt: updatedAt,
       );

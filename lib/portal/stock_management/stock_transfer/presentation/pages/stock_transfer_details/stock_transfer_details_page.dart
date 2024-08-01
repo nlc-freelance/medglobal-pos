@@ -87,7 +87,7 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
                 if (_stockTransfer.status == StockOrderStatus.NEW)
                   UIPopupMenuButton.icon(
                     onSelect: (menu) {
-                      if (menu == 'Cancel Purchase Order') {
+                      if (menu == 'Cancel Stock Transfer') {
                         context.read<StockTransferRemoteCubit>().update(
                               StockOrderUpdate.CANCEL,
                               id: _stockTransfer.id!,
