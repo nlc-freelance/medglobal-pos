@@ -37,7 +37,7 @@ class _ChargePaymentState extends State<ChargePayment> {
     return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) {
         final order = state.order;
-        final quickBills = generateDenominations(order.total ?? 0);
+        final quickBills = computePossibleAmounts(order.total ?? 0);
 
         return SizedBox(
           width: MediaQuery.sizeOf(context).width * 0.35,
@@ -84,8 +84,9 @@ class _ChargePaymentState extends State<ChargePayment> {
                           Theme.of(context).copyWith(inputDecorationTheme: UIStyleInput.input.copyWith(isDense: false)),
                       child: UITextField.topLabel(
                         cursorHeight: 30,
+                        isAutoFocus: true,
                         style: UIStyleText.heading4,
-                        label: 'Enter amount received',
+                        label: 'Cash received',
                         formatter: [CurrencyInputFormatter()],
                         controller: _amountReceivedController,
                         onChanged: (value) {
@@ -189,11 +190,23 @@ class _ChargePaymentState extends State<ChargePayment> {
   }
 }
 
-List<double> generateDenominations(double amount) {
-  List<double> standardDenominations = [1, 5, 10, 20, 50, 100, 500, 1000, 1500];
-  List<double> filteredDenominations = standardDenominations.where((denomination) => denomination > amount).toList();
+List<int> computePossibleAmounts(double totalAmount) {
+  List<int> denominations = [10, 20, 50, 100];
 
-  return filteredDenominations..sort();
+  Set<int> suggestedAmounts = {};
+
+  int roundedAmount = totalAmount.ceil();
+  if (roundedAmount != totalAmount) suggestedAmounts.add(roundedAmount);
+
+  for (int denomination in denominations) {
+    int nextMultipleOfDenomination = ((roundedAmount ~/ denomination) + 1) * denomination;
+    if (suggestedAmounts.length >= 4) break;
+    if (nextMultipleOfDenomination > totalAmount) {
+      suggestedAmounts.add(nextMultipleOfDenomination);
+    }
+  }
+
+  return suggestedAmounts.toList()..sort();
 }
 
 class CurrencyInputFormatter extends TextInputFormatter {

@@ -68,6 +68,7 @@ class _RegisterItemsDataGridState extends State<RegisterItemsDataGrid> {
                     )
                   : null,
               onCellTap: (details) {
+                print(state.toString());
                 if (state is! RegisterShiftOpen) {
                   showDialog(
                     context: context,

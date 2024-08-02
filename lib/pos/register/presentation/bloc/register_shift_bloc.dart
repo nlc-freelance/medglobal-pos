@@ -8,11 +8,12 @@ import 'package:medglobal_admin_portal/pos/register/domain/usecases/register_shi
 part 'register_shift_event.dart';
 part 'register_shift_state.dart';
 
-class RegisterShiftBloc extends HydratedBloc<RegisterShiftEvent, RegisterShiftState> {
+class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> with HydratedMixin {
   final OpenShiftUseCase _openShiftUseCase;
   final CloseShiftUseCase _closeShiftUseCase;
 
   RegisterShiftBloc(this._openShiftUseCase, this._closeShiftUseCase) : super(RegisterShiftInitial()) {
+    hydrate();
     on<OpenRegisterShiftEvent>(_onOpenRegisterShift);
     on<CloseRegisterShiftEvent>(_onCloseRegisterShift);
     on<ShowClosingShiftDialogEvent>(_onShowClosingShiftDialog);
@@ -115,6 +116,6 @@ class RegisterShiftBloc extends HydratedBloc<RegisterShiftEvent, RegisterShiftSt
 
   @override
   Map<String, dynamic>? toJson(RegisterShiftState state) {
-    return {'state': state.toString(), 'message': state is RegisterShiftError ? state.message : null};
+    return {'state': state.toString(), 'message': state is RegisterShiftError ? state.message : ''};
   }
 }
