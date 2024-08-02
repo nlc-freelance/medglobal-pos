@@ -28,26 +28,29 @@ class RegisterBillingPage extends StatelessWidget {
         Expanded(
           flex: 8,
           child: Container(
+            height: MediaQuery.sizeOf(context).height,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               border: Border.all(color: UIColors.borderMuted, width: 1.0),
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
-            child: BlocBuilder<SaleRemoteCubit, SaleRemoteState>(
-              builder: (context, state) {
-                if (state is SaleLoading) {
-                  return const Center(child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2));
-                }
+            child: SingleChildScrollView(
+              child: BlocBuilder<SaleRemoteCubit, SaleRemoteState>(
+                builder: (context, state) {
+                  if (state is SaleLoading) {
+                    return const Center(child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2));
+                  }
 
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    state is SaleSuccess ? PaymentConfirmed(state.transaction) : const ChargePayment(),
-                    const UIVerticalSpace(20),
-                    if (state is SaleError) UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
-                  ],
-                );
-              },
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      state is SaleSuccess ? PaymentConfirmed(state.transaction) : const ChargePayment(),
+                      const UIVerticalSpace(20),
+                      if (state is SaleError) UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),

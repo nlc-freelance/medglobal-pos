@@ -40,7 +40,7 @@ class _ChargePaymentState extends State<ChargePayment> {
         final quickBills = computePossibleAmounts(order.total ?? 0);
 
         return SizedBox(
-          width: MediaQuery.sizeOf(context).width * 0.35,
+          width: MediaQuery.sizeOf(context).width * 0.5,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
