@@ -61,7 +61,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
       ],
       child: HoverBuilder(
         builder: (isHover) => Container(
-          height: 38,
+          // height: 38,
           padding: const EdgeInsets.symmetric(vertical: 6.5, horizontal: 16.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),

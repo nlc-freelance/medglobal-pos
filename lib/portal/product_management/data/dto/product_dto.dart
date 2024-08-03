@@ -14,7 +14,7 @@ class ProductDto extends Equatable {
   final String? name;
   @JsonKey(name: 'productImageUrl')
   final String? imageUrl;
-  final List<String>? tags;
+  // final List<String>? tags;
   final CategoryDto? category;
   final List<VariantDto>? variants;
   @DateTimeConverter()
@@ -26,7 +26,7 @@ class ProductDto extends Equatable {
     this.id,
     this.name,
     this.imageUrl,
-    this.tags,
+    // this.tags,
     this.category,
     this.variants,
     this.createdAt,
@@ -34,7 +34,16 @@ class ProductDto extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, name, imageUrl, tags, category, variants, createdAt, updatedAt];
+  List<Object?> get props => [
+        id,
+        name,
+        imageUrl,
+        // tags,
+        category,
+        variants,
+        createdAt,
+        updatedAt,
+      ];
 
   factory ProductDto.fromJson(Map<String, dynamic> json) => _$ProductDtoFromJson(json);
 

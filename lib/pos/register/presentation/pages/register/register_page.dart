@@ -108,119 +108,99 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RegisterShiftBloc, RegisterShiftState>(
-      listener: (context, state) {
-        if (state is ShowClosingShiftDialog) {
-          _showOpeningClosingDialog(
-            context,
-            formKey: _formKey,
-            isOpening: false,
-            datetime: state.openSince,
-            amountController: _amountController,
-            onAction: () => context.read<RegisterShiftBloc>().add(
-                  CloseRegisterShiftEvent(
-                    /// we made sure that there is a register set after loggin in POS
-                    registerId: context.read<RegisterCubit>().state.register!.id!,
-                    closingAmount: double.tryParse(_amountController.text) ?? 0,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 8,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              border: Border.all(color: UIColors.borderMuted, width: 1.0),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                UISearchField(
+                  fieldWidth: 500.0,
+                  hint: 'Search',
+                  icon: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Assets.icons.search.svg(),
+                  ),
+                  controller: _searchController,
+                  onChanged: (value) => _debouncer.run(
+                    (() => context.read<RegisterItemListRemoteCubit>().getRegisterItems(search: value)),
                   ),
                 ),
-          );
-        }
-      },
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 8,
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border.all(color: UIColors.borderMuted, width: 1.0),
-                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  UISearchField(
-                    fieldWidth: 500.0,
-                    hint: 'Search',
-                    icon: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Assets.icons.search.svg(),
-                    ),
-                    controller: _searchController,
-                    onChanged: (value) => _debouncer.run(
-                      (() => context.read<RegisterItemListRemoteCubit>().getRegisterItems(search: value)),
-                    ),
-                  ),
-                  const UIVerticalSpace(16),
-                  BlocBuilder<RegisterItemListRemoteCubit, RegisterItemListRemoteState>(
-                    builder: (context, state) {
-                      if (state is RegisterItemListInitial) {
-                        return DataGridNoData(
-                          columns: DataGridUtil.getColumns(DataGridColumn.REGISTER_ITEMS),
-                          source: RegisterItemsDataSource([]),
-                          message: 'please select a register first',
-                        );
-                      }
-                      if (state is RegisterItemListError) {
-                        return Text(state.message);
-                      }
-                      if (state is RegisterItemListLoaded) {
-                        return Expanded(
-                          child: RegisterItemsDataGrid(state.items),
-                        );
-                      }
-
-                      return DataGridLoading(
+                const UIVerticalSpace(16),
+                BlocBuilder<RegisterItemListRemoteCubit, RegisterItemListRemoteState>(
+                  builder: (context, state) {
+                    if (state is RegisterItemListInitial) {
+                      return DataGridNoData(
                         columns: DataGridUtil.getColumns(DataGridColumn.REGISTER_ITEMS),
                         source: RegisterItemsDataSource([]),
+                        message: 'please select a register first',
                       );
-                    },
-                  ),
-                ],
-              ),
+                    }
+                    if (state is RegisterItemListError) {
+                      return Text(state.message);
+                    }
+                    if (state is RegisterItemListLoaded) {
+                      return Expanded(
+                        child: RegisterItemsDataGrid(state.items),
+                      );
+                    }
+
+                    return DataGridLoading(
+                      columns: DataGridUtil.getColumns(DataGridColumn.REGISTER_ITEMS),
+                      source: RegisterItemsDataSource([]),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
-          const UIHorizontalSpace(16),
-          BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
-            builder: (context, state) {
-              return Expanded(
-                flex: 4,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: UIColors.borderMuted, width: 1.0),
-                    borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  child: FutureBuilder(
-                      future: SharedPreferencesService.isShiftOpen(),
-                      builder: (context, snapshot) {
-                        return snapshot.data == true
-                            ? const CartOpen()
-                            : CartClosed(
-                                onOpenShift: () => _showOpeningClosingDialog(
-                                  context,
-                                  formKey: _formKey,
-                                  isOpening: true,
-                                  datetime: DateTime.now(), // replace with date from register
-                                  amountController: _amountController,
-                                  onAction: () => context.read<RegisterShiftBloc>().add(
-                                        OpenRegisterShiftEvent(
-                                          /// we made sure that there is a register set after loggin in POS
-                                          registerId: context.read<RegisterCubit>().state.register!.id!,
-                                          openingAmount: double.tryParse(_amountController.text) ?? 0,
-                                        ),
-                                      ),
-                                ),
-                              );
-                      }),
+        ),
+        const UIHorizontalSpace(16),
+        BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
+          builder: (context, state) {
+            return Expanded(
+              flex: 4,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: UIColors.borderMuted, width: 1.0),
+                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
                 ),
-              );
-            },
-          ),
-        ],
-      ),
+                child: FutureBuilder(
+                    future: SharedPreferencesService.isShiftOpen(),
+                    builder: (context, snapshot) {
+                      return snapshot.data == true
+                          ? const CartOpen()
+                          : CartClosed(
+                              onOpenShift: () => _showOpeningClosingDialog(
+                                context,
+                                formKey: _formKey,
+                                isOpening: true,
+                                datetime: DateTime.now(), // replace with date from register
+                                amountController: _amountController,
+                                onAction: () => context.read<RegisterShiftBloc>().add(
+                                      OpenRegisterShiftEvent(
+                                        /// we made sure that there is a register set after logging in POS
+                                        registerId: context.read<RegisterCubit>().state.register!.id!,
+                                        openingAmount: double.tryParse(_amountController.text) ?? 0,
+                                      ),
+                                    ),
+                              ),
+                            );
+                    }),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

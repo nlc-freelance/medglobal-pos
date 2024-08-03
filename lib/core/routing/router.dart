@@ -21,6 +21,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfers_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/pages/supply_needs_page.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/suppliers_page.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transactions_page.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_billing/register_billing_page.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transactions_page.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/register/register_page.dart';
@@ -169,10 +170,7 @@ abstract class AppRouter {
                   GoRoute(
                     name: SideMenuTreeItem.SALE_TRANSACTIONS.name,
                     path: SideMenuTreeItem.SALE_TRANSACTIONS.path,
-                    builder: (context, state) => const Text(
-                      'Sale Transactions',
-                      style: TextStyle(fontSize: 24, color: Colors.black),
-                    ),
+                    pageBuilder: (context, state) => const NoTransitionPage(child: SaleTransactionsPage()),
                   ),
                   GoRoute(
                     name: SideMenuTreeItem.RETURN_TRANSACTIONS.name,

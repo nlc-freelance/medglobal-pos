@@ -2,7 +2,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/variant.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form/product_form_cubit.dart';
@@ -111,22 +110,22 @@ class _VariantFormState extends State<VariantForm> {
                         onClick: () {
                           final variant = _variantFormCubit.state.variant;
 
-                          if (widget.formKey.currentState?.validate() == true &&
-                              variant?.hasSuppliers == true &&
-                              variant?.hasBranchInventories == true) {
-                            if (variant?.id == null) {
-                              final newVariant = variant?.copyWith(id: -(const Uuid().v4().hashCode));
-                              context.read<ProductFormCubit>().addVariant(newVariant!);
-                            } else {
-                              context.read<ProductFormCubit>().updateVariant(variant!.id!, variant);
-                            }
-
-                            context.read<VariantFormUiCubit>().hideVariantFormUi();
-                            _variantFormCubit.resetForm();
+                          // if (widget.formKey.currentState?.validate() == true &&
+                          //     variant?.hasSuppliers == true &&
+                          //     variant?.hasBranchInventories == true) {
+                          if (variant?.id == null) {
+                            final newVariant = variant?.copyWith(id: -(const Uuid().v4().hashCode));
+                            context.read<ProductFormCubit>().addVariant(newVariant!);
                           } else {
-                            ToastNotification.invalid(
-                                context, 'One of the required field is empty. Please check your inputs.');
+                            context.read<ProductFormCubit>().updateVariant(variant!.id!, variant);
                           }
+
+                          context.read<VariantFormUiCubit>().hideVariantFormUi();
+                          _variantFormCubit.resetForm();
+                          // } else {
+                          //   ToastNotification.invalid(
+                          //       context, 'One of the required field is empty. Please check your inputs.');
+                          // }
                         },
                       ),
                     ),

@@ -24,9 +24,12 @@ class DataGridToolbar extends StatelessWidget {
       padding: padding ?? const EdgeInsets.only(bottom: 20.0),
       child: Row(
         children: [
-          if (search != null) search!,
+          if (search != null) ...[
+            search!,
+            const Spacer(),
+          ],
           ...?filters,
-          const Spacer(),
+          if (search == null) const Spacer(),
           if (isImportCSV)
             UIButton.outlined(
               'Import from CSV',

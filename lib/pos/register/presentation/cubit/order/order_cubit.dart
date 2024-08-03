@@ -19,7 +19,7 @@ class OrderCubit extends HydratedCubit<OrderState> {
 
     /// check if item is already in order.items, if yes increment qty, else add and set qty to 1
     List<OrderItem> updatedItems;
-    if (orderItems.any((item) => item.id == value.itemId)) {
+    if (orderItems.any((item) => item.itemId == value.itemId)) {
       updatedItems = orderItems.map((item) {
         if (item.itemId == value.itemId) return item.copyWith(qty: item.qty! + 1);
         return item;

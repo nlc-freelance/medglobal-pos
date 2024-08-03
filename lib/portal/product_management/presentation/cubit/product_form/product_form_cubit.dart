@@ -20,9 +20,15 @@ class ProductFormCubit extends Cubit<ProductFormState> {
   void setCategory(Category value) => emit(ProductFormState(state.product?.copyWith(category: value)));
   void setImageUrl(String value) => emit(ProductFormState(state.product?.copyWith(imageUrl: value)));
 
+  void setDefaultVariant(Variant value) {
+    List<Variant> defaultVariant = [];
+    defaultVariant = [value.copyWith(name: 'default')];
+    emit(ProductFormState(state.product?.copyWith(variants: defaultVariant)));
+  }
+
   void addVariant(Variant value) {
     final variants = state.product?.variants?.toList();
-    final updatedVariants = {...?variants, value}.toList();
+    final updatedVariants = [...?variants, value];
 
     emit(ProductFormState(state.product?.copyWith(variants: updatedVariants)));
   }

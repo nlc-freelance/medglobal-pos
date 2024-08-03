@@ -127,7 +127,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               /// If product has no variants, add the default one
                               if (initialProduct?.hasVariants != true) {
                                 final variant = _variantFormCubit.state.variant;
-                                if (variant != null) _productFormCubit.addVariant(variant.copyWith(name: 'default'));
+                                if (variant != null) _productFormCubit.setDefaultVariant(variant);
                               }
 
                               /// Else, call the product as is. The variants should already been added inside the Variant Form
