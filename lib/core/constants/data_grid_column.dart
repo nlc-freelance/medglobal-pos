@@ -186,13 +186,24 @@ class DataGridColumn {
   static List<ColumnData> SALE_TRANSACTIONS = [
     ColumnData('id', 'ID'),
     ColumnData('receipt_id', 'Receipt ID'),
-    ColumnData('date', 'Date'),
-    ColumnData('register_id', 'Register ID'),
+    ColumnData('date', 'Date', minWidth: 180),
+    ColumnData('register_id', 'Register'),
     ColumnData('branch', 'Branch'),
+    ColumnData('employee', 'Employee'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
-    ColumnData('discount', 'Discount (PHP)'),
+    ColumnData('discount', 'Discount'),
     ColumnData('tax', 'Tax (PHP)'),
     ColumnData('total', 'Total (PHP)'),
+  ];
+
+  static List<ColumnData> SALE_TRANSACTIONS_ITEMS = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Name'),
+    ColumnData('sku', 'SKU'),
+    ColumnData('qty', 'Qty'),
+    ColumnData('price', 'Price (PHP)'),
+    ColumnData('discount', 'Discount'),
+    ColumnData('subtotal', 'Subtotal (PHP)'),
   ];
 
   /// POS

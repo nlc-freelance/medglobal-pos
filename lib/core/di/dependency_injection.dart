@@ -98,6 +98,13 @@ import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecase
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecases/update_supplier_usecase.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/data/api/transaction_api.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/data/repositories/transaction_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/domain/repositories/transaction_repository.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases/get_transaction_by_id_usecase.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases/get_transactions_usecase.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/create_sale_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_item_api.dart';
@@ -147,6 +154,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<StockReturnApi>(() => StockReturnApiImpl(injector()))
     ..registerLazySingleton<StockTransferApi>(() => StockTransferApiImpl(injector()))
     ..registerLazySingleton<StockTakeApi>(() => StockTakeApiImpl(injector()))
+    ..registerLazySingleton<TransactionApi>(() => TransactionApiImpl(injector()))
 
     /// POS
     ..registerLazySingleton<RegisterShiftApi>(() => RegisterShiftApiImpl(injector()))
@@ -166,6 +174,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<StockReturnRepository>(() => StockReturnRepositoryImpl(injector()))
     ..registerLazySingleton<StockTransferRepository>(() => StockTransferRepositoryImpl(injector()))
     ..registerLazySingleton<StockTakeRepository>(() => StockTakeRepositoryImpl(injector()))
+    ..registerLazySingleton<TransactionRepository>(() => TransactionRepositoryImpl(injector()))
 
     /// POS
     ..registerLazySingleton<RegisterShiftRepository>(() => RegisterShiftRepositoryImpl(injector()))
@@ -229,6 +238,10 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => CreateStockTakeUseCase(injector()))
     ..registerLazySingleton(() => UpdateStockTakeUseCase(injector()))
 
+    /// Transactions
+    ..registerLazySingleton(() => GetTransactionsUseCase(injector()))
+    ..registerLazySingleton(() => GetTransactionByIdUseCase(injector()))
+
     /// POS
     /// Open Close Shift
     ..registerLazySingleton(() => OpenShiftUseCase(injector()))
@@ -271,6 +284,8 @@ void initDependencyInjection() {
     ..registerFactory(() => StockTakeCubit())
     ..registerFactory(() => NewStockTakeCubit())
     ..registerFactory(() => UncountedItemsCubit())
+    ..registerFactory(() => TransactionListCubit(injector()))
+    ..registerFactory(() => TransactionCubit(injector()))
 
     /// POS
     ..registerFactory(() => RegisterShiftBloc(injector(), injector()))

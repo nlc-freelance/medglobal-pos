@@ -35,7 +35,10 @@ class _SideNavBarState extends State<SideNavBar> {
             IndexedTreeNode(key: 'Stock Transfers'),
           ]),
         IndexedTreeNode(key: SideMenuTree.TRANSACTIONS.title)
-          ..addAll(SideMenuTree.TRANSACTIONS.items.map((item) => IndexedTreeNode(key: item)).toList()),
+          ..addAll([
+            IndexedTreeNode(key: 'Sales'),
+            IndexedTreeNode(key: 'Returns'),
+          ]),
         IndexedTreeNode(key: SideMenuTree.RETURNS.title),
         IndexedTreeNode(key: SideMenuTree.REPORTS.title)
           ..addAll(

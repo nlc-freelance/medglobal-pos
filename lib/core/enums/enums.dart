@@ -30,7 +30,7 @@ enum SideMenuTree {
   ),
   TRANSACTIONS(
     'Transactions',
-    ['Sales', 'Returns'],
+    ['Sales', 'Sale Details', 'Returns'],
   ),
   RETURNS('Returns Management', ['Returns Management']),
   REPORTS(
@@ -72,6 +72,7 @@ enum SideMenuTreeItem {
 
   TRANSACTIONS('Transactions', '/transactions', '/transactions'),
   SALE_TRANSACTIONS('Sales', 'sales', '/transactions/sales'),
+  SALE_TRANSACTION_DETAILS('Sale Details', 'id=:id', '/transactions/sales/:id'),
   RETURN_TRANSACTIONS('Returns', 'returns', '/transactions/returns'),
 
   MANAGE_RETURNS('Returns Management', '/returns', '/returns'),
@@ -141,4 +142,10 @@ enum UserType { CASHIER, ADMIN }
 
 enum DiscountType { PESO, PERCENT }
 
-enum TransactionType { REFUND, SALE }
+enum TransactionType {
+  REFUND('Refund'),
+  SALE('Sale');
+
+  final String label;
+  const TransactionType(this.label);
+}

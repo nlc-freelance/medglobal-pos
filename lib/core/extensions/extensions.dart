@@ -55,3 +55,7 @@ extension PathTransformExt on String {
 extension DataGridRowExt on DataGridRow {
   int get id => getCells().first.value;
 }
+
+extension DoubleAsCurrency on double? {
+  String toPesoString() => this != null ? this!.toStringAsFixed(2) : '0.00';
+}

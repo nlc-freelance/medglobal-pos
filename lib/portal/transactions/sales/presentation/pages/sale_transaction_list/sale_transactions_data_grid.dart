@@ -1,51 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
-class Transaction {
-  final int? id;
-  final DateTime? date;
-  final int? receiptNumber;
-  final int? registerId;
-  final Branch? branch;
-  final double? subtotal;
-  final double? discount;
-  final double? tax;
-  final double? total;
-
-  Transaction({
-    this.id,
-    this.date,
-    this.receiptNumber,
-    this.registerId,
-    this.branch,
-    this.subtotal,
-    this.discount,
-    this.tax,
-    this.total,
-  });
-
-  DataGridRow toDataGridRow() => DataGridRow(
-        cells: [
-          DataGridCell<int>(columnName: 'id', value: id),
-          DataGridCell<String>(columnName: 'receipt_id', value: (receiptNumber ?? Strings.empty).toString()),
-          DataGridCell<String>(
-            columnName: 'date',
-            value: date != null ? DateFormat('mm/dd/yyyy HH:mm').format(date!) : Strings.empty,
-          ),
-          DataGridCell<String>(columnName: 'register_id', value: (registerId ?? Strings.empty).toString()),
-          DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
-          DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
-          DataGridCell<double>(columnName: 'discount', value: discount ?? 0),
-          DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
-          DataGridCell<double>(columnName: 'total', value: total ?? 0),
-        ],
-      );
-}
 
 class SaleTransactionDataGrid extends StatefulWidget {
   const SaleTransactionDataGrid(this.sales, {super.key});
@@ -58,13 +16,13 @@ class SaleTransactionDataGrid extends StatefulWidget {
 
 class _SaleTransactionDataGridState extends State<SaleTransactionDataGrid> {
   late DataGridController _dataGridController;
-  late TransactionDataSource _purchaseOrderDataSource;
+  late SaleTransactionDataSource _saleTransactionDataSource;
 
   @override
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    _purchaseOrderDataSource = TransactionDataSource(widget.sales);
+    _saleTransactionDataSource = SaleTransactionDataSource(widget.sales);
   }
 
   @override
@@ -82,7 +40,7 @@ class _SaleTransactionDataGridState extends State<SaleTransactionDataGrid> {
         child: SfDataGridTheme(
           data: DataGridUtil.rowNavigationStyle,
           child: SfDataGrid(
-            source: _purchaseOrderDataSource,
+            source: _saleTransactionDataSource,
             columns: DataGridUtil.getColumns(DataGridColumn.SALE_TRANSACTIONS),
             controller: _dataGridController,
             shrinkWrapRows: true,
@@ -90,7 +48,7 @@ class _SaleTransactionDataGridState extends State<SaleTransactionDataGrid> {
             columnWidthMode: ColumnWidthMode.fill,
             headerGridLinesVisibility: GridLinesVisibility.none,
             footerHeight: 100,
-            footer: _purchaseOrderDataSource.rows.isEmpty
+            footer: _saleTransactionDataSource.rows.isEmpty
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -102,7 +60,12 @@ class _SaleTransactionDataGridState extends State<SaleTransactionDataGrid> {
                     ),
                   )
                 : null,
-            onCellTap: (details) {},
+            onCellTap: (details) {
+              if (details.rowColumnIndex.rowIndex != 0) {
+                final id = _saleTransactionDataSource.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value;
+                AppRouter.router.goNamed('Sale Details', pathParameters: {'id': id.toString()});
+              }
+            },
           ),
         ),
       ),
@@ -110,8 +73,8 @@ class _SaleTransactionDataGridState extends State<SaleTransactionDataGrid> {
   }
 }
 
-class TransactionDataSource extends DataGridSource {
-  TransactionDataSource(List<Transaction> sales) {
+class SaleTransactionDataSource extends DataGridSource {
+  SaleTransactionDataSource(List<Transaction> sales) {
     _sales = sales;
     buildDataGridRows();
   }
@@ -120,7 +83,7 @@ class TransactionDataSource extends DataGridSource {
 
   List<DataGridRow> dataGridRows = [];
 
-  void buildDataGridRows() => dataGridRows = _sales.map((order) => order.toDataGridRow()).toList();
+  void buildDataGridRows() => dataGridRows = _sales.map((sale) => sale.toDataGridRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -142,16 +105,16 @@ class TransactionDataSource extends DataGridSource {
 
   Widget _buildCell(String column, DataGridCell cell, int id) => switch (column) {
         'receipt_id' => HoverBuilder(
-            builder: (isHover) => InkWell(
-              onTap: () {},
-              hoverColor: UIColors.transparent,
-              child: UIText.bodyRegular(
-                cell.value.toString(),
-                color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
-                textDecoration: isHover ? TextDecoration.underline : TextDecoration.none,
-              ),
+            builder: (isHover) => UIText.bodyRegular(
+              cell.value.toString(),
+              color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
+              textDecoration: isHover ? TextDecoration.underline : TextDecoration.none,
             ),
           ),
-        _ => UIText.bodyRegular(cell.value.toString()),
+        _ => UIText.bodyRegular(
+            cell.runtimeType.toString().contains('double')
+                ? (cell.value as double).toPesoString()
+                : cell.value.toString(),
+          ),
       };
 }

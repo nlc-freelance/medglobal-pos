@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/filter_popup.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transactions_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transactions_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class SaleTransactionsPage extends StatelessWidget {
+class SaleTransactionsPage extends StatefulWidget {
   const SaleTransactionsPage({super.key});
+
+  @override
+  State<SaleTransactionsPage> createState() => _SaleTransactionsPageState();
+}
+
+class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<TransactionListCubit>().getTransactions();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,33 +55,22 @@ class SaleTransactionsPage extends StatelessWidget {
             ),
           ],
         ),
-        SaleTransactionDataGrid([
-          Transaction(
-            id: 1,
-            receiptNumber: 00123242432,
-            date: DateTime.now(),
-            branch: Branch(id: 2, name: 'Manila Branch'),
-            registerId: 1,
-            subtotal: 200,
-            total: 200,
-          )
-        ]),
-        // BlocBuilder<TransactionListRemoteCubit, TransactionListRemoteState>(
-        //   builder: (context, state) {
-        //     if (state is TransactionListError) {
-        //       return Text(state.message);
-        //     }
-        //     if (state is TransactionListLoaded) {
-        //       return Expanded(
-        //         child: TransactionDataGrid(state.transactions),
-        //       );
-        //     }
-        //     return DataGridLoading(
-        //       columns: DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS, showId: true),
-        //       source: TransactionDataSource([]),
-        //     );
-        //   },
-        // ),
+        BlocBuilder<TransactionListCubit, TransactionListState>(
+          builder: (context, state) {
+            if (state is TransactionListError) {
+              return Text(state.message);
+            }
+            if (state is TransactionListLoaded) {
+              return Expanded(
+                child: SaleTransactionDataGrid(state.transactions),
+              );
+            }
+            return DataGridLoading(
+              columns: DataGridUtil.getColumns(DataGridColumn.SALE_TRANSACTIONS),
+              source: SaleTransactionDataSource([]),
+            );
+          },
+        ),
       ],
     );
   }

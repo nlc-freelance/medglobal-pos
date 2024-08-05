@@ -47,7 +47,7 @@ class StockTransfer extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(
             columnName: 'created_date',
-            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!) : Strings.empty,
+            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
           ),
           DataGridCell<String>(columnName: 'source_branch', value: sourceBranch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'destination_branch', value: destinationBranch?.name ?? Strings.empty),
