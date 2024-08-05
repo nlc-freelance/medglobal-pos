@@ -19,7 +19,7 @@ class Transaction extends Equatable {
   final List<TransactionItem>? items;
   final double? subtotal;
   final double? discount;
-  final String? discountType;
+  final DiscountType? discountType;
   final double? tax;
   final double? total;
   final double? amountPaid;
@@ -59,6 +59,7 @@ class Transaction extends Equatable {
           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          // TODO: Replace with discountInPeso
           DataGridCell<double>(columnName: 'discount', value: discount ?? 0),
           DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
           DataGridCell<double>(columnName: 'total', value: total ?? 0),

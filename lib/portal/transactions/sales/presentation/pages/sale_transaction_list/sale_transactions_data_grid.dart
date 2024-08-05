@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/enums/enums.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -103,18 +104,53 @@ class SaleTransactionDataSource extends DataGridSource {
     );
   }
 
-  Widget _buildCell(String column, DataGridCell cell, int id) => switch (column) {
-        'receipt_id' => HoverBuilder(
-            builder: (isHover) => UIText.bodyRegular(
-              cell.value.toString(),
-              color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
-              textDecoration: isHover ? TextDecoration.underline : TextDecoration.none,
-            ),
+  Widget _buildCell(String column, DataGridCell cell, int id) {
+    double? discount() => _sales.singleWhere((sale) => sale.id == id).discount;
+    DiscountType? discountType() => _sales.singleWhere((sale) => sale.id == id).discountType;
+
+    return switch (column) {
+      'receipt_id' => HoverBuilder(
+          builder: (isHover) => UIText.bodyRegular(
+            cell.value.toString(),
+            color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
+            textDecoration: isHover ? TextDecoration.underline : TextDecoration.none,
           ),
-        _ => UIText.bodyRegular(
-            cell.runtimeType.toString().contains('double')
-                ? (cell.value as double).toPesoString()
-                : cell.value.toString(),
-          ),
-      };
+        ),
+
+      // TODO: Replace with 'discount_in_peso'
+      'discount' => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            UIText.bodyRegular((cell.value as double).toPesoString()),
+            if (discount() != null && discountType() == DiscountType.PERCENT) ...[
+              const UIHorizontalSpace(8),
+              Container(
+                margin: const EdgeInsets.only(top: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: UIColors.cancelledBg.withOpacity(0.4),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
+                    const UIHorizontalSpace(8),
+                    Text(
+                      '${discount()}%',
+                      style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ],
+        ),
+      _ => UIText.bodyRegular(
+          cell.runtimeType.toString().contains('double')
+              ? (cell.value as double).toPesoString()
+              : cell.value.toString(),
+        ),
+    };
+  }
 }

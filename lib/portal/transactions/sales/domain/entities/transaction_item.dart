@@ -45,6 +45,7 @@ class TransactionItem extends Equatable {
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'qty', value: qty ?? 0),
           DataGridCell<double>(columnName: 'price', value: price ?? 0),
+          // TODO: Replace with discountInPeso
           DataGridCell<double>(columnName: 'discount', value: discount ?? 0),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
         ],

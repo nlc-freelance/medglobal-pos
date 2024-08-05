@@ -18,7 +18,7 @@ class AuthService {
     final auth = await getAuthSession();
 
     // print(auth.userPoolTokensResult);
-    return auth.userPoolTokensResult.value.accessToken.encode();
+    return auth.userPoolTokensResult.value.idToken.encode();
   }
 
   Future<UserDto> getUserDto() async {

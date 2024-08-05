@@ -183,14 +183,52 @@ class TransactionItemsDataGrid extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: UIText.bodyRegular(
-            cell.runtimeType.toString().contains('double')
-                ? (cell.value as double).toPesoString()
-                : cell.value.toString(),
-          ),
+          child: _buildCell(cell.columnName, cell, row.getCells().first.value),
         );
       }).toList(),
     );
+  }
+
+  Widget _buildCell(String column, DataGridCell cell, int id) {
+    double? discount() => _transactionItems.singleWhere((sale) => sale.id == id).discount;
+    DiscountType? discountType() => _transactionItems.singleWhere((sale) => sale.id == id).discountType;
+
+    return switch (column) {
+      // TODO: Replace with 'discount_in_peso'
+      'discount' => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            UIText.bodyRegular((cell.value as double).toPesoString()),
+            if (discount() != null && discountType() == DiscountType.PERCENT) ...[
+              const UIHorizontalSpace(8),
+              Container(
+                margin: const EdgeInsets.only(top: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: UIColors.cancelledBg.withOpacity(0.4),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
+                    const UIHorizontalSpace(8),
+                    Text(
+                      '${discount()}%',
+                      style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ],
+        ),
+      _ => UIText.bodyRegular(
+          cell.runtimeType.toString().contains('double')
+              ? (cell.value as double).toPesoString()
+              : cell.value.toString(),
+        ),
+    };
   }
 
   @override
@@ -208,7 +246,36 @@ class TransactionItemsDataGrid extends DataGridSource {
                 textAlign: TextAlign.end,
                 style: UIStyleText.labelSemiBold,
               )
-            : UIText.labelMedium(getSummaryValue(summaryRow.title!)),
+            : summaryRow.title == 'Total Discount'
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      UIText.labelSemiBold(getSummaryValue(summaryRow.title!)),
+                      if (_transaction.discountType == DiscountType.PERCENT && _transaction.discount != null) ...[
+                        const UIHorizontalSpace(8),
+                        Container(
+                          margin: const EdgeInsets.only(top: 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: UIColors.cancelledBg.withOpacity(0.4),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
+                              const UIHorizontalSpace(8),
+                              Text(
+                                '${_transaction.discount.toString()}%',
+                                style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ],
+                  )
+                : UIText.labelSemiBold(getSummaryValue(summaryRow.title!)),
       );
 
   String getSummaryValue(String label) {

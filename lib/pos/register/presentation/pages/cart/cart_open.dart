@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/order_bill.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/cart_items/cart_items.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -69,7 +70,10 @@ class CartOpen extends StatelessWidget {
                     flex: 2,
                     child: UIButton.filled(
                       'Place Order',
-                      onClick: () => AppRouter.router.goNamed('Billing'),
+                      onClick: () {
+                        AppRouter.router.goNamed('Billing');
+                        context.read<SaleRemoteCubit>().reset();
+                      },
                       style: UIStyleButton.filled.style?.copyWith(
                         minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
                         textStyle: UIStyleUtil.setTextStyle(UIStyleText.heading6.copyWith(color: UIColors.textRegular)),

@@ -58,7 +58,7 @@ class TransactionDto extends Equatable {
         items: items?.map((item) => item.toEntity()).toList() ?? [],
         subtotal: subtotal,
         discount: discount,
-        discountType: discountType,
+        discountType: discountType == 'fixed' ? DiscountType.PESO : DiscountType.PERCENT,
         tax: tax,
         total: total,
         amountPaid: amountPaid,
