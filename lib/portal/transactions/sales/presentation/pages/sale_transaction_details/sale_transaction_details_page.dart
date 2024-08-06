@@ -66,7 +66,7 @@ class _SaleTransactionDetailsPageState extends State<SaleTransactionDetailsPage>
                           LabelValue.text(
                             label: 'Time Ordered',
                             value: state.transaction.createdAt != null
-                                ? DateFormat.yMd().format(state.transaction.createdAt!.toLocal())
+                                ? DateFormat('MM/dd/yyyy HH:mm').format(state.transaction.createdAt!.toLocal())
                                 : Strings.empty,
                           ),
                           LabelValue.type(

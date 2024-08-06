@@ -191,7 +191,7 @@ class DataGridColumn {
     ColumnData('branch', 'Branch'),
     ColumnData('employee', 'Employee'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
-    ColumnData('discount', 'Discount'),
+    ColumnData('discount_in_peso', 'Discount (PHP)'),
     ColumnData('tax', 'Tax (PHP)'),
     ColumnData('total', 'Total (PHP)'),
   ];
@@ -202,7 +202,7 @@ class DataGridColumn {
     ColumnData('sku', 'SKU'),
     ColumnData('qty', 'Qty'),
     ColumnData('price', 'Price (PHP)'),
-    ColumnData('discount', 'Discount'),
+    ColumnData('discount_in_peso', 'Discount (PHP)'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
   ];
 

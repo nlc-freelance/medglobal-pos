@@ -65,7 +65,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                   columns: [
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'discount',
+                      columnName: 'discount_in_peso',
                       summaryType: GridSummaryType.sum,
                     ),
                     const GridSummaryColumn(
@@ -83,7 +83,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                   columns: [
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'discount',
+                      columnName: 'discount_in_peso',
                       summaryType: GridSummaryType.sum,
                     ),
                     const GridSummaryColumn(
@@ -101,7 +101,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                   columns: [
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'discount',
+                      columnName: 'discount_in_peso',
                       summaryType: GridSummaryType.sum,
                     ),
                     const GridSummaryColumn(
@@ -119,7 +119,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                   columns: [
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'discount',
+                      columnName: 'discount_in_peso',
                       summaryType: GridSummaryType.sum,
                     ),
                     const GridSummaryColumn(
@@ -137,7 +137,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                   columns: [
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'discount',
+                      columnName: 'discount_in_peso',
                       summaryType: GridSummaryType.sum,
                     ),
                     const GridSummaryColumn(
@@ -194,8 +194,7 @@ class TransactionItemsDataGrid extends DataGridSource {
     DiscountType? discountType() => _transactionItems.singleWhere((sale) => sale.id == id).discountType;
 
     return switch (column) {
-      // TODO: Replace with 'discount_in_peso'
-      'discount' => Row(
+      'discount_in_peso' => Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             UIText.bodyRegular((cell.value as double).toPesoString()),
@@ -240,7 +239,7 @@ class TransactionItemsDataGrid extends DataGridSource {
   ) =>
       Container(
         padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-        child: summaryColumn?.columnName == 'discount'
+        child: summaryColumn?.columnName == 'discount_in_peso'
             ? Text(
                 summaryRow.title!,
                 textAlign: TextAlign.end,
@@ -284,7 +283,7 @@ class TransactionItemsDataGrid extends DataGridSource {
       case 'Subtotal':
         value = _transaction.subtotal;
       case 'Total Discount':
-        value = _transaction.discount;
+        value = _transaction.discountInPeso;
       case 'Tax':
         value = _transaction.tax;
       case 'Total':

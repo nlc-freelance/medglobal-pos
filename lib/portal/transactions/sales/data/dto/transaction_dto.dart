@@ -18,9 +18,11 @@ class TransactionDto extends Equatable {
   @JsonKey(name: 'user')
   final EmployeeDto? employee;
   final List<TransactionItemDto>? items;
+  @JsonKey(name: 'subTotal')
   final double? subtotal;
   final double? discount;
   final String? discountType;
+  final double? discountInPeso;
   final double? tax;
   final double? total;
   final double? amountPaid;
@@ -36,6 +38,7 @@ class TransactionDto extends Equatable {
     this.subtotal,
     this.discount,
     this.discountType,
+    this.discountInPeso,
     this.tax,
     this.total,
     this.amountPaid,
@@ -43,8 +46,21 @@ class TransactionDto extends Equatable {
   });
 
   @override
-  List<Object?> get props =>
-      [id, register, branch, employee, items, subtotal, discount, discountType, tax, total, amountPaid, createdAt];
+  List<Object?> get props => [
+        id,
+        register,
+        branch,
+        employee,
+        items,
+        subtotal,
+        discount,
+        discountType,
+        discountInPeso,
+        tax,
+        total,
+        amountPaid,
+        createdAt
+      ];
 
   factory TransactionDto.fromJson(Map<String, dynamic> json) => _$TransactionDtoFromJson(json);
 
@@ -59,6 +75,7 @@ class TransactionDto extends Equatable {
         subtotal: subtotal,
         discount: discount,
         discountType: discountType == 'fixed' ? DiscountType.PESO : DiscountType.PERCENT,
+        discountInPeso: discountInPeso,
         tax: tax,
         total: total,
         amountPaid: amountPaid,

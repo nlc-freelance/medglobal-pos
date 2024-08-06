@@ -116,9 +116,7 @@ class SaleTransactionDataSource extends DataGridSource {
             textDecoration: isHover ? TextDecoration.underline : TextDecoration.none,
           ),
         ),
-
-      // TODO: Replace with 'discount_in_peso'
-      'discount' => Row(
+      'discount_in_peso' => Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             UIText.bodyRegular((cell.value as double).toPesoString()),

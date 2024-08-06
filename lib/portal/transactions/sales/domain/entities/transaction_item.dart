@@ -13,7 +13,7 @@ class TransactionItem extends Equatable {
   final String? sku;
   final int? qty;
   final double? price;
-  final double? discountedPrice;
+  final double? discountInPeso;
   final double? discount;
   final DiscountType? discountType;
   final double? subtotal;
@@ -25,14 +25,14 @@ class TransactionItem extends Equatable {
     this.sku,
     this.qty,
     this.price,
-    this.discountedPrice,
+    this.discountInPeso,
     this.discount,
     this.discountType,
     this.subtotal,
   });
 
   @override
-  List<Object?> get props => [id, itemId, name, sku, qty, price, subtotal, discount, discountType, discountedPrice];
+  List<Object?> get props => [id, itemId, name, sku, qty, price, subtotal, discount, discountType, discountInPeso];
 
   factory TransactionItem.fromJson(Map<String, dynamic> json) => _$TransactionItemFromJson(json);
 
@@ -45,8 +45,7 @@ class TransactionItem extends Equatable {
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'qty', value: qty ?? 0),
           DataGridCell<double>(columnName: 'price', value: price ?? 0),
-          // TODO: Replace with discountInPeso
-          DataGridCell<double>(columnName: 'discount', value: discount ?? 0),
+          DataGridCell<double>(columnName: 'discount_in_peso', value: discountInPeso ?? 0),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
         ],
       );

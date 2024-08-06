@@ -20,6 +20,7 @@ class Transaction extends Equatable {
   final double? subtotal;
   final double? discount;
   final DiscountType? discountType;
+  final double? discountInPeso;
   final double? tax;
   final double? total;
   final double? amountPaid;
@@ -35,6 +36,7 @@ class Transaction extends Equatable {
     this.subtotal,
     this.discount,
     this.discountType,
+    this.discountInPeso,
     this.tax,
     this.total,
     this.amountPaid,
@@ -42,8 +44,21 @@ class Transaction extends Equatable {
   });
 
   @override
-  List<Object?> get props =>
-      [id, register, branch, employee, items, subtotal, discount, discountType, tax, total, amountPaid, createdAt];
+  List<Object?> get props => [
+        id,
+        register,
+        branch,
+        employee,
+        items,
+        subtotal,
+        discount,
+        discountType,
+        discountInPeso,
+        tax,
+        total,
+        amountPaid,
+        createdAt
+      ];
 
   DataGridRow toDataGridRow() => DataGridRow(
         cells: [
@@ -53,14 +68,13 @@ class Transaction extends Equatable {
           DataGridCell<String>(columnName: 'receipt_id', value: (id ?? Strings.empty).toString()),
           DataGridCell<String>(
             columnName: 'date',
-            value: createdAt != null ? DateFormat('mm/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
+            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
           ),
           DataGridCell<String>(columnName: 'register_id', value: (register?.id ?? Strings.empty).toString()),
           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
-          // TODO: Replace with discountInPeso
-          DataGridCell<double>(columnName: 'discount', value: discount ?? 0),
+          DataGridCell<double>(columnName: 'discount_in_peso', value: discountInPeso ?? 0),
           DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
           DataGridCell<double>(columnName: 'total', value: total ?? 0),
         ],
