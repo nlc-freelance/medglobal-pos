@@ -33,12 +33,15 @@ final class PurchaseOrderCreateSuccess extends PurchaseOrderRemoteState {
 
 /// Update
 final class PurchaseOrderSuccess extends PurchaseOrderRemoteState {
-  final String message;
-  const PurchaseOrderSuccess({required this.message});
+  final PurchaseOrder purchaseOrder;
+  const PurchaseOrderSuccess({required this.purchaseOrder});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [purchaseOrder];
 }
+
+/// Delete
+final class PurchaseOrderDeleteSuccess extends PurchaseOrderRemoteState {}
 
 /// Loading
 ///
@@ -51,6 +54,8 @@ final class PurchaseOrderSaveAndMarkAsShippedLoading extends PurchaseOrderRemote
 final class PurchaseOrderSaveAndReceivedLoading extends PurchaseOrderRemoteState {}
 
 final class PurchaseOrderCancelLoading extends PurchaseOrderRemoteState {}
+
+final class PurchaseOrderDeleteLoading extends PurchaseOrderRemoteState {}
 
 /// Error
 ///

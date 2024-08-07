@@ -8,6 +8,8 @@ part 'stock_return_state.dart';
 class StockReturnCubit extends Cubit<StockReturnState> {
   StockReturnCubit() : super(StockReturnState.initial());
 
+  void reset() => emit(StockReturnState.initial());
+
   void setStockReturn(StockReturn stockReturn) => emit(StockReturnState(stockReturn));
 
   void setQuantityToReturnPerItem({required int id, required int qty, required double total}) {

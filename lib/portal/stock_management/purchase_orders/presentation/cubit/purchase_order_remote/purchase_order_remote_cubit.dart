@@ -4,6 +4,7 @@ import 'package:medglobal_admin_portal/core/enums/enums.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/create_purchase_order_usecase.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/delete_purchase_order_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/get_purchase_order_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/update_purchase_order_usecase.dart';
 
@@ -13,11 +14,13 @@ class PurchaseOrderRemoteCubit extends Cubit<PurchaseOrderRemoteState> {
   final GetPurchaseOrderByIdUseCase _getPurchaseOrderByIdUsecase;
   final CreatePurchaseOrderUseCase _createPurchaseOrderUsecase;
   final UpdatePurchaseOrderUseCase _updatePurchaseOrderUsecase;
+  final DeletePurchaseOrderUseCase _deletePurchaseOrderUseCase;
 
   PurchaseOrderRemoteCubit(
     this._getPurchaseOrderByIdUsecase,
     this._createPurchaseOrderUsecase,
     this._updatePurchaseOrderUsecase,
+    this._deletePurchaseOrderUseCase,
   ) : super(PurchaseOrderInitial());
 
   void reset() => emit(PurchaseOrderInitial());
@@ -64,7 +67,21 @@ class PurchaseOrderRemoteCubit extends Cubit<PurchaseOrderRemoteState> {
           await _updatePurchaseOrderUsecase.call(UpdatePurchaseOrderParams(type, id: id, purchaseOrder: purchaseOrder));
       result.fold(
         (error) => emit(PurchaseOrderError(message: error.message)),
-        (_) => emit(const PurchaseOrderSuccess(message: 'Purchase Order updated successfully.')),
+        (data) => emit(PurchaseOrderSuccess(purchaseOrder: data)),
+      );
+    } catch (e) {
+      emit(PurchaseOrderError(message: e.toString()));
+    }
+  }
+
+  Future<void> delete(int id) async {
+    emit(PurchaseOrderDeleteLoading());
+
+    try {
+      final result = await _deletePurchaseOrderUseCase.call(DeletePurchaseOrderParams(id));
+      result.fold(
+        (error) => emit(PurchaseOrderError(message: error.message)),
+        (_) => emit(PurchaseOrderDeleteSuccess()),
       );
     } catch (e) {
       emit(PurchaseOrderError(message: e.toString()));

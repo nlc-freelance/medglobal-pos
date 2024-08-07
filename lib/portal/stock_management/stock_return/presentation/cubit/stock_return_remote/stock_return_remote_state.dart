@@ -33,11 +33,11 @@ final class StockReturnCreateSuccess extends StockReturnRemoteState {
 
 /// Update
 final class StockReturnSuccess extends StockReturnRemoteState {
-  final String message;
-  const StockReturnSuccess({required this.message});
+  final StockReturn stockReturn;
+  const StockReturnSuccess({required this.stockReturn});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [stockReturn];
 }
 
 /// Loading

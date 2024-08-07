@@ -62,7 +62,7 @@ class StockReturnRemoteCubit extends Cubit<StockReturnRemoteState> {
           await _updateStockReturnUsecase.call(UpdateStockReturnParams(type, id: id, stockReturn: stockReturn));
       result.fold(
         (error) => emit(StockReturnError(message: error.message)),
-        (_) => emit(const StockReturnSuccess(message: 'Stock Return updated successfully.')),
+        (data) => emit(StockReturnSuccess(stockReturn: data)),
       );
     } catch (e) {
       emit(StockReturnError(message: e.toString()));

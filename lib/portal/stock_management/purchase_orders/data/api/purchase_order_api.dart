@@ -9,7 +9,8 @@ abstract class PurchaseOrderApi {
   Future<PurchaseOrderPaginatedList> getPurchaseOrders({int? page, StockOrderStatus? status});
   Future<PurchaseOrderDto> getPurchaseOrderById(int id);
   Future<PurchaseOrderDto> create(NewPurchaseOrder payload);
-  Future<void> update(StockOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder});
+  Future<PurchaseOrderDto> update(StockOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder});
+  Future<void> delete(int id);
 }
 
 class PurchaseOrderApiImpl implements PurchaseOrderApi {
@@ -63,7 +64,8 @@ class PurchaseOrderApiImpl implements PurchaseOrderApi {
   }
 
   @override
-  Future<void> update(StockOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder}) async {
+  Future<PurchaseOrderDto> update(StockOrderUpdate type,
+      {required int id, required PurchaseOrder purchaseOrder}) async {
     try {
       JSON payload = {};
       if (type == StockOrderUpdate.SAVE) payload = purchaseOrder.toSavePayload();
@@ -74,11 +76,22 @@ class PurchaseOrderApiImpl implements PurchaseOrderApi {
       if (type == StockOrderUpdate.SAVE_AND_RECEIVED) payload = purchaseOrder.toSaveAndReceivedPayload();
       if (type == StockOrderUpdate.CANCEL) payload = purchaseOrder.toCancelPayload();
 
-      await _apiService.update<PurchaseOrderDto>(
+      final response = await _apiService.update<PurchaseOrderDto>(
         '/purchase-orders/$id',
         data: payload,
         converter: PurchaseOrderDto.fromJson,
       );
+
+      return response!;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> delete(int id) async {
+    try {
+      await _apiService.delete<PurchaseOrderDto>('/purchase-orders/$id');
     } catch (_) {
       rethrow;
     }

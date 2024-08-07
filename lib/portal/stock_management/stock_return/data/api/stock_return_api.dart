@@ -9,7 +9,7 @@ abstract class StockReturnApi {
   Future<StockReturnPaginatedList> getStockReturns({int? page, StockOrderStatus? status});
   Future<StockReturnDto> getStockReturnById(int id);
   Future<StockReturnDto> create(NewStockReturn payload);
-  Future<void> update(StockOrderUpdate type, {required int id, required StockReturn stockReturn});
+  Future<StockReturnDto> update(StockOrderUpdate type, {required int id, required StockReturn stockReturn});
 }
 
 class StockReturnApiImpl implements StockReturnApi {
@@ -63,7 +63,7 @@ class StockReturnApiImpl implements StockReturnApi {
   }
 
   @override
-  Future<void> update(StockOrderUpdate type, {required int id, required StockReturn stockReturn}) async {
+  Future<StockReturnDto> update(StockOrderUpdate type, {required int id, required StockReturn stockReturn}) async {
     try {
       JSON payload = {};
       if (type == StockOrderUpdate.SAVE) payload = stockReturn.toSavePayload();
@@ -72,11 +72,13 @@ class StockReturnApiImpl implements StockReturnApi {
         payload = stockReturn.toSaveAndMarkAsShippedWithNewItemsPayload();
       }
 
-      await _apiService.update<StockReturnDto>(
+      final response = await _apiService.update<StockReturnDto>(
         '/stock-returns/$id',
         data: payload,
         converter: StockReturnDto.fromJson,
       );
+
+      return response!;
     } catch (_) {
       rethrow;
     }

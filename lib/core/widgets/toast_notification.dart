@@ -28,7 +28,7 @@ class ToastNotification {
         SnackBar(
           behavior: SnackBarBehavior.floating,
           backgroundColor: UIColors.transparent,
-          duration: const Duration(milliseconds: 10000),
+          duration: const Duration(milliseconds: 5000),
           elevation: 0,
           content: Align(
             alignment: Alignment.bottomRight,
@@ -36,8 +36,8 @@ class ToastNotification {
               constraints: const BoxConstraints(maxWidth: 500),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: UIColors.background,
-                border: Border.all(color: UIColors.borderMuted, width: 2),
+                color: type == ToastType.SUCCESS ? UIColors.completedBg : UIColors.cancelledBg,
+                border: Border.all(color: type == ToastType.SUCCESS ? UIColors.completedBg : UIColors.cancelledBg),
                 borderRadius: const BorderRadius.all(Radius.circular(12.0)),
               ),
               child: Column(
@@ -46,8 +46,8 @@ class ToastNotification {
                   Row(
                     children: [
                       type == ToastType.SUCCESS
-                          ? Assets.icons.checkCircle.svg(width: 20)
-                          : Assets.icons.infoCircle.svg(width: 20),
+                          ? Assets.icons.checkCircle.svg(width: 18)
+                          : Assets.icons.infoCircle.svg(width: 18),
                       const UIHorizontalSpace(8),
                       UIText.heading6(type.title),
                       const UIHorizontalSpace(16),

@@ -4,6 +4,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/filter_popup.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -23,6 +24,9 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
     context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
+
+    /// Reset last selected purchase order
+    context.read<PurchaseOrderCubit>().reset();
   }
 
   @override

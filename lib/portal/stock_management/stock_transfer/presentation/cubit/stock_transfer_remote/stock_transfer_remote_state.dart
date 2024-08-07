@@ -33,12 +33,15 @@ final class StockTransferCreateSuccess extends StockTransferRemoteState {
 
 /// Update
 final class StockTransferSuccess extends StockTransferRemoteState {
-  final String message;
-  const StockTransferSuccess({required this.message});
+  final StockTransfer stockTransfer;
+  const StockTransferSuccess({required this.stockTransfer});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [stockTransfer];
 }
+
+/// Delete
+final class StockTransferDeleteSuccess extends StockTransferRemoteState {}
 
 /// Loading
 ///
@@ -51,6 +54,8 @@ final class StockTransferSaveAndMarkAsShippedLoading extends StockTransferRemote
 final class StockTransferSaveAndReceivedLoading extends StockTransferRemoteState {}
 
 final class StockTransferCancelLoading extends StockTransferRemoteState {}
+
+final class StockTransferDeleteLoading extends StockTransferRemoteState {}
 
 /// Error
 ///

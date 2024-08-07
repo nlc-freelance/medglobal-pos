@@ -47,6 +47,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       /// Clear variant state
       _variantFormCubit.setVariant(const Variant());
     } else {
+      _productCubit.reset();
       _productFormCubit.setProduct(const Product());
       _variantFormCubit.setVariant(const Variant(name: 'default'));
     }
@@ -82,7 +83,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PRODUCTS.name);
                 ToastNotification.success(context, state.message);
               }
-              if (state is ProductError) ToastNotification.error(context, state.message);
             },
             builder: (_, state) {
               if (state is ProductByIdError && isEditingProduct) {
@@ -108,6 +108,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ),
                     ),
                     const UIVerticalSpace(60),
+                    if (state is ProductError)
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Assets.icons.infoCircle.svg(),
+                          const UIHorizontalSpace(8),
+                          UIText.labelSemiBold('Something went wrong. ${state.message}', color: UIColors.buttonDanger),
+                        ],
+                      ),
                     Row(
                       children: [
                         if (isEditingProduct)

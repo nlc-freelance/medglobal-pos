@@ -36,8 +36,8 @@ class _StockReturnDetailsPageState extends State<StockReturnDetailsPage> {
           context.read<StockReturnCubit>().setStockReturn(state.stockReturn);
         }
         if (state is StockReturnSuccess) {
-          AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_RETURNS.name);
-          ToastNotification.success(context, state.message);
+          _stockReturn = state.stockReturn;
+          ToastNotification.success(context, 'Stock Return updated successfully.');
         }
       },
       builder: (context, state) {

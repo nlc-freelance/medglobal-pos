@@ -9,7 +9,8 @@ abstract class StockTransferApi {
   Future<StockTransferPaginatedList> getStockTransfers({int? page, StockOrderStatus? status});
   Future<StockTransferDto> getStockTransferById(int id);
   Future<StockTransferDto> create(NewStockTransfer payload);
-  Future<void> update(StockOrderUpdate type, {required int id, required StockTransfer stockTransfer});
+  Future<StockTransferDto> update(StockOrderUpdate type, {required int id, required StockTransfer stockTransfer});
+  Future<void> delete(int id);
 }
 
 class StockTransferApiImpl implements StockTransferApi {
@@ -63,7 +64,8 @@ class StockTransferApiImpl implements StockTransferApi {
   }
 
   @override
-  Future<void> update(StockOrderUpdate type, {required int id, required StockTransfer stockTransfer}) async {
+  Future<StockTransferDto> update(StockOrderUpdate type,
+      {required int id, required StockTransfer stockTransfer}) async {
     try {
       JSON payload = {};
       if (type == StockOrderUpdate.SAVE) payload = stockTransfer.toSavePayload();
@@ -74,11 +76,22 @@ class StockTransferApiImpl implements StockTransferApi {
       if (type == StockOrderUpdate.SAVE_AND_RECEIVED) payload = stockTransfer.toSaveAndReceivedPayload();
       if (type == StockOrderUpdate.CANCEL) payload = stockTransfer.toCancelPayload();
 
-      await _apiService.update<StockTransferDto>(
+      final response = await _apiService.update<StockTransferDto>(
         '/stock-transfers/$id',
         data: payload,
         converter: StockTransferDto.fromJson,
       );
+
+      return response!;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> delete(int id) async {
+    try {
+      await _apiService.delete<StockTransferDto>('/stock-transfers/$id');
     } catch (_) {
       rethrow;
     }

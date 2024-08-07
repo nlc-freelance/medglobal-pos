@@ -8,7 +8,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/p
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_form.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-/// Pass currentStep as 1 when calling this widget on DetailsPage to increment the step on continue
+/// Pass currentStep as 1 when calling this widget on DetailsPage to display correct title
 class PurchaseOrderStepper extends StatefulWidget {
   const PurchaseOrderStepper({super.key, this.currentStep});
 
@@ -47,7 +47,6 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
           }),
           controlsBuilder: (context, details) {
             final payload = context.select((NewPurchaseOrderCubit cubit) => cubit.state.payload);
-            final purchaseOrder = context.select((PurchaseOrderCubit cubit) => cubit.state.purchaseOrder);
 
             return BlocConsumer<PurchaseOrderRemoteCubit, PurchaseOrderRemoteState>(
               listener: (context, state) {
@@ -58,82 +57,91 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                     pathParameters: {'id': id.toString()},
                   );
                 }
+                if (state is PurchaseOrderSuccess) {
+                  context.read<PurchaseOrderCubit>().setPurchaseOrder(state.purchaseOrder);
+                }
               },
               builder: (context, state) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (state is PurchaseOrderError) ...[
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Assets.icons.infoCircle.svg(),
-                          const UIHorizontalSpace(8),
-                          UIText.labelSemiBold('Something went wrong. ${state.message}', color: UIColors.buttonDanger),
+                return BlocBuilder<PurchaseOrderCubit, PurchaseOrderState>(
+                  builder: (context, localState) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (state is PurchaseOrderError) ...[
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Assets.icons.infoCircle.svg(),
+                              const UIHorizontalSpace(8),
+                              UIText.labelSemiBold('Something went wrong. ${state.message}',
+                                  color: UIColors.buttonDanger),
+                            ],
+                          ),
+                          const Spacer(),
                         ],
-                      ),
-                      const Spacer(),
-                    ],
-                    if (_currentStep != 3)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: UIButton.outlined(
-                          'Cancel',
-                          onClick: () => AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name),
-                        ),
-                      ),
-                    if (_currentStep == 0)
-                      UIButton.filled(
-                        'Create',
-                        icon: Assets.icons.arrowRight1.setSize(12),
-                        iconAlign: IconAlignment.end,
-                        isLoading: state is PurchaseOrderCreateLoading,
-                        onClick: () => context.read<PurchaseOrderRemoteCubit>().create(payload),
-                      ),
-                    if (_currentStep == 1) ...[
-                      UIButton.filled(
-                        'Save',
-                        isLoading: state is PurchaseOrderSaveLoading,
-                        onClick: () => context.read<PurchaseOrderRemoteCubit>().update(
-                              StockOrderUpdate.SAVE,
-                              id: purchaseOrder.id!,
-                              purchaseOrder: purchaseOrder,
+                        if (_currentStep != 3)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: UIButton.outlined(
+                              'Cancel',
+                              onClick: () =>
+                                  AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name),
                             ),
-                      ),
-                      const UIHorizontalSpace(8),
-                      UIButton.filled(
-                        'Save and Mark as Shipped',
-                        icon: Assets.icons.arrowRight1.setSize(12),
-                        iconAlign: IconAlignment.end,
-                        isLoading: state is PurchaseOrderSaveAndMarkAsShippedLoading,
-                        onClick: () {
-                          context.read<PurchaseOrderRemoteCubit>().update(
-                                /// If purchaseOrderItems has negative id (added locally)
-                                /// Pass SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS else SAVE_AND_MARK_AS_SHIPPED
-                                purchaseOrder.items?.any((item) => item.id! < 0) == true
-                                    ? StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS
-                                    : StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
-                                id: purchaseOrder.id!,
-                                purchaseOrder: purchaseOrder,
-                              );
-                        },
-                      ),
-                    ] else if (_currentStep == 2)
-                      UIButton.filled(
-                        'Save and Received',
-                        icon: Assets.icons.arrowRight1.setSize(12),
-                        iconAlign: IconAlignment.end,
-                        isLoading: state is PurchaseOrderSaveAndReceivedLoading,
-                        onClick: () {
-                          context.read<PurchaseOrderRemoteCubit>().update(
-                                StockOrderUpdate.SAVE_AND_RECEIVED,
-                                id: purchaseOrder.id!,
-                                purchaseOrder: purchaseOrder,
-                              );
-                        },
-                      ),
-                  ],
+                          ),
+                        if (_currentStep == 0)
+                          UIButton.filled(
+                            'Create',
+                            icon: Assets.icons.arrowRight1.setSize(12),
+                            iconAlign: IconAlignment.end,
+                            isLoading: state is PurchaseOrderCreateLoading,
+                            onClick: () => context.read<PurchaseOrderRemoteCubit>().create(payload),
+                          ),
+                        if (localState.purchaseOrder.status == StockOrderStatus.NEW) ...[
+                          UIButton.filled(
+                            'Save',
+                            isLoading: state is PurchaseOrderSaveLoading,
+                            onClick: () => context.read<PurchaseOrderRemoteCubit>().update(
+                                  StockOrderUpdate.SAVE,
+                                  id: localState.purchaseOrder.id!,
+                                  purchaseOrder: localState.purchaseOrder,
+                                ),
+                          ),
+                          const UIHorizontalSpace(8),
+                          UIButton.filled(
+                            'Save and Mark as Shipped',
+                            icon: Assets.icons.arrowRight1.setSize(12),
+                            iconAlign: IconAlignment.end,
+                            isLoading: state is PurchaseOrderSaveAndMarkAsShippedLoading,
+                            onClick: () {
+                              context.read<PurchaseOrderRemoteCubit>().update(
+                                    /// If purchaseOrderItems has negative id (added locally)
+                                    /// Pass SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS else SAVE_AND_MARK_AS_SHIPPED
+                                    localState.purchaseOrder.items?.any((item) => item.id! < 0) == true
+                                        ? StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS
+                                        : StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
+                                    id: localState.purchaseOrder.id!,
+                                    purchaseOrder: localState.purchaseOrder,
+                                  );
+                            },
+                          ),
+                        ] else if (localState.purchaseOrder.status == StockOrderStatus.FOR_RECEIVING)
+                          UIButton.filled(
+                            'Save and Received',
+                            icon: Assets.icons.arrowRight1.setSize(12),
+                            iconAlign: IconAlignment.end,
+                            isLoading: state is PurchaseOrderSaveAndReceivedLoading,
+                            onClick: () {
+                              context.read<PurchaseOrderRemoteCubit>().update(
+                                    StockOrderUpdate.SAVE_AND_RECEIVED,
+                                    id: localState.purchaseOrder.id!,
+                                    purchaseOrder: localState.purchaseOrder,
+                                  );
+                            },
+                          ),
+                      ],
+                    );
+                  },
                 );
               },
             );

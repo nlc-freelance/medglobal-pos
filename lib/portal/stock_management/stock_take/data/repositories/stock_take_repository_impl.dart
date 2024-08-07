@@ -44,9 +44,11 @@ class StockTakeRepositoryImpl implements StockTakeRepository {
   }
 
   @override
-  Future<Either<Failure, void>> update(StockOrderUpdate type, {required int id, required StockTake stockTake}) async {
+  Future<Either<Failure, StockTake>> update(StockOrderUpdate type,
+      {required int id, required StockTake stockTake}) async {
     try {
-      return Right(await _stockTakeApi.update(type, id: id, stockTake: stockTake));
+      final response = await _stockTakeApi.update(type, id: id, stockTake: stockTake);
+      return Right(response.toEntity());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

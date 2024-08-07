@@ -8,5 +8,7 @@ abstract class StockTransferRepository {
   Future<Either<Failure, StockTransferPaginatedList>> getStockTransfers({int? page, StockOrderStatus? status});
   Future<Either<Failure, StockTransfer>> getStockTransferById(int id);
   Future<Either<Failure, StockTransfer>> create(NewStockTransfer payload);
-  Future<Either<Failure, void>> update(StockOrderUpdate type, {required int id, required StockTransfer stockTransfer});
+  Future<Either<Failure, StockTransfer>> update(StockOrderUpdate type,
+      {required int id, required StockTransfer stockTransfer});
+  Future<Either<Failure, void>> delete(int id);
 }

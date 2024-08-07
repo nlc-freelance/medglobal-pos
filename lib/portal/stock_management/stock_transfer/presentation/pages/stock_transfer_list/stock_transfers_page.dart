@@ -4,6 +4,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_remote/stock_transfer_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfer_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -23,6 +24,9 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
     context.read<StockTransferListRemoteCubit>().getStockTransfers();
+
+    /// Reset last selected stock return
+    context.read<StockTransferCubit>().reset();
   }
 
   @override

@@ -8,7 +8,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_return/pres
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/new/new_stock_return_form.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-/// Pass currentStep as 1 when calling this widget on DetailsPage to increment the step on continue
+/// Pass currentStep as 1 when calling this widget on DetailsPage to display correct title
 class StockReturnStepper extends StatefulWidget {
   const StockReturnStepper({super.key, this.currentStep});
 
@@ -57,6 +57,9 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
                     SideMenuTreeItem.STOCK_RETURN_DETAILS.name,
                     pathParameters: {'id': id.toString()},
                   );
+                }
+                if (state is StockReturnSuccess) {
+                  context.read<StockReturnCubit>().setStockReturn(state.stockReturn);
                 }
               },
               builder: (context, state) {

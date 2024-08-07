@@ -44,10 +44,20 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
   }
 
   @override
-  Future<Either<Failure, void>> update(StockOrderUpdate type,
+  Future<Either<Failure, PurchaseOrder>> update(StockOrderUpdate type,
       {required int id, required PurchaseOrder purchaseOrder}) async {
     try {
-      return Right(await _purchaseOrderApi.update(type, id: id, purchaseOrder: purchaseOrder));
+      final response = await _purchaseOrderApi.update(type, id: id, purchaseOrder: purchaseOrder);
+      return Right(response.toEntity());
+    } on DioException catch (e) {
+      return Left(ServerFailure(e.message!));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> delete(int id) async {
+    try {
+      return Right(await _purchaseOrderApi.delete(id));
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

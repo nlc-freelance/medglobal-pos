@@ -31,8 +31,7 @@ class _StockTakeMarkAsCompletedDialogState extends State<StockTakeMarkAsComplete
         listener: (context, state) {
           if (state is StockTakeMarkAsCompletedSuccess) {
             Navigator.pop(context);
-            AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TAKES.name);
-            ToastNotification.success(context, state.message);
+            ToastNotification.success(context, 'Stock Take updated successfully.');
           }
           if (state is StockTakeMarkAsCompletedError) setState(() => _isInitialRebuild = false);
         },
