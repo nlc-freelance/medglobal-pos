@@ -8,5 +8,5 @@ abstract class StockTakeRepository {
   Future<Either<Failure, StockTakePaginatedList>> getStockTakes({int? page, StockOrderStatus? status});
   Future<Either<Failure, StockTake>> getStockTakeById(int id);
   Future<Either<Failure, StockTake>> create(NewStockTake payload);
-  Future<Either<Failure, void>> update(StockOrderUpdate type, {required int id, required StockTake stockTake});
+  Future<Either<Failure, StockTake>> update(StockOrderUpdate type, {required int id, required StockTake stockTake});
 }

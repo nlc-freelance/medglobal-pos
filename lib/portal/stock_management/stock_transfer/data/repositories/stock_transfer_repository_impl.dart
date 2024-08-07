@@ -44,10 +44,20 @@ class StockTransferRepositoryImpl implements StockTransferRepository {
   }
 
   @override
-  Future<Either<Failure, void>> update(StockOrderUpdate type,
+  Future<Either<Failure, StockTransfer>> update(StockOrderUpdate type,
       {required int id, required StockTransfer stockTransfer}) async {
     try {
-      return Right(await _stockTransferApi.update(type, id: id, stockTransfer: stockTransfer));
+      final response = await _stockTransferApi.update(type, id: id, stockTransfer: stockTransfer);
+      return Right(response.toEntity());
+    } on DioException catch (e) {
+      return Left(ServerFailure(e.message!));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> delete(int id) async {
+    try {
+      return Right(await _stockTransferApi.delete(id));
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

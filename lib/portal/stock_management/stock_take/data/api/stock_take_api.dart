@@ -9,7 +9,7 @@ abstract class StockTakeApi {
   Future<StockTakePaginatedList> getStockTakes({int? page, StockOrderStatus? status});
   Future<StockTakeDto> getStockTakeById(int id);
   Future<StockTakeDto> create(NewStockTake payload);
-  Future<void> update(StockOrderUpdate type, {required int id, required StockTake stockTake});
+  Future<StockTakeDto> update(StockOrderUpdate type, {required int id, required StockTake stockTake});
 }
 
 class StockTakeApiImpl implements StockTakeApi {
@@ -63,13 +63,15 @@ class StockTakeApiImpl implements StockTakeApi {
   }
 
   @override
-  Future<void> update(StockOrderUpdate type, {required int id, required StockTake stockTake}) async {
+  Future<StockTakeDto> update(StockOrderUpdate type, {required int id, required StockTake stockTake}) async {
     try {
-      await _apiService.update<StockTakeDto>(
+      final response = await _apiService.update<StockTakeDto>(
         '/stock-takes/$id',
         data: stockTake.toPayload(type),
         converter: StockTakeDto.fromJson,
       );
+
+      return response!;
     } catch (_) {
       rethrow;
     }

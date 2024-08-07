@@ -328,6 +328,9 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
     if (summaryRowTitle == 'Discount') {
       return _discount.toString();
     }
-    return summaryValue;
+    if (summaryRowTitle == 'Subtotal') {
+      return summaryValue;
+    }
+    return (((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toString();
   }
 }

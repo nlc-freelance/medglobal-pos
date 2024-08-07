@@ -8,5 +8,6 @@ abstract class StockReturnRepository {
   Future<Either<Failure, StockReturnPaginatedList>> getStockReturns({int? page, StockOrderStatus? status});
   Future<Either<Failure, StockReturn>> getStockReturnById(int id);
   Future<Either<Failure, StockReturn>> create(NewStockReturn payload);
-  Future<Either<Failure, void>> update(StockOrderUpdate type, {required int id, required StockReturn stockReturn});
+  Future<Either<Failure, StockReturn>> update(StockOrderUpdate type,
+      {required int id, required StockReturn stockReturn});
 }

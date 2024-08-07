@@ -8,5 +8,7 @@ abstract class PurchaseOrderRepository {
   Future<Either<Failure, PurchaseOrderPaginatedList>> getPurchaseOrders({int? page, StockOrderStatus? status});
   Future<Either<Failure, PurchaseOrder>> getPurchaseOrderById(int id);
   Future<Either<Failure, PurchaseOrder>> create(NewPurchaseOrder payload);
-  Future<Either<Failure, void>> update(StockOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder});
+  Future<Either<Failure, PurchaseOrder>> update(StockOrderUpdate type,
+      {required int id, required PurchaseOrder purchaseOrder});
+  Future<Either<Failure, void>> delete(int id);
 }

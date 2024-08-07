@@ -49,8 +49,12 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
           context.read<PurchaseOrderCubit>().setPurchaseOrder(state.purchaseOrder);
         }
         if (state is PurchaseOrderSuccess) {
+          _purchaseOrder = state.purchaseOrder;
+          ToastNotification.success(context, 'Purchase Order updated successfully.');
+        }
+        if (state is PurchaseOrderDeleteSuccess) {
           AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name);
-          ToastNotification.success(context, state.message);
+          ToastNotification.success(context, 'Purchase Order deleted successfully.');
         }
       },
       builder: (context, state) {
@@ -95,12 +99,15 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
                               purchaseOrder: _purchaseOrder,
                             );
                       }
+                      if (menu == 'Delete Purchase Order') {
+                        context.read<PurchaseOrderRemoteCubit>().delete(_purchaseOrder.id!);
+                      }
                     },
                     icon: Assets.icons.more.setSize(20),
                     menu: const ['Cancel Purchase Order', 'Delete Purchase Order'],
                     menuAsString: (menu) => menu,
                   ),
-                if (state is PurchaseOrderCancelLoading) ...[
+                if (state is PurchaseOrderCancelLoading || state is PurchaseOrderDeleteLoading) ...[
                   const UIHorizontalSpace(12),
                   const SizedBox(
                     width: 20,
@@ -122,7 +129,7 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
                 child: SingleChildScrollView(
                   child: PurchaseOrderDetails(),
                 ),
-              )
+              ),
           ],
         );
       },

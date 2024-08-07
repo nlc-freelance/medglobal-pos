@@ -3,13 +3,13 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/repositories/stock_transfer_repository.dart';
 
-class UpdateStockTransferUseCase implements UseCase<void, UpdateStockTransferParams> {
+class UpdateStockTransferUseCase implements UseCase<StockTransfer, UpdateStockTransferParams> {
   final StockTransferRepository repository;
 
   const UpdateStockTransferUseCase(this.repository);
 
   @override
-  Future<Either<Failure, void>> call(UpdateStockTransferParams params) =>
+  Future<Either<Failure, StockTransfer>> call(UpdateStockTransferParams params) =>
       repository.update(params.type, id: params.id, stockTransfer: params.stockTransfer);
 }
 

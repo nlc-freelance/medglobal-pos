@@ -8,6 +8,8 @@ part 'purchase_order_state.dart';
 class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
   PurchaseOrderCubit() : super(PurchaseOrderState.initial());
 
+  void reset() => emit(PurchaseOrderState.initial());
+
   void setPurchaseOrder(PurchaseOrder purchaseOrder) => emit(PurchaseOrderState(purchaseOrder));
 
   void setEstimatedDateOfArrival(DateTime value) =>

@@ -4,6 +4,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/new_stock_transfer.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/usecases/create_stock_transfer_usecase.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/usecases/delete_stock_transfer_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/usecases/get_stock_transfer_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/usecases/update_stock_transfer_usecase.dart';
 
@@ -13,11 +14,13 @@ class StockTransferRemoteCubit extends Cubit<StockTransferRemoteState> {
   final GetStockTransferByIdUseCase _getStockTransferByIdUsecase;
   final CreateStockTransferUseCase _createStockTransferUsecase;
   final UpdateStockTransferUseCase _updateStockTransferUsecase;
+  final DeleteStockTransferUseCase _deleteStockTransferUseCase;
 
   StockTransferRemoteCubit(
     this._getStockTransferByIdUsecase,
     this._createStockTransferUsecase,
     this._updateStockTransferUsecase,
+    this._deleteStockTransferUseCase,
   ) : super(StockTransferInitial());
 
   void reset() => emit(StockTransferInitial());
@@ -64,7 +67,21 @@ class StockTransferRemoteCubit extends Cubit<StockTransferRemoteState> {
           await _updateStockTransferUsecase.call(UpdateStockTransferParams(type, id: id, stockTransfer: stockTransfer));
       result.fold(
         (error) => emit(StockTransferError(message: error.message)),
-        (_) => emit(const StockTransferSuccess(message: 'Stock Transfer updated successfully.')),
+        (data) => emit(StockTransferSuccess(stockTransfer: data)),
+      );
+    } catch (e) {
+      emit(StockTransferError(message: e.toString()));
+    }
+  }
+
+  Future<void> delete(int id) async {
+    emit(StockTransferDeleteLoading());
+
+    try {
+      final result = await _deleteStockTransferUseCase.call(DeleteStockTransferParams(id));
+      result.fold(
+        (error) => emit(StockTransferError(message: error.message)),
+        (_) => emit(StockTransferDeleteSuccess()),
       );
     } catch (e) {
       emit(StockTransferError(message: e.toString()));

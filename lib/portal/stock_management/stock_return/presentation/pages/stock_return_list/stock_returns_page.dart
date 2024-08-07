@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_list/stock_return_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -21,6 +22,9 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     context.read<StockReturnListRemoteCubit>().getStockReturns();
+
+    /// Reset last selected stock return
+    context.read<StockReturnCubit>().reset();
   }
 
   @override

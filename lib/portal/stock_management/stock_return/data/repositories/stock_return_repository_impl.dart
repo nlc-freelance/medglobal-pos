@@ -44,10 +44,11 @@ class StockReturnRepositoryImpl implements StockReturnRepository {
   }
 
   @override
-  Future<Either<Failure, void>> update(StockOrderUpdate type,
+  Future<Either<Failure, StockReturn>> update(StockOrderUpdate type,
       {required int id, required StockReturn stockReturn}) async {
     try {
-      return Right(await _stockReturnApi.update(type, id: id, stockReturn: stockReturn));
+      final response = await _stockReturnApi.update(type, id: id, stockReturn: stockReturn);
+      return Right(response.toEntity());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

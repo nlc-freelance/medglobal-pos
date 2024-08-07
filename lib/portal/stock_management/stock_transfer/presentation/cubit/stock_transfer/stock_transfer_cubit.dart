@@ -8,6 +8,8 @@ part 'stock_transfer_state.dart';
 class StockTransferCubit extends Cubit<StockTransferState> {
   StockTransferCubit() : super(StockTransferState.initial());
 
+  void reset() => emit(StockTransferState.initial());
+
   void setStockTransfer(StockTransfer stockTransfer) => emit(StockTransferState(stockTransfer));
 
   void setQuantityToTransferPerItem({required int id, required int qty, required double subtotal}) {

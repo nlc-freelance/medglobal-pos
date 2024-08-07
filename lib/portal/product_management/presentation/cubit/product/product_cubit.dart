@@ -21,6 +21,8 @@ class ProductCubit extends Cubit<ProductState> {
     this._createProductUseCase,
   ) : super(ProductInitial());
 
+  void reset() => emit(ProductInitial());
+
   Future<void> getProductById(int id) async {
     emit(ProductByIdLoading());
 

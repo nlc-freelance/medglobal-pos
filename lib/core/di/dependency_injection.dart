@@ -40,6 +40,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/d
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/repositories/purchase_order_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/create_purchase_order_usecase.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/delete_purchase_order_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/get_purchase_order_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/get_purchase_orders_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/update_purchase_order_usecase.dart';
@@ -74,6 +75,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/da
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/data/repositories/stock_transfer_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/repositories/stock_transfer_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/usecases/create_stock_transfer_usecase.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/usecases/delete_stock_transfer_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/usecases/get_stock_transfer_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/usecases/get_stock_transfers_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/usecases/update_stock_transfer_usecase.dart';
@@ -219,6 +221,7 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => GetPurchaseOrderByIdUseCase(injector()))
     ..registerLazySingleton(() => CreatePurchaseOrderUseCase(injector()))
     ..registerLazySingleton(() => UpdatePurchaseOrderUseCase(injector()))
+    ..registerLazySingleton(() => DeletePurchaseOrderUseCase(injector()))
 
     /// Stock Return
     ..registerLazySingleton(() => GetStockReturnsUseCase(injector()))
@@ -231,6 +234,7 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => GetStockTransferByIdUseCase(injector()))
     ..registerLazySingleton(() => CreateStockTransferUseCase(injector()))
     ..registerLazySingleton(() => UpdateStockTransferUseCase(injector()))
+    ..registerLazySingleton(() => DeleteStockTransferUseCase(injector()))
 
     /// Stock Take
     ..registerLazySingleton(() => GetStockTakesUseCase(injector()))
@@ -268,7 +272,7 @@ void initDependencyInjection() {
     ..registerFactory(() => SupplyNeedsCubit(injector()))
     ..registerFactory(() => SupplyNeedCubit())
     ..registerFactory(() => PurchaseOrderListRemoteCubit(injector()))
-    ..registerFactory(() => PurchaseOrderRemoteCubit(injector(), injector(), injector()))
+    ..registerFactory(() => PurchaseOrderRemoteCubit(injector(), injector(), injector(), injector()))
     ..registerFactory(() => PurchaseOrderCubit())
     ..registerFactory(() => NewPurchaseOrderCubit())
     ..registerFactory(() => StockReturnListRemoteCubit(injector()))
@@ -276,7 +280,7 @@ void initDependencyInjection() {
     ..registerFactory(() => StockReturnCubit())
     ..registerFactory(() => NewStockReturnCubit())
     ..registerFactory(() => StockTransferListRemoteCubit(injector()))
-    ..registerFactory(() => StockTransferRemoteCubit(injector(), injector(), injector()))
+    ..registerFactory(() => StockTransferRemoteCubit(injector(), injector(), injector(), injector()))
     ..registerFactory(() => StockTransferCubit())
     ..registerFactory(() => NewStockTransferCubit())
     ..registerFactory(() => StockTakeListRemoteCubit(injector()))

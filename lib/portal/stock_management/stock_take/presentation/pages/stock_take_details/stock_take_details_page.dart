@@ -50,8 +50,11 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> {
             ..addListener(() => context.read<StockTakeCubit>().setDescription(_descriptionController.text));
         }
         if (state is StockTakeSuccess) {
-          AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TAKES.name);
-          ToastNotification.success(context, state.message);
+          _stockTake = state.stockTake;
+          ToastNotification.success(context, 'Stock Take updated successfully.');
+        }
+        if (state is StockTakeMarkAsCompletedSuccess) {
+          _stockTake = state.stockTake;
         }
         if (state is StockTakeError) {
           ToastNotification.error(context, state.message);
@@ -133,7 +136,7 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> {
                             controller: _descriptionController,
                           ),
                     const UIVerticalSpace(48),
-                    if (_stockTake.status != StockOrderStatus.COMPLETED) ...[
+                    if (_stockTake.status == StockOrderStatus.IN_PROGRESS) ...[
                       const UncountedItemsDataGrid(),
                       const UIVerticalSpace(60),
                       const CountedItemsDataGrid(),

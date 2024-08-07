@@ -49,8 +49,12 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
           context.read<StockTransferCubit>().setStockTransfer(state.stockTransfer);
         }
         if (state is StockTransferSuccess) {
+          _stockTransfer = state.stockTransfer;
+          ToastNotification.success(context, 'Stock Transfer updated successfully.');
+        }
+        if (state is StockTransferDeleteSuccess) {
           AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TRANSFERS.name);
-          ToastNotification.success(context, state.message);
+          ToastNotification.success(context, 'Stock Transfer deleted successfully.');
         }
       },
       builder: (context, state) {
@@ -94,12 +98,15 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
                               stockTransfer: _stockTransfer,
                             );
                       }
+                      if (menu == 'Delete Stock Transfer') {
+                        context.read<StockTransferRemoteCubit>().delete(_stockTransfer.id!);
+                      }
                     },
                     icon: Assets.icons.more.setSize(20),
-                    menu: const ['Cancel Stock Transfer'],
+                    menu: const ['Cancel Stock Transfer', 'Delete Stock Transfer'],
                     menuAsString: (menu) => menu,
                   ),
-                if (state is StockTransferCancelLoading) ...[
+                if (state is StockTransferCancelLoading || state is StockTransferDeleteLoading) ...[
                   const UIHorizontalSpace(12),
                   const SizedBox(
                     width: 20,
@@ -109,7 +116,6 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
                 ],
               ],
             ),
-
             if (_stockTransfer.status == StockOrderStatus.NEW || _stockTransfer.status == StockOrderStatus.SHIPPED) ...[
               UIText.heading5(
                   _stockTransfer.status == StockOrderStatus.NEW ? 'Step 2 of 4 - Editing' : 'Step 3 of 4 - Shipped'),
@@ -122,18 +128,6 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
                   child: StockTransferDetails(),
                 ),
               ),
-
-            /// If Status is 'New'
-            // UIText.heading5('Step 2 of 4 - Editing'),
-            // const UIVerticalSpace(12),
-            // const StockTransferStepper(currentStep: 1),
-
-            /// If status is 'Completed'/'Cancelled'
-            // const Expanded(
-            //   child: SingleChildScrollView(
-            //     child: ItemsTransferredDataGrid(),
-            //   ),
-            // )
           ],
         );
       },

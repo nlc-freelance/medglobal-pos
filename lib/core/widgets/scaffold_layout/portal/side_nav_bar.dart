@@ -87,11 +87,7 @@ class _SideNavBarState extends State<SideNavBar> {
               indentation: const Indentation(style: IndentStyle.none),
               expansionBehavior: ExpansionBehavior.collapseOthers,
               expansionIndicatorBuilder: (context, indicator) => CustomNodeTreeIcon(tree: sidebarTree),
-              onItemTap: (node) => node.isLeaf
-                  ? node.key == 'Add Product'
-                      ? AppRouter.router.pushNamed(node.key)
-                      : AppRouter.router.goNamed(node.key)
-                  : null,
+              onItemTap: (node) => node.isLeaf ? AppRouter.router.pushReplacementNamed(node.key) : null,
               onTreeReady: (controller) {
                 _controller = controller;
                 _selectedParentNode = _controller.elementAt(parentNodeKey);

@@ -33,19 +33,19 @@ final class StockTakeCreateSuccess extends StockTakeRemoteState {
 
 /// Update
 final class StockTakeSuccess extends StockTakeRemoteState {
-  final String message;
-  const StockTakeSuccess({required this.message});
+  final StockTake stockTake;
+  const StockTakeSuccess({required this.stockTake});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [stockTake];
 }
 
 final class StockTakeMarkAsCompletedSuccess extends StockTakeRemoteState {
-  final String message;
-  const StockTakeMarkAsCompletedSuccess({required this.message});
+  final StockTake stockTake;
+  const StockTakeMarkAsCompletedSuccess({required this.stockTake});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [stockTake];
 }
 
 /// Loading
