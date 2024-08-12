@@ -357,8 +357,10 @@ class PurchaseItemsDataSource extends DataGridSource {
   @override
   Widget? buildTableSummaryCellWidget(GridTableSummaryRow summaryRow, GridSummaryColumn? summaryColumn,
       RowColumnIndex rowColumnIndex, String summaryValue) {
+    /// TODO: Tax will be a text for now
     return Container(
-      padding: EdgeInsets.fromLTRB(summaryRow.title == 'Tax' || summaryRow.title == 'Discount' ? 10 : 16, 14, 16, 10),
+      padding: EdgeInsets.fromLTRB(summaryRow.title == 'Discount' ? 10 : 16, 14, 16, 10),
+      // padding: EdgeInsets.fromLTRB(summaryRow.title == 'Tax' || summaryRow.title == 'Discount' ? 10 : 16, 14, 16, 10),
       child: summaryColumn?.columnName == 'supplier_price'
           ? Text(
               summaryRow.title!,
@@ -370,22 +372,26 @@ class PurchaseItemsDataSource extends DataGridSource {
   }
 
   Widget _buildSummaryCell(String? title, String summaryValue, double tax, double discount) {
-    if (title == 'Tax' || title == 'Discount') {
+    if (title == 'Discount') {
+      // if (title == 'Tax' || title == 'Discount') {
       return Focus(
         onFocusChange: (value) {
           if (value == false) {
-            _context.read<PurchaseOrderCubit>().setTotal(
-                ((double.parse(summaryValue) + (double.tryParse(taxController.text) ?? 0)) -
-                    (double.tryParse(discountController.text) ?? 0)));
+            _context
+                .read<PurchaseOrderCubit>()
+                .setTotal(((double.parse(summaryValue)) - (double.tryParse(discountController.text) ?? 0)));
+            // ((double.parse(summaryValue) + (double.tryParse(taxController.text) ?? 0)) -
+            //         (double.tryParse(discountController.text) ?? 0)));
           }
         },
         child: TextField(
-          controller: title == 'Tax'
-              ? (taxController..text = tax.toString())
-              : (discountController..text = discount.toString()),
+          controller: discountController..text = discount.toString(),
+          // controller: title == 'Tax'
+          //     ? (taxController..text = tax.toString())
+          //     : (discountController..text = discount.toString()),
           cursorHeight: 10.0,
           onChanged: (value) {
-            if (title == 'Tax') _context.read<PurchaseOrderCubit>().setTax(double.tryParse(value) ?? 0);
+            // if (title == 'Tax') _context.read<PurchaseOrderCubit>().setTax(double.tryParse(value) ?? 0);
             if (title == 'Discount') _context.read<PurchaseOrderCubit>().setDisount(double.tryParse(value) ?? 0);
           },
           style: UIStyleText.bodyRegular,
@@ -402,8 +408,10 @@ class PurchaseItemsDataSource extends DataGridSource {
     }
 
     if (title == 'Subtotal') return UIText.bodyRegular(summaryValue);
+    if (title == 'Tax') return UIText.bodyRegular('0');
 
-    /// Total of subtotal + tax and less discount
-    return UIText.heading6((((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toString());
+    /// Total is subtotal less discount
+    return UIText.heading6((((double.tryParse(summaryValue) ?? 0)) - _discount).toString());
+    // return UIText.heading6((((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toString());
   }
 }

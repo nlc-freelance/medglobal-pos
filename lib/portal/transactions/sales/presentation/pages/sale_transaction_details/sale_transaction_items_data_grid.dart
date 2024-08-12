@@ -198,7 +198,7 @@ class TransactionItemsDataGrid extends DataGridSource {
           mainAxisSize: MainAxisSize.min,
           children: [
             UIText.bodyRegular((cell.value as double).toPesoString()),
-            if (discount() != null && discountType() == DiscountType.PERCENT) ...[
+            if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
               const UIHorizontalSpace(8),
               Container(
                 margin: const EdgeInsets.only(top: 0),
@@ -250,7 +250,9 @@ class TransactionItemsDataGrid extends DataGridSource {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       UIText.labelSemiBold(getSummaryValue(summaryRow.title!)),
-                      if (_transaction.discountType == DiscountType.PERCENT && _transaction.discount != null) ...[
+                      if (_transaction.discountType == DiscountType.PERCENT &&
+                          _transaction.discount != null &&
+                          _transaction.discount != 0) ...[
                         const UIHorizontalSpace(8),
                         Container(
                           margin: const EdgeInsets.only(top: 0),

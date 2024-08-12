@@ -107,7 +107,7 @@ import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases
 import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases/get_transactions_usecase.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_list_cubit.dart';
-import 'package:medglobal_admin_portal/pos/register/data/api/create_sale_api.dart';
+import 'package:medglobal_admin_portal/pos/register/data/api/sale_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_item_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_shift_api.dart';

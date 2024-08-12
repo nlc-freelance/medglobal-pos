@@ -19,9 +19,31 @@ final class OpenRegisterShiftEvent extends RegisterShiftEvent {
   List<Object> get props => [registerId, openingAmount];
 }
 
+final class SetShiftAsOpenOnLoginEvent extends RegisterShiftEvent {
+  final RegisterShift shiftDetail;
+  const SetShiftAsOpenOnLoginEvent({required this.shiftDetail});
+
+  @override
+  List<Object> get props => [shiftDetail];
+}
+
+final class SetShiftAsClosedOnLoginEvent extends RegisterShiftEvent {
+  final RegisterShift shiftDetail;
+  const SetShiftAsClosedOnLoginEvent({required this.shiftDetail});
+
+  @override
+  List<Object> get props => [shiftDetail];
+}
+
+final class SetShiftAsClosedOnFirstTimeEvent extends RegisterShiftEvent {}
+
 final class ShowClosingShiftDialogEvent extends RegisterShiftEvent {}
 
 final class HideClosingShiftDialogEvent extends RegisterShiftEvent {}
+
+final class ShowOpeningShiftDialogEvent extends RegisterShiftEvent {}
+
+final class HideOpeningShiftDialogEvent extends RegisterShiftEvent {}
 
 final class CloseRegisterShiftEvent extends RegisterShiftEvent {
   final int registerId;

@@ -17,8 +17,19 @@ class AuthService {
   Future<String> getToken() async {
     final auth = await getAuthSession();
 
-    // print(auth.userPoolTokensResult);
-    return auth.userPoolTokensResult.value.idToken.encode();
+    return auth.userPoolTokensResult.value.accessToken.encode();
+  }
+
+  Future<int?> getUserId() async {
+    final attributes = await Amplify.Auth.fetchUserAttributes();
+    int? userId;
+
+    for (final attribute in attributes) {
+      if (attribute.userAttributeKey == const CognitoUserAttributeKey.custom('custom:user_id')) {
+        userId = int.parse(attribute.value);
+      }
+    }
+    return userId;
   }
 
   Future<UserDto> getUserDto() async {
@@ -27,16 +38,20 @@ class AuthService {
     String givenName = '';
     String familyName = '';
     String? userType;
+    int? userId;
 
     for (final attribute in attributes) {
       if (attribute.userAttributeKey == const CognitoUserAttributeKey.custom('custom:access_controls')) {
         userType = attribute.value;
       }
+      if (attribute.userAttributeKey == const CognitoUserAttributeKey.custom('custom:user_id')) {
+        userId = int.parse(attribute.value);
+      }
       if (attribute.userAttributeKey == AuthUserAttributeKey.givenName) givenName = attribute.value;
       if (attribute.userAttributeKey == AuthUserAttributeKey.familyName) familyName = attribute.value;
     }
 
-    return UserDto(givenName: givenName, familyName: familyName, type: userType);
+    return UserDto(id: userId, givenName: givenName, familyName: familyName, type: userType);
   }
 
   Future<void> logout() async => await Amplify.Auth.signOut();

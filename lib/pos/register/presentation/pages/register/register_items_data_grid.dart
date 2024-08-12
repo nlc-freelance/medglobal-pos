@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order_item.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/register_items/register_item.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
@@ -39,79 +40,83 @@ class _RegisterItemsDataGridState extends State<RegisterItemsDataGrid> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
-      builder: (context, state) => Container(
-        decoration: UIStyleContainer.topBorder,
-        child: ClipRect(
-          clipper: HorizontalBorderClipper(),
-          child: SfDataGridTheme(
-            data: DataGridUtil.rowNavigationStyle,
-            child: SfDataGrid(
-              source: _registerItemsDataSource,
-              columns: DataGridUtil.getColumns(DataGridColumn.REGISTER_ITEMS),
-              controller: _dataGridController,
-              // shrinkWrapRows: true,
-              rowHeight: 70,
-              navigationMode: GridNavigationMode.row,
-              columnWidthMode: ColumnWidthMode.fill,
-              headerGridLinesVisibility: GridLinesVisibility.none,
-              footerHeight: 100,
-              footer: _registerItemsDataSource.rows.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Assets.icons.cube.svg(),
-                          const UIVerticalSpace(12),
-                          UIText.labelMedium('No data available'),
-                        ],
-                      ),
-                    )
-                  : null,
-              onCellTap: (details) {
-                print(state.toString());
-                if (state is! RegisterShiftOpen) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => Dialog(
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                      child: Container(
-                        width: MediaQuery.sizeOf(context).width * 0.35,
-                        color: UIColors.background,
-                        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            UIText.heading6('Item cannot be added to cart.'),
-                            const UIVerticalSpace(4),
-                            UIText.bodyRegular('Please open a shift before making a transaction.'),
-                            const UIVerticalSpace(12),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: UIButton.filled('OK', onClick: () => Navigator.pop(context)),
+      builder: (context, state) => FutureBuilder(
+          future: SharedPreferencesService.isShiftOpen(),
+          builder: (context, snapshot) {
+            return Container(
+              decoration: UIStyleContainer.topBorder,
+              child: ClipRect(
+                clipper: HorizontalBorderClipper(),
+                child: SfDataGridTheme(
+                  data: DataGridUtil.rowNavigationStyle,
+                  child: SfDataGrid(
+                    source: _registerItemsDataSource,
+                    columns: DataGridUtil.getColumns(DataGridColumn.REGISTER_ITEMS),
+                    controller: _dataGridController,
+                    // shrinkWrapRows: true,
+                    rowHeight: 70,
+                    navigationMode: GridNavigationMode.row,
+                    columnWidthMode: ColumnWidthMode.fill,
+                    headerGridLinesVisibility: GridLinesVisibility.none,
+                    footerHeight: 100,
+                    footer: _registerItemsDataSource.rows.isEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Assets.icons.cube.svg(),
+                                const UIVerticalSpace(12),
+                                UIText.labelMedium('No data available'),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }
-                if (details.rowColumnIndex.rowIndex != 0 && state is RegisterShiftOpen) {
-                  final id = _registerItemsDataSource.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value;
-                  final item = _registerItemsDataSource._items.firstWhere((item) => item.id == id);
+                          )
+                        : null,
+                    onCellTap: (details) {
+                      if (snapshot.data == false) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => Dialog(
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                            child: Container(
+                              width: MediaQuery.sizeOf(context).width * 0.35,
+                              color: UIColors.background,
+                              padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  UIText.heading6('Item cannot be added to cart.'),
+                                  const UIVerticalSpace(4),
+                                  UIText.bodyRegular('Please open a shift before making a transaction.'),
+                                  const UIVerticalSpace(12),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: UIButton.filled('OK', onClick: () => Navigator.pop(context)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      if (details.rowColumnIndex.rowIndex != 0 && snapshot.data == true) {
+                        final id =
+                            _registerItemsDataSource.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value;
+                        final item = _registerItemsDataSource._items.firstWhere((item) => item.id == id);
 
-                  context.read<OrderCubit>().addItem(OrderItem(
-                        id: const Uuid().v4().hashCode,
-                        itemId: item.id,
-                        name: item.displayName,
-                        price: item.price,
-                      ));
-                }
-              },
-            ),
-          ),
-        ),
-      ),
+                        context.read<OrderCubit>().addItem(OrderItem(
+                              id: const Uuid().v4().hashCode,
+                              itemId: item.id,
+                              name: item.displayName,
+                              price: item.price,
+                            ));
+                      }
+                    },
+                  ),
+                ),
+              ),
+            );
+          }),
     );
   }
 }

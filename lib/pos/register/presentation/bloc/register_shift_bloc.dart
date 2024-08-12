@@ -8,17 +8,40 @@ import 'package:medglobal_admin_portal/pos/register/domain/usecases/register_shi
 part 'register_shift_event.dart';
 part 'register_shift_state.dart';
 
-class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> with HydratedMixin {
+class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
   final OpenShiftUseCase _openShiftUseCase;
   final CloseShiftUseCase _closeShiftUseCase;
 
   RegisterShiftBloc(this._openShiftUseCase, this._closeShiftUseCase) : super(RegisterShiftInitial()) {
-    hydrate();
     on<OpenRegisterShiftEvent>(_onOpenRegisterShift);
     on<CloseRegisterShiftEvent>(_onCloseRegisterShift);
+    on<ShowOpeningShiftDialogEvent>(_onShowOpeningShiftDialog);
+    on<HideOpeningShiftDialogEvent>(_onHideOpeningShiftDialog);
     on<ShowClosingShiftDialogEvent>(_onShowClosingShiftDialog);
     on<HideClosingShiftDialogEvent>(_onHideClosingShiftDialog);
+    on<SetShiftAsOpenOnLoginEvent>(_setRegisterShiftOpenOnLogin);
+    on<SetShiftAsClosedOnLoginEvent>(_setRegisterShiftClosedOnLogin);
+    on<SetShiftAsClosedOnFirstTimeEvent>(_setRegisterShiftClosedOnFirstTime);
     on<ResetRegisterShiftOnLogoutEvent>(_reset);
+  }
+
+  Future<void> _setRegisterShiftOpenOnLogin(SetShiftAsOpenOnLoginEvent event, emit) async {
+    await SharedPreferencesService.setShiftOpenAt(event.shiftDetail.createdAt!.toIso8601String());
+    await SharedPreferencesService.setShiftStatus(true);
+    emit(RegisterShiftOpen());
+  }
+
+  Future<void> _setRegisterShiftClosedOnLogin(SetShiftAsClosedOnLoginEvent event, emit) async {
+    await SharedPreferencesService.setShiftClosedAt(event.shiftDetail.updatedAt!.toIso8601String());
+    await SharedPreferencesService.setShiftStatus(false);
+    emit(RegisterShiftClose());
+  }
+
+  Future<void> _setRegisterShiftClosedOnFirstTime(event, emit) async {
+    /// If the register is newly added or does not have an existing shift record yet (shiftDetail == null),
+    /// the state should be treated as the initial where there's no preferences yet and the shift is closed
+    await SharedPreferencesService.clearPreferences();
+    emit(RegisterShiftClose());
   }
 
   Future<void> _onOpenRegisterShift(OpenRegisterShiftEvent event, emit) async {
@@ -79,7 +102,17 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> wit
     emit(ShowClosingShiftDialog(openSince: openSince));
   }
 
-  void _onHideClosingShiftDialog(event, emit) async {
+  Future<void> _onHideClosingShiftDialog(HideClosingShiftDialogEvent event, emit) async {
+    final isOpen = await SharedPreferencesService.isShiftOpen();
+    emit(isOpen ? RegisterShiftOpen() : RegisterShiftClose());
+  }
+
+  Future<void> _onShowOpeningShiftDialog(ShowOpeningShiftDialogEvent event, emit) async {
+    final closedSince = DateTime.tryParse(await SharedPreferencesService.getShiftClosedSince());
+    emit(ShowOpeningShiftDialog(closedSince: closedSince));
+  }
+
+  Future<void> _onHideOpeningShiftDialog(HideOpeningShiftDialogEvent event, emit) async {
     final isOpen = await SharedPreferencesService.isShiftOpen();
     emit(isOpen ? RegisterShiftOpen() : RegisterShiftClose());
   }
@@ -97,25 +130,4 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> wit
   void _setHasReachedMaxShiftOpen() async => await SharedPreferencesService.setHasReachedMaxShiftOpen(true);
 
   void _reset(event, emit) => emit(RegisterShiftInitial());
-
-  @override
-  RegisterShiftState? fromJson(Map<String, dynamic> json) {
-    switch (json['state']) {
-      case 'RegisterShiftLoading()':
-        return RegisterShiftLoading();
-      case 'RegisterShiftOpen()':
-        return RegisterShiftOpen();
-      case 'RegisterShiftClose()':
-        return RegisterShiftClose();
-      case 'RegisterShiftError()':
-        return RegisterShiftError(message: json['message']);
-      default:
-        return RegisterShiftInitial();
-    }
-  }
-
-  @override
-  Map<String, dynamic>? toJson(RegisterShiftState state) {
-    return {'state': state.toString(), 'message': state is RegisterShiftError ? state.message : ''};
-  }
 }

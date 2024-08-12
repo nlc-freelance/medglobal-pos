@@ -41,6 +41,13 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
           type: StepperType.horizontal,
           currentStep: _currentStep,
           elevation: 0,
+          stepIconBuilder: (index, state) {
+            if (state == StepState.complete) {
+              return Assets.icons.check.svg();
+            } else {
+              return UIText.labelMedium((index + 1).toString(), color: UIColors.background);
+            }
+          },
           connectorColor: WidgetStateColor.resolveWith((state) {
             if (state.contains(WidgetState.selected)) return UIColors.primary;
             return UIColors.borderMuted;

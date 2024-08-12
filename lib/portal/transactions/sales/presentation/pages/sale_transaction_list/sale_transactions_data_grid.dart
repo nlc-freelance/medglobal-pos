@@ -120,7 +120,7 @@ class SaleTransactionDataSource extends DataGridSource {
           mainAxisSize: MainAxisSize.min,
           children: [
             UIText.bodyRegular((cell.value as double).toPesoString()),
-            if (discount() != null && discountType() == DiscountType.PERCENT) ...[
+            if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
               const UIHorizontalSpace(8),
               Container(
                 margin: const EdgeInsets.only(top: 0),

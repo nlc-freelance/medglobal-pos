@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart' hide Order;
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/pos/register/data/api/create_sale_api.dart';
+import 'package:medglobal_admin_portal/pos/register/data/api/sale_api.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/repositories/sale_repository.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';

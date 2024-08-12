@@ -10,7 +10,9 @@ class RequestInterceptor extends Interceptor {
     options.baseUrl = baseUrl;
 
     String token = await AuthService().getToken();
+    int? userId = await AuthService().getUserId();
     options.headers['Authorization'] = 'Bearer $token';
+    options.headers['userId'] = userId;
 
     print('Bearer $token');
 

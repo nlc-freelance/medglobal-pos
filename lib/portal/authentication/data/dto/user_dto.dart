@@ -32,6 +32,7 @@ class UserDto extends Equatable {
   Map<String, dynamic> toJson() => _$UserDtoToJson(this);
 
   User toEntity() => User(
+        id: id,
         firstName: givenName,
         lastName: familyName,
 

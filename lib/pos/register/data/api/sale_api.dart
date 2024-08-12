@@ -1,5 +1,5 @@
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/pos/register/data/dto/transaction_dto.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction_dto.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order.dart';
 
 abstract class SaleApi {
