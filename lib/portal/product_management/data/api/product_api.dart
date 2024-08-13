@@ -1,6 +1,5 @@
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/core/network/models/api_query_params.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/dto/product_dto.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
@@ -26,7 +25,7 @@ class ProductApiImpl implements ProductApi {
     try {
       final response = await _apiService.collection<ProductDto>(
         ApiEndpoint.products(),
-        queryParams: ApiQueryParams(page: page).toJson(),
+        queryParams: {'page': page, 'size': 5000},
         converter: ProductDto.fromJson,
       );
 
