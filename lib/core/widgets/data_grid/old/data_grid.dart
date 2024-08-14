@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/data_grid_util.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/[to-delete] product_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/TO_DELETE_product_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';

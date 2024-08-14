@@ -8,7 +8,7 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/entities
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_search_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/[to-delete] product_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/TO_DELETE_product_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -119,10 +119,8 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
               ),
               Row(
                 children: [
-                  UIText.labelMedium('Rows per page'),
-                  const UIHorizontalSpace(8),
                   UIPopupMenuButton.textIcon(
-                    title: '$_rowsPerPage',
+                    title: '$_rowsPerPage rows',
                     iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
                     onSelect: (value) {
                       setState(() => _rowsPerPage = value);
@@ -144,17 +142,15 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                     menu: const [20, 50, 100],
                     menuAsString: (menu) => menu.toString(),
                   ),
+                  const UIHorizontalSpace(16),
+                  UIText.labelMedium(
+                    'Viewing ${(state.products.currentPage! - 1) * _rowsPerPage + 1} - ${state.products.currentPage! * _rowsPerPage > state.products.totalCount! ? state.products.totalCount! : state.products.currentPage! * _rowsPerPage} of ${state.products.totalCount} records',
+                    color: UIColors.textLight,
+                  ),
                   const Spacer(),
                   UIText.labelMedium(
-                    '${(state.products.currentPage! - 1) * _rowsPerPage + 1} - ${state.products.currentPage! * _rowsPerPage > state.products.totalCount! ? state.products.totalCount! : state.products.currentPage! * _rowsPerPage} of ${state.products.totalCount} records',
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: UIText.labelMedium(
-                        '|',
-                      )),
-                  UIText.labelMedium(
                     'Page ${state.products.currentPage} of ${state.products.totalPages}',
+                    color: UIColors.textLight,
                   ),
                   const UIHorizontalSpace(16),
                   IconButton(
