@@ -68,55 +68,51 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
           return Column(
             children: [
               Expanded(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: UIStyleContainer.topBorder,
-                        child: ClipRect(
-                          clipper: HorizontalBorderClipper(),
-                          child: SfDataGridTheme(
-                            data: DataGridUtil.rowNavigationStyle,
-                            child: SfDataGrid(
-                              source: _productDataSource,
-                              columns: DataGridUtil.getColumns(DataGridColumn.PRODUCTS),
-                              controller: _dataGridController,
-                              rowsPerPage: _rowsPerPage,
-                              shrinkWrapRows: true,
-                              showCheckboxColumn: true,
-                              navigationMode: GridNavigationMode.row,
-                              selectionMode: SelectionMode.multiple,
-                              columnWidthMode: ColumnWidthMode.fill,
-                              headerRowHeight: 48,
-                              headerGridLinesVisibility: GridLinesVisibility.none,
-                              gridLinesVisibility: GridLinesVisibility.horizontal,
-                              footerHeight: 100,
-                              footer: _productDataSource.rows.isEmpty
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        children: [
-                                          Assets.icons.cube.svg(),
-                                          const UIVerticalSpace(12),
-                                          UIText.labelMedium('No data available'),
-                                        ],
-                                      ),
-                                    )
-                                  : null,
-                              onSelectionChanged: (_, __) {
-                                context
-                                    .read<ProductSelectionCubit>()
-                                    .addAllProductIds(_dataGridController.selectedRows.map((row) => row.id).toList());
-                              },
-                            ),
-                          ),
-                        ),
+                child: Container(
+                  height: MediaQuery.sizeOf(context).height * 0.56,
+                  decoration: UIStyleContainer.topBorder,
+                  child: ClipRect(
+                    clipper: HorizontalBorderClipper(),
+                    child: SfDataGridTheme(
+                      data: DataGridUtil.rowNavigationStyle,
+                      child: SfDataGrid(
+                        source: _productDataSource,
+                        columns: DataGridUtil.getColumns(DataGridColumn.PRODUCTS),
+                        controller: _dataGridController,
+                        rowsPerPage: _rowsPerPage,
+                        shrinkWrapRows: true,
+                        showCheckboxColumn: true,
+                        navigationMode: GridNavigationMode.row,
+                        selectionMode: SelectionMode.multiple,
+                        columnWidthMode: ColumnWidthMode.fill,
+                        headerRowHeight: 48,
+                        rowHeight: 40,
+                        headerGridLinesVisibility: GridLinesVisibility.none,
+                        gridLinesVisibility: GridLinesVisibility.horizontal,
+                        footerHeight: 100,
+                        footer: _productDataSource.rows.isEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Assets.icons.cube.svg(),
+                                    const UIVerticalSpace(12),
+                                    UIText.labelMedium('No data available'),
+                                  ],
+                                ),
+                              )
+                            : null,
+                        onSelectionChanged: (_, __) {
+                          context
+                              .read<ProductSelectionCubit>()
+                              .addAllProductIds(_dataGridController.selectedRows.map((row) => row.id).toList());
+                        },
                       ),
                     ),
-                    const UIVerticalSpace(8),
-                  ],
+                  ),
                 ),
               ),
+              const UIVerticalSpace(16),
               Row(
                 children: [
                   UIPopupMenuButton.textIcon(
