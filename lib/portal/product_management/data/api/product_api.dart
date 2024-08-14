@@ -8,7 +8,7 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/entities
 abstract class ProductApi {
   Future<void> bulkDelete(List<int> ids);
   Future<void> bulkUpdate(List<int> ids, Category? category);
-  Future<ProductPaginatedList> getProducts(int page);
+  Future<ProductPaginatedList> getProducts({required int page, required int size, String? search});
   Future<ProductDto> getProductById(int id);
   Future<void> create(Product product);
   Future<void> update(int id, Product product);
@@ -21,11 +21,11 @@ class ProductApiImpl implements ProductApi {
   ProductApiImpl(this._apiService);
 
   @override
-  Future<ProductPaginatedList> getProducts(int page) async {
+  Future<ProductPaginatedList> getProducts({required int page, required int size, String? search}) async {
     try {
       final response = await _apiService.collection<ProductDto>(
         ApiEndpoint.products(),
-        queryParams: {'page': page, 'size': 5000},
+        queryParams: {'page': page, 'size': size, 'search': search},
         converter: ProductDto.fromJson,
       );
 

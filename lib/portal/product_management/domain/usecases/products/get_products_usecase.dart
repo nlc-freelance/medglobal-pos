@@ -9,11 +9,17 @@ class GetProductsUseCase implements UseCase<ProductPaginatedList, GetProductsPar
   GetProductsUseCase(this._repository);
 
   @override
-  Future<Either<Failure, ProductPaginatedList>> call(GetProductsParams params) => _repository.getProducts(params.page);
+  Future<Either<Failure, ProductPaginatedList>> call(GetProductsParams params) => _repository.getProducts(
+        page: params.page,
+        size: params.size,
+        search: params.search,
+      );
 }
 
 class GetProductsParams {
   final int page;
+  final int size;
+  final String? search;
 
-  GetProductsParams(this.page);
+  GetProductsParams(this.page, this.size, this.search);
 }

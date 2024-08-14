@@ -50,6 +50,7 @@ class _LoadingDataGridState extends State<DataGridLoading> {
 
             /// Data Grid Constant Style
             shrinkWrapRows: true,
+            headerRowHeight: 48,
             columnWidthMode: ColumnWidthMode.fill,
             headerGridLinesVisibility: GridLinesVisibility.none,
           ),

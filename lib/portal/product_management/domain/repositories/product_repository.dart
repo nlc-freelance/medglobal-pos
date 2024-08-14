@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/entities
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product_paginated_list.dart';
 
 abstract class ProductRepository {
-  Future<Either<Failure, ProductPaginatedList>> getProducts(int page);
+  Future<Either<Failure, ProductPaginatedList>> getProducts({required int page, required int size, String? search});
   Future<Either<Failure, Product>> getProductById(int id);
   Future<Either<Failure, void>> create(Product product);
   Future<Either<Failure, void>> update(int id, Product product);

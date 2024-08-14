@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_search_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product/product_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
@@ -56,6 +57,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<ProductSelectionCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductBulkActionCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductListCubit>()),
+        BlocProvider(create: (_) => GetIt.I<ProductListSearchCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductFormCubit>()),
         BlocProvider(create: (_) => GetIt.I<VariantFormCubit>()),

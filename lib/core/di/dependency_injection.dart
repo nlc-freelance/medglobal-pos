@@ -29,6 +29,7 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/usecases
 import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/products/get_products_usecase.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/products/update_product_usecase.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_search_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product/product_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
@@ -265,6 +266,7 @@ void initDependencyInjection() {
     ..registerFactory(() => ProductSelectionCubit())
     ..registerFactory(() => ProductBulkActionCubit(injector(), injector()))
     ..registerFactory(() => ProductListCubit(injector()))
+    ..registerFactory(() => ProductListSearchCubit())
     ..registerFactory(() => ProductCubit(injector(), injector(), injector(), injector()))
     ..registerFactory(() => ProductFormCubit())
     ..registerFactory(() => VariantFormCubit())
