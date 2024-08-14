@@ -74,7 +74,7 @@ class _SideNavBarState extends State<SideNavBar> {
                   ),
                   IconButton(
                     onPressed: context.read<SidebarCubit>().closeSideBar,
-                    icon: Assets.icons.arrowLeft.svg(width: 14.0, colorFilter: UIColors.textRegular.toColorFilter),
+                    icon: Assets.icons.arrowLeft.svg(),
                   )
                 ],
               ),
@@ -87,7 +87,11 @@ class _SideNavBarState extends State<SideNavBar> {
               indentation: const Indentation(style: IndentStyle.none),
               expansionBehavior: ExpansionBehavior.collapseOthers,
               expansionIndicatorBuilder: (context, indicator) => CustomNodeTreeIcon(tree: sidebarTree),
-              onItemTap: (node) => node.isLeaf ? AppRouter.router.pushReplacementNamed(node.key) : null,
+              onItemTap: (node) => node.isLeaf
+                  ? node.key == 'Add Product'
+                      ? AppRouter.router.pushNamed(node.key)
+                      : AppRouter.router.goNamed(node.key)
+                  : null,
               onTreeReady: (controller) {
                 _controller = controller;
                 _selectedParentNode = _controller.elementAt(parentNodeKey);

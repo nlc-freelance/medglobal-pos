@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
+import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/product_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_search_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/selected_products_toolbar.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/product_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class ProductsPage extends StatefulWidget {
@@ -18,24 +20,29 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  late ProductListCubit _productListCubit;
+  late TextEditingController _searchController;
+  final _debouncer = Debouncer(milliseconds: 500);
 
   @override
   void initState() {
     super.initState();
-    print('init');
-    _productListCubit = BlocProvider.of<ProductListCubit>(context)..getProducts();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debouncer.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final columns = DataGridUtil.getColumns(DataGridColumn.PRODUCTS);
-
     return BlocListener<ProductBulkActionCubit, ProductBulkActionState>(
       listener: (context, state) {
         if (state is ProductBulkActionError) ToastNotification.error(context, state.message);
         if (state is ProductBulkActionSuccess) {
-          _productListCubit.getProducts();
+          context.read<ProductListCubit>().getProducts();
           ToastNotification.success(context, state.message);
         }
       },
@@ -57,28 +64,25 @@ class _ProductsPageState extends State<ProductsPage> {
             isDownloadable: true,
             search: UISearchField(
               fieldWidth: 500.0,
-              hint: 'Search product name / SKU / category',
+              hint: 'Search product name',
+              controller: _searchController,
+              onChanged: (value) => _debouncer.run(
+                (() {
+                  context.read<ProductListSearchCubit>().setSearchKey(value);
+                  context.read<ProductListCubit>().getProducts(
+                        search: value,
+                        size: context.read<ProductListSearchCubit>().state.size ?? 20,
+                      );
+                }),
+              ),
               icon: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Assets.icons.search.svg(),
               ),
             ),
           ),
-          BlocBuilder<ProductListCubit, ProductListState>(
-            builder: (context, state) {
-              if (state is ProductListError) {
-                return Text(state.message);
-              }
-              if (state is ProductListLoaded) {
-                return Expanded(child: ProductDataGrid(state.products));
-              }
-              return DataGridLoading(
-                columns: columns,
-                source: ProductDataSource([]),
-                showCheckbox: true,
-              );
-            },
-          ),
+          const SelectedProductsToolbar(),
+          const Expanded(child: ProductPaginatedDataGrid()),
         ],
       ),
     );
