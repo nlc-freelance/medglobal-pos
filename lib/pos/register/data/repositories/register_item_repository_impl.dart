@@ -11,9 +11,13 @@ class RegisterItemRepositoryImpl implements RegisterItemRepository {
   RegisterItemRepositoryImpl(this._registerItemApi);
 
   @override
-  Future<Either<Failure, RegisterItemPaginatedList>> getAllRegisterItems({String? search, String? category}) async {
+  Future<Either<Failure, RegisterItemPaginatedList>> getAllRegisterItems({
+    required int page,
+    String? search,
+    String? category,
+  }) async {
     try {
-      final response = await _registerItemApi.getRegisterItems(search: search, category: category);
+      final response = await _registerItemApi.getRegisterItems(page: page, search: search, category: category);
       return Right(response);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));

@@ -1,5 +1,6 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/portal/authentication/data/dto/user_dto.dart';
 
 /// Authentication via AWS Amplify
@@ -17,19 +18,11 @@ class AuthService {
   Future<String> getToken() async {
     final auth = await getAuthSession();
 
-    return auth.userPoolTokensResult.value.accessToken.encode();
-  }
+    final accessToken = auth.userPoolTokensResult.value.accessToken.encode();
 
-  Future<int?> getUserId() async {
-    final attributes = await Amplify.Auth.fetchUserAttributes();
-    int? userId;
+    await SharedPreferencesService.setAccessToken(accessToken);
 
-    for (final attribute in attributes) {
-      if (attribute.userAttributeKey == const CognitoUserAttributeKey.custom('custom:user_id')) {
-        userId = int.parse(attribute.value);
-      }
-    }
-    return userId;
+    return accessToken;
   }
 
   Future<UserDto> getUserDto() async {
@@ -46,6 +39,8 @@ class AuthService {
       }
       if (attribute.userAttributeKey == const CognitoUserAttributeKey.custom('custom:user_id')) {
         userId = int.parse(attribute.value);
+        await SharedPreferencesService.setUserId(userId);
+        getToken();
       }
       if (attribute.userAttributeKey == AuthUserAttributeKey.givenName) givenName = attribute.value;
       if (attribute.userAttributeKey == AuthUserAttributeKey.familyName) familyName = attribute.value;

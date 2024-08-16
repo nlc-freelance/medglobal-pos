@@ -10,12 +10,17 @@ class GetRegisterItemsUseCase implements UseCase<RegisterItemPaginatedList, GetR
 
   @override
   Future<Either<Failure, RegisterItemPaginatedList>> call(GetRegisterItemsParams params) =>
-      _repository.getAllRegisterItems(search: params.search, category: params.category);
+      _repository.getAllRegisterItems(
+        page: params.page,
+        search: params.search,
+        category: params.category,
+      );
 }
 
 class GetRegisterItemsParams {
+  final int page;
   final String? search;
   final String? category;
 
-  GetRegisterItemsParams({this.search, this.category});
+  GetRegisterItemsParams({required this.page, this.search, this.category});
 }

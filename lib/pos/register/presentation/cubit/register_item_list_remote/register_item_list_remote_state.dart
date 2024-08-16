@@ -12,11 +12,12 @@ final class RegisterItemListInitial extends RegisterItemListRemoteState {}
 final class RegisterItemListLoading extends RegisterItemListRemoteState {}
 
 final class RegisterItemListLoaded extends RegisterItemListRemoteState {
-  final List<RegisterItem> items;
-  const RegisterItemListLoaded({required this.items});
+  final List<RegisterItem> products;
+  final bool hasReachedMax;
+  const RegisterItemListLoaded({required this.products, required this.hasReachedMax});
 
   @override
-  List<Object> get props => [items];
+  List<Object> get props => [products, hasReachedMax];
 }
 
 final class RegisterItemListError extends RegisterItemListRemoteState {

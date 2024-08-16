@@ -10,14 +10,30 @@ class RegisterItemListRemoteCubit extends Cubit<RegisterItemListRemoteState> {
 
   RegisterItemListRemoteCubit(this._getRegisterItemsUseCase) : super(RegisterItemListInitial());
 
-  Future<void> getRegisterItems({String? search, String? category}) async {
-    emit(RegisterItemListLoading());
+  int _currentPage = 1;
+  Set<RegisterItem> _products = {};
+
+  Future<void> getRegisterItems({String? search, bool isInitialSearch = false}) async {
+    if (isInitialSearch) {
+      _products = {};
+      _currentPage = 1;
+    }
+
+    if (_currentPage == 1) emit(RegisterItemListLoading());
 
     try {
-      final result = await _getRegisterItemsUseCase.call(GetRegisterItemsParams(search: search, category: category));
+      final result = await _getRegisterItemsUseCase.call(GetRegisterItemsParams(page: _currentPage, search: search));
       result.fold(
         (error) => emit(RegisterItemListError(message: error.message)),
-        (data) => emit(RegisterItemListLoaded(items: data.items!)),
+        (products) {
+          _currentPage++;
+          _products = {..._products, ...?products.data};
+
+          emit(RegisterItemListLoaded(
+            products: _products.toList(),
+            hasReachedMax: products.currentPage == products.totalPages,
+          ));
+        },
       );
     } catch (e) {
       emit(RegisterItemListError(message: e.toString()));
