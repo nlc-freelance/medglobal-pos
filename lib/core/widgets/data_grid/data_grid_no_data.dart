@@ -8,6 +8,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 class DataGridNoData extends StatefulWidget {
   final List<GridColumn> columns;
   final bool showCheckbox;
+  final bool isFromSearch;
   final DataGridSource source;
   final String? message;
 
@@ -16,8 +17,23 @@ class DataGridNoData extends StatefulWidget {
     required this.columns,
     required this.source,
     this.showCheckbox = false,
+    this.isFromSearch = false,
     this.message,
   });
+
+  factory DataGridNoData.search({
+    required List<GridColumn> columns,
+    bool showCheckbox = false,
+    required DataGridSource source,
+    String? message,
+  }) =>
+      DataGridNoData(
+        columns: columns,
+        source: source,
+        showCheckbox: showCheckbox,
+        message: message,
+        isFromSearch: true,
+      );
 
   @override
   State<DataGridNoData> createState() => _DataGridNoDataState();
@@ -36,35 +52,40 @@ class _DataGridNoDataState extends State<DataGridNoData> {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      clipper: HorizontalBorderClipper(),
-      child: SfDataGridTheme(
-        data: DataGridUtil.baseStyle,
-        child: SfDataGrid(
-          source: _source,
-          columns: _columns,
-          footerHeight: 100,
-          footer: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Assets.icons.cube.svg(),
-                const UIVerticalSpace(12),
-                UIText.labelMedium(
-                  'No data available, ${widget.message ?? 'please add items to your order'}.',
-                  color: UIColors.textMuted,
-                ),
-              ],
+    return Container(
+      decoration: UIStyleContainer.topBorder,
+      child: ClipRect(
+        clipper: HorizontalBorderClipper(),
+        child: SfDataGridTheme(
+          data: DataGridUtil.baseStyle,
+          child: SfDataGrid(
+            source: _source,
+            columns: _columns,
+            footerHeight: 100,
+            footer: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Assets.icons.cube.svg(),
+                  const UIVerticalSpace(12),
+                  UIText.labelMedium(
+                    widget.isFromSearch
+                        ? widget.message!
+                        : 'No data available, ${widget.message ?? 'please add items to your order'}.',
+                    color: UIColors.textMuted,
+                  ),
+                ],
+              ),
             ),
+
+            /// Data Grid Dynamic Config
+            showCheckboxColumn: widget.showCheckbox,
+
+            /// Data Grid Constant Style
+            shrinkWrapRows: true,
+            columnWidthMode: ColumnWidthMode.fill,
+            headerGridLinesVisibility: GridLinesVisibility.none,
           ),
-
-          /// Data Grid Dynamic Config
-          showCheckboxColumn: widget.showCheckbox,
-
-          /// Data Grid Constant Style
-          shrinkWrapRows: true,
-          columnWidthMode: ColumnWidthMode.fill,
-          headerGridLinesVisibility: GridLinesVisibility.none,
         ),
       ),
     );

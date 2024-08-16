@@ -13,9 +13,10 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl(this._productApi);
 
   @override
-  Future<Either<Failure, ProductPaginatedList>> getProducts(int page) async {
+  Future<Either<Failure, ProductPaginatedList>> getProducts(
+      {required int page, required int size, String? search}) async {
     try {
-      final response = await _productApi.getProducts(page);
+      final response = await _productApi.getProducts(page: page, size: size, search: search);
       return Right(response);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));

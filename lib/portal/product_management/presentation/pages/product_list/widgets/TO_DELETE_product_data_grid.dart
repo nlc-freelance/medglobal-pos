@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/selected_products_toolbar.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -35,7 +34,7 @@ class _ProductDataGridState extends State<ProductDataGrid> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          if (_selectedRowsCount > 0) SelectedProductsToolbar(_dataGridController),
+          // if (_selectedRowsCount > 0) SelectedProductsToolbar(_dataGridController),
           Container(
             decoration: UIStyleContainer.topBorder,
             child: ClipRect(

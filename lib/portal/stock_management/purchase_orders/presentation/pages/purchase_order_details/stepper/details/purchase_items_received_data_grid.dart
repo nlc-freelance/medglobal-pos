@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
 
 class PurchaseItemsReceivedDataGrid extends StatefulWidget {
   const PurchaseItemsReceivedDataGrid({super.key, required this.isReceiving});
@@ -90,7 +91,7 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'total',
+                        columnName: 'subtotal',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -108,7 +109,7 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'total',
+                        columnName: 'subtotal',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -126,7 +127,7 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'total',
+                        columnName: 'subtotal',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -144,7 +145,7 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'total',
+                        columnName: 'subtotal',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -213,7 +214,11 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
                 child: UIText.bodyRegular(cell.value.toString()),
               )
             : UIText.bodyRegular(cell.value.toString()),
-        _ => UIText.bodyRegular(cell.value.toString()),
+        _ => UIText.bodyRegular(
+            cell.runtimeType.toString().contains('double')
+                ? (cell.value as double).toPesoString()
+                : cell.value.toString(),
+          ),
       };
 
   /// Helps to hold the new value of all editable widget.
@@ -248,15 +253,20 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
     }
 
     if (column.columnName == 'qty_received') {
-      final newReceivedQty = int.tryParse(newCellValue);
+      final newQtyReceived = int.tryParse(newCellValue);
+      double cost = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
-          DataGridCell<int>(columnName: 'qty_received', value: newReceivedQty);
-      _itemsReceived[dataRowIndex].copyWith(qtyReceived: newReceivedQty);
+          DataGridCell<int>(columnName: 'qty_received', value: newQtyReceived);
+
+      /// Compute new subtotal and update the value in the DataGridRows
+      double newSubtotal = (newQtyReceived ?? 0) * (cost);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'subtotal', value: newSubtotal);
 
       _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
-            _itemsReceived[dataRowIndex].id!,
-            newReceivedQty!,
+            id: _itemsReceived[dataRowIndex].id!,
+            qty: newQtyReceived!,
+            subtotal: newSubtotal,
           );
     }
   }
@@ -285,6 +295,7 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
         autofocus: true,
         cursorHeight: 15.0,
         style: UIStyleText.bodyRegular,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           focusedBorder: OutlineInputBorder(
@@ -312,25 +323,25 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
           ? Text(
               summaryRow.title!,
               textAlign: TextAlign.end,
-              style: summaryRow.title == 'Total' ? UIStyleText.heading6 : UIStyleText.labelSemiBold,
+              style: UIStyleText.labelSemiBold,
             )
           : Text(
               summaryCellValue(_context, summaryRow.title!, summaryValue),
-              style: summaryRow.title == 'Total' ? UIStyleText.heading6 : UIStyleText.bodyRegular,
+              style: summaryRow.title == 'Total' ? UIStyleText.label : UIStyleText.bodyRegular,
             ),
     );
   }
 
   String summaryCellValue(BuildContext context, String summaryRowTitle, String summaryValue) {
     if (summaryRowTitle == 'Tax') {
-      return _tax.toString();
+      return _tax.toPesoString();
     }
     if (summaryRowTitle == 'Discount') {
-      return _discount.toString();
+      return _discount.toPesoString();
     }
     if (summaryRowTitle == 'Subtotal') {
-      return summaryValue;
+      return summaryValue.toPesoString();
     }
-    return (((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toString();
+    return (((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toPesoString();
   }
 }

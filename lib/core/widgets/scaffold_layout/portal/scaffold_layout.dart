@@ -32,7 +32,7 @@ class ScaffoldLayout extends StatelessWidget {
                   AppNavBar(path: routerState.fullPath!.transformPathToText),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
+                      padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 16.0),
                       child: navigationShell,
                     ),
                   ),

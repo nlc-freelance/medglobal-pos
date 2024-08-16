@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 
@@ -16,18 +17,23 @@ class StockTransferCubit extends Cubit<StockTransferState> {
     final items = state.stockTransfer.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
-      if (item.id == id) return item.copyWith(qtyToTransfer: qty, subtotal: subtotal);
+      if (item.id == id) return item.copyWith(qtyToTransfer: qty, subtotal: subtotal.roundToTwoDecimalPlaces());
       return item;
     }).toList();
 
     emit(StockTransferState(state.stockTransfer.copyWith(items: updatedItems)));
   }
 
-  void setQuantityReceivedPerItem({required int id, required int qty}) {
+  void setQuantityReceivedPerItem({required int id, required int qty, required double subtotal}) {
     final items = state.stockTransfer.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
-      if (item.id == id) return item.copyWith(qtyReceived: qty);
+      if (item.id == id) {
+        return item.copyWith(
+          qtyReceived: qty,
+          subtotal: subtotal.roundToTwoDecimalPlaces(),
+        );
+      }
       return item;
     }).toList();
 

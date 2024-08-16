@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
 
 class StockItemsTransferredDataGrid extends StatefulWidget {
   const StockItemsTransferredDataGrid({super.key});
@@ -114,7 +114,11 @@ class StockItemsTransferredDataSource extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: UIText.bodyRegular(cell.value.toString()),
+          child: UIText.bodyRegular(
+            cell.runtimeType.toString().contains('double')
+                ? (cell.value as double).toPesoString()
+                : cell.value.toString(),
+          ),
         );
       }).toList(),
     );
@@ -130,7 +134,7 @@ class StockItemsTransferredDataSource extends DataGridSource {
               summaryRow.title!,
               align: TextAlign.end,
             )
-          : UIText.labelSemiBold(summaryValue),
+          : UIText.labelSemiBold(summaryValue.toPesoString()),
     );
   }
 }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/autocomplete_dropdown.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_billing/widgets/charge_payment.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
 
 class StockItemsToReturnDataGrid extends StatefulWidget {
   const StockItemsToReturnDataGrid({super.key});
@@ -230,7 +232,9 @@ class StockItemsToReturnDataSource extends DataGridSource {
               border: Border.all(color: UIColors.borderRegular),
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
-            child: UIText.bodyRegular(cell.value.toString()),
+            child: key == 'supplier_price'
+                ? UIText.bodyRegular((cell.value as double).toPesoString())
+                : UIText.bodyRegular(cell.value.toString()),
           ),
         'action' => LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
@@ -239,7 +243,11 @@ class StockItemsToReturnDataSource extends DataGridSource {
               onClick: () => context.read<StockReturnCubit>().removeItem(id),
             ),
           ),
-        _ => UIText.bodyRegular(cell.value.toString()),
+        _ => UIText.bodyRegular(
+            cell.runtimeType.toString().contains('double')
+                ? (cell.value as double).toPesoString()
+                : cell.value.toString(),
+          ),
       };
 
   /// Helps to hold the new value of all editable widget.
@@ -291,19 +299,19 @@ class StockItemsToReturnDataSource extends DataGridSource {
           );
     }
     if (column.columnName == 'supplier_price') {
-      final newSupplierPrice = double.tryParse(newCellValue);
+      final newSupplierPrice = double.tryParse(newCellValue).roundToTwoDecimalPlaces();
       double qtyToReturn = dataGridRows[dataRowIndex].getCells()[4].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<double>(columnName: 'supplier_price', value: newSupplierPrice);
 
       /// Compute new total and update the value in the DataGridRows
-      double newTotal = (newSupplierPrice ?? 0) * (qtyToReturn);
+      double newTotal = (newSupplierPrice) * (qtyToReturn);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotal);
 
       _context.read<StockReturnCubit>().setSupplierPricePerItem(
             id: _itemsToReturn[dataRowIndex].id!,
-            price: newSupplierPrice!,
+            price: newSupplierPrice,
             total: newTotal,
           );
     }
@@ -333,6 +341,10 @@ class StockItemsToReturnDataSource extends DataGridSource {
         autofocus: true,
         cursorHeight: 15.0,
         style: UIStyleText.bodyRegular,
+        inputFormatters: [
+          if (column.columnName == 'supplier_price') CurrencyInputFormatter(),
+          if (column.columnName == 'qty_to_return') FilteringTextInputFormatter.digitsOnly,
+        ],
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           focusedBorder: OutlineInputBorder(
@@ -365,7 +377,7 @@ class StockItemsToReturnDataSource extends DataGridSource {
           ? Text(
               summaryRow.title!,
               textAlign: TextAlign.end,
-              style: summaryRow.title == 'Total' ? UIStyleText.heading6 : UIStyleText.labelSemiBold,
+              style: UIStyleText.labelSemiBold,
             )
           : _buildSummaryCell(summaryRow.title, summaryValue, _tax, _discount),
     );
@@ -392,9 +404,10 @@ class StockItemsToReturnDataSource extends DataGridSource {
           cursorHeight: 10.0,
           onChanged: (value) {
             // if (title == 'Tax') _context.read<StockReturnCubit>().setTax(double.tryParse(value) ?? 0);
-            if (title == 'Discount') _context.read<StockReturnCubit>().setDisount(double.tryParse(value) ?? 0);
+            if (title == 'Discount') _context.read<StockReturnCubit>().setDiscount(double.tryParse(value) ?? 0);
           },
           style: UIStyleText.bodyRegular,
+          inputFormatters: [CurrencyInputFormatter()],
           decoration: const InputDecoration(
             hintText: '0',
             contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -407,11 +420,11 @@ class StockItemsToReturnDataSource extends DataGridSource {
       );
     }
 
-    if (title == 'Subtotal') return UIText.bodyRegular(summaryValue);
-    if (title == 'Tax') return UIText.bodyRegular('0');
+    if (title == 'Subtotal') return UIText.bodyRegular(summaryValue.toPesoString());
+    if (title == 'Tax') return UIText.bodyRegular('0.00');
 
     /// Total is subtotal less discount
-    return UIText.heading6((((double.tryParse(summaryValue) ?? 0)) - _discount).toString());
+    return UIText.label((((double.tryParse(summaryValue) ?? 0)) - _discount).toPesoString());
     // return UIText.heading6((((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toString());
   }
 }

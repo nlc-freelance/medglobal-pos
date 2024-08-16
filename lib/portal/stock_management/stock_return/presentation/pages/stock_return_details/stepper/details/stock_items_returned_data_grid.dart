@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
 
 class StockItemsReturnedDataGrid extends StatefulWidget {
   const StockItemsReturnedDataGrid({super.key});
@@ -174,7 +174,11 @@ class StockItemsReturnedDataSource extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: UIText.bodyRegular(cell.value.toString()),
+          child: UIText.bodyRegular(
+            cell.runtimeType.toString().contains('double')
+                ? (cell.value as double).toPesoString()
+                : cell.value.toString(),
+          ),
         );
       }).toList(),
     );
@@ -189,22 +193,22 @@ class StockItemsReturnedDataSource extends DataGridSource {
           ? Text(
               summaryRow.title!,
               textAlign: TextAlign.end,
-              style: summaryRow.title == 'Total' ? UIStyleText.heading6 : UIStyleText.labelSemiBold,
+              style: UIStyleText.labelSemiBold,
             )
           : Text(
               summaryCellValue(_context, summaryRow.title!, summaryValue),
-              style: summaryRow.title == 'Total' ? UIStyleText.heading6 : UIStyleText.bodyRegular,
+              style: summaryRow.title == 'Total' ? UIStyleText.label : UIStyleText.bodyRegular,
             ),
     );
   }
 
   String summaryCellValue(BuildContext context, String summaryRowTitle, String summaryValue) {
     if (summaryRowTitle == 'Tax') {
-      return _tax.toString();
+      return _tax.toPesoString();
     }
     if (summaryRowTitle == 'Discount') {
-      return _discount.toString();
+      return _discount.toPesoString();
     }
-    return summaryValue;
+    return summaryValue.toPesoString();
   }
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
 
 class StockItemsShippedDataGrid extends StatefulWidget {
   const StockItemsShippedDataGrid({super.key});
@@ -45,44 +46,48 @@ class _StockItemsShippedDataGridState extends State<StockItemsShippedDataGrid> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageSectionTitle(title: 'Items Shipped'),
-        ClipRect(
-          clipper: HorizontalBorderClipper(),
-          child: SfDataGridTheme(
-            data: DataGridUtil.cellNavigationStyle,
-            child: SfDataGrid(
-              source: _stockItemsShippedDataSource,
-              columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFER_ITEMS_SHIPPED),
-              controller: _dataGridController,
-              selectionManager: customSelectionManager,
-              shrinkWrapRows: true,
-              allowEditing: true,
-              navigationMode: GridNavigationMode.cell,
-              selectionMode: SelectionMode.single,
-              columnWidthMode: ColumnWidthMode.fill,
-              headerGridLinesVisibility: GridLinesVisibility.none,
-              editingGestureType: EditingGestureType.tap,
-              tableSummaryRows: [
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Total',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'cost',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'subtotal',
-                      summaryType: GridSummaryType.sum,
+        BlocBuilder<StockTransferCubit, StockTransferState>(
+          builder: (context, state) {
+            return ClipRect(
+              clipper: HorizontalBorderClipper(),
+              child: SfDataGridTheme(
+                data: DataGridUtil.cellNavigationStyle,
+                child: SfDataGrid(
+                  source: _stockItemsShippedDataSource,
+                  columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFER_ITEMS_SHIPPED),
+                  controller: _dataGridController,
+                  selectionManager: customSelectionManager,
+                  shrinkWrapRows: true,
+                  allowEditing: true,
+                  navigationMode: GridNavigationMode.cell,
+                  selectionMode: SelectionMode.single,
+                  columnWidthMode: ColumnWidthMode.fill,
+                  headerGridLinesVisibility: GridLinesVisibility.none,
+                  editingGestureType: EditingGestureType.tap,
+                  tableSummaryRows: [
+                    GridTableSummaryRow(
+                      color: UIColors.background,
+                      position: GridTableSummaryRowPosition.bottom,
+                      showSummaryInRow: false,
+                      title: 'Total',
+                      columns: [
+                        const GridSummaryColumn(
+                          name: '',
+                          columnName: 'cost',
+                          summaryType: GridSummaryType.sum,
+                        ),
+                        const GridSummaryColumn(
+                          name: '',
+                          columnName: 'subtotal',
+                          summaryType: GridSummaryType.sum,
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -133,7 +138,11 @@ class StockItemsShippedDataSource extends DataGridSource {
             ),
             child: UIText.bodyRegular(cell.value.toString()),
           ),
-        _ => UIText.bodyRegular(cell.value.toString()),
+        _ => UIText.bodyRegular(
+            cell.runtimeType.toString().contains('double')
+                ? (cell.value as double).toPesoString()
+                : cell.value.toString(),
+          ),
       };
 
   /// Helps to hold the new value of all editable widget.
@@ -168,14 +177,20 @@ class StockItemsShippedDataSource extends DataGridSource {
     }
 
     if (column.columnName == 'qty_received') {
-      final newQtyReceived = int.tryParse(newCellValue) ?? 0;
+      final newQtyReceived = int.tryParse(newCellValue);
+      double cost = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_received', value: newQtyReceived);
 
+      /// Compute new subtotal and update the value in the DataGridRows
+      double newSubtotal = (newQtyReceived ?? 0) * (cost);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'subtotal', value: newSubtotal);
+
       _context.read<StockTransferCubit>().setQuantityReceivedPerItem(
             id: _itemsShipped[dataRowIndex].id!,
-            qty: newQtyReceived,
+            qty: newQtyReceived!,
+            subtotal: newSubtotal,
           );
     }
   }
@@ -204,6 +219,7 @@ class StockItemsShippedDataSource extends DataGridSource {
         autofocus: true,
         cursorHeight: 15.0,
         style: UIStyleText.bodyRegular,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           focusedBorder: OutlineInputBorder(
@@ -232,7 +248,7 @@ class StockItemsShippedDataSource extends DataGridSource {
               summaryRow.title!,
               align: TextAlign.end,
             )
-          : UIText.labelSemiBold(summaryValue),
+          : UIText.labelSemiBold(summaryValue.toPesoString()),
     );
   }
 }
