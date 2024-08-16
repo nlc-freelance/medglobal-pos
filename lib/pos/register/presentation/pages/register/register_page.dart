@@ -6,6 +6,7 @@ import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dar
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/pos_product_list_search_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/cart_closed.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/cart_open.dart';
@@ -55,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 UISearchField(
-                  fieldWidth: 500.0,
+                  fieldWidth: double.infinity,
                   hint: 'Search',
                   icon: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -63,7 +64,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   controller: _searchController,
                   onChanged: (value) => _debouncer.run(
-                    (() => context.read<RegisterItemListRemoteCubit>().getRegisterItems(search: value)),
+                    (() {
+                      context.read<PosProductListSearchCubit>().setSearchKey(value);
+                      context.read<RegisterItemListRemoteCubit>().getRegisterItems(
+                            search: value,
+                            isInitialSearch: true,
+                          );
+                    }),
                   ),
                 ),
                 const UIVerticalSpace(16),
@@ -72,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     if (state is RegisterItemListInitial) {
                       return DataGridNoData(
                         columns: DataGridUtil.getColumns(DataGridColumn.REGISTER_ITEMS),
-                        source: RegisterItemsDataSource([]),
+                        source: RegisterItemsDataSource([], context),
                         message: 'please select a register first',
                       );
                     }
@@ -81,13 +88,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     }
                     if (state is RegisterItemListLoaded) {
                       return Expanded(
-                        child: RegisterItemsDataGrid(state.items),
+                        child: RegisterItemsDataGrid(state.products),
                       );
                     }
 
                     return DataGridLoading(
                       columns: DataGridUtil.getColumns(DataGridColumn.REGISTER_ITEMS),
-                      source: RegisterItemsDataSource([]),
+                      source: RegisterItemsDataSource([], context),
                     );
                   },
                 ),
