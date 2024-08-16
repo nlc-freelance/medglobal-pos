@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
@@ -7,7 +9,6 @@ import 'package:medglobal_admin_portal/portal/stock_management/variants/autocomp
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
 
 class StockItemsToTransferDataGrid extends StatefulWidget {
   const StockItemsToTransferDataGrid({super.key});
@@ -174,7 +175,11 @@ class StockItemsToTransferDataSource extends DataGridSource {
               onClick: () => context.read<StockTransferCubit>().removeItem(id),
             ),
           ),
-        _ => UIText.bodyRegular(cell.value.toString()),
+        _ => UIText.bodyRegular(
+            cell.runtimeType.toString().contains('double')
+                ? (cell.value as double).toPesoString()
+                : cell.value.toString(),
+          ),
       };
 
   /// Helps to hold the new value of all editable widget.
@@ -251,6 +256,7 @@ class StockItemsToTransferDataSource extends DataGridSource {
         autofocus: true,
         cursorHeight: 15.0,
         style: UIStyleText.bodyRegular,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           focusedBorder: OutlineInputBorder(
@@ -279,7 +285,7 @@ class StockItemsToTransferDataSource extends DataGridSource {
               summaryRow.title!,
               align: TextAlign.end,
             )
-          : UIText.labelSemiBold(summaryValue),
+          : UIText.label(summaryValue.toPesoString()),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_item.dart';
 
@@ -27,7 +28,12 @@ class StockReturnCubit extends Cubit<StockReturnState> {
     final items = state.stockReturn.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
-      if (item.id == id) return item.copyWith(supplierPrice: price, total: total);
+      if (item.id == id) {
+        return item.copyWith(
+          supplierPrice: price.roundToTwoDecimalPlaces(),
+          total: total.roundToTwoDecimalPlaces(),
+        );
+      }
       return item;
     }).toList();
 
@@ -50,7 +56,8 @@ class StockReturnCubit extends Cubit<StockReturnState> {
 
   void setTax(double value) => emit(StockReturnState(state.stockReturn.copyWith(tax: value)));
 
-  void setDisount(double value) => emit(StockReturnState(state.stockReturn.copyWith(discount: value)));
+  void setDiscount(double value) =>
+      emit(StockReturnState(state.stockReturn.copyWith(discount: value.roundToTwoDecimalPlaces())));
 
   void setTotal(double value) => emit(StockReturnState(state.stockReturn.copyWith(totalAmount: value)));
 

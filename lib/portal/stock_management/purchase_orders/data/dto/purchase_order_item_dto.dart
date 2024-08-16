@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 
 part 'purchase_order_item_dto.g.dart';
 
@@ -37,6 +37,6 @@ class PurchaseOrderItemDto extends Equatable {
         qtyToOrder: qtyToOrder,
         qtyReceived: qtyReceived,
         supplierPrice: supplierPrice,
-        total: (qtyToOrder ?? 0) * (supplierPrice ?? 0),
+        subtotal: (qtyToOrder ?? 0) * (supplierPrice ?? 0),
       );
 }

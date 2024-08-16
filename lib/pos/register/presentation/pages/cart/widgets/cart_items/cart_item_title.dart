@@ -74,19 +74,35 @@ class _CartItemTitleState extends State<CartItemTitle> {
                         flex: 2,
                         child: UIText.label(item.name!),
                       ),
-                      item.discount != null && item.discount != 0
-                          ? UIText.label('₱${item.discountedPrice?.toStringAsFixed(2)}')
-                          : UIText.label('₱${item.price?.toStringAsFixed(2)}'),
+                      UIText.label('₱${item.totalPricePerItem.toStringAsFixed(2)}'),
                     ],
                   ),
                   Row(
                     children: [
                       Text('x ${item.qty.toString()}', style: UIStyleText.hintRegular),
+                      const UIHorizontalSpace(16),
+                      Text(
+                        item.discount != null && item.discount != 0
+                            ? '₱${item.discountedPrice?.toStringAsFixed(2)}'
+                            : '₱${item.price?.toStringAsFixed(2)}',
+                        style: UIStyleText.hintRegular,
+                      ),
                       if (item.discount != null && item.discount != 0) ...[
-                        const Spacer(),
+                        const UIHorizontalSpace(12),
+                        Text(
+                          '₱${item.price?.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: UIColors.textMuted.withOpacity(0.6),
+                            color: UIColors.textMuted.withOpacity(0.6),
+                            fontSize: 13.2,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const UIHorizontalSpace(8),
                         Container(
                           margin: const EdgeInsets.only(top: 0),
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
                             color: UIColors.cancelledBg.withOpacity(0.4),
@@ -103,17 +119,6 @@ class _CartItemTitleState extends State<CartItemTitle> {
                                 style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
                               ),
                             ],
-                          ),
-                        ),
-                        const UIHorizontalSpace(8),
-                        Text(
-                          '₱${item.price?.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            decoration: TextDecoration.lineThrough,
-                            decorationColor: UIColors.textMuted.withOpacity(0.6),
-                            color: UIColors.textMuted.withOpacity(0.6),
-                            fontSize: 13.2,
-                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ],

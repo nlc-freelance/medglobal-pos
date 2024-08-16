@@ -71,7 +71,7 @@ class DataGridColumn {
     ColumnData('qty_ordered', 'Ordered Qty'),
     ColumnData('qty_received', 'Received Qty'),
     ColumnData('supplier_price', 'Supplier Price (PHP)'),
-    ColumnData('total', 'Total (PHP)'),
+    ColumnData('subtotal', 'Subtotal (PHP)'),
   ];
 
   static List<ColumnData> STOCK_RETURNS = [
