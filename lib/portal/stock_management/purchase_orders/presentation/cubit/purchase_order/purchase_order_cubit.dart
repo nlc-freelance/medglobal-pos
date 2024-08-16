@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 
@@ -15,33 +16,48 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
   void setEstimatedDateOfArrival(DateTime value) =>
       emit(PurchaseOrderState(state.purchaseOrder.copyWith(estimatedDateOfArrival: value)));
 
-  void setQuantityToOrderPerItem({required int id, required int qty, required double total}) {
+  void setQuantityToOrderPerItem({required int id, required int qty, required double subtotal}) {
     final items = state.purchaseOrder.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
-      if (item.id == id) return item.copyWith(qtyToOrder: qty, total: total);
+      if (item.id == id) {
+        return item.copyWith(
+          qtyToOrder: qty,
+          subtotal: subtotal.roundToTwoDecimalPlaces(),
+        );
+      }
       return item;
     }).toList();
 
     emit(PurchaseOrderState(state.purchaseOrder.copyWith(items: updatedItems)));
   }
 
-  void setSupplierPricePerItem({required int id, required double price, required double total}) {
+  void setSupplierPricePerItem({required int id, required double price, required double subtotal}) {
     final items = state.purchaseOrder.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
-      if (item.id == id) return item.copyWith(supplierPrice: price, total: total);
+      if (item.id == id) {
+        return item.copyWith(
+          supplierPrice: price.roundToTwoDecimalPlaces(),
+          subtotal: subtotal.roundToTwoDecimalPlaces(),
+        );
+      }
       return item;
     }).toList();
 
     emit(PurchaseOrderState(state.purchaseOrder.copyWith(items: updatedItems)));
   }
 
-  void setQuantityReceivedPerItem(int id, int value) {
+  void setQuantityReceivedPerItem({required int id, required int qty, required double subtotal}) {
     final items = state.purchaseOrder.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
-      if (item.id == id) return item.copyWith(qtyReceived: value);
+      if (item.id == id) {
+        return item.copyWith(
+          qtyReceived: qty,
+          subtotal: subtotal.roundToTwoDecimalPlaces(),
+        );
+      }
       return item;
     }).toList();
 
@@ -64,7 +80,8 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
 
   void setTax(double value) => emit(PurchaseOrderState(state.purchaseOrder.copyWith(tax: value)));
 
-  void setDisount(double value) => emit(PurchaseOrderState(state.purchaseOrder.copyWith(discount: value)));
+  void setDiscount(double value) =>
+      emit(PurchaseOrderState(state.purchaseOrder.copyWith(discount: value.roundToTwoDecimalPlaces())));
 
   void setTotal(double value) {
     emit(PurchaseOrderState(state.purchaseOrder.copyWith(totalAmount: value)));

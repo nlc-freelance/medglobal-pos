@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 
 part 'stock_transfer_item_dto.g.dart';
 

@@ -56,6 +56,14 @@ extension DataGridRowExt on DataGridRow {
   int get id => getCells().first.value;
 }
 
+extension StringAsCurrency on String? {
+  /// Convert a String to Double, rounds up and formats to 2 decimal places
+  String toPesoString() => this != null ? (double.tryParse(this!) ?? 0).toStringAsFixed(2) : '0.00';
+}
+
 extension DoubleAsCurrency on double? {
+  /// Rounds up and formats to 2 decimal places, if null returns '0.00'
   String toPesoString() => this != null ? this!.toStringAsFixed(2) : '0.00';
+
+  double roundToTwoDecimalPlaces() => this != null ? (this! * 100).round() / 100 : 0.00;
 }

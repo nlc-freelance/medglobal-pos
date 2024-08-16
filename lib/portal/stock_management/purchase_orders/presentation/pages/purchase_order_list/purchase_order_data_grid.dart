@@ -126,6 +126,10 @@ class PurchaseOrderDataSource extends DataGridSource {
               side: const BorderSide(color: UIColors.transparent),
             ),
           ),
-        _ => UIText.bodyRegular(cell.value.toString()),
+        _ => UIText.bodyRegular(
+            cell.runtimeType.toString().contains('double')
+                ? (cell.value as double).toPesoString()
+                : cell.value.toString(),
+          ),
       };
 }
