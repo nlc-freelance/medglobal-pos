@@ -1,33 +1,4 @@
 {
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-medglobalportal-dev-86b80-authRole",
-      "UnauthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-86b80-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-86b80-authRole",
-      "Region": "ap-southeast-1",
-      "DeploymentBucketName": "amplify-medglobalportal-dev-86b80-deployment",
-      "UnauthRoleName": "amplify-medglobalportal-dev-86b80-unauthRole",
-      "StackName": "amplify-medglobalportal-dev-86b80",
-      "StackId": "arn:aws:cloudformation:ap-southeast-1:280954863577:stack/amplify-medglobalportal-dev-86b80/c0151360-084f-11ef-9ac0-0695269198d5",
-      "AmplifyAppId": "d12wnjf82ab5ja"
-    },
-    "categories": {
-      "auth": {
-        "medglobalportalb8472343": {
-          "userPoolId": "ap-southeast-1_u2ldk8PVd",
-          "userPoolName": "employees",
-          "webClientId": "6309eiplj9jqf6jpb0tqbe84aj",
-          "nativeClientId": "6309eiplj9jqf6jpb0tqbe84aj"
-        }
-      },
-      "hosting": {
-        "amplifyhosting": {
-          "appId": "d12wnjf82ab5ja",
-          "type": "manual"
-        }
-      }
-    }
-  },
   "preprod": {
     "awscloudformation": {
       "AuthRoleName": "amplify-medglobalportal-preprod-c3f14-authRole",
