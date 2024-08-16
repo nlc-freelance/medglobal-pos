@@ -29,14 +29,14 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/usecases
 import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/products/get_products_usecase.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/products/update_product_usecase.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_search_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product/product_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form/product_form_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_search_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/api/purchase_order_api.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/repositories/purchase_order_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
@@ -108,10 +108,10 @@ import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases
 import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases/get_transactions_usecase.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_list_cubit.dart';
-import 'package:medglobal_admin_portal/pos/register/data/api/sale_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_item_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_shift_api.dart';
+import 'package:medglobal_admin_portal/pos/register/data/api/sale_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/repositories/register_item_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/register/data/repositories/register_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/register/data/repositories/register_shift_repository_impl.dart';
@@ -126,6 +126,7 @@ import 'package:medglobal_admin_portal/pos/register/domain/usecases/register_shi
 import 'package:medglobal_admin_portal/pos/register/domain/usecases/register_shift/open_shift_usecase.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/pos_product_list_search_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
@@ -297,6 +298,7 @@ void initDependencyInjection() {
     ..registerFactory(() => RegisterShiftBloc(injector(), injector()))
     ..registerFactory(() => RegisterCubit())
     ..registerFactory(() => RegisterItemListRemoteCubit(injector()))
+    ..registerFactory(() => PosProductListSearchCubit())
     ..registerFactory(() => OrderCubit())
     ..registerFactory(() => SaleRemoteCubit(injector()));
 }

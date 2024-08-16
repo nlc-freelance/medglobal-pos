@@ -1,6 +1,28 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesService {
+  static Future<void> setAccessToken(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('access_token', value);
+  }
+
+  static Future<String> getAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('access_token') ?? '';
+  }
+
+  static Future<void> setUserId(int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('user_id', value);
+  }
+
+  static Future<int?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('user_id');
+  }
+
+  ////////
+
   static Future<void> setRegisterBranchId(int value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('register_branch_id', value);
