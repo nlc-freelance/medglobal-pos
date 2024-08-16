@@ -1,0 +1,24 @@
+{
+  "authSelections": "userPoolOnly",
+  "resourceName": "medglobalportal2e435ce7",
+  "serviceType": "imported",
+  "region": "ap-southeast-1",
+  "usernameAttributes": [
+    "email"
+  ],
+  "requiredAttributes": [
+    "updated_at",
+    "email",
+    "given_name",
+    "family_name"
+  ],
+  "passwordPolicyMinLength": 8,
+  "passwordPolicyCharacters": [
+    "Requires Lowercase",
+    "Requires Uppercase",
+    "Requires Numbers",
+    "Requires Symbols"
+  ],
+  "mfaConfiguration": "OFF",
+  "mfaTypes": []
+}
