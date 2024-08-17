@@ -77,6 +77,7 @@ class _CartItemTitleState extends State<CartItemTitle> {
                       UIText.label('₱${item.totalPricePerItem.toStringAsFixed(2)}'),
                     ],
                   ),
+                  const UIVerticalSpace(1),
                   Row(
                     children: [
                       Text('x ${item.qty.toString()}', style: UIStyleText.hintRegular),
@@ -99,10 +100,10 @@ class _CartItemTitleState extends State<CartItemTitle> {
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        const UIHorizontalSpace(8),
+                        const UIHorizontalSpace(12),
                         Container(
                           margin: const EdgeInsets.only(top: 0),
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.5),
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.3),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
                             color: UIColors.cancelledBg.withOpacity(0.4),
@@ -111,7 +112,7 @@ class _CartItemTitleState extends State<CartItemTitle> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
-                              const UIHorizontalSpace(8),
+                              const UIHorizontalSpace(4),
                               Text(
                                 item.discountType == DiscountType.PESO
                                     ? '₱${item.discount} off'

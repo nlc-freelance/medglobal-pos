@@ -43,60 +43,64 @@ class _CartClosedState extends State<CartClosed> {
         const UIVerticalSpace(8),
         Text('CLOSED', style: UIStyleText.headline.copyWith(fontSize: 48)),
         const UIVerticalSpace(30),
-        FutureBuilder(
-            future: SharedPreferencesService.isMaxShiftOpenReached(),
-            builder: (context, snapshot) => Column(
-                  children: [
-                    if (snapshot.data == true) ...[
-                      Text('Opening shift can only be done once a day',
-                          style: UIStyleText.bodyRegular.copyWith(fontSize: 14)),
-                      const UIVerticalSpace(4),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: Text(
-                          'This register is now closed as you might have already opened and closed a shift today',
-                          style: UIStyleText.hint.copyWith(fontSize: 12.8),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ] else ...[
-                      Text('Open register shift', style: UIStyleText.bodyRegular.copyWith(fontSize: 14)),
-                      const UIVerticalSpace(4),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 60),
-                        child: Text(
-                          'To start making transactions, open shift and input the initial register cash.',
-                          style: UIStyleText.hint.copyWith(fontSize: 12.8),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const UIVerticalSpace(24),
-                      BlocListener<RegisterShiftBloc, RegisterShiftState>(
-                        listener: (context, state) {
-                          if (state is ShowOpeningShiftDialog) {
-                            _showOpeningClosingDialog(
-                              context,
-                              formKey: _formKey,
-                              datetime: state.closedSince,
-                              amountController: _amountController,
-                              onAction: () => context.read<RegisterShiftBloc>().add(
-                                    OpenRegisterShiftEvent(
-                                      /// We made sure that there is a register set after logging in POS
-                                      registerId: context.read<RegisterCubit>().state.register!.id!,
-                                      openingAmount: double.tryParse(_amountController.text) ?? 0,
-                                    ),
-                                  ),
-                            );
-                          }
-                        },
-                        child: UIButton.filled(
-                          'Open Shift',
-                          onClick: () => context.read<RegisterShiftBloc>().add(ShowOpeningShiftDialogEvent()),
-                        ),
-                      ),
-                    ],
-                  ],
-                )),
+        BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
+          builder: (context, state) {
+            return FutureBuilder(
+                future: SharedPreferencesService.isMaxShiftOpenReached(),
+                builder: (context, snapshot) => Column(
+                      children: [
+                        if (snapshot.data == true) ...[
+                          Text('Opening shift can only be done once a day',
+                              style: UIStyleText.bodyRegular.copyWith(fontSize: 14)),
+                          const UIVerticalSpace(4),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Text(
+                              'This register is now closed as you might have already opened and closed a shift today.',
+                              style: UIStyleText.hint.copyWith(fontSize: 12.8),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ] else ...[
+                          Text('Open register shift', style: UIStyleText.bodyRegular.copyWith(fontSize: 14)),
+                          const UIVerticalSpace(4),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 60),
+                            child: Text(
+                              'To start making transactions, open shift and input the initial register cash.',
+                              style: UIStyleText.hint.copyWith(fontSize: 12.8),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const UIVerticalSpace(24),
+                          BlocListener<RegisterShiftBloc, RegisterShiftState>(
+                            listener: (context, state) {
+                              if (state is ShowOpeningShiftDialog) {
+                                _showOpeningClosingDialog(
+                                  context,
+                                  formKey: _formKey,
+                                  datetime: state.closedSince,
+                                  amountController: _amountController,
+                                  onAction: () => context.read<RegisterShiftBloc>().add(
+                                        OpenRegisterShiftEvent(
+                                          /// We made sure that there is a register set after logging in POS
+                                          registerId: context.read<RegisterCubit>().state.register!.id!,
+                                          openingAmount: double.tryParse(_amountController.text) ?? 0,
+                                        ),
+                                      ),
+                                );
+                              }
+                            },
+                            child: UIButton.filled(
+                              'Open Shift',
+                              onClick: () => context.read<RegisterShiftBloc>().add(ShowOpeningShiftDialogEvent()),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ));
+          },
+        ),
       ],
     );
   }

@@ -19,7 +19,7 @@ class RegisterItemApiImpl implements RegisterItemApi {
 
       final response = await _apiService.collection<ProductVariantDto>(
         '/products/variants',
-        queryParams: {'page': page, 'size': 20, 'search': search, 'branch': branchId, 'category': category},
+        queryParams: {'page': page, 'size': 10, 'search': search, 'branch': branchId, 'category': category},
         converter: ProductVariantDto.fromJson,
       );
 
