@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -44,7 +43,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     return Row(
       children: [
         Expanded(
-          flex: 4,
+          flex: 3,
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -69,13 +68,14 @@ class _TransactionsPageState extends State<TransactionsPage> {
                         onChanged: (_) => {},
                       ),
                     ),
-                    const UIHorizontalSpace(8),
-                    Expanded(child: DatePickerPopup(onSelect: (_) {})),
+                    // const UIHorizontalSpace(8),
+                    // Expanded(child: DatePickerPopup(onSelect: (_) {})),
                   ],
                 ),
                 const UIVerticalSpace(24),
                 Expanded(
-                  child: ListView.builder(
+                  child: ListView.separated(
+                    separatorBuilder: (_, __) => const UIVerticalSpace(16),
                     itemCount: groupedItems.length,
                     itemBuilder: (context, index) {
                       DateTime date = groupedItems.keys.elementAt(index);
@@ -101,13 +101,14 @@ class _TransactionsPageState extends State<TransactionsPage> {
                             itemBuilder: (context, index) {
                               final item = dateItems[index];
                               return Container(
-                                decoration: UIStyleContainer.bottomBorder(color: UIColors.borderRegular),
+                                decoration: UIStyleContainer.topBorder,
                                 child: ListTile(
                                   onTap: () {},
+                                  hoverColor: UIColors.buttonSecondaryHover,
                                   title: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      UIText.bodyRegular(item.id.toString()),
+                                      UIText.labelMedium(item.id.toString()),
                                       if (item.type == TransactionType.REFUND)
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
@@ -123,14 +124,14 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                     ],
                                   ),
                                   subtitle: Padding(
-                                    padding: const EdgeInsets.only(top: 8),
+                                    padding: const EdgeInsets.only(top: 2),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        UIText.labelMedium(DateFormat('h:mm a').format(date),
-                                            color: UIColors.textMuted),
-                                        UIText.labelSemiBold(
-                                            '${item.type == TransactionType.REFUND ? '-' : ''} ${item.total.toString()} '),
+                                        Text(DateFormat('h:mm a').format(date),
+                                            style: UIStyleText.hint.copyWith(color: UIColors.textMuted)),
+                                        UIText.labelMedium(
+                                            '${item.type == TransactionType.REFUND ? '-' : ''} ₱${item.total.toPesoString()} '),
                                       ],
                                     ),
                                   ),
@@ -140,7 +141,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
                               );
                             },
                           ),
-                          const UIVerticalSpace(16),
                         ],
                       );
                     },
@@ -219,8 +219,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
 }
 
 List<Transaction> mock = [
-  Transaction(id: 1, total: 90.00, type: TransactionType.SALE, createdAt: DateTime.now()),
-  Transaction(id: 2, total: 90.00, type: TransactionType.SALE, createdAt: DateTime.now()),
-  Transaction(id: 3, total: 90.00, type: TransactionType.REFUND, createdAt: DateTime.now()),
-  Transaction(id: 4, total: 90.00, type: TransactionType.SALE, createdAt: DateTime(2024, 1, 2, 8, 23, 0, 0, 0)),
+  Transaction(id: 1234578, total: 120.00, type: TransactionType.SALE, createdAt: DateTime.now()),
+  Transaction(id: 2345678, total: 30.00, type: TransactionType.SALE, createdAt: DateTime.now()),
+  Transaction(id: 3456789, total: 90.00, type: TransactionType.REFUND, createdAt: DateTime.now()),
+  Transaction(id: 4567890, total: 250.00, type: TransactionType.SALE, createdAt: DateTime(2024, 1, 2, 8, 23, 0, 0, 0)),
 ];
