@@ -40,5 +40,9 @@ class RegisterItemListRemoteCubit extends Cubit<RegisterItemListRemoteState> {
     }
   }
 
-  void reset() => emit(RegisterItemListInitial());
+  void reset() {
+    _products = {};
+    _currentPage = 1;
+    emit(RegisterItemListInitial());
+  }
 }

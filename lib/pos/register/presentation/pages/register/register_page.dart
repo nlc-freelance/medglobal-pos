@@ -73,14 +73,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     }),
                   ),
                 ),
-                const UIVerticalSpace(16),
+                const UIVerticalSpace(36),
                 BlocBuilder<RegisterItemListRemoteCubit, RegisterItemListRemoteState>(
                   builder: (context, state) {
-                    if (state is RegisterItemListInitial) {
-                      return DataGridNoData(
+                    if (state is RegisterItemListLoading) {
+                      return DataGridLoading(
                         columns: DataGridUtil.getColumns(DataGridColumn.REGISTER_ITEMS),
                         source: RegisterItemsDataSource([], context),
-                        message: 'please select a register first',
                       );
                     }
                     if (state is RegisterItemListError) {
@@ -92,9 +91,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       );
                     }
 
-                    return DataGridLoading(
+                    return DataGridNoData(
                       columns: DataGridUtil.getColumns(DataGridColumn.REGISTER_ITEMS),
                       source: RegisterItemsDataSource([], context),
+                      message: 'please select a register first',
                     );
                   },
                 ),
