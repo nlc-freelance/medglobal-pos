@@ -206,6 +206,15 @@ class DataGridColumn {
     ColumnData('subtotal', 'Subtotal (PHP)'),
   ];
 
+  static List<ColumnData> RETURN_TRANSACTION_ITEMS = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Product'),
+    ColumnData('sku', 'SKU'),
+    ColumnData('restockQty', 'Restock Qty'),
+    ColumnData('writeOffQty', 'Write-off Qty'),
+    ColumnData('comment', 'Comment'),
+  ];
+
   /// POS
   ///
   static List<ColumnData> REGISTER_ITEMS = [
@@ -213,5 +222,31 @@ class DataGridColumn {
     ColumnData('product_name', 'Product', minWidth: 400),
     ColumnData('stock', 'Stock', minWidth: 80),
     ColumnData('price', 'Price (PHP)', minWidth: 80),
+  ];
+
+  static List<ColumnData> ORDERED_ITEMS = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Product'),
+    ColumnData('qty', 'Qty'),
+    ColumnData('price', 'Price'),
+    ColumnData('discount', 'Discount'),
+    ColumnData('subtotal', 'Subtotal'),
+  ];
+
+  static List<ColumnData> ORDERED_ITEMS_EDITABLE = [
+    ColumnData('id', 'ID'),
+    ColumnData('is_selected', ''),
+    ColumnData('name', 'Product', minWidth: 350),
+    ColumnData('qty_to_refund', 'Qty to Refund'),
+    ColumnData('qty', ''),
+    ColumnData('price', 'Price'),
+    ColumnData('subtotal', 'Subtotal'),
+  ];
+  static List<ColumnData> REFUNDED_ITEMS = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Product', minWidth: 350),
+    ColumnData('qty_refunded', 'Qty Refunded'),
+    ColumnData('price', 'Price'),
+    ColumnData('subtotal', 'Subtotal'),
   ];
 }

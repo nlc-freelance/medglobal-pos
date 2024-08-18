@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/enums/enums.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -84,7 +83,7 @@ class SaleTransactionDataSource extends DataGridSource {
 
   List<DataGridRow> dataGridRows = [];
 
-  void buildDataGridRows() => dataGridRows = _sales.map((sale) => sale.toDataGridRow()).toList();
+  void buildDataGridRows() => dataGridRows = _sales.map((sale) => sale.toSaleTransactionsRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 

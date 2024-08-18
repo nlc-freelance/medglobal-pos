@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/domain/repositories/transaction_repository.dart';
+import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
 
 class GetTransactionByIdUseCase implements UseCase<Transaction, GetTransactionByIdParams> {
   final TransactionRepository repository;

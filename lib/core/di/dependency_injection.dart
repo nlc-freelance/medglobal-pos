@@ -106,7 +106,6 @@ import 'package:medglobal_admin_portal/portal/transactions/sales/data/repositori
 import 'package:medglobal_admin_portal/portal/transactions/sales/domain/repositories/transaction_repository.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases/get_transaction_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases/get_transactions_usecase.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_item_api.dart';
@@ -130,6 +129,14 @@ import 'package:medglobal_admin_portal/pos/register/presentation/cubit/pos_produ
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/api/refund_api.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/repositories/refund_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund_repository.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/usecases/create_refund_transaction_usecase.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/branch_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_cubit.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_remote_cubit.dart';
+import 'package:medglobal_admin_portal/shared/cubit/transaction_cubit.dart';
 
 /// lazySingleton are only initialized when needed while factory are always initialized
 
@@ -165,6 +172,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<RegisterApi>(() => RegisterApiImpl(injector()))
     ..registerLazySingleton<RegisterItemApi>(() => RegisterItemApiImpl(injector()))
     ..registerLazySingleton<SaleApi>(() => SaleApiImpl(injector()))
+    ..registerLazySingleton<RefundApi>(() => RefundApiImpl(injector()))
 
     /// Repository
     /// Portal
@@ -185,6 +193,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<RegisterRepository>(() => RegisterRepositoryImpl(injector()))
     ..registerLazySingleton<RegisterItemRepository>(() => RegisterItemRepositoryImpl(injector()))
     ..registerLazySingleton<SaleRepository>(() => SaleRepositoryImpl(injector()))
+    ..registerLazySingleton<RefundRepository>(() => RefundRepositoryImpl(injector()))
 
     /// Usecases
     ///
@@ -258,6 +267,10 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => GetRegisterItemsUseCase(injector()))
     ..registerLazySingleton(() => CreateSaleUseCase(injector()))
 
+    ///
+    /// Issue Refund
+    ..registerLazySingleton(() => CreateRefundTransactionUseCase(injector()))
+
     /// Bloc
     ..registerFactory(() => AuthBloc(injector(), injector(), injector(), injector()))
     ..registerFactory(() => SidebarCubit())
@@ -300,5 +313,8 @@ void initDependencyInjection() {
     ..registerFactory(() => RegisterItemListRemoteCubit(injector()))
     ..registerFactory(() => PosProductListSearchCubit())
     ..registerFactory(() => OrderCubit())
-    ..registerFactory(() => SaleRemoteCubit(injector()));
+    ..registerFactory(() => SaleRemoteCubit(injector()))
+    ..registerFactory(() => BranchTransactionListCubit(injector()))
+    ..registerFactory(() => RefundCubit())
+    ..registerFactory(() => RefundRemoteCubit(injector()));
 }

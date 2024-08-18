@@ -1,6 +1,6 @@
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/data/dto/transaction_dto.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction_paginated_list.dart';
+import 'package:medglobal_admin_portal/shared/dto/transaction_dto.dart';
 
 abstract class TransactionApi {
   Future<TransactionPaginatedList> getTransactions({int? page, int? register, int? branch});
