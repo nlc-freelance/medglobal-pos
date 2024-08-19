@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/filter_popup.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transactions_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transaction_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class SaleTransactionsPage extends StatefulWidget {
@@ -16,12 +13,6 @@ class SaleTransactionsPage extends StatefulWidget {
 }
 
 class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<TransactionListCubit>().getTransactions();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -36,7 +27,7 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
           isDownloadable: true,
           search: UISearchField(
             fieldWidth: 500.0,
-            hint: 'Search receipt number',
+            hint: 'Search receipt ID',
             icon: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Assets.icons.search.svg(),
@@ -55,22 +46,7 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
             ),
           ],
         ),
-        BlocBuilder<TransactionListCubit, TransactionListState>(
-          builder: (context, state) {
-            if (state is TransactionListError) {
-              return Text(state.message);
-            }
-            if (state is TransactionListLoaded) {
-              return Expanded(
-                child: SaleTransactionDataGrid(state.transactions),
-              );
-            }
-            return DataGridLoading(
-              columns: DataGridUtil.getColumns(DataGridColumn.SALE_TRANSACTIONS),
-              source: SaleTransactionDataSource([]),
-            );
-          },
-        ),
+        const Expanded(child: SaleTransactionPaginatedDataGrid()),
       ],
     );
   }

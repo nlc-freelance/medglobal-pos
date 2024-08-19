@@ -26,9 +26,9 @@ class DataGridUtil {
               alignment: Alignment.centerLeft,
               child: Text(
                 column.label,
-                style: UIStyleText.labelSemiBold.copyWith(
+                style: UIStyleText.labelMedium.copyWith(
                   color: UIColors.textLight,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w500,
                   decoration: TextDecoration.none,
                 ),
               ),
@@ -40,7 +40,7 @@ class DataGridUtil {
         columnDragIndicatorStrokeWidth: 1.0,
         columnDragIndicatorColor: UIColors.primary,
         headerHoverColor: UIColors.transparent,
-        rowHoverColor: UIColors.secondary,
+        rowHoverColor: UIColors.buttonSecondaryHover,
         selectionColor: UIColors.secondary,
         gridLineColor: UIColors.borderMuted,
         gridLineStrokeWidth: 0.8,

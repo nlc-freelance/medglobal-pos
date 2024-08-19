@@ -1,12 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'stock_take.g.dart';
 
@@ -66,19 +65,19 @@ class StockTake extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(
             columnName: 'start_time',
-            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
+            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : '-',
           ),
           DataGridCell<String>(
             columnName: 'complete_time',
             value: status == StockOrderStatus.COMPLETED
                 ? DateFormat('MM/dd/yyyy HH:mm').format(updatedAt!.toLocal())
-                : Strings.empty,
+                : '-',
           ),
-          DataGridCell<String>(columnName: 'description', value: description ?? Strings.empty),
-          DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
+          DataGridCell<String>(columnName: 'description', value: description ?? '-'),
+          DataGridCell<String>(columnName: 'branch', value: branch?.name ?? '-'),
           DataGridCell<String>(
             columnName: 'supplier',
-            value: isAllSupplier == true ? 'All Suppliers' : supplier?.name ?? Strings.empty,
+            value: isAllSupplier == true ? 'All Suppliers' : supplier?.name ?? '-',
           ),
           DataGridCell<StockOrderStatus>(columnName: 'status', value: status),
         ],

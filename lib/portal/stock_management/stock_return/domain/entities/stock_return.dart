@@ -1,12 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_item.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'stock_return.g.dart';
 
@@ -53,10 +52,10 @@ class StockReturn extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(
             columnName: 'date',
-            value: createdAt != null ? DateFormat.yMd().format(createdAt!) : Strings.empty,
+            value: createdAt != null ? DateFormat.yMd().format(createdAt!) : '-',
           ),
-          DataGridCell<String>(columnName: 'target_branch', value: branch?.name ?? Strings.empty),
-          DataGridCell<String>(columnName: 'supplier', value: supplier?.name ?? Strings.empty),
+          DataGridCell<String>(columnName: 'target_branch', value: branch?.name ?? '-'),
+          DataGridCell<String>(columnName: 'supplier', value: supplier?.name ?? '-'),
           DataGridCell<double>(columnName: 'total_amount', value: totalAmount ?? 0),
           DataGridCell<StockOrderStatus>(columnName: 'status', value: status),
         ],

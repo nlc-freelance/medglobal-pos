@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/branch_transaction_list_cubit.dart';
-import 'package:medglobal_admin_portal/shared/cubit/transaction_cubit.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class TransactionList extends StatefulWidget {
@@ -88,7 +88,8 @@ class _TransactionListState extends State<TransactionList> {
                         itemCount: groupedTransactionsByDate.length,
                         itemBuilder: (context, index) {
                           DateTime date = groupedTransactionsByDate.keys.elementAt(index);
-                          List<Transaction> items = groupedTransactionsByDate[date]!;
+                          List<Transaction> items = groupedTransactionsByDate[date]!
+                            ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,7 +128,10 @@ class _TransactionListState extends State<TransactionList> {
                                             title: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                UIText.bodyRegular(item.receiptId!),
+                                                Text(
+                                                  item.receiptId!,
+                                                  style: UIStyleText.hintRegular.copyWith(color: UIColors.textRegular),
+                                                ),
                                                 Container(
                                                   margin: const EdgeInsets.only(top: 0),
                                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -146,14 +150,11 @@ class _TransactionListState extends State<TransactionList> {
                                                           : Assets.icons.received.svg(
                                                               colorFilter: UIColors.completed.toColorFilter, width: 10),
                                                       const UIHorizontalSpace(8),
-                                                      Text(
+                                                      UIText.labelRegular(
                                                         item.type!.label,
-                                                        style: UIStyleText.hint.copyWith(
-                                                          color: item.type == TransactionType.SALE
-                                                              ? UIColors.completed
-                                                              : UIColors.buttonDanger,
-                                                          fontSize: 11,
-                                                        ),
+                                                        color: item.type == TransactionType.SALE
+                                                            ? UIColors.completed
+                                                            : UIColors.buttonDanger,
                                                       ),
                                                     ],
                                                   ),

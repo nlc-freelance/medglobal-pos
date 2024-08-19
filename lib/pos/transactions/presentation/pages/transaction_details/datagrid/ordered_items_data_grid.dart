@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -17,8 +17,6 @@ class OrderedItemsDataGrid extends StatefulWidget {
 
 class _OrderedItemsDataGridState extends State<OrderedItemsDataGrid> {
   late List<TransactionItem> _items = <TransactionItem>[];
-  late double _tax;
-  late double _discount;
 
   late DataGridController _dataGridController;
   late OrderedItemsDataSource _transactionItemsDataSource;
@@ -31,10 +29,8 @@ class _OrderedItemsDataGridState extends State<OrderedItemsDataGrid> {
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
     _items = widget.transaction.items ?? [];
-    _tax = widget.transaction.tax ?? 0;
-    _discount = widget.transaction.discountInPeso ?? 0;
 
-    _transactionItemsDataSource = OrderedItemsDataSource(_items, context, _tax, _discount);
+    _transactionItemsDataSource = OrderedItemsDataSource(_items, context, widget.transaction);
   }
 
   @override
@@ -79,7 +75,7 @@ class _OrderedItemsDataGridState extends State<OrderedItemsDataGrid> {
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'subtotal',
+                        columnName: 'total',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -97,7 +93,7 @@ class _OrderedItemsDataGridState extends State<OrderedItemsDataGrid> {
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'subtotal',
+                        columnName: 'total',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -115,7 +111,7 @@ class _OrderedItemsDataGridState extends State<OrderedItemsDataGrid> {
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'subtotal',
+                        columnName: 'total',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -133,7 +129,7 @@ class _OrderedItemsDataGridState extends State<OrderedItemsDataGrid> {
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'subtotal',
+                        columnName: 'total',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -152,13 +148,11 @@ class OrderedItemsDataSource extends DataGridSource {
   OrderedItemsDataSource(
     List<TransactionItem> itemsOrdered,
     BuildContext context,
-    double tax,
-    double discount,
+    Transaction transaction,
   ) {
     _items = itemsOrdered;
     _context = context;
-    _tax = tax;
-    _discount = discount;
+    _transaction = transaction;
     buildDataGridRows();
   }
 
@@ -166,11 +160,11 @@ class OrderedItemsDataSource extends DataGridSource {
 
   List<DataGridRow> dataGridRows = [];
 
-  late double _tax;
-  late double _discount;
+  late Transaction _transaction;
+
   late BuildContext _context;
 
-  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toItemsOrderedPosRow()).toList();
+  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toItemsOrderedRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -184,41 +178,116 @@ class OrderedItemsDataSource extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: UIText.bodyRegular(
-            cell.runtimeType.toString().contains('double')
-                ? (cell.value as double).toPesoString()
-                : cell.value.toString(),
-          ),
+          child: _buildCell(cell.columnName, cell, row.getCells().first.value),
         );
       }).toList(),
     );
   }
 
-  @override
-  Widget? buildTableSummaryCellWidget(GridTableSummaryRow summaryRow, GridSummaryColumn? summaryColumn,
-      RowColumnIndex rowColumnIndex, String summaryValue) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-      child: summaryColumn?.columnName == 'discount'
-          ? Text(
-              summaryRow.title!,
-              textAlign: TextAlign.right,
-              style: UIStyleText.labelSemiBold,
-            )
-          : Text(
-              summaryCellValue(_context, summaryRow.title!, summaryValue),
-              style: summaryRow.title == 'Total' ? UIStyleText.label : UIStyleText.bodyRegular,
-            ),
-    );
+  Widget _buildCell(String column, DataGridCell cell, int id) {
+    double? discount() => _items.singleWhere((sale) => sale.id == id).discount;
+    DiscountType? discountType() => _items.singleWhere((sale) => sale.id == id).discountType;
+
+    return switch (column) {
+      'discount_in_peso' => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            UIText.bodyRegular((cell.value as double).toPesoString()),
+            if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
+              const UIHorizontalSpace(8),
+              Container(
+                margin: const EdgeInsets.only(top: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: UIColors.cancelledBg.withOpacity(0.4),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
+                    const UIHorizontalSpace(8),
+                    Text(
+                      '${discount()}%',
+                      style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ],
+        ),
+      _ => UIText.bodyRegular(
+          cell.runtimeType.toString().contains('double')
+              ? (cell.value as double).toPesoString()
+              : cell.value.toString(),
+        ),
+    };
   }
 
-  String summaryCellValue(BuildContext context, String summaryRowTitle, String summaryValue) {
-    if (summaryRowTitle == 'Tax') {
-      return _tax.toPesoString();
+  @override
+  Widget? buildTableSummaryCellWidget(
+    GridTableSummaryRow summaryRow,
+    GridSummaryColumn? summaryColumn,
+    RowColumnIndex rowColumnIndex,
+    String summaryValue,
+  ) =>
+      Container(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
+        child: summaryColumn?.columnName == 'discount'
+            ? Text(
+                summaryRow.title!,
+                textAlign: TextAlign.end,
+                style: UIStyleText.labelSemiBold,
+              )
+            : summaryRow.title == 'Discount'
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      UIText.labelSemiBold(getSummaryValue(summaryRow.title!, summaryValue)),
+                      if (_transaction.discountType == DiscountType.PERCENT &&
+                          _transaction.discount != null &&
+                          _transaction.discount != 0) ...[
+                        const UIHorizontalSpace(8),
+                        Container(
+                          margin: const EdgeInsets.only(top: 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: UIColors.cancelledBg.withOpacity(0.4),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
+                              const UIHorizontalSpace(8),
+                              Text(
+                                '${_transaction.discount.toString()}%',
+                                style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ],
+                  )
+                : UIText.labelSemiBold(getSummaryValue(summaryRow.title!, summaryValue)),
+      );
+
+  String getSummaryValue(String label, String subtotal) {
+    double? value;
+    switch (label) {
+      case 'Discount':
+        value = _transaction.discountInPeso;
+      case 'Tax':
+        value = _transaction.tax;
+      case 'Total':
+        value = _transaction.total;
+      default:
+        return subtotal.toPesoString();
     }
-    if (summaryRowTitle == 'Discount') {
-      return _discount.toPesoString();
-    }
-    return summaryValue.toPesoString();
+
+    return value.toPesoString();
   }
 }

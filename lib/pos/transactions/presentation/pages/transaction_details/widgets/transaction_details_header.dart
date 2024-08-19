@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/shared/cubit/transaction_cubit.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class TransactionDetailsHeader extends StatelessWidget {
@@ -61,13 +61,9 @@ class TransactionDetailsHeader extends StatelessWidget {
                       onTap: () => context.read<TransactionCubit>().getTransactionById(transaction.saleTransactionId!),
                       hoverColor: UIColors.transparent,
                       child: Text(
-                        /// This should be the MG-LP202400012 or the receipt id
-                        /// A return transaction should also display the receipt id of the original sale,
-                        /// not just the database id
-                        transaction.saleTransactionId.toString(),
+                        transaction.saleTransactionReceiptId!,
                         style: UIStyleText.bodyRegular.copyWith(
                           color: UIColors.primary,
-                          fontSize: 16,
                           fontWeight: FontWeight.w400,
                           decoration: isHover ? TextDecoration.underline : TextDecoration.none,
                           decorationColor: UIColors.primary,
@@ -92,7 +88,6 @@ class TransactionDetailsHeader extends StatelessWidget {
                         transaction.receiptId!,
                         style: UIStyleText.bodyRegular.copyWith(
                           color: UIColors.primary,
-                          fontSize: 16,
                           fontWeight: FontWeight.w400,
                           decoration: isHover ? TextDecoration.underline : TextDecoration.none,
                           decorationColor: UIColors.primary,

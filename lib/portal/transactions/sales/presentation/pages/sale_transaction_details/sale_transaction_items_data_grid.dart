@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -16,17 +16,17 @@ class SaleTransactionItemsDataGrid extends StatefulWidget {
 }
 
 class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataGrid> {
-  List<TransactionItem> _itemsOrdered = <TransactionItem>[];
+  List<TransactionItem> _items = <TransactionItem>[];
 
   late DataGridController _dataGridController;
-  late SaleTransactionItemsDataSource _itemsOrderedDataSource;
+  late SaleItemsDataSource _saleItemsDataSource;
 
   @override
   void initState() {
     super.initState();
-    _itemsOrdered = widget.transaction.items ?? [];
+    _items = widget.transaction.items ?? [];
     _dataGridController = DataGridController();
-    _itemsOrderedDataSource = SaleTransactionItemsDataSource(_itemsOrdered, widget.transaction);
+    _saleItemsDataSource = SaleItemsDataSource(_items, widget.transaction);
   }
 
   @override
@@ -46,16 +46,13 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
           child: SfDataGridTheme(
             data: DataGridUtil.cellNavigationStyle,
             child: SfDataGrid(
-              source: _itemsOrderedDataSource,
+              source: _saleItemsDataSource,
               columns: DataGridUtil.getColumns(DataGridColumn.SALE_TRANSACTIONS_ITEMS),
               controller: _dataGridController,
               shrinkWrapRows: true,
-              allowEditing: true,
-              navigationMode: GridNavigationMode.cell,
               selectionMode: SelectionMode.single,
               columnWidthMode: ColumnWidthMode.fill,
               headerGridLinesVisibility: GridLinesVisibility.none,
-              editingGestureType: EditingGestureType.tap,
               tableSummaryRows: [
                 GridTableSummaryRow(
                   color: UIColors.background,
@@ -70,7 +67,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                     ),
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'subtotal',
+                      columnName: 'total',
                       summaryType: GridSummaryType.sum,
                     ),
                   ],
@@ -79,7 +76,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                   color: UIColors.background,
                   position: GridTableSummaryRowPosition.bottom,
                   showSummaryInRow: false,
-                  title: 'Total Discount',
+                  title: 'Discount',
                   columns: [
                     const GridSummaryColumn(
                       name: '',
@@ -88,7 +85,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                     ),
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'subtotal',
+                      columnName: 'total',
                       summaryType: GridSummaryType.sum,
                     ),
                   ],
@@ -106,7 +103,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                     ),
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'subtotal',
+                      columnName: 'total',
                       summaryType: GridSummaryType.sum,
                     ),
                   ],
@@ -124,7 +121,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                     ),
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'subtotal',
+                      columnName: 'total',
                       summaryType: GridSummaryType.sum,
                     ),
                   ],
@@ -142,7 +139,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
                     ),
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'subtotal',
+                      columnName: 'total',
                       summaryType: GridSummaryType.sum,
                     ),
                   ],
@@ -156,20 +153,20 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
   }
 }
 
-class SaleTransactionItemsDataSource extends DataGridSource {
-  SaleTransactionItemsDataSource(List<TransactionItem> transactionItems, Transaction transaction) {
-    _itemsOrdered = transactionItems;
+class SaleItemsDataSource extends DataGridSource {
+  SaleItemsDataSource(List<TransactionItem> items, Transaction transaction) {
+    _items = items;
     buildDataGridRows();
     _transaction = transaction;
   }
 
-  List<TransactionItem> _itemsOrdered = [];
+  List<TransactionItem> _items = [];
 
   List<DataGridRow> dataGridRows = [];
 
   late Transaction _transaction;
 
-  void buildDataGridRows() => dataGridRows = _itemsOrdered.map((item) => item.toItemsOrderedRow()).toList();
+  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toSaleTransactionItemsRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -190,14 +187,14 @@ class SaleTransactionItemsDataSource extends DataGridSource {
   }
 
   Widget _buildCell(String column, DataGridCell cell, int id) {
-    double? discount() => _itemsOrdered.singleWhere((sale) => sale.id == id).discount;
-    DiscountType? discountType() => _itemsOrdered.singleWhere((sale) => sale.id == id).discountType;
+    double? discount() => _items.singleWhere((sale) => sale.id == id).discount;
+    DiscountType? discountType() => _items.singleWhere((sale) => sale.id == id).discountType;
 
     return switch (column) {
       'discount_in_peso' => Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            UIText.bodyRegular((cell.value as double).toPesoString()),
+            UIText.dataGridText((cell.value as double).toPesoString()),
             if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
               const UIHorizontalSpace(8),
               Container(
@@ -222,7 +219,7 @@ class SaleTransactionItemsDataSource extends DataGridSource {
             ],
           ],
         ),
-      _ => UIText.bodyRegular(
+      _ => UIText.dataGridText(
           cell.runtimeType.toString().contains('double')
               ? (cell.value as double).toPesoString()
               : cell.value.toString(),
@@ -238,15 +235,16 @@ class SaleTransactionItemsDataSource extends DataGridSource {
     String summaryValue,
   ) =>
       Container(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
         child: summaryColumn?.columnName == 'discount_in_peso'
             ? Text(
                 summaryRow.title!,
                 textAlign: TextAlign.end,
                 style: UIStyleText.labelSemiBold,
               )
-            : summaryRow.title == 'Total Discount'
+            : summaryRow.title == 'Discount'
                 ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       UIText.labelSemiBold(getSummaryValue(summaryRow.title!)),
@@ -284,7 +282,7 @@ class SaleTransactionItemsDataSource extends DataGridSource {
     switch (label) {
       case 'Subtotal':
         value = _transaction.subtotal;
-      case 'Total Discount':
+      case 'Discount':
         value = _transaction.discountInPeso;
       case 'Tax':
         value = _transaction.tax;

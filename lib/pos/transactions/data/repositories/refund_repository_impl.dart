@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/api/refund_api.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund_repository.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 
 class RefundRepositoryImpl implements RefundRepository {
   final RefundApi _refundApi;

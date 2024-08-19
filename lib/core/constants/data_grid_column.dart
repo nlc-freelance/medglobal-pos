@@ -185,10 +185,10 @@ class DataGridColumn {
 
   static List<ColumnData> SALE_TRANSACTIONS = [
     ColumnData('id', 'ID'),
-    ColumnData('receipt_id', 'Receipt ID'),
+    ColumnData('receipt_id', 'Receipt ID', minWidth: 200),
     ColumnData('date', 'Date', minWidth: 180),
-    ColumnData('register_id', 'Register'),
     ColumnData('branch', 'Branch'),
+    ColumnData('register_id', 'Register'),
     ColumnData('employee', 'Employee'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
     ColumnData('discount_in_peso', 'Discount (PHP)'),
@@ -202,17 +202,30 @@ class DataGridColumn {
     ColumnData('sku', 'SKU'),
     ColumnData('qty', 'Qty'),
     ColumnData('price', 'Price (PHP)'),
-    ColumnData('discount_in_peso', 'Discount (PHP)'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('discount_in_peso', 'Total Discount (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
   ];
 
-  static List<ColumnData> RETURN_TRANSACTION_ITEMS = [
+  static List<ColumnData> RETURN_TRANSACTIONS = [
     ColumnData('id', 'ID'),
-    ColumnData('name', 'Product'),
+    ColumnData('receipt_id', 'Receipt ID', minWidth: 200),
+    ColumnData('date', 'Date', minWidth: 180),
+    ColumnData('branch', 'Branch'),
+    ColumnData('employee', 'Employee'),
+    ColumnData('total', 'Total (PHP)'),
+    ColumnData('reason_for_return', 'Reason for Return'),
+    ColumnData('status', 'Status'),
+  ];
+
+  static List<ColumnData> RETURN_TRANSACTIONS_ITEMS = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Product', minWidth: 300),
     ColumnData('sku', 'SKU'),
-    ColumnData('restockQty', 'Restock Qty'),
-    ColumnData('writeOffQty', 'Write-off Qty'),
-    ColumnData('comment', 'Comment'),
+    ColumnData('return_qty', 'Returned Qty'),
+    ColumnData('write_off_qty', 'Write-off Qty'),
+    ColumnData('restock_qty', 'Restock Qty'),
+    ColumnData('comment', 'Comment', minWidth: 350),
   ];
 
   /// POS
@@ -228,9 +241,10 @@ class DataGridColumn {
     ColumnData('id', 'ID'),
     ColumnData('name', 'Product'),
     ColumnData('qty', 'Qty'),
-    ColumnData('price', 'Price'),
-    ColumnData('discount', 'Discount'),
-    ColumnData('subtotal', 'Subtotal'),
+    ColumnData('price', 'Price (PHP)'),
+    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('discount', 'Total Discount (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
   ];
 
   static List<ColumnData> ORDERED_ITEMS_EDITABLE = [

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_details/sale_transaction_items_data_grid.dart';
-import 'package:medglobal_admin_portal/shared/cubit/transaction_cubit.dart';
+import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class SaleTransactionDetailsPage extends StatefulWidget {
@@ -33,6 +33,7 @@ class _SaleTransactionDetailsPageState extends State<SaleTransactionDetailsPage>
               title: 'Sale Details',
               subtitle: Strings.subtitlePlaceholder,
             ),
+            const UIVerticalSpace(20),
             if (state is TransactionByIdLoading) ...[
               const UIVerticalSpace(30.0),
               const Center(

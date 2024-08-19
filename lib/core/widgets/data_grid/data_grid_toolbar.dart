@@ -26,6 +26,7 @@ class DataGridToolbar extends StatelessWidget {
         children: [
           if (search != null) ...[
             search!,
+            const UIHorizontalSpace(8),
             const Spacer(),
           ],
           ...?filters,
