@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -169,7 +169,7 @@ class SaleItemsDataSource extends DataGridSource {
 
   late Transaction _transaction;
 
-  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toSaleTransactionItemRow()).toList();
+  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toItemsOrderedRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 

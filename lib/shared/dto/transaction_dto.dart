@@ -4,14 +4,19 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/branches/data/branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/data/dto/employee_dto.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/data/dto/register_dto.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/data/dto/transaction_item_dto.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/dto/transaction_item_dto.dart';
+import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
 
 part 'transaction_dto.g.dart';
 
 @JsonSerializable()
 class TransactionDto extends Equatable {
   final int? id;
+  @JsonKey(name: 'transactionId')
+  final String? receiptId;
+  final int? saleTransactionId;
+  final String? type;
+  final String? status;
   final RegisterDto? register;
   @JsonKey(name: 'store')
   final BranchDto? branch;
@@ -27,11 +32,16 @@ class TransactionDto extends Equatable {
   final double? total;
   final double? totalDiscountInPeso;
   final double? amountPaid;
+  final String? reasonForReturn;
   @DateTimeConverter()
   final DateTime? createdAt;
 
   const TransactionDto({
     this.id,
+    this.receiptId,
+    this.saleTransactionId,
+    this.status,
+    this.type,
     this.register,
     this.branch,
     this.employee,
@@ -43,6 +53,7 @@ class TransactionDto extends Equatable {
     this.tax,
     this.total,
     this.totalDiscountInPeso,
+    this.reasonForReturn,
     this.amountPaid,
     this.createdAt,
   });
@@ -50,6 +61,10 @@ class TransactionDto extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        receiptId,
+        saleTransactionId,
+        status,
+        type,
         register,
         branch,
         employee,
@@ -62,6 +77,7 @@ class TransactionDto extends Equatable {
         total,
         totalDiscountInPeso,
         amountPaid,
+        reasonForReturn,
         createdAt
       ];
 
@@ -71,6 +87,10 @@ class TransactionDto extends Equatable {
 
   Transaction toEntity() => Transaction(
         id: id,
+        receiptId: receiptId,
+        saleTransactionId: saleTransactionId,
+        status: status == 'completed' ? ReturnStatus.COMPLETED : ReturnStatus.AWAITING_ACTION,
+        type: type == 'sale' ? TransactionType.SALE : TransactionType.REFUND,
         register: register?.toEntity(),
         branch: branch?.toEntity(),
         employee: employee?.toEntity(),
