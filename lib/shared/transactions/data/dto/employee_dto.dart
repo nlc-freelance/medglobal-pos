@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/employee.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/employee.dart';
 
 part 'employee_dto.g.dart';
 

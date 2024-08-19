@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction_paginated_list.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/repositories/transaction_repository.dart';
+import 'package:medglobal_admin_portal/portal/transactions/domain/entities/transaction_paginated_list.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/repositories/transaction_repository.dart';
 
 class GetTransactionsUseCase implements UseCase<TransactionPaginatedList, GetTransactionsParams> {
   final TransactionRepository _repository;
@@ -18,11 +18,11 @@ class GetTransactionsUseCase implements UseCase<TransactionPaginatedList, GetTra
 }
 
 class GetTransactionsParams {
-  final TransactionType type;
+  final TransactionType? type;
   final int page;
   final int size;
   final int? registerId;
   final int? branchId;
 
-  GetTransactionsParams({required this.type, required this.page, required this.size, this.registerId, this.branchId});
+  GetTransactionsParams({this.type, required this.page, required this.size, this.registerId, this.branchId});
 }

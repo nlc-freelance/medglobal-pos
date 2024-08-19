@@ -1,6 +1,6 @@
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/shared/dto/transaction_dto.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/data/dto/transaction_dto.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 
 abstract class RefundApi {
   Future<TransactionDto> create(Transaction transaction);

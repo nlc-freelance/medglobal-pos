@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction_paginated_list.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases/get_transactions_usecase.dart';
+import 'package:medglobal_admin_portal/portal/transactions/domain/entities/transaction_paginated_list.dart';
+import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transactions_usecase.dart';
 
 part 'return_transaction_list_state.dart';
 

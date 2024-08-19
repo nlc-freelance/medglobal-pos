@@ -185,7 +185,7 @@ class DataGridColumn {
 
   static List<ColumnData> SALE_TRANSACTIONS = [
     ColumnData('id', 'ID'),
-    ColumnData('receipt_id', 'Receipt ID'),
+    ColumnData('receipt_id', 'Receipt ID', minWidth: 200),
     ColumnData('date', 'Date', minWidth: 180),
     ColumnData('branch', 'Branch'),
     ColumnData('register_id', 'Register'),
@@ -209,10 +209,9 @@ class DataGridColumn {
 
   static List<ColumnData> RETURN_TRANSACTIONS = [
     ColumnData('id', 'ID'),
-    ColumnData('receipt_id', 'Receipt ID'),
+    ColumnData('receipt_id', 'Receipt ID', minWidth: 200),
     ColumnData('date', 'Date', minWidth: 180),
     ColumnData('branch', 'Branch'),
-    ColumnData('register_id', 'Register'),
     ColumnData('employee', 'Employee'),
     ColumnData('total', 'Total (PHP)'),
     ColumnData('reason_for_return', 'Reason for Return'),
@@ -221,20 +220,12 @@ class DataGridColumn {
 
   static List<ColumnData> RETURN_TRANSACTIONS_ITEMS = [
     ColumnData('id', 'ID'),
-    ColumnData('name', 'Product'),
+    ColumnData('name', 'Product', minWidth: 300),
     ColumnData('sku', 'SKU'),
+    ColumnData('return_qty', 'Returned Qty'),
     ColumnData('write_off_qty', 'Write-off Qty'),
     ColumnData('restock_qty', 'Restock Qty'),
-    ColumnData('comment', 'Comment'),
-  ];
-
-  static List<ColumnData> RETURN_TRANSACTION_ITEMS = [
-    ColumnData('id', 'ID'),
-    ColumnData('name', 'Product'),
-    ColumnData('sku', 'SKU'),
-    ColumnData('restockQty', 'Restock Qty'),
-    ColumnData('writeOffQty', 'Write-off Qty'),
-    ColumnData('comment', 'Comment'),
+    ColumnData('comment', 'Comment', minWidth: 350),
   ];
 
   /// POS
@@ -250,9 +241,10 @@ class DataGridColumn {
     ColumnData('id', 'ID'),
     ColumnData('name', 'Product'),
     ColumnData('qty', 'Qty'),
-    ColumnData('price', 'Price'),
-    ColumnData('discount', 'Discount'),
-    ColumnData('subtotal', 'Subtotal'),
+    ColumnData('price', 'Price (PHP)'),
+    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('discount', 'Total Discount (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
   ];
 
   static List<ColumnData> ORDERED_ITEMS_EDITABLE = [

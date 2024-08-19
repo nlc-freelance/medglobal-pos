@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/data/dto/price_dto.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/shared/transactions/data/dto/price_dto.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 
 part 'transaction_item_dto.g.dart';
 

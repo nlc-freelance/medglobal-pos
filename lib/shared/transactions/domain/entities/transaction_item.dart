@@ -18,6 +18,7 @@ class TransactionItem extends Equatable {
   final double? discount;
   final DiscountType? discountType;
   final double? subtotal;
+  final double? total;
   final String? comment;
   final int? restockQty;
   final int? writeOffQty;
@@ -37,6 +38,7 @@ class TransactionItem extends Equatable {
     this.discount,
     this.discountType,
     this.subtotal,
+    this.total,
     this.comment,
     this.restockQty,
     this.writeOffQty,
@@ -56,6 +58,7 @@ class TransactionItem extends Equatable {
         discountType,
         discountInPeso,
         subtotal,
+        total,
         restockQty,
         writeOffQty,
         comment,
@@ -66,40 +69,44 @@ class TransactionItem extends Equatable {
 
   Map<String, dynamic> toJson() => _$TransactionItemToJson(this);
 
-  DataGridRow toItemsOrderedRow() => DataGridRow(
+  DataGridRow toSaleTransactionItemsRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'name', value: name),
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'qty', value: qty ?? 0),
           DataGridCell<double>(columnName: 'price', value: price ?? 0),
-          DataGridCell<double>(columnName: 'discount_in_peso', value: discountInPeso ?? 0),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          DataGridCell<double>(columnName: 'discount_in_peso', value: discountInPeso ?? 0),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
         ],
       );
 
-  DataGridRow toItemsReturnedRow() => DataGridRow(
+  DataGridRow toReturnTransactionItemsRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'name', value: name),
+          DataGridCell<String>(columnName: 'sku', value: sku),
+          DataGridCell<int>(columnName: 'return_qty', value: qty ?? 0),
+          DataGridCell<int>(columnName: 'write_off_qty', value: writeOffQty ?? 0),
+          DataGridCell<int>(columnName: 'restock_qty', value: restockQty ?? 0),
           DataGridCell<String>(columnName: 'comment', value: comment ?? Strings.empty),
-          DataGridCell<int>(columnName: 'restock', value: restockQty ?? 0),
-          DataGridCell<int>(columnName: 'write_off', value: writeOffQty ?? 0),
         ],
       );
 
-  DataGridRow toItemsOrderedPosRow() => DataGridRow(
+  DataGridRow toItemsOrderedRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'name', value: name),
           DataGridCell<int>(columnName: 'qty', value: qty ?? 0),
           DataGridCell<double>(columnName: 'price', value: price ?? 0),
-          DataGridCell<double>(columnName: 'discount_in_peso', value: discountInPeso ?? 0),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          DataGridCell<double>(columnName: 'discount_in_peso', value: discountInPeso ?? 0),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
         ],
       );
 
-  DataGridRow toItemsOrderedPosEditableRow() => DataGridRow(
+  DataGridRow toItemsOrderedRefundableRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<bool>(columnName: 'is_selected', value: isSelected),

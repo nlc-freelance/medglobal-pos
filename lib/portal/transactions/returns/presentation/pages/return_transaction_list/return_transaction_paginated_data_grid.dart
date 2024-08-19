@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -99,15 +99,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                 ),
                               )
                             : null,
-                        onCellTap: (details) {
-                          // if (details.rowColumnIndex.rowIndex != 0) {
-                          //   final id = _returnTransactionDataSource.rows[details.rowColumnIndex.rowIndex - 1]
-                          //       .getCells()
-                          //       .first
-                          //       .value;
-                          //   AppRouter.router.goNamed('Return Details', pathParameters: {'id': id.toString()});
-                          // }
-                        },
+                        onCellTap: (details) {},
                       ),
                     ),
                   ),
@@ -295,13 +287,11 @@ class ReturnTransactionDataSource extends DataGridSource {
   }
 
   Widget _buildCell(String column, DataGridCell cell, int id) {
-    double? discount() => _returns.singleWhere((sale) => sale.id == id).discount;
-    DiscountType? discountType() => _returns.singleWhere((sale) => sale.id == id).discountType;
-
     return switch (column) {
       'receipt_id' => HoverBuilder(
           builder: (isHover) => InkWell(
             onTap: () => AppRouter.router.goNamed('Return Details', pathParameters: {'id': id.toString()}),
+            hoverColor: UIColors.transparent,
             child: UIText.dataGridText(
               cell.value.toString(),
               color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
@@ -309,33 +299,22 @@ class ReturnTransactionDataSource extends DataGridSource {
             ),
           ),
         ),
-      'discount_in_peso' => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            UIText.dataGridText((cell.value as double).toPesoString()),
-            if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
-              const UIHorizontalSpace(8),
-              Container(
-                margin: const EdgeInsets.only(top: 0),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: UIColors.cancelledBg.withOpacity(0.4),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
-                    const UIHorizontalSpace(8),
-                    Text(
-                      '${discount()}%',
-                      style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ],
+      'status' => Chip(
+          label: UIText.labelRegular(
+            (cell.value as ReturnStatus).label,
+            color: (cell.value as ReturnStatus) == ReturnStatus.AWAITING_ACTION
+                ? UIColors.awaitingAction
+                : UIColors.completed,
+          ),
+          backgroundColor: (cell.value as ReturnStatus) == ReturnStatus.AWAITING_ACTION
+              ? UIColors.awaitingActionBg
+              : UIColors.completedBg,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: UIColors.transparent),
+          ),
         ),
       _ => UIText.dataGridText(
           cell.runtimeType.toString().contains('double')

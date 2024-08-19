@@ -1,11 +1,11 @@
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction_paginated_list.dart';
-import 'package:medglobal_admin_portal/shared/dto/transaction_dto.dart';
+import 'package:medglobal_admin_portal/portal/transactions/domain/entities/transaction_paginated_list.dart';
+import 'package:medglobal_admin_portal/shared/transactions/data/dto/transaction_dto.dart';
 
 abstract class TransactionApi {
   Future<TransactionPaginatedList> getTransactions({
-    required TransactionType type,
+    TransactionType? type,
     required int page,
     required int size,
     int? register,
@@ -33,7 +33,7 @@ class TransactionApiImpl implements TransactionApi {
 
   @override
   Future<TransactionPaginatedList> getTransactions({
-    required TransactionType type,
+    TransactionType? type,
     required int page,
     required int size,
     int? register,
@@ -42,7 +42,7 @@ class TransactionApiImpl implements TransactionApi {
     try {
       final response = await _apiService.collection<TransactionDto>(
         '/sales',
-        queryParams: {'page': page, 'size': size, 'type': type.name.toLowerCase()},
+        queryParams: {'page': page, 'size': size, 'type': type?.name.toLowerCase()},
         converter: TransactionDto.fromJson,
       );
 

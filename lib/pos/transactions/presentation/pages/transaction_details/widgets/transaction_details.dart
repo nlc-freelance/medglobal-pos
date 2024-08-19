@@ -9,8 +9,8 @@ import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/trans
 import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transaction_details/datagrid/refunded_items_data_grid.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transaction_details/widgets/reason_for_refund.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transaction_details/widgets/transaction_details_header.dart';
-import 'package:medglobal_admin_portal/shared/cubit/transaction_cubit.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class TransactionDetails extends StatefulWidget {
@@ -40,7 +40,7 @@ class _TransactionDetailsState extends State<TransactionDetails> {
         if (state is RefundSuccess) {
           context.read<TransactionCubit>().getTransactionById(state.refund.id!);
           ToastNotification.success(
-              context, 'A refund has been successfully issued for ${state.refund.saleTransactionId}.');
+              context, 'A refund has been successfully issued for ${state.refund.saleTransactionReceiptId}.');
         }
       },
       builder: (context, state) {

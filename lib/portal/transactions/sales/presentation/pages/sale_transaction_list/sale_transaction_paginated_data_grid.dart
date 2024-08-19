@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -298,6 +298,7 @@ class SaleTransactionDataSource extends DataGridSource {
       'receipt_id' => HoverBuilder(
           builder: (isHover) => InkWell(
             onTap: () => AppRouter.router.goNamed('Sale Details', pathParameters: {'id': id.toString()}),
+            hoverColor: UIColors.transparent,
             child: UIText.dataGridText(
               cell.value.toString(),
               color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,

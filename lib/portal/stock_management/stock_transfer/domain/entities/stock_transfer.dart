@@ -1,11 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'stock_transfer.g.dart';
 
@@ -47,10 +46,10 @@ class StockTransfer extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(
             columnName: 'created_date',
-            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
+            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : '-',
           ),
-          DataGridCell<String>(columnName: 'source_branch', value: sourceBranch?.name ?? Strings.empty),
-          DataGridCell<String>(columnName: 'destination_branch', value: destinationBranch?.name ?? Strings.empty),
+          DataGridCell<String>(columnName: 'source_branch', value: sourceBranch?.name ?? '-'),
+          DataGridCell<String>(columnName: 'destination_branch', value: destinationBranch?.name ?? '-'),
           DataGridCell<StockOrderStatus>(columnName: 'status', value: status),
         ],
       );

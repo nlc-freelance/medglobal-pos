@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -50,12 +50,9 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
               columns: DataGridUtil.getColumns(DataGridColumn.SALE_TRANSACTIONS_ITEMS),
               controller: _dataGridController,
               shrinkWrapRows: true,
-              allowEditing: true,
-              navigationMode: GridNavigationMode.cell,
               selectionMode: SelectionMode.single,
               columnWidthMode: ColumnWidthMode.fill,
               headerGridLinesVisibility: GridLinesVisibility.none,
-              editingGestureType: EditingGestureType.tap,
               tableSummaryRows: [
                 GridTableSummaryRow(
                   color: UIColors.background,
@@ -169,7 +166,7 @@ class SaleItemsDataSource extends DataGridSource {
 
   late Transaction _transaction;
 
-  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toItemsOrderedRow()).toList();
+  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toSaleTransactionItemsRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 

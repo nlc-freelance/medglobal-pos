@@ -3,9 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/employee.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/register.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/employee.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/register.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'transaction.g.dart';
@@ -16,6 +16,7 @@ class Transaction extends Equatable {
   @JsonKey(name: 'transactionId')
   final String? receiptId;
   final int? saleTransactionId;
+  final String? saleTransactionReceiptId;
   final TransactionType? type;
   final ReturnStatus? status;
   final Register? register;
@@ -28,6 +29,7 @@ class Transaction extends Equatable {
   final double? discountInPeso;
   final double? tax;
   final double? total;
+  final double? totalDiscountInPeso;
   final double? amountPaid;
   final String? reasonForReturn;
   @DateTimeConverter()
@@ -37,6 +39,7 @@ class Transaction extends Equatable {
     this.id,
     this.receiptId,
     this.saleTransactionId,
+    this.saleTransactionReceiptId,
     this.status,
     this.type,
     this.register,
@@ -49,6 +52,7 @@ class Transaction extends Equatable {
     this.discountInPeso,
     this.tax,
     this.total,
+    this.totalDiscountInPeso,
     this.amountPaid,
     this.reasonForReturn,
     this.createdAt,
@@ -59,6 +63,7 @@ class Transaction extends Equatable {
         id,
         receiptId,
         saleTransactionId,
+        saleTransactionReceiptId,
         status,
         type,
         register,
@@ -71,13 +76,14 @@ class Transaction extends Equatable {
         discountInPeso,
         tax,
         total,
+        totalDiscountInPeso,
         amountPaid,
         reasonForReturn,
         createdAt
       ];
 
-  /// Sale Transactions DataGrid
-  DataGridRow toSaleTransactionsRow() => DataGridRow(
+  /// Sale Transaction List DataGrid
+  DataGridRow toSaleTransactionRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'receipt_id', value: (receiptId ?? Strings.empty).toString()),
@@ -89,25 +95,25 @@ class Transaction extends Equatable {
           DataGridCell<String>(columnName: 'register_id', value: (register?.id ?? Strings.empty).toString()),
           DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
-          DataGridCell<double>(columnName: 'discount_in_peso', value: discountInPeso ?? 0),
+          DataGridCell<double>(columnName: 'discount_in_peso', value: totalDiscountInPeso ?? 0),
           DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
           DataGridCell<double>(columnName: 'total', value: total ?? 0),
         ],
       );
 
-  /// Return Transactions DataGrid
-  DataGridRow toReturnTransactionsRow() => DataGridRow(
+  /// Return Transaction List DataGrid
+  DataGridRow toReturnTransactionRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'receipt_id', value: (receiptId ?? Strings.empty).toString()),
           DataGridCell<String>(
             columnName: 'date',
             value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
           ),
-          DataGridCell<String>(columnName: 'receipt_id', value: (receiptId ?? Strings.empty).toString()),
           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
           DataGridCell<double>(columnName: 'total', value: total ?? 0),
-          DataGridCell<String>(columnName: 'reason_for_return', value: reasonForReturn ?? Strings.empty),
+          DataGridCell<String>(columnName: 'reason_for_return', value: reasonForReturn ?? '-'),
           DataGridCell<ReturnStatus>(columnName: 'status', value: status),
         ],
       );

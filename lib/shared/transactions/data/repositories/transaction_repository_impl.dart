@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/data/api/transaction_api.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction_paginated_list.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/repositories/transaction_repository.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
+import 'package:medglobal_admin_portal/portal/transactions/domain/entities/transaction_paginated_list.dart';
+import 'package:medglobal_admin_portal/shared/transactions/data/api/transaction_api.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/repositories/transaction_repository.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
   final TransactionApi _transactionApi;
@@ -23,7 +23,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
 
   @override
   Future<Either<Failure, TransactionPaginatedList>> getTransactions({
-    required TransactionType type,
+    TransactionType? type,
     required int page,
     required int size,
     int? register,

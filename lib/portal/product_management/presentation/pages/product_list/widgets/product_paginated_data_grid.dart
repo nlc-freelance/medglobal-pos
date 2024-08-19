@@ -266,7 +266,7 @@ class ProductDataGridSource extends DataGridSource {
       return DataGridRow(cells: [
         DataGridCell<int>(columnName: 'id', value: dataGridRow.id),
         DataGridCell<String>(columnName: 'name', value: dataGridRow.name),
-        DataGridCell<String>(columnName: 'category', value: dataGridRow.category?.name ?? ''),
+        DataGridCell<String>(columnName: 'category', value: dataGridRow.category?.name ?? '-'),
         DataGridCell<String>(columnName: 'created_at', value: DateFormat.yMd().format(dataGridRow.createdAt!)),
       ]);
     }).toList(growable: false);
@@ -277,9 +277,19 @@ class ProductDataGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
+    Color getRowBackgroundColor() {
+      final int index = effectiveRows.indexOf(row);
+      if (index % 2 != 0) {
+        return UIColors.transparent;
+      }
+
+      return UIColors.whiteBg.withOpacity(0.5);
+    }
+
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
         return Container(
+          color: getRowBackgroundColor(),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: cell.columnName == 'name'

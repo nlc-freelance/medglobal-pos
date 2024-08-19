@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_cubit.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -176,7 +176,7 @@ class RefundItemsDataSource extends DataGridSource {
   late double _tax;
   late BuildContext _context;
 
-  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toItemsOrderedPosEditableRow()).toList();
+  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toItemsOrderedRefundableRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -324,7 +324,7 @@ class RefundItemsDataSource extends DataGridSource {
             )
           : Text(
               summaryCellValue(_context, summaryRow.title!, summaryValue),
-              style: summaryRow.title == 'Total Refund' ? UIStyleText.label : UIStyleText.bodyRegular,
+              style: UIStyleText.labelSemiBold,
             ),
     );
   }

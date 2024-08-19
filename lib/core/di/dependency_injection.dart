@@ -101,14 +101,11 @@ import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecase
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecases/update_supplier_usecase.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transaction_by_id_usecase.dart';
+import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transactions_usecase.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/data/api/transaction_api.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/data/repositories/transaction_repository_impl.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/repositories/transaction_repository.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases/get_transaction_by_id_usecase.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases/get_transactions_usecase.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_item_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_shift_api.dart';
@@ -138,7 +135,10 @@ import 'package:medglobal_admin_portal/pos/transactions/domain/usecases/create_r
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/branch_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_remote_cubit.dart';
-import 'package:medglobal_admin_portal/shared/cubit/transaction_cubit.dart';
+import 'package:medglobal_admin_portal/shared/transactions/data/api/transaction_api.dart';
+import 'package:medglobal_admin_portal/shared/transactions/data/repositories/transaction_repository_impl.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/repositories/transaction_repository.dart';
+import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 
 /// lazySingleton are only initialized when needed while factory are always initialized
 
@@ -309,6 +309,7 @@ void initDependencyInjection() {
     ..registerFactory(() => SaleTransactionListCubit(injector()))
     ..registerFactory(() => TransactionCubit(injector()))
     ..registerFactory(() => ReturnTransactionListCubit(injector()))
+    ..registerFactory(() => ReturnCubit())
 
     /// POS
     ..registerFactory(() => RegisterShiftBloc(injector(), injector()))

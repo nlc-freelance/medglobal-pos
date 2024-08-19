@@ -103,7 +103,7 @@ class _CartItemTitleState extends State<CartItemTitle> {
                         const UIHorizontalSpace(12),
                         Container(
                           margin: const EdgeInsets.only(top: 0),
-                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0.3),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
                             color: UIColors.cancelledBg.withOpacity(0.4),

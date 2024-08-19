@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/usecases/create_sale_usecase.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 
 part 'sale_remote_state.dart';
 

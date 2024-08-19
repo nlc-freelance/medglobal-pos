@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_cubit.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -16,7 +19,7 @@ class ReturnTransactionItemsDataGrid extends StatefulWidget {
 }
 
 class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsDataGrid> {
-  List<TransactionItem> _transactionItems = <TransactionItem>[];
+  List<TransactionItem> _items = <TransactionItem>[];
 
   late DataGridController _dataGridController;
   late ReturnItemsDataSource _returnItemsDataSource;
@@ -24,9 +27,9 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
   @override
   void initState() {
     super.initState();
-    _transactionItems = widget.transaction.items ?? [];
+    _items = widget.transaction.items ?? [];
     _dataGridController = DataGridController();
-    _returnItemsDataSource = ReturnItemsDataSource(_transactionItems, widget.transaction);
+    _returnItemsDataSource = ReturnItemsDataSource(_items, context);
   }
 
   @override
@@ -37,139 +40,60 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const PageSectionTitle(title: 'Return Items'),
-        ClipRect(
-          clipper: HorizontalBorderClipper(),
-          child: SfDataGridTheme(
-            data: DataGridUtil.cellNavigationStyle,
-            child: SfDataGrid(
-              source: _returnItemsDataSource,
-              columns: DataGridUtil.getColumns(DataGridColumn.RETURN_TRANSACTIONS_ITEMS),
-              controller: _dataGridController,
-              shrinkWrapRows: true,
-              allowEditing: true,
-              navigationMode: GridNavigationMode.cell,
-              selectionMode: SelectionMode.single,
-              columnWidthMode: ColumnWidthMode.fill,
-              headerGridLinesVisibility: GridLinesVisibility.none,
-              editingGestureType: EditingGestureType.tap,
-              tableSummaryRows: [
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Subtotal',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'discount_in_peso',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
+    return BlocConsumer<ReturnCubit, ReturnState>(
+      listener: (context, state) {
+        print('WRITEOFF ${state.transaction.items?.first.writeOffQty}');
+        print('RESTOCK ${state.transaction.items?.first.restockQty}');
+        print('COMMENT ${state.transaction.items?.first.comment}');
+        _returnItemsDataSource._items = state.transaction.items ?? [];
+
+        _returnItemsDataSource.buildDataGridRows();
+        _returnItemsDataSource.updateDataGridSource();
+      },
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const PageSectionTitle(title: 'Return Items'),
+            ClipRect(
+              clipper: HorizontalBorderClipper(),
+              child: SfDataGridTheme(
+                data: DataGridUtil.cellNavigationStyle,
+                child: SfDataGrid(
+                  source: _returnItemsDataSource,
+                  columns: DataGridUtil.getColumns(DataGridColumn.RETURN_TRANSACTIONS_ITEMS),
+                  controller: _dataGridController,
+                  shrinkWrapRows: true,
+                  selectionMode: SelectionMode.single,
+                  allowEditing: true,
+                  navigationMode: GridNavigationMode.cell,
+                  editingGestureType: EditingGestureType.tap,
+                  columnWidthMode: ColumnWidthMode.fill,
+                  headerGridLinesVisibility: GridLinesVisibility.none,
                 ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Discount',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'discount_in_peso',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Tax',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'discount_in_peso',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Total',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'discount_in_peso',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Cash',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'discount_in_peso',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
 
 class ReturnItemsDataSource extends DataGridSource {
-  ReturnItemsDataSource(List<TransactionItem> transactionItems, Transaction transaction) {
-    _transactionItems = transactionItems;
+  ReturnItemsDataSource(List<TransactionItem> items, BuildContext context) {
+    _items = items;
+    _context = context;
     buildDataGridRows();
-    _transaction = transaction;
   }
 
-  List<TransactionItem> _transactionItems = [];
+  late BuildContext _context;
+
+  List<TransactionItem> _items = [];
 
   List<DataGridRow> dataGridRows = [];
 
-  late Transaction _transaction;
-
-  void buildDataGridRows() => dataGridRows = _transactionItems.map((item) => item.toSaleTransactionItemRow()).toList();
+  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toReturnTransactionItemsRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -190,37 +114,16 @@ class ReturnItemsDataSource extends DataGridSource {
   }
 
   Widget _buildCell(String column, DataGridCell cell, int id) {
-    double? discount() => _transactionItems.singleWhere((sale) => sale.id == id).discount;
-    DiscountType? discountType() => _transactionItems.singleWhere((sale) => sale.id == id).discountType;
-
     return switch (column) {
-      'discount_in_peso' => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            UIText.bodyRegular((cell.value as double).toPesoString()),
-            if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
-              const UIHorizontalSpace(8),
-              Container(
-                margin: const EdgeInsets.only(top: 0),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: UIColors.cancelledBg.withOpacity(0.4),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
-                    const UIHorizontalSpace(8),
-                    Text(
-                      '${discount()}%',
-                      style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ],
+      'write_off_qty' || 'restock_qty' || 'comment' => Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: UIColors.background,
+            border: Border.all(color: UIColors.borderRegular),
+            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+          ),
+          child: UIText.bodyRegular(cell.value.toString()),
         ),
       _ => UIText.bodyRegular(
           cell.runtimeType.toString().contains('double')
@@ -230,72 +133,116 @@ class ReturnItemsDataSource extends DataGridSource {
     };
   }
 
-  @override
-  Widget? buildTableSummaryCellWidget(
-    GridTableSummaryRow summaryRow,
-    GridSummaryColumn? summaryColumn,
-    RowColumnIndex rowColumnIndex,
-    String summaryValue,
-  ) =>
-      Container(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-        child: summaryColumn?.columnName == 'discount_in_peso'
-            ? Text(
-                summaryRow.title!,
-                textAlign: TextAlign.end,
-                style: UIStyleText.labelSemiBold,
-              )
-            : summaryRow.title == 'Discount'
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      UIText.labelSemiBold(getSummaryValue(summaryRow.title!)),
-                      if (_transaction.discountType == DiscountType.PERCENT &&
-                          _transaction.discount != null &&
-                          _transaction.discount != 0) ...[
-                        const UIHorizontalSpace(8),
-                        Container(
-                          margin: const EdgeInsets.only(top: 0),
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: UIColors.cancelledBg.withOpacity(0.4),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
-                              const UIHorizontalSpace(8),
-                              Text(
-                                '${_transaction.discount.toString()}%',
-                                style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ],
-                  )
-                : UIText.label(getSummaryValue(summaryRow.title!)),
-      );
+  /// Helps to hold the new value of all editable widget.
+  /// Based on the new value we will commit the new value into the corresponding
+  /// [DataGridCell] on [onSubmitCell] method.
+  dynamic newCellValue;
 
-  String getSummaryValue(String label) {
-    double? value;
-    switch (label) {
-      case 'Subtotal':
-        value = _transaction.subtotal;
-      case 'Discount':
-        value = _transaction.discountInPeso;
-      case 'Tax':
-        value = _transaction.tax;
-      case 'Total':
-        value = _transaction.total;
-      case 'Cash':
-        value = _transaction.amountPaid;
-      default:
-        return value.toPesoString();
+  /// Help to control the editable text in [TextField] widget.
+  TextEditingController editingController = TextEditingController();
+
+  @override
+  bool onCellBeginEdit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) {
+    if (column.columnName == 'write_off_qty' || column.columnName == 'restock_qty' || column.columnName == 'comment') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  Future<void> onCellSubmit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
+    final dynamic oldValue = dataGridRow
+            .getCells()
+            .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
+            .value ??
+        '';
+
+    final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
+
+    if (newCellValue == null || oldValue == newCellValue) {
+      return;
     }
 
-    return value.toPesoString();
+    if (column.columnName == 'write_off_qty') {
+      final writeOffQty = int.tryParse(newCellValue) ?? 0;
+
+      dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
+          DataGridCell<int>(columnName: 'write_off_qty', value: writeOffQty);
+
+      _context.read<ReturnCubit>().setReturnItemWriteOffQty(
+            id: _items[dataRowIndex].id!,
+            writeOffQty: writeOffQty,
+          );
+    }
+
+    if (column.columnName == 'restock_qty') {
+      final restockQty = int.tryParse(newCellValue) ?? 0;
+
+      dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
+          DataGridCell<int>(columnName: 'restock_qty', value: restockQty);
+
+      _context.read<ReturnCubit>().setReturnItemRestockQty(
+            id: _items[dataRowIndex].id!,
+            restockQty: restockQty,
+          );
+    }
+
+    if (column.columnName == 'comment') {
+      final comment = (newCellValue ?? '').toString();
+
+      dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
+          DataGridCell<String>(columnName: 'comment', value: comment);
+
+      _context.read<ReturnCubit>().setReturnItemComment(
+            id: _items[dataRowIndex].id!,
+            comment: comment,
+          );
+    }
+  }
+
+  @override
+  Widget? buildEditWidget(
+      DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
+    // Text going to display on editable widget
+    final String displayText = dataGridRow
+            .getCells()
+            .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
+            .value
+            ?.toString() ??
+        '';
+
+    // The new cell value must be reset.
+    // To avoid committing the [DataGridCell] value that was previously edited
+    // into the current non-modified [DataGridCell].
+    newCellValue = null;
+
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: TextField(
+        controller: editingController..text = displayText,
+        autofocus: true,
+        cursorHeight: 15.0,
+        style: UIStyleText.bodyRegular,
+        inputFormatters: [
+          if (column.columnName != 'comment') FilteringTextInputFormatter.digitsOnly,
+        ],
+        decoration: const InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            borderSide: BorderSide(color: UIColors.textGray),
+          ),
+        ),
+        onTapOutside: (event) => submitCell(),
+        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : null,
+        onSubmitted: (String value) {
+          /// Call [CellSubmit] callback to fire the canSubmitCell and
+          /// onCellSubmit to commit the new value in single place.
+          submitCell();
+        },
+      ),
+    );
   }
 }

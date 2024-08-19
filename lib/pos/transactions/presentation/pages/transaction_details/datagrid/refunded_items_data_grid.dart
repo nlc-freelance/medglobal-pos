@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -184,7 +184,7 @@ class RefundedItemsDataSource extends DataGridSource {
             )
           : Text(
               summaryCellValue(_context, summaryRow.title!, summaryValue),
-              style: summaryRow.title == 'Total Refund' ? UIStyleText.label : UIStyleText.bodyRegular,
+              style: UIStyleText.labelSemiBold,
             ),
     );
   }

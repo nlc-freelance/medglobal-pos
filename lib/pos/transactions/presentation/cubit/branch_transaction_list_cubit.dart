@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/usecases/get_transactions_usecase.dart';
-import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
+import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transactions_usecase.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 
 part 'branch_transaction_list_state.dart';
 
@@ -24,7 +24,7 @@ class BranchTransactionListCubit extends Cubit<BranchTransactionListState> {
     if (_currentPage == 1) emit(BranchTransactionListLoading());
 
     try {
-      final result = await _getTransactionsUseCase.call(GetTransactionsParams(page: _currentPage));
+      final result = await _getTransactionsUseCase.call(GetTransactionsParams(page: _currentPage, size: 10));
       result.fold(
         (error) => emit(BranchTransactionListError(message: error.message)),
         (transactions) {

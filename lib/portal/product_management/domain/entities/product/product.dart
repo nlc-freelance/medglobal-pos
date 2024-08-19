@@ -74,7 +74,7 @@ class Product extends Equatable {
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'name', value: name),
-          DataGridCell<String>(columnName: 'category', value: category?.name ?? Strings.empty),
+          DataGridCell<String>(columnName: 'category', value: category?.name ?? '-'),
           DataGridCell<String>(columnName: 'createdAt', value: DateFormat.yMd().format(createdAt!)),
         ],
       );

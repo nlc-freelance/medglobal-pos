@@ -47,6 +47,8 @@ class _StockTakeDataGridState extends State<StockTakeDataGrid> {
             navigationMode: GridNavigationMode.row,
             columnWidthMode: ColumnWidthMode.fill,
             headerGridLinesVisibility: GridLinesVisibility.none,
+            gridLinesVisibility: GridLinesVisibility.none,
+            headerRowHeight: 46,
             footerHeight: 100,
             footer: _stockReturnDataSource.rows.isEmpty
                 ? Padding(
@@ -87,9 +89,19 @@ class StockTakeDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
+    Color getRowBackgroundColor() {
+      final int index = effectiveRows.indexOf(row);
+      if (index % 2 != 0) {
+        return UIColors.transparent;
+      }
+
+      return UIColors.whiteBg.withOpacity(0.5);
+    }
+
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
         return Container(
+          color: getRowBackgroundColor(),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: _buildCell(cell.columnName, cell, row.getCells().first.value),
@@ -106,17 +118,17 @@ class StockTakeDataSource extends DataGridSource {
                 pathParameters: {'id': id.toString()},
               ),
               hoverColor: UIColors.transparent,
-              child: UIText.bodyRegular(
+              child: UIText.dataGridText(
                 cell.value.toString(),
                 color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
-                textDecoration: isHover ? TextDecoration.underline : TextDecoration.none,
+                textDecoration: TextDecoration.underline,
               ),
             ),
           ),
         'status' => Chip(
-            label: Text(
+            label: UIText.labelRegular(
               (cell.value as StockOrderStatus).label,
-              style: UIStyleText.chip.copyWith(color: StatusMapper.textColor(cell.value)),
+              color: StatusMapper.textColor(cell.value),
             ),
             backgroundColor: StatusMapper.color(cell.value),
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -126,6 +138,6 @@ class StockTakeDataSource extends DataGridSource {
               side: const BorderSide(color: UIColors.transparent),
             ),
           ),
-        _ => UIText.bodyRegular(cell.value.toString()),
+        _ => UIText.dataGridText(cell.value.toString()),
       };
 }
