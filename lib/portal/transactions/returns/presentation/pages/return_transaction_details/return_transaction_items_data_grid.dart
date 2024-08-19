@@ -6,27 +6,27 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class SaleTransactionItemsDataGrid extends StatefulWidget {
-  const SaleTransactionItemsDataGrid(this.transaction, {super.key});
+class ReturnTransactionItemsDataGrid extends StatefulWidget {
+  const ReturnTransactionItemsDataGrid(this.transaction, {super.key});
 
   final Transaction transaction;
 
   @override
-  State<SaleTransactionItemsDataGrid> createState() => _SaleTransactionItemsDataGridState();
+  State<ReturnTransactionItemsDataGrid> createState() => _ReturnTransactionItemsDataGridState();
 }
 
-class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataGrid> {
-  List<TransactionItem> _items = <TransactionItem>[];
+class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsDataGrid> {
+  List<TransactionItem> _transactionItems = <TransactionItem>[];
 
   late DataGridController _dataGridController;
-  late SaleItemsDataSource _saleItemsDataSource;
+  late ReturnItemsDataSource _returnItemsDataSource;
 
   @override
   void initState() {
     super.initState();
-    _items = widget.transaction.items ?? [];
+    _transactionItems = widget.transaction.items ?? [];
     _dataGridController = DataGridController();
-    _saleItemsDataSource = SaleItemsDataSource(_items, widget.transaction);
+    _returnItemsDataSource = ReturnItemsDataSource(_transactionItems, widget.transaction);
   }
 
   @override
@@ -40,14 +40,14 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const PageSectionTitle(title: 'Items Ordered'),
+        const PageSectionTitle(title: 'Return Items'),
         ClipRect(
           clipper: HorizontalBorderClipper(),
           child: SfDataGridTheme(
             data: DataGridUtil.cellNavigationStyle,
             child: SfDataGrid(
-              source: _saleItemsDataSource,
-              columns: DataGridUtil.getColumns(DataGridColumn.SALE_TRANSACTIONS_ITEMS),
+              source: _returnItemsDataSource,
+              columns: DataGridUtil.getColumns(DataGridColumn.RETURN_TRANSACTIONS_ITEMS),
               controller: _dataGridController,
               shrinkWrapRows: true,
               allowEditing: true,
@@ -156,20 +156,20 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
   }
 }
 
-class SaleItemsDataSource extends DataGridSource {
-  SaleItemsDataSource(List<TransactionItem> items, Transaction transaction) {
-    _items = items;
+class ReturnItemsDataSource extends DataGridSource {
+  ReturnItemsDataSource(List<TransactionItem> transactionItems, Transaction transaction) {
+    _transactionItems = transactionItems;
     buildDataGridRows();
     _transaction = transaction;
   }
 
-  List<TransactionItem> _items = [];
+  List<TransactionItem> _transactionItems = [];
 
   List<DataGridRow> dataGridRows = [];
 
   late Transaction _transaction;
 
-  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toSaleTransactionItemRow()).toList();
+  void buildDataGridRows() => dataGridRows = _transactionItems.map((item) => item.toSaleTransactionItemRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -190,14 +190,14 @@ class SaleItemsDataSource extends DataGridSource {
   }
 
   Widget _buildCell(String column, DataGridCell cell, int id) {
-    double? discount() => _items.singleWhere((sale) => sale.id == id).discount;
-    DiscountType? discountType() => _items.singleWhere((sale) => sale.id == id).discountType;
+    double? discount() => _transactionItems.singleWhere((sale) => sale.id == id).discount;
+    DiscountType? discountType() => _transactionItems.singleWhere((sale) => sale.id == id).discountType;
 
     return switch (column) {
       'discount_in_peso' => Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            UIText.dataGridText((cell.value as double).toPesoString()),
+            UIText.bodyRegular((cell.value as double).toPesoString()),
             if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
               const UIHorizontalSpace(8),
               Container(
@@ -222,7 +222,7 @@ class SaleItemsDataSource extends DataGridSource {
             ],
           ],
         ),
-      _ => UIText.dataGridText(
+      _ => UIText.bodyRegular(
           cell.runtimeType.toString().contains('double')
               ? (cell.value as double).toPesoString()
               : cell.value.toString(),
@@ -238,7 +238,7 @@ class SaleItemsDataSource extends DataGridSource {
     String summaryValue,
   ) =>
       Container(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
         child: summaryColumn?.columnName == 'discount_in_peso'
             ? Text(
                 summaryRow.title!,
@@ -247,7 +247,6 @@ class SaleItemsDataSource extends DataGridSource {
               )
             : summaryRow.title == 'Discount'
                 ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       UIText.labelSemiBold(getSummaryValue(summaryRow.title!)),
@@ -277,7 +276,7 @@ class SaleItemsDataSource extends DataGridSource {
                       ],
                     ],
                   )
-                : UIText.labelSemiBold(getSummaryValue(summaryRow.title!)),
+                : UIText.label(getSummaryValue(summaryRow.title!)),
       );
 
   String getSummaryValue(String label) {

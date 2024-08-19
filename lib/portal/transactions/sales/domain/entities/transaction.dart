@@ -24,6 +24,7 @@ class Transaction extends Equatable {
   final double? tax;
   final double? total;
   final double? amountPaid;
+  final double? totalDiscountInPeso;
   @DateTimeConverter()
   final DateTime? createdAt;
 
@@ -39,6 +40,7 @@ class Transaction extends Equatable {
     this.discountInPeso,
     this.tax,
     this.total,
+    this.totalDiscountInPeso,
     this.amountPaid,
     this.createdAt,
   });
@@ -56,11 +58,12 @@ class Transaction extends Equatable {
         discountInPeso,
         tax,
         total,
+        totalDiscountInPeso,
         amountPaid,
         createdAt
       ];
 
-  DataGridRow toDataGridRow() => DataGridRow(
+  DataGridRow toSaleTransactionRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
 
@@ -70,13 +73,32 @@ class Transaction extends Equatable {
             columnName: 'date',
             value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
           ),
-          DataGridCell<String>(columnName: 'register_id', value: (register?.id ?? Strings.empty).toString()),
           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
+          DataGridCell<String>(columnName: 'register_id', value: (register?.id ?? Strings.empty).toString()),
           DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
-          DataGridCell<double>(columnName: 'discount_in_peso', value: discountInPeso ?? 0),
+          DataGridCell<double>(columnName: 'discount_in_peso', value: totalDiscountInPeso ?? 0),
           DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
           DataGridCell<double>(columnName: 'total', value: total ?? 0),
+        ],
+      );
+
+  DataGridRow toReturnTransactionRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+
+          /// Replace with receipt id
+          DataGridCell<String>(columnName: 'receipt_id', value: (id ?? Strings.empty).toString()),
+          DataGridCell<String>(
+            columnName: 'date',
+            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
+          ),
+          DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
+          DataGridCell<String>(columnName: 'register_id', value: (register?.id ?? Strings.empty).toString()),
+          DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
+          const DataGridCell<String>(columnName: 'reason_for_return', value: ''),
+          const DataGridCell<String>(columnName: 'status', value: 'Awaiting Action'),
         ],
       );
 }

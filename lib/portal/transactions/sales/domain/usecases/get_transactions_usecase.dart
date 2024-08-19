@@ -10,16 +10,19 @@ class GetTransactionsUseCase implements UseCase<TransactionPaginatedList, GetTra
 
   @override
   Future<Either<Failure, TransactionPaginatedList>> call(GetTransactionsParams params) => _repository.getTransactions(
+        type: params.type,
         page: params.page,
-        register: params.registerId,
+        size: params.size,
         branch: params.branchId,
       );
 }
 
 class GetTransactionsParams {
-  final int? page;
+  final TransactionType type;
+  final int page;
+  final int size;
   final int? registerId;
   final int? branchId;
 
-  GetTransactionsParams({this.page, this.registerId, this.branchId});
+  GetTransactionsParams({required this.type, required this.page, required this.size, this.registerId, this.branchId});
 }

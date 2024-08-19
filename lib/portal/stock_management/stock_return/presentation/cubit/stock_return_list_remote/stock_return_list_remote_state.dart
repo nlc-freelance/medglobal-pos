@@ -7,21 +7,21 @@ sealed class StockReturnListRemoteState extends Equatable {
   List<Object> get props => [];
 }
 
-final class StockReturnListInitial extends StockReturnListRemoteState {}
+final class StockReturnTransactionListInitial extends StockReturnListRemoteState {}
 
-final class StockReturnListLoading extends StockReturnListRemoteState {}
+final class StockReturnTransactionListLoading extends StockReturnListRemoteState {}
 
-final class StockReturnListLoaded extends StockReturnListRemoteState {
+final class StockReturnTransactionListLoaded extends StockReturnListRemoteState {
   final List<StockReturn> stockReturns;
-  const StockReturnListLoaded({required this.stockReturns});
+  const StockReturnTransactionListLoaded({required this.stockReturns});
 
   @override
   List<Object> get props => [stockReturns];
 }
 
-final class StockReturnListError extends StockReturnListRemoteState {
+final class StockReturnTransactionListError extends StockReturnListRemoteState {
   final String message;
-  const StockReturnListError({required this.message});
+  const StockReturnTransactionListError({required this.message});
 
   @override
   List<Object> get props => [message];

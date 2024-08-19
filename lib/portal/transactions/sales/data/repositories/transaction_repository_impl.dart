@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/data/api/transaction_api.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction_paginated_list.dart';
@@ -22,9 +22,21 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<Either<Failure, TransactionPaginatedList>> getTransactions({int? page, int? register, int? branch}) async {
+  Future<Either<Failure, TransactionPaginatedList>> getTransactions({
+    required TransactionType type,
+    required int page,
+    required int size,
+    int? register,
+    int? branch,
+  }) async {
     try {
-      final response = await _transactionApi.getTransactions(page: page, register: register, branch: branch);
+      final response = await _transactionApi.getTransactions(
+        type: type,
+        page: page,
+        size: size,
+        register: register,
+        branch: branch,
+      );
       return Right(response);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));

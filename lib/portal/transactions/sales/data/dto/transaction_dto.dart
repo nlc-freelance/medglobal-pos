@@ -25,6 +25,7 @@ class TransactionDto extends Equatable {
   final double? discountInPeso;
   final double? tax;
   final double? total;
+  final double? totalDiscountInPeso;
   final double? amountPaid;
   @DateTimeConverter()
   final DateTime? createdAt;
@@ -41,6 +42,7 @@ class TransactionDto extends Equatable {
     this.discountInPeso,
     this.tax,
     this.total,
+    this.totalDiscountInPeso,
     this.amountPaid,
     this.createdAt,
   });
@@ -58,6 +60,7 @@ class TransactionDto extends Equatable {
         discountInPeso,
         tax,
         total,
+        totalDiscountInPeso,
         amountPaid,
         createdAt
       ];

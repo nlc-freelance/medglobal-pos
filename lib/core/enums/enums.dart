@@ -30,9 +30,11 @@ enum SideMenuTree {
   ),
   TRANSACTIONS(
     'Transactions',
-    ['Sales', 'Sale Details', 'Returns'],
+    ['Sales', 'Sale Details', 'Returns', 'Return Details'],
   ),
-  RETURNS('Returns Management', ['Returns Management']),
+  // RETURNS('Returns Management', [
+  //   'Returns Management',
+  // ]),
   REPORTS(
     'Reports',
     ['Product History', 'Sales Report', 'Sales Per Category', 'Sales Per Branch', 'Sales Per Day'],
@@ -74,6 +76,7 @@ enum SideMenuTreeItem {
   SALE_TRANSACTIONS('Sales', 'sales', '/transactions/sales'),
   SALE_TRANSACTION_DETAILS('Sale Details', 'id=:id', '/transactions/sales/:id'),
   RETURN_TRANSACTIONS('Returns', 'returns', '/transactions/returns'),
+  RETURN_TRANSACTION_DETAILS('Return Details', 'id=:id', '/transactions/returns/:id'),
 
   MANAGE_RETURNS('Returns Management', '/returns', '/returns'),
 

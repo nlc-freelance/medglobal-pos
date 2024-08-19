@@ -8,8 +8,8 @@ import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/a
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/products_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/purchase_order_details_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_orders_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/new/new_stock_return_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stock_return_details_page.dart';
@@ -21,11 +21,13 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfers_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/pages/supply_needs_page.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/suppliers_page.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_details/return_transaction_details_page.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_list/returns_page.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_details/sale_transaction_details_page.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transactions_page.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/register/register_page.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_billing/register_billing_page.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transactions_page.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/pages/register/register_page.dart';
 
 abstract class AppRouter {
   static final GoRouter router = GoRouter(
@@ -184,27 +186,32 @@ abstract class AppRouter {
                   GoRoute(
                     name: SideMenuTreeItem.RETURN_TRANSACTIONS.name,
                     path: SideMenuTreeItem.RETURN_TRANSACTIONS.path,
-                    builder: (context, state) => const Text(
-                      'Return Transactions',
-                      style: TextStyle(fontSize: 24, color: Colors.black),
-                    ),
+                    pageBuilder: (context, state) => const NoTransitionPage(child: ReturnTransactionsPage()),
+                    routes: [
+                      GoRoute(
+                        name: SideMenuTreeItem.RETURN_TRANSACTION_DETAILS.name,
+                        path: SideMenuTreeItem.RETURN_TRANSACTION_DETAILS.path,
+                        pageBuilder: (context, state) =>
+                            NoTransitionPage(child: ReturnTransactionDetailsPage(id: state.pathParameters['id']!)),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ],
           ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                name: SideMenuTreeItem.MANAGE_RETURNS.name,
-                path: SideMenuTreeItem.MANAGE_RETURNS.path,
-                builder: (context, state) => const Text(
-                  'Returns Management',
-                  style: TextStyle(fontSize: 24, color: Colors.black),
-                ),
-              ),
-            ],
-          ),
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(
+          //       name: SideMenuTreeItem.MANAGE_RETURNS.name,
+          //       path: SideMenuTreeItem.MANAGE_RETURNS.path,
+          //       builder: (context, state) => const Text(
+          //         'Returns Management',
+          //         style: TextStyle(fontSize: 24, color: Colors.black),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           StatefulShellBranch(
             routes: [
               GoRoute(

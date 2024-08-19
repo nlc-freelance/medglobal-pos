@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/filter_popup.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transaction_paginated_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_list/return_transaction_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class SaleTransactionsPage extends StatefulWidget {
-  const SaleTransactionsPage({super.key});
+class ReturnTransactionsPage extends StatefulWidget {
+  const ReturnTransactionsPage({super.key});
 
   @override
-  State<SaleTransactionsPage> createState() => _SaleTransactionsPageState();
+  State<ReturnTransactionsPage> createState() => _ReturnTransactionsPageState();
 }
 
-class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
+class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageHeader(
-          title: 'Sales',
+          title: 'Returns',
           subtitle: Strings.subtitlePlaceholder,
         ),
         const UIVerticalSpace(20),
@@ -46,7 +46,7 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
             ),
           ],
         ),
-        const Expanded(child: SaleTransactionPaginatedDataGrid()),
+        const Expanded(child: ReturnTransactionPaginatedDataGrid()),
       ],
     );
   }

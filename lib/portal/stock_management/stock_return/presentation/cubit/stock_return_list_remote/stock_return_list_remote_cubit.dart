@@ -9,19 +9,19 @@ part 'stock_return_list_remote_state.dart';
 class StockReturnListRemoteCubit extends Cubit<StockReturnListRemoteState> {
   final GetStockReturnsUseCase _getStockReturnsUseCase;
 
-  StockReturnListRemoteCubit(this._getStockReturnsUseCase) : super(StockReturnListInitial());
+  StockReturnListRemoteCubit(this._getStockReturnsUseCase) : super(StockReturnTransactionListInitial());
 
   Future<void> getStockReturns({int? page, StockOrderStatus? status}) async {
-    emit(StockReturnListLoading());
+    emit(StockReturnTransactionListLoading());
 
     try {
       final result = await _getStockReturnsUseCase.call(GetStockReturnsParams(page: page, status: status));
       result.fold(
-        (error) => emit(StockReturnListError(message: error.message)),
-        (data) => emit(StockReturnListLoaded(stockReturns: data.stockReturns!)),
+        (error) => emit(StockReturnTransactionListError(message: error.message)),
+        (data) => emit(StockReturnTransactionListLoaded(stockReturns: data.stockReturns!)),
       );
     } catch (e) {
-      emit(StockReturnListError(message: e.toString()));
+      emit(StockReturnTransactionListError(message: e.toString()));
     }
   }
 }

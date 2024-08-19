@@ -8,7 +8,6 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/entities
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_search_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/TO_DELETE_product_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -22,7 +21,7 @@ class ProductPaginatedDataGrid extends StatefulWidget {
 
 class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
   late DataGridController _dataGridController;
-  late ProductDataGridSource _productDataSource;
+  late ProductDataGridSource _productDataGridSource;
 
   List<Product> _products = [];
   int _rowsPerPage = 20;
@@ -47,10 +46,10 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
       listener: (context, state) {
         if (state is ProductListLoaded) {
           _products = state.products.products ?? [];
-          _productDataSource = ProductDataGridSource(_products, _rowsPerPage);
+          _productDataGridSource = ProductDataGridSource(_products, _rowsPerPage);
         }
         if (state is ProductListNoResultFound) {
-          _productDataSource = ProductDataGridSource([], _rowsPerPage);
+          _productDataGridSource = ProductDataGridSource([], _rowsPerPage);
         }
       },
       builder: (context, state) {
@@ -61,7 +60,7 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
           return DataGridNoData.search(
             message: state.message,
             columns: DataGridUtil.getColumns(DataGridColumn.PRODUCTS),
-            source: _productDataSource,
+            source: _productDataGridSource,
           );
         }
         if (state is ProductListLoaded) {
@@ -69,14 +68,13 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
             children: [
               Expanded(
                 child: Container(
-                  height: MediaQuery.sizeOf(context).height * 0.56,
-                  decoration: UIStyleContainer.topBorder,
+                  decoration: UIStyleContainer.horizontalBorder,
                   child: ClipRect(
                     clipper: HorizontalBorderClipper(),
                     child: SfDataGridTheme(
                       data: DataGridUtil.rowNavigationStyle,
                       child: SfDataGrid(
-                        source: _productDataSource,
+                        source: _productDataGridSource,
                         columns: DataGridUtil.getColumns(DataGridColumn.PRODUCTS),
                         controller: _dataGridController,
                         rowsPerPage: _rowsPerPage,
@@ -85,12 +83,11 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                         navigationMode: GridNavigationMode.row,
                         selectionMode: SelectionMode.multiple,
                         columnWidthMode: ColumnWidthMode.fill,
-                        headerRowHeight: 48,
-                        rowHeight: 40,
+                        headerRowHeight: 46,
                         headerGridLinesVisibility: GridLinesVisibility.none,
-                        gridLinesVisibility: GridLinesVisibility.horizontal,
+                        gridLinesVisibility: GridLinesVisibility.none,
                         footerHeight: 100,
-                        footer: _productDataSource.rows.isEmpty
+                        footer: _productDataGridSource.rows.isEmpty
                             ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -113,6 +110,8 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                 ),
               ),
               const UIVerticalSpace(16),
+
+              /// TODO: Extract pager to its own widget
               Row(
                 children: [
                   UIPopupMenuButton.textIcon(
@@ -220,7 +219,7 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
         }
         return DataGridLoading(
           columns: DataGridUtil.getColumns(DataGridColumn.PRODUCTS),
-          source: ProductDataSource([]),
+          source: _productDataGridSource = ProductDataGridSource([], _rowsPerPage),
           showCheckbox: true,
         );
       },
@@ -289,13 +288,13 @@ class ProductDataGridSource extends DataGridSource {
                         onTap: () => AppRouter.router
                             .goNamed('Product Details', pathParameters: {'id': row.getCells().first.value.toString()}),
                         hoverColor: UIColors.transparent,
-                        child: UIText.bodyRegular(
+                        child: UIText.dataGridText(
                           cell.value.toString(),
                           color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
-                          textDecoration: isHover ? TextDecoration.underline : TextDecoration.none,
+                          textDecoration: TextDecoration.underline,
                         ),
                       ))
-              : UIText.bodyRegular(cell.value.toString()),
+              : UIText.dataGridText(cell.value.toString()),
         );
       }).toList(),
     );
