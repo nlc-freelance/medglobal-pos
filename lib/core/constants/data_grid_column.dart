@@ -71,7 +71,7 @@ class DataGridColumn {
     ColumnData('qty_ordered', 'Ordered Qty'),
     ColumnData('qty_received', 'Received Qty'),
     ColumnData('supplier_price', 'Supplier Price (PHP)'),
-    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
   ];
 
   static List<ColumnData> STOCK_RETURNS = [
@@ -159,7 +159,7 @@ class DataGridColumn {
     ColumnData('qty_at_destination', 'Qty at Destination'),
     ColumnData('qty_to_transfer', 'Qty to Transfer'),
     ColumnData('cost', 'Cost (PHP)'),
-    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
     ColumnData('action', 'Action'),
   ];
 
@@ -170,7 +170,7 @@ class DataGridColumn {
     ColumnData('qty_to_transfer', 'Transferred Qty'),
     ColumnData('qty_received', 'Received Qty'),
     ColumnData('cost', 'Cost (PHP)'),
-    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
   ];
 
   static List<ColumnData> STOCK_ITEMS_TRANSFERRED = [
@@ -180,7 +180,7 @@ class DataGridColumn {
     ColumnData('qty_transferred', 'Transferred Quantity'),
     ColumnData('qty_received', 'Received Quantity'),
     ColumnData('cost', 'Cost (PHP)'),
-    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
   ];
 
   static List<ColumnData> SALE_TRANSACTIONS = [

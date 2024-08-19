@@ -233,7 +233,7 @@ class PurchaseItemsDataSource extends DataGridSource {
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
             child: key == 'supplier_price'
-                ? UIText.bodyRegular((cell.value as double).toPesoString())
+                ? UIText.bodyRegular((cell.value as double).toStringAsFixed(3))
                 : UIText.bodyRegular(cell.value.toString()),
           ),
         'action' => LayoutBuilder(
@@ -288,31 +288,31 @@ class PurchaseItemsDataSource extends DataGridSource {
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_to_order', value: newQtyToOrder);
 
-      /// Compute new total and update the value in the DataGridRows
-      double newSubtotal = (newQtyToOrder ?? 0) * (supplierPrice);
-      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newSubtotal);
+      /// Compute new total per item and update the value in the DataGridRows
+      double newTotalPerItem = (newQtyToOrder ?? 0) * (supplierPrice);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<PurchaseOrderCubit>().setQuantityToOrderPerItem(
             id: _itemsToOrder[dataRowIndex].id!,
             qty: newQtyToOrder!,
-            subtotal: newSubtotal,
+            total: newTotalPerItem,
           );
     }
     if (column.columnName == 'supplier_price') {
-      final newSupplierPrice = double.tryParse(newCellValue).roundToTwoDecimalPlaces();
+      final newSupplierPrice = double.tryParse(newCellValue) ?? 0;
       double qtyToOrder = dataGridRows[dataRowIndex].getCells()[4].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<double>(columnName: 'supplier_price', value: newSupplierPrice);
 
-      /// Compute new total and update the value in the DataGridRows
-      double newSubtotal = (newSupplierPrice) * (qtyToOrder);
-      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newSubtotal);
+      /// Compute new total per item and update the value in the DataGridRows
+      double newTotalPerItem = (newSupplierPrice) * (qtyToOrder);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<PurchaseOrderCubit>().setSupplierPricePerItem(
             id: _itemsToOrder[dataRowIndex].id!,
             price: newSupplierPrice,
-            subtotal: newSubtotal,
+            total: newTotalPerItem,
           );
     }
   }

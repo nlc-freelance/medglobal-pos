@@ -37,6 +37,6 @@ class PurchaseOrderItemDto extends Equatable {
         qtyToOrder: qtyToOrder,
         qtyReceived: qtyReceived,
         supplierPrice: supplierPrice,
-        subtotal: (qtyToOrder ?? 0) * (supplierPrice ?? 0),
+        total: (qtyToOrder ?? 0) * (supplierPrice ?? 0),
       );
 }

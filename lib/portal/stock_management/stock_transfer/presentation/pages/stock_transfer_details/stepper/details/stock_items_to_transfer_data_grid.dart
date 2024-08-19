@@ -107,7 +107,7 @@ class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataG
                               ),
                               const GridSummaryColumn(
                                 name: '',
-                                columnName: 'subtotal',
+                                columnName: 'total',
                                 summaryType: GridSummaryType.sum,
                               ),
                             ],
@@ -168,6 +168,7 @@ class StockItemsToTransferDataSource extends DataGridSource {
             ),
             child: UIText.bodyRegular(cell.value.toString()),
           ),
+        'cost' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
         'action' => LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
               'Delete',
@@ -220,14 +221,14 @@ class StockItemsToTransferDataSource extends DataGridSource {
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_to_transfer', value: newQtyToTransfer);
 
-      /// Compute new subtotal and update the value in the DataGridRows
-      double newSubtotal = (newQtyToTransfer ?? 0) * (cost);
-      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'subtotal', value: newSubtotal);
+      /// Compute new total per item and update the value in the DataGridRows
+      double newTotalPerItem = (newQtyToTransfer ?? 0) * (cost);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<StockTransferCubit>().setQuantityToTransferPerItem(
             id: _itemsToTransfer[dataRowIndex].id!,
             qty: newQtyToTransfer!,
-            subtotal: newSubtotal,
+            total: newTotalPerItem,
           );
     }
   }

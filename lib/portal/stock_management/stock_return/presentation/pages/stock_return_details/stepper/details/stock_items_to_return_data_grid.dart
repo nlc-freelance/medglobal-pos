@@ -233,7 +233,7 @@ class StockItemsToReturnDataSource extends DataGridSource {
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
             child: key == 'supplier_price'
-                ? UIText.bodyRegular((cell.value as double).toPesoString())
+                ? UIText.bodyRegular((cell.value as double).toStringAsFixed(3))
                 : UIText.bodyRegular(cell.value.toString()),
           ),
         'action' => LayoutBuilder(
@@ -299,7 +299,7 @@ class StockItemsToReturnDataSource extends DataGridSource {
           );
     }
     if (column.columnName == 'supplier_price') {
-      final newSupplierPrice = double.tryParse(newCellValue).roundToTwoDecimalPlaces();
+      final newSupplierPrice = double.tryParse(newCellValue) ?? 0;
       double qtyToReturn = dataGridRows[dataRowIndex].getCells()[4].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =

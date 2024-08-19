@@ -75,7 +75,7 @@ class _StockItemsTransferredDataGridState extends State<StockItemsTransferredDat
                     ),
                     const GridSummaryColumn(
                       name: '',
-                      columnName: 'subtotal',
+                      columnName: 'total',
                       summaryType: GridSummaryType.sum,
                     ),
                   ],
@@ -114,11 +114,13 @@ class StockItemsTransferredDataSource extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: UIText.bodyRegular(
-            cell.runtimeType.toString().contains('double')
-                ? (cell.value as double).toPesoString()
-                : cell.value.toString(),
-          ),
+          child: cell.columnName == 'cost'
+              ? UIText.bodyRegular((cell.value as double).toStringAsFixed(3))
+              : UIText.bodyRegular(
+                  cell.runtimeType.toString().contains('double')
+                      ? (cell.value as double).toPesoString()
+                      : cell.value.toString(),
+                ),
         );
       }).toList(),
     );
@@ -134,7 +136,7 @@ class StockItemsTransferredDataSource extends DataGridSource {
               summaryRow.title!,
               align: TextAlign.end,
             )
-          : UIText.labelSemiBold(summaryValue.toPesoString()),
+          : UIText.label(summaryValue.toPesoString()),
     );
   }
 }

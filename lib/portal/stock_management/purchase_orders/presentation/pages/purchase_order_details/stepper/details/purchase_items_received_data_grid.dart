@@ -91,7 +91,7 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'subtotal',
+                        columnName: 'total',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -109,7 +109,7 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'subtotal',
+                        columnName: 'total',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -127,7 +127,7 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'subtotal',
+                        columnName: 'total',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -145,7 +145,7 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'subtotal',
+                        columnName: 'total',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -214,6 +214,7 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
                 child: UIText.bodyRegular(cell.value.toString()),
               )
             : UIText.bodyRegular(cell.value.toString()),
+        'supplier_price' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
         _ => UIText.bodyRegular(
             cell.runtimeType.toString().contains('double')
                 ? (cell.value as double).toPesoString()
@@ -259,14 +260,14 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_received', value: newQtyReceived);
 
-      /// Compute new subtotal and update the value in the DataGridRows
-      double newSubtotal = (newQtyReceived ?? 0) * (cost);
-      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'subtotal', value: newSubtotal);
+      /// Compute new total per item and update the value in the DataGridRows
+      double newTotalPerItem = (newQtyReceived ?? 0) * (cost);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
             id: _itemsReceived[dataRowIndex].id!,
             qty: newQtyReceived!,
-            subtotal: newSubtotal,
+            total: newTotalPerItem,
           );
     }
   }

@@ -30,7 +30,7 @@ class StockReturnCubit extends Cubit<StockReturnState> {
     final updatedItems = items.map((item) {
       if (item.id == id) {
         return item.copyWith(
-          supplierPrice: price.roundToTwoDecimalPlaces(),
+          supplierPrice: price,
           total: total.roundToTwoDecimalPlaces(),
         );
       }
