@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_details/sale_transaction_items_data_grid.dart';
+import 'package:medglobal_admin_portal/shared/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class SaleTransactionDetailsPage extends StatefulWidget {

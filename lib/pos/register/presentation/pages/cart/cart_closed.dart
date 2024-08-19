@@ -48,6 +48,7 @@ class _CartClosedState extends State<CartClosed> {
             return FutureBuilder(
                 future: SharedPreferencesService.isMaxShiftOpenReached(),
                 builder: (context, snapshot) => Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (snapshot.data == true) ...[
                           Text('Opening shift can only be done once a day',

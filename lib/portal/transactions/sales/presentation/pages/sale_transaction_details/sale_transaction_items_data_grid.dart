@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -16,17 +16,17 @@ class SaleTransactionItemsDataGrid extends StatefulWidget {
 }
 
 class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataGrid> {
-  List<TransactionItem> _transactionItems = <TransactionItem>[];
+  List<TransactionItem> _itemsOrdered = <TransactionItem>[];
 
   late DataGridController _dataGridController;
-  late TransactionItemsDataGrid _transactionItemsDataSource;
+  late SaleTransactionItemsDataSource _itemsOrderedDataSource;
 
   @override
   void initState() {
     super.initState();
-    _transactionItems = widget.transaction.items ?? [];
+    _itemsOrdered = widget.transaction.items ?? [];
     _dataGridController = DataGridController();
-    _transactionItemsDataSource = TransactionItemsDataGrid(_transactionItems, widget.transaction);
+    _itemsOrderedDataSource = SaleTransactionItemsDataSource(_itemsOrdered, widget.transaction);
   }
 
   @override
@@ -46,7 +46,7 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
           child: SfDataGridTheme(
             data: DataGridUtil.cellNavigationStyle,
             child: SfDataGrid(
-              source: _transactionItemsDataSource,
+              source: _itemsOrderedDataSource,
               columns: DataGridUtil.getColumns(DataGridColumn.SALE_TRANSACTIONS_ITEMS),
               controller: _dataGridController,
               shrinkWrapRows: true,
@@ -156,20 +156,20 @@ class _SaleTransactionItemsDataGridState extends State<SaleTransactionItemsDataG
   }
 }
 
-class TransactionItemsDataGrid extends DataGridSource {
-  TransactionItemsDataGrid(List<TransactionItem> transactionItems, Transaction transaction) {
-    _transactionItems = transactionItems;
+class SaleTransactionItemsDataSource extends DataGridSource {
+  SaleTransactionItemsDataSource(List<TransactionItem> transactionItems, Transaction transaction) {
+    _itemsOrdered = transactionItems;
     buildDataGridRows();
     _transaction = transaction;
   }
 
-  List<TransactionItem> _transactionItems = [];
+  List<TransactionItem> _itemsOrdered = [];
 
   List<DataGridRow> dataGridRows = [];
 
   late Transaction _transaction;
 
-  void buildDataGridRows() => dataGridRows = _transactionItems.map((item) => item.toDataGridRow()).toList();
+  void buildDataGridRows() => dataGridRows = _itemsOrdered.map((item) => item.toItemsOrderedRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -190,8 +190,8 @@ class TransactionItemsDataGrid extends DataGridSource {
   }
 
   Widget _buildCell(String column, DataGridCell cell, int id) {
-    double? discount() => _transactionItems.singleWhere((sale) => sale.id == id).discount;
-    DiscountType? discountType() => _transactionItems.singleWhere((sale) => sale.id == id).discountType;
+    double? discount() => _itemsOrdered.singleWhere((sale) => sale.id == id).discount;
+    DiscountType? discountType() => _itemsOrdered.singleWhere((sale) => sale.id == id).discountType;
 
     return switch (column) {
       'discount_in_peso' => Row(

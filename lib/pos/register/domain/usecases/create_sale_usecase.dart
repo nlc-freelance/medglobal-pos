@@ -3,7 +3,7 @@ import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/usecases/usecase.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/repositories/sale_repository.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
 
 class CreateSaleUseCase implements UseCase<Transaction, CreateSaleParams> {
   final SaleRepository repository;

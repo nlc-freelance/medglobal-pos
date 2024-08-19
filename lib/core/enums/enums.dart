@@ -149,3 +149,22 @@ enum TransactionType {
   final String label;
   const TransactionType(this.label);
 }
+
+enum ReturnStatus {
+  AWAITING_ACTION('Awaiting Action'),
+  COMPLETED('Completed');
+
+  final String label;
+  const ReturnStatus(this.label);
+}
+
+enum ReasonForRefund {
+  DAMAGED_ITEMS('Damaged Items'),
+  DISSATISFIED('Dissatisfied'),
+  INCORRECT_ITEM('Incorrect Item'),
+  INCORRECT_VARIANT('Incorrect Variant'),
+  OTHER('Other');
+
+  final String label;
+  const ReasonForRefund(this.label);
+}

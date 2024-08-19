@@ -1,6 +1,6 @@
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction_dto.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order.dart';
+import 'package:medglobal_admin_portal/shared/dto/transaction_dto.dart';
 
 abstract class SaleApi {
   Future<TransactionDto> createSale({required int registerId, required Order order});

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/entities/transaction.dart';
 
 class TransactionPaginatedList extends Equatable {
   final List<Transaction>? transactions;
