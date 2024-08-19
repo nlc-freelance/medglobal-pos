@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_remote/stock_transfer_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_remote/stock_transfer_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfer_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -25,7 +24,10 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
     _tabController = TabController(length: 5, vsync: this);
     context.read<StockTransferListRemoteCubit>().getStockTransfers();
 
-    /// Reset last selected stock return
+    /// TODO: This does not reset when used the back btn or side menu to navigate back to StockTransfersPage
+    /// tho cubit should be reset to initial but since navigation uses pushNamed, it does not reset
+    /// might have to refactor side menu
+    context.read<StockTransferRemoteCubit>().reset();
     context.read<StockTransferCubit>().reset();
   }
 
@@ -55,8 +57,6 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    final columns = DataGridUtil.getColumns(DataGridColumn.STOCK_TAKES);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -119,7 +119,6 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
             ),
           ],
         ),
-        // Expanded(child: StockTransferDataGrid(stockTransfersMock)),
         BlocBuilder<StockTransferListRemoteCubit, StockTransferListRemoteState>(
           builder: (context, state) {
             if (state is StockTransferListError) {
@@ -131,7 +130,7 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
               );
             }
             return DataGridLoading(
-              columns: columns,
+              columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFERS, showId: true),
               source: StockTransferDataSource([]),
             );
           },
@@ -140,54 +139,3 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
     );
   }
 }
-
-final stockTransfersMock = [
-  StockTransfer(
-    id: 1,
-    sourceBranch: Branch(id: 1, name: 'Manila Branch'),
-    destinationBranch: Branch(id: 2, name: 'Pasig Branch'),
-    status: StockOrderStatus.NEW,
-    createdAt: DateTime.now(),
-    completedAt: DateTime.now(),
-  ),
-  StockTransfer(
-    id: 2,
-    sourceBranch: Branch(id: 1, name: 'Manila Branch'),
-    destinationBranch: Branch(id: 2, name: 'Pasig Branch'),
-    status: StockOrderStatus.FOR_RECEIVING,
-    createdAt: DateTime.now(),
-    completedAt: DateTime.now(),
-  ),
-  StockTransfer(
-    id: 3,
-    sourceBranch: Branch(id: 1, name: 'Manila Branch'),
-    destinationBranch: Branch(id: 2, name: 'Pasig Branch'),
-    status: StockOrderStatus.COMPLETED,
-    createdAt: DateTime.now(),
-    completedAt: DateTime.now(),
-  ),
-  StockTransfer(
-    id: 4,
-    sourceBranch: Branch(id: 1, name: 'Manila Branch'),
-    destinationBranch: Branch(id: 2, name: 'Pasig Branch'),
-    status: StockOrderStatus.CANCELLED,
-    createdAt: DateTime.now(),
-    completedAt: DateTime.now(),
-  ),
-  StockTransfer(
-    id: 4,
-    sourceBranch: Branch(id: 1, name: 'Manila Branch'),
-    destinationBranch: Branch(id: 2, name: 'Pasig Branch'),
-    status: StockOrderStatus.SHIPPED,
-    createdAt: DateTime.now(),
-    completedAt: DateTime.now(),
-  ),
-  StockTransfer(
-    id: 4,
-    sourceBranch: Branch(id: 1, name: 'Manila Branch'),
-    destinationBranch: Branch(id: 2, name: 'Pasig Branch'),
-    status: StockOrderStatus.IN_PROGRESS,
-    createdAt: DateTime.now(),
-    completedAt: DateTime.now(),
-  ),
-];

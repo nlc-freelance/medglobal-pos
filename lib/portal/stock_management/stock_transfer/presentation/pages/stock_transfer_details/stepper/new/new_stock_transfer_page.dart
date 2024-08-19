@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_remote/stock_transfer_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stepper/stock_transfer_stepper.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class NewStockTransferPage extends StatelessWidget {
+class NewStockTransferPage extends StatefulWidget {
   const NewStockTransferPage({super.key});
+
+  @override
+  State<NewStockTransferPage> createState() => _NewStockTransferPageState();
+}
+
+class _NewStockTransferPageState extends State<NewStockTransferPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<StockTransferRemoteCubit>().reset();
+    context.read<StockTransferCubit>().reset();
+  }
 
   @override
   Widget build(BuildContext context) {

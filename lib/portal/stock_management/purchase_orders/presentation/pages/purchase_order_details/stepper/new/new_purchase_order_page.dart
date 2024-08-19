@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/purchase_order_stepper.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class NewPurchaseOrderPage extends StatelessWidget {
+class NewPurchaseOrderPage extends StatefulWidget {
   const NewPurchaseOrderPage({super.key});
+
+  @override
+  State<NewPurchaseOrderPage> createState() => _NewPurchaseOrderPageState();
+}
+
+class _NewPurchaseOrderPageState extends State<NewPurchaseOrderPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<PurchaseOrderRemoteCubit>().reset();
+    context.read<PurchaseOrderCubit>().reset();
+  }
 
   @override
   Widget build(BuildContext context) {

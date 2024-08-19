@@ -78,7 +78,7 @@ class _StockItemsShippedDataGridState extends State<StockItemsShippedDataGrid> {
                         ),
                         const GridSummaryColumn(
                           name: '',
-                          columnName: 'subtotal',
+                          columnName: 'total',
                           summaryType: GridSummaryType.sum,
                         ),
                       ],
@@ -138,6 +138,7 @@ class StockItemsShippedDataSource extends DataGridSource {
             ),
             child: UIText.bodyRegular(cell.value.toString()),
           ),
+        'cost' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
         _ => UIText.bodyRegular(
             cell.runtimeType.toString().contains('double')
                 ? (cell.value as double).toPesoString()
@@ -183,14 +184,14 @@ class StockItemsShippedDataSource extends DataGridSource {
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_received', value: newQtyReceived);
 
-      /// Compute new subtotal and update the value in the DataGridRows
-      double newSubtotal = (newQtyReceived ?? 0) * (cost);
-      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'subtotal', value: newSubtotal);
+      /// Compute new total per item and update the value in the DataGridRows
+      double newTotalPerItem = (newQtyReceived ?? 0) * (cost);
+      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<StockTransferCubit>().setQuantityReceivedPerItem(
             id: _itemsShipped[dataRowIndex].id!,
             qty: newQtyReceived!,
-            subtotal: newSubtotal,
+            total: newTotalPerItem,
           );
     }
   }
@@ -248,7 +249,7 @@ class StockItemsShippedDataSource extends DataGridSource {
               summaryRow.title!,
               align: TextAlign.end,
             )
-          : UIText.labelSemiBold(summaryValue.toPesoString()),
+          : UIText.label(summaryValue.toPesoString()),
     );
   }
 }

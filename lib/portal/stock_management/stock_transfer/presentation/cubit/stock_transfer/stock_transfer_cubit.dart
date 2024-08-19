@@ -13,25 +13,30 @@ class StockTransferCubit extends Cubit<StockTransferState> {
 
   void setStockTransfer(StockTransfer stockTransfer) => emit(StockTransferState(stockTransfer));
 
-  void setQuantityToTransferPerItem({required int id, required int qty, required double subtotal}) {
+  void setQuantityToTransferPerItem({required int id, required int qty, required double total}) {
     final items = state.stockTransfer.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
-      if (item.id == id) return item.copyWith(qtyToTransfer: qty, subtotal: subtotal.roundToTwoDecimalPlaces());
+      if (item.id == id) {
+        return item.copyWith(
+          qtyToTransfer: qty,
+          total: total.roundToTwoDecimalPlaces(),
+        );
+      }
       return item;
     }).toList();
 
     emit(StockTransferState(state.stockTransfer.copyWith(items: updatedItems)));
   }
 
-  void setQuantityReceivedPerItem({required int id, required int qty, required double subtotal}) {
+  void setQuantityReceivedPerItem({required int id, required int qty, required double total}) {
     final items = state.stockTransfer.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
       if (item.id == id) {
         return item.copyWith(
           qtyReceived: qty,
-          subtotal: subtotal.roundToTwoDecimalPlaces(),
+          total: total.roundToTwoDecimalPlaces(),
         );
       }
       return item;

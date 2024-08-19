@@ -15,7 +15,7 @@ class StockTransferItem extends Equatable {
   final int? qtyToTransfer;
   final int? qtyReceived;
   final double? cost;
-  final double? subtotal;
+  final double? total;
 
   const StockTransferItem({
     this.id,
@@ -27,12 +27,12 @@ class StockTransferItem extends Equatable {
     this.qtyToTransfer,
     this.qtyReceived,
     this.cost,
-    this.subtotal,
+    this.total,
   });
 
   @override
   List<Object?> get props =>
-      [id, variantId, name, sku, qtyAtSource, qtyAtDestination, qtyToTransfer, qtyReceived, cost, subtotal];
+      [id, variantId, name, sku, qtyAtSource, qtyAtDestination, qtyToTransfer, qtyReceived, cost, total];
 
   factory StockTransferItem.fromJson(Map<String, dynamic> json) => _$StockTransferItemFromJson(json);
 
@@ -45,7 +45,7 @@ class StockTransferItem extends Equatable {
           DataGridCell<int>(columnName: 'qty_at_destination', value: qtyAtDestination ?? 0),
           DataGridCell<int>(columnName: 'qty_to_transfer', value: qtyToTransfer ?? 0),
           DataGridCell<double>(columnName: 'cost', value: cost ?? 0),
-          DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
           const DataGridCell(columnName: 'action', value: null),
         ],
       );
@@ -57,7 +57,7 @@ class StockTransferItem extends Equatable {
           DataGridCell<int>(columnName: 'qty_transferred', value: qtyToTransfer ?? 0),
           DataGridCell<int>(columnName: 'qty_received', value: qtyReceived ?? 0),
           DataGridCell<double>(columnName: 'cost', value: cost ?? 0),
-          DataGridCell<double>(columnName: 'subtotal', value: (qtyReceived ?? 0) * (cost ?? 0)),
+          DataGridCell<double>(columnName: 'total', value: (qtyReceived ?? 0) * (cost ?? 0)),
         ],
       );
   DataGridRow toDataGridRowItemsTransferred() => DataGridRow(
@@ -68,7 +68,7 @@ class StockTransferItem extends Equatable {
           DataGridCell<int>(columnName: 'qty_transferred', value: qtyToTransfer ?? 0),
           DataGridCell<int>(columnName: 'qty_received', value: qtyReceived ?? 0),
           DataGridCell<double>(columnName: 'cost', value: cost ?? 0),
-          DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
         ],
       );
 
@@ -82,7 +82,7 @@ class StockTransferItem extends Equatable {
     int? qtyToTransfer,
     int? qtyReceived,
     double? cost,
-    double? subtotal,
+    double? total,
   }) {
     return StockTransferItem(
       id: id ?? this.id,
@@ -94,7 +94,7 @@ class StockTransferItem extends Equatable {
       qtyToTransfer: qtyToTransfer ?? this.qtyToTransfer,
       qtyReceived: qtyReceived ?? this.qtyReceived,
       cost: cost ?? this.cost,
-      subtotal: subtotal ?? this.subtotal,
+      total: total ?? this.total,
     );
   }
 }

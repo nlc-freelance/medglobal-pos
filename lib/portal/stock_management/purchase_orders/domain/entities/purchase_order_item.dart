@@ -14,7 +14,7 @@ class PurchaseOrderItem extends Equatable {
   final int? qtyToOrder;
   final int? qtyReceived;
   final double? supplierPrice;
-  final double? subtotal;
+  final double? total;
 
   const PurchaseOrderItem({
     this.id,
@@ -25,11 +25,11 @@ class PurchaseOrderItem extends Equatable {
     this.qtyToOrder,
     this.qtyReceived,
     this.supplierPrice,
-    this.subtotal,
+    this.total,
   });
 
   @override
-  List<Object?> get props => [id, variantId, name, sku, qtyOnHand, qtyToOrder, supplierPrice, qtyReceived, subtotal];
+  List<Object?> get props => [id, variantId, name, sku, qtyOnHand, qtyToOrder, supplierPrice, qtyReceived, total];
 
   factory PurchaseOrderItem.fromJson(Map<String, dynamic> json) => _$PurchaseOrderItemFromJson(json);
 
@@ -41,7 +41,7 @@ class PurchaseOrderItem extends Equatable {
           DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand ?? 0),
           DataGridCell<int>(columnName: 'qty_to_order', value: qtyToOrder ?? 0),
           DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice ?? 0),
-          DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
           const DataGridCell(columnName: 'action', value: null),
         ],
       );
@@ -54,7 +54,7 @@ class PurchaseOrderItem extends Equatable {
           DataGridCell<int>(columnName: 'qty_received', value: qtyReceived ?? 0),
           DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice ?? 0),
           DataGridCell<double>(
-            columnName: 'subtotal',
+            columnName: 'total',
             value: (qtyReceived ?? 0) * (supplierPrice ?? 0),
           ),
         ],
@@ -69,7 +69,7 @@ class PurchaseOrderItem extends Equatable {
     int? qtyToOrder,
     int? qtyReceived,
     double? supplierPrice,
-    double? subtotal,
+    double? total,
   }) {
     return PurchaseOrderItem(
       id: id ?? this.id,
@@ -80,7 +80,7 @@ class PurchaseOrderItem extends Equatable {
       qtyToOrder: qtyToOrder ?? this.qtyToOrder,
       qtyReceived: qtyReceived ?? this.qtyReceived,
       supplierPrice: supplierPrice ?? this.supplierPrice,
-      subtotal: subtotal ?? this.subtotal,
+      total: total ?? this.total,
     );
   }
 }
