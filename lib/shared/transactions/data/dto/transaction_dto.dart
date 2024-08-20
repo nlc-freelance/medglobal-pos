@@ -107,6 +107,7 @@ class TransactionDto extends Equatable {
         tax: tax,
         total: total,
         totalDiscountInPeso: totalDiscountInPeso,
+        reasonForReturn: reasonForReturn,
         amountPaid: amountPaid,
         createdAt: createdAt,
       );

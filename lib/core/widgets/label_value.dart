@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-enum LabelValueType { text, status, button, chip, type }
+enum LabelValueType { text, status, button, chip, type, returnStatus }
 
 class LabelValue extends StatelessWidget {
   const LabelValue._({
@@ -10,6 +10,7 @@ class LabelValue extends StatelessWidget {
     required this.label,
     this.value,
     this.status,
+    this.returnStatus,
     this.button,
     this.chip,
     this.type,
@@ -19,6 +20,7 @@ class LabelValue extends StatelessWidget {
   final String label;
   final String? value;
   final StockOrderStatus? status;
+  final ReturnStatus? returnStatus;
   final TransactionType? type;
   final Widget? button;
   final double? chip;
@@ -34,6 +36,12 @@ class LabelValue extends StatelessWidget {
     required StockOrderStatus status,
   }) =>
       LabelValue._(labelType: LabelValueType.status, label: label, status: status);
+
+  factory LabelValue.returnStatus({
+    required String label,
+    required ReturnStatus status,
+  }) =>
+      LabelValue._(labelType: LabelValueType.returnStatus, label: label, returnStatus: status);
 
   factory LabelValue.type({
     required String label,
@@ -85,6 +93,23 @@ class LabelValue extends StatelessWidget {
                   .copyWith(color: type == TransactionType.SALE ? UIColors.completed : UIColors.cancelled),
             ),
             backgroundColor: type == TransactionType.SALE ? UIColors.completedBg : UIColors.cancelledBg,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: const BorderSide(color: UIColors.transparent),
+            ),
+          ),
+        ],
+        if (labelType == LabelValueType.returnStatus) ...[
+          const UIVerticalSpace(6),
+          Chip(
+            label: Text(
+              returnStatus!.label,
+              style: UIStyleText.chip.copyWith(
+                  color: returnStatus == ReturnStatus.COMPLETED ? UIColors.completed : UIColors.awaitingAction),
+            ),
+            backgroundColor: returnStatus == ReturnStatus.COMPLETED ? UIColors.completedBg : UIColors.awaitingActionBg,
             padding: const EdgeInsets.symmetric(horizontal: 8),
             visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
             shape: RoundedRectangleBorder(

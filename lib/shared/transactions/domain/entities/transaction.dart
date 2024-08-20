@@ -94,8 +94,8 @@ class Transaction extends Equatable {
           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'register_id', value: (register?.id ?? Strings.empty).toString()),
           DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
-          DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
-          DataGridCell<double>(columnName: 'discount_in_peso', value: totalDiscountInPeso ?? 0),
+          // DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          // DataGridCell<double>(columnName: 'discount_in_peso', value: totalDiscountInPeso ?? 0),
           DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
           DataGridCell<double>(columnName: 'total', value: total ?? 0),
         ],
@@ -126,6 +126,20 @@ class Transaction extends Equatable {
       'notes': reasonForReturn,
       'items': items?.map((item) {
         if (item.isSelected) return {'variantId': item.itemId, 'quantity': item.qtyRefund};
+      }).toList(),
+    };
+  }
+
+  /// Process Return Payload
+  JSON toReturnPayload() {
+    return {
+      'items': items?.map((item) {
+        return {
+          'id': item.id,
+          'writeOffQuantity': item.writeOffQty ?? 0,
+          'restockQuantity': item.restockQty ?? 0,
+          'comment': item.comment,
+        };
       }).toList(),
     };
   }
