@@ -20,7 +20,7 @@ class _RefundedItemsDataGridState extends State<RefundedItemsDataGrid> {
   late double _tax;
 
   late DataGridController _dataGridController;
-  late RefundedItemsDataSource _refundItemsDataSource;
+  late RefundedItemsDataSource _refundedItemsDataSource;
   late CustomSelectionManager customSelectionManager;
 
   @override
@@ -32,7 +32,7 @@ class _RefundedItemsDataGridState extends State<RefundedItemsDataGrid> {
     _items = widget.transaction.items ?? [];
     _tax = widget.transaction.tax ?? 0;
 
-    _refundItemsDataSource = RefundedItemsDataSource(_items, context, _tax);
+    _refundedItemsDataSource = RefundedItemsDataSource(_items, context, _tax);
   }
 
   @override
@@ -55,7 +55,7 @@ class _RefundedItemsDataGridState extends State<RefundedItemsDataGrid> {
             child: SfDataGridTheme(
               data: DataGridUtil.cellNavigationStyle,
               child: SfDataGrid(
-                source: _refundItemsDataSource,
+                source: _refundedItemsDataSource,
                 columns: DataGridUtil.getColumns(DataGridColumn.REFUNDED_ITEMS),
                 controller: _dataGridController,
                 selectionManager: customSelectionManager,
@@ -147,7 +147,7 @@ class RefundedItemsDataSource extends DataGridSource {
   late double _tax;
   late BuildContext _context;
 
-  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toItemsRefundedRow()).toList();
+  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toRefundedTransactionItemsRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 

@@ -94,7 +94,7 @@ class TransactionItem extends Equatable {
         ],
       );
 
-  DataGridRow toItemsOrderedRow() => DataGridRow(
+  DataGridRow toTransactionItemsRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'name', value: name),
@@ -106,7 +106,7 @@ class TransactionItem extends Equatable {
         ],
       );
 
-  DataGridRow toItemsOrderedRefundableRow() => DataGridRow(
+  DataGridRow toRefundableTransactionItemsRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<bool>(columnName: 'is_selected', value: isSelected),
@@ -118,7 +118,7 @@ class TransactionItem extends Equatable {
         ],
       );
 
-  DataGridRow toItemsRefundedRow() => DataGridRow(
+  DataGridRow toRefundedTransactionItemsRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'name', value: name),

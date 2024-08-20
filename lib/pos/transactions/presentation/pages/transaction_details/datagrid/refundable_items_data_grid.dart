@@ -9,21 +9,21 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class RefundItemsDataGrid extends StatefulWidget {
-  const RefundItemsDataGrid(this.transaction, {super.key});
+class RefundableItemsDataGrid extends StatefulWidget {
+  const RefundableItemsDataGrid(this.transaction, {super.key});
 
   final Transaction transaction;
 
   @override
-  State<RefundItemsDataGrid> createState() => _RefundItemsDataGridState();
+  State<RefundableItemsDataGrid> createState() => _RefundableItemsDataGridState();
 }
 
-class _RefundItemsDataGridState extends State<RefundItemsDataGrid> {
+class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
   late List<TransactionItem> _items = <TransactionItem>[];
   late double _tax;
 
   late DataGridController _dataGridController;
-  late RefundItemsDataSource _refundItemsDataSource;
+  late RefundableItemsDataSource _refundableItemsDataSource;
   late CustomSelectionManager customSelectionManager;
 
   @override
@@ -35,7 +35,7 @@ class _RefundItemsDataGridState extends State<RefundItemsDataGrid> {
     _items = widget.transaction.items ?? [];
     _tax = widget.transaction.tax ?? 0;
 
-    _refundItemsDataSource = RefundItemsDataSource(_items, context, _tax);
+    _refundableItemsDataSource = RefundableItemsDataSource(_items, context, _tax);
 
     /// Set a new transaction in RefundCubit and copy the items of the original sale transaction register, id and items
     context.read<RefundCubit>().setRefund(
@@ -72,14 +72,14 @@ class _RefundItemsDataGridState extends State<RefundItemsDataGrid> {
               data: DataGridUtil.cellNavigationStyle,
               child: BlocConsumer<RefundCubit, RefundState>(
                 listener: (context, state) {
-                  _refundItemsDataSource._items = state.refund.items ?? [];
+                  _refundableItemsDataSource._items = state.refund.items ?? [];
 
-                  _refundItemsDataSource.buildDataGridRows();
-                  _refundItemsDataSource.updateDataGridSource();
+                  _refundableItemsDataSource.buildDataGridRows();
+                  _refundableItemsDataSource.updateDataGridSource();
                 },
                 builder: (context, state) {
                   return SfDataGrid(
-                    source: _refundItemsDataSource,
+                    source: _refundableItemsDataSource,
                     columns: DataGridUtil.getColumns(DataGridColumn.ORDERED_ITEMS_EDITABLE),
                     controller: _dataGridController,
                     selectionManager: customSelectionManager,
@@ -157,8 +157,8 @@ class _RefundItemsDataGridState extends State<RefundItemsDataGrid> {
   }
 }
 
-class RefundItemsDataSource extends DataGridSource {
-  RefundItemsDataSource(
+class RefundableItemsDataSource extends DataGridSource {
+  RefundableItemsDataSource(
     List<TransactionItem> items,
     BuildContext context,
     double tax,
@@ -176,7 +176,7 @@ class RefundItemsDataSource extends DataGridSource {
   late double _tax;
   late BuildContext _context;
 
-  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toItemsOrderedRefundableRow()).toList();
+  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toRefundableTransactionItemsRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 

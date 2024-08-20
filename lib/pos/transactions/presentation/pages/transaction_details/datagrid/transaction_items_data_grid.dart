@@ -6,20 +6,20 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class OrderedItemsDataGrid extends StatefulWidget {
-  const OrderedItemsDataGrid(this.transaction, {super.key});
+class TransactionItemsDataGrid extends StatefulWidget {
+  const TransactionItemsDataGrid(this.transaction, {super.key});
 
   final Transaction transaction;
 
   @override
-  State<OrderedItemsDataGrid> createState() => _OrderedItemsDataGridState();
+  State<TransactionItemsDataGrid> createState() => _TransactionItemsDataGridState();
 }
 
-class _OrderedItemsDataGridState extends State<OrderedItemsDataGrid> {
+class _TransactionItemsDataGridState extends State<TransactionItemsDataGrid> {
   late List<TransactionItem> _items = <TransactionItem>[];
 
   late DataGridController _dataGridController;
-  late OrderedItemsDataSource _transactionItemsDataSource;
+  late TransactionItemsDataSource _transactionItemsDataSource;
   late CustomSelectionManager customSelectionManager;
 
   @override
@@ -30,7 +30,7 @@ class _OrderedItemsDataGridState extends State<OrderedItemsDataGrid> {
 
     _items = widget.transaction.items ?? [];
 
-    _transactionItemsDataSource = OrderedItemsDataSource(_items, context, widget.transaction);
+    _transactionItemsDataSource = TransactionItemsDataSource(_items, context, widget.transaction);
   }
 
   @override
@@ -144,8 +144,8 @@ class _OrderedItemsDataGridState extends State<OrderedItemsDataGrid> {
   }
 }
 
-class OrderedItemsDataSource extends DataGridSource {
-  OrderedItemsDataSource(
+class TransactionItemsDataSource extends DataGridSource {
+  TransactionItemsDataSource(
     List<TransactionItem> itemsOrdered,
     BuildContext context,
     Transaction transaction,
@@ -164,7 +164,7 @@ class OrderedItemsDataSource extends DataGridSource {
 
   late BuildContext _context;
 
-  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toItemsOrderedRow()).toList();
+  void buildDataGridRows() => dataGridRows = _items.map((item) => item.toTransactionItemsRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 

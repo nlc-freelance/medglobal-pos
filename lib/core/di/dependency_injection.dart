@@ -132,9 +132,9 @@ import 'package:medglobal_admin_portal/pos/transactions/data/api/refund_api.dart
 import 'package:medglobal_admin_portal/pos/transactions/data/repositories/refund_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund_repository.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/usecases/create_refund_transaction_usecase.dart';
-import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/branch_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_remote_cubit.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/data/api/transaction_api.dart';
 import 'package:medglobal_admin_portal/shared/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/repositories/transaction_repository.dart';
@@ -318,7 +318,7 @@ void initDependencyInjection() {
     ..registerFactory(() => PosProductListSearchCubit())
     ..registerFactory(() => OrderCubit())
     ..registerFactory(() => SaleRemoteCubit(injector()))
-    ..registerFactory(() => BranchTransactionListCubit(injector()))
+    ..registerFactory(() => TransactionListByBranchCubit(injector()))
     ..registerFactory(() => RefundCubit())
     ..registerFactory(() => RefundRemoteCubit(injector()));
 }
