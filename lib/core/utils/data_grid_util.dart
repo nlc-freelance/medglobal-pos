@@ -28,7 +28,7 @@ class DataGridUtil {
                 column.label,
                 style: UIStyleText.labelMedium.copyWith(
                   color: UIColors.textLight,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   decoration: TextDecoration.none,
                 ),
               ),

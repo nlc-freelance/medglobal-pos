@@ -23,12 +23,15 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
 
   late DataGridController _dataGridController;
   late ReturnItemsDataSource _returnItemsDataSource;
+  late CustomSelectionManager customSelectionManager;
 
   @override
   void initState() {
     super.initState();
     _items = widget.transaction.items ?? [];
     _dataGridController = DataGridController();
+    customSelectionManager = CustomSelectionManager(_dataGridController);
+
     _returnItemsDataSource = ReturnItemsDataSource(_items, context);
   }
 
@@ -42,9 +45,6 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
   Widget build(BuildContext context) {
     return BlocConsumer<ReturnCubit, ReturnState>(
       listener: (context, state) {
-        print('WRITEOFF ${state.transaction.items?.first.writeOffQty}');
-        print('RESTOCK ${state.transaction.items?.first.restockQty}');
-        print('COMMENT ${state.transaction.items?.first.comment}');
         _returnItemsDataSource._items = state.transaction.items ?? [];
 
         _returnItemsDataSource.buildDataGridRows();
@@ -63,6 +63,7 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
                   source: _returnItemsDataSource,
                   columns: DataGridUtil.getColumns(DataGridColumn.RETURN_TRANSACTIONS_ITEMS),
                   controller: _dataGridController,
+                  selectionManager: customSelectionManager,
                   shrinkWrapRows: true,
                   selectionMode: SelectionMode.single,
                   allowEditing: true,
