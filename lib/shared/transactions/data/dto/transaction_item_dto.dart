@@ -22,6 +22,11 @@ class TransactionItemDto extends Equatable {
   @JsonKey(name: 'subTotal')
   final double? subtotal;
   final double? total;
+  final String? comment;
+  @JsonKey(name: 'restockQuantity')
+  final int? restockQty;
+  @JsonKey(name: 'writeOffQuantity')
+  final int? writeOffQty;
 
   const TransactionItemDto({
     this.id,
@@ -34,11 +39,27 @@ class TransactionItemDto extends Equatable {
     this.discountInPeso,
     this.subtotal,
     this.total,
+    this.restockQty,
+    this.writeOffQty,
+    this.comment,
   });
 
   @override
-  List<Object?> get props =>
-      [id, item, qty, price, subtotal, discount, discountType, discountInPeso, discountedPrice, total];
+  List<Object?> get props => [
+        id,
+        item,
+        qty,
+        price,
+        subtotal,
+        discount,
+        discountType,
+        discountInPeso,
+        discountedPrice,
+        total,
+        restockQty,
+        writeOffQty,
+        comment
+      ];
 
   factory TransactionItemDto.fromJson(Map<String, dynamic> json) => _$TransactionItemDtoFromJson(json);
 
@@ -56,5 +77,8 @@ class TransactionItemDto extends Equatable {
         discountInPeso: discountInPeso,
         subtotal: subtotal,
         total: total,
+        restockQty: restockQty,
+        writeOffQty: writeOffQty,
+        comment: comment,
       );
 }

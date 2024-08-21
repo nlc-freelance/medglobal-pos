@@ -190,8 +190,8 @@ class DataGridColumn {
     ColumnData('branch', 'Branch'),
     ColumnData('register_id', 'Register'),
     ColumnData('employee', 'Employee'),
-    ColumnData('subtotal', 'Subtotal (PHP)'),
-    ColumnData('discount_in_peso', 'Discount (PHP)'),
+    // ColumnData('subtotal', 'Subtotal (PHP)'),
+    // ColumnData('discount_in_peso', 'Discount (PHP)'),
     ColumnData('tax', 'Tax (PHP)'),
     ColumnData('total', 'Total (PHP)'),
   ];

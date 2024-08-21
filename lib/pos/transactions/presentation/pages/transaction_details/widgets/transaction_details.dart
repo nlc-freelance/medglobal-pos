@@ -32,7 +32,10 @@ class _TransactionDetailsState extends State<TransactionDetails> {
     context.read<RefundRemoteCubit>().reset();
   }
 
-  void _toggleIssueRefund() => setState(() => _isIssuingRefund = !_isIssuingRefund);
+  void _toggleIssueRefund() {
+    setState(() => _isIssuingRefund = !_isIssuingRefund);
+    context.read<RefundRemoteCubit>().reset();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,15 +48,11 @@ class _TransactionDetailsState extends State<TransactionDetails> {
         }
       },
       builder: (context, state) {
-        if (state is RefundLoading) {
-          return const Center(child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2));
-        }
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               child: ListView(
-                // physics: const ScrollPhysics(),
                 shrinkWrap: true,
                 children: [
                   TransactionDetailsHeader(
@@ -77,26 +76,34 @@ class _TransactionDetailsState extends State<TransactionDetails> {
               Padding(
                 padding: const EdgeInsets.only(top: 30),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    if (state is RefundError)
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Assets.icons.infoCircle.svg(),
-                          const UIHorizontalSpace(8),
-                          UIText.labelSemiBold('Something went wrong. ${state.message}', color: UIColors.buttonDanger),
-                        ],
+                    if (state is RefundError) ...[
+                      Expanded(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Assets.icons.infoCircle.svg(),
+                            const UIHorizontalSpace(8),
+                            Expanded(
+                              child: UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
+                            ),
+                          ],
+                        ),
                       ),
-                    const Spacer(),
-                    BlocSelector<RefundCubit, RefundState, Transaction>(
-                      selector: (state) => state.refund,
-                      builder: (context, refund) {
-                        return CancelActionButton(
-                          onCancel: () => setState(() => _isIssuingRefund = false),
-                          onAction: () => context.read<RefundRemoteCubit>().createRefund(refund),
-                          actionLabel: 'Issue Refund',
-                        );
-                      },
+                    ],
+                    Expanded(
+                      child: BlocSelector<RefundCubit, RefundState, Transaction>(
+                        selector: (state) => state.refund,
+                        builder: (context, refund) {
+                          return CancelActionButton(
+                            onCancel: () => setState(() => _isIssuingRefund = false),
+                            onAction: () => context.read<RefundRemoteCubit>().createRefund(refund),
+                            actionLabel: 'Issue Refund',
+                            isLoading: state is RefundLoading,
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

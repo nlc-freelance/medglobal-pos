@@ -32,7 +32,9 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
-    _returnItemsDataSource = ReturnItemsDataSource(_items, context);
+    final isEditable = widget.transaction.status == ReturnStatus.AWAITING_ACTION;
+
+    _returnItemsDataSource = ReturnItemsDataSource(_items, context, isEditable);
   }
 
   @override
@@ -46,6 +48,7 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
     return BlocConsumer<ReturnCubit, ReturnState>(
       listener: (context, state) {
         _returnItemsDataSource._items = state.transaction.items ?? [];
+        _returnItemsDataSource._isEditable = state.transaction.status == ReturnStatus.AWAITING_ACTION;
 
         _returnItemsDataSource.buildDataGridRows();
         _returnItemsDataSource.updateDataGridSource();
@@ -82,13 +85,16 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
 }
 
 class ReturnItemsDataSource extends DataGridSource {
-  ReturnItemsDataSource(List<TransactionItem> items, BuildContext context) {
+  ReturnItemsDataSource(List<TransactionItem> items, BuildContext context, bool isEditable) {
     _items = items;
     _context = context;
+    _isEditable = isEditable;
     buildDataGridRows();
   }
 
   late BuildContext _context;
+
+  late bool _isEditable;
 
   List<TransactionItem> _items = [];
 
@@ -108,7 +114,13 @@ class ReturnItemsDataSource extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: _buildCell(cell.columnName, cell, row.getCells().first.value),
+          child: _isEditable
+              ? _buildCell(cell.columnName, cell, row.getCells().first.value)
+              : UIText.bodyRegular(
+                  cell.runtimeType.toString().contains('double')
+                      ? (cell.value as double).toPesoString()
+                      : cell.value.toString(),
+                ),
         );
       }).toList(),
     );
@@ -144,7 +156,10 @@ class ReturnItemsDataSource extends DataGridSource {
 
   @override
   bool onCellBeginEdit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) {
-    if (column.columnName == 'write_off_qty' || column.columnName == 'restock_qty' || column.columnName == 'comment') {
+    if (_isEditable &&
+        (column.columnName == 'write_off_qty' ||
+            column.columnName == 'restock_qty' ||
+            column.columnName == 'comment')) {
       return true;
     } else {
       return false;

@@ -10,6 +10,8 @@ class TransactionCubit extends Cubit<TransactionState> {
 
   TransactionCubit(this._getTransactionByIdUseCase) : super(TransactionInitial());
 
+  void reset() => emit(TransactionInitial());
+
   Future<void> getTransactionById(int id) async {
     emit(TransactionByIdLoading());
 

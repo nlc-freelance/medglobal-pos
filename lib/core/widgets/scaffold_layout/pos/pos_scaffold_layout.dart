@@ -17,6 +17,7 @@ import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/ord
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
+import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class POSScaffoldLayout extends StatefulWidget {
@@ -242,6 +243,7 @@ class _POSScaffoldLayoutState extends State<POSScaffoldLayout> {
                       context.read<RegisterShiftBloc>().add(ResetRegisterShiftOnLogoutEvent());
                       context.read<RegisterItemListRemoteCubit>().reset();
                       context.read<TransactionListByBranchCubit>().reset();
+                      context.read<TransactionCubit>().reset();
                       context.read<OrderCubit>().reset();
 
                       context.read<AuthBloc>().add(const LogoutEvent());
