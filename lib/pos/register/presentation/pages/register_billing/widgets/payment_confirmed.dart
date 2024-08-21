@@ -25,8 +25,8 @@ class PaymentConfirmed extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              UIText.heading6('TRANSACTION ID', color: UIColors.textMuted),
-              UIText.heading5('${transaction.id}'),
+              UIText.heading6('RECEIPT ID', color: UIColors.textMuted),
+              UIText.heading5('${transaction.receiptId}'),
             ],
           ),
           Row(

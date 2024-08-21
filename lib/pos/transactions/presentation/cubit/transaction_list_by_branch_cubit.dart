@@ -22,8 +22,10 @@ class TransactionListByBranchCubit extends Cubit<TransactionListByBranchState> {
   }
 
   void addNewTransactionToList(Transaction newTransaction) {
-    _transactions = {..._transactions, newTransaction};
-    emit(state.copyWith(transactions: _transactions.toList()));
+    if (_transactions.isNotEmpty) {
+      _transactions = {..._transactions, newTransaction};
+      emit(state.copyWith(transactions: _transactions.toList()));
+    }
   }
 
   Future<void> getTransactionsByBranch({String? search, bool isInitialSearch = false}) async {

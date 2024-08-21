@@ -53,7 +53,6 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
         // if (state is TransactionListNoResultFound) {
         //   _returnTransactionDataSource = ReturnTransactionDataSource([], _rowsPerPage);
         // }
-        _returnTransactionDataSource = ReturnTransactionDataSource(returns, _rowsPerPage);
       },
       builder: (context, state) {
         if (state is ReturnTransactionListError) {

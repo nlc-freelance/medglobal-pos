@@ -5,6 +5,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_details/return_transaction_items_data_grid.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -19,6 +20,8 @@ class ReturnTransactionDetails extends StatelessWidget {
         if (state is ReturnSuccess) {
           context.read<ReturnCubit>().setReturn(state.transaction);
           ToastNotification.success(context, 'Return has been successfully completed.');
+
+          context.read<ReturnTransactionListCubit>().getTransactions();
         }
       },
       builder: (context, state) {
