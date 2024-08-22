@@ -8,10 +8,12 @@ import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/pos_product_list_search_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/cart_closed.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/cart_open.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/register/register_items_data_grid.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -74,6 +76,20 @@ class _RegisterPageState extends State<RegisterPage> {
                     }),
                   ),
                 ),
+                BlocConsumer<PrintReceiptCubit, PrintReceiptState>(
+                  builder: (context, state) {
+                    return InkWell(
+                      onTap: () =>
+                          context.read<PrintReceiptCubit>().printReceipt(Transaction(receiptId: 'MG-LP-2024082100001')),
+                      child: const Text('PRINT RECEIPT'),
+                    );
+                  },
+                  listener: (BuildContext context, PrintReceiptState state) {
+                    if (state is PrintReceiptLoading) print('printing');
+                    if (state is PrintReceiptSuccess) print('printed');
+                    if (state is PrintReceiptError) print('error');
+                  },
+                ),
                 const UIVerticalSpace(36),
                 BlocBuilder<RegisterItemListRemoteCubit, RegisterItemListRemoteState>(
                   builder: (context, state) {
@@ -105,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         InkWell(
           onTap: () {
-            PrintUtil.printPdf();
+            PrintUtil.printPdf(Transaction(receiptId: 'MG-LP-2024082100001'));
           },
           child: Text('Print receipt'),
         ),

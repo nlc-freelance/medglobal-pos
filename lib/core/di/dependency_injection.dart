@@ -130,6 +130,7 @@ import 'package:medglobal_admin_portal/pos/register/domain/usecases/register_shi
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/pos_product_list_search_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
@@ -329,5 +330,6 @@ void initDependencyInjection() {
     ..registerFactory(() => SaleRemoteCubit(injector()))
     ..registerFactory(() => TransactionListByBranchCubit(injector()))
     ..registerFactory(() => RefundCubit())
-    ..registerFactory(() => RefundRemoteCubit(injector()));
+    ..registerFactory(() => RefundRemoteCubit(injector()))
+    ..registerFactory(() => PrintReceiptCubit());
 }
