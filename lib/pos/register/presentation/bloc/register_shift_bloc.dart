@@ -26,21 +26,24 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
   }
 
   Future<void> _setRegisterShiftOpenOnLogin(SetShiftAsOpenOnLoginEvent event, emit) async {
-    await SharedPreferencesService.setShiftOpenAt(event.shiftDetail.createdAt!.toIso8601String());
+    await SharedPreferencesService.setShiftOpenSince(event.shiftDetail.createdAt!.toIso8601String());
     await SharedPreferencesService.setShiftStatus(true);
     emit(RegisterShiftOpen());
   }
 
   Future<void> _setRegisterShiftClosedOnLogin(SetShiftAsClosedOnLoginEvent event, emit) async {
-    await SharedPreferencesService.setShiftClosedAt(event.shiftDetail.updatedAt!.toIso8601String());
+    await SharedPreferencesService.setShiftClosedSince(event.shiftDetail.updatedAt!.toIso8601String());
     await SharedPreferencesService.setShiftStatus(false);
     emit(RegisterShiftClose());
   }
 
   Future<void> _setRegisterShiftClosedOnFirstTime(event, emit) async {
     /// If the register is newly added or does not have an existing shift record yet (shiftDetail == null),
-    /// the state should be treated as the initial where there's no preferences yet and the shift is closed
-    await SharedPreferencesService.clearPreferences();
+    /// the state should be treated as the initial where there's no preferences yet for shift and the shift is closed
+    await SharedPreferencesService.clearShiftStatus();
+    await SharedPreferencesService.clearShiftOpenSince();
+    await SharedPreferencesService.clearShiftClosedSince();
+    await SharedPreferencesService.clearMaxShift();
     emit(RegisterShiftClose());
   }
 
@@ -118,16 +121,16 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
   }
 
   void _setShiftOpenDetails(RegisterShift data) async {
-    await SharedPreferencesService.setShiftOpenAt(data.createdAt!.toIso8601String());
+    await SharedPreferencesService.setShiftOpenSince(data.createdAt!.toIso8601String());
     await SharedPreferencesService.setShiftStatus(true);
   }
 
   void _setShiftCloseDetails(RegisterShift data) async {
-    await SharedPreferencesService.setShiftClosedAt(data.updatedAt!.toIso8601String());
+    await SharedPreferencesService.setShiftClosedSince(data.updatedAt!.toIso8601String());
     await SharedPreferencesService.setShiftStatus(false);
   }
 
-  void _setHasReachedMaxShiftOpen() async => await SharedPreferencesService.setHasReachedMaxShiftOpen(true);
+  void _setHasReachedMaxShiftOpen() async => await SharedPreferencesService.setHasReachedMaxShift(true);
 
   void _reset(event, emit) => emit(RegisterShiftInitial());
 }
