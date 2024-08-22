@@ -34,6 +34,14 @@ pubspec.lock
 *.g.dart
 *.gen.dart
 
+.packages
+ios/Flutter/Flutter.framework
+ios/Flutter/FlutterPluginRegistrant
+ios/Flutter/GeneratedPluginRegistrant.*
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.kt
+android/app/src/main/cpp/generated_plugin_registrant.cc
+
 # Symbolication related
 app.*.symbols
 
