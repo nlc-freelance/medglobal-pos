@@ -110,7 +110,7 @@ class LazyLoadDropdownState extends State<LazyLoadDropdown> {
         decoration: const InputDecoration(
           isDense: true,
           contentPadding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 10.0),
-          hintText: 'Select branch',
+          hintText: 'Select register',
           filled: true,
           fillColor: UIColors.background,
           border: OutlineInputBorder(
@@ -127,7 +127,7 @@ class LazyLoadDropdownState extends State<LazyLoadDropdown> {
               },
               child: _selectedItem != null
                   ? Text(_selectedItem!, style: UIStyleText.chip)
-                  : Text('Select branch', style: UIStyleText.hint),
+                  : Text('Select register', style: UIStyleText.hint),
             ),
             InkWell(
               onTap: () {
