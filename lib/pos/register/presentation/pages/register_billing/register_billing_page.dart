@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/cart_open.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_billing/widgets/charge_payment.dart';
@@ -39,6 +40,7 @@ class RegisterBillingPage extends StatelessWidget {
               child: BlocConsumer<SaleRemoteCubit, SaleRemoteState>(
                 listener: (context, state) {
                   if (state is SaleSuccess) {
+                    context.read<RegisterItemListRemoteCubit>().getRegisterItems(isInitialSearch: true);
                     context.read<TransactionListByBranchCubit>().addNewTransactionToList(state.transaction);
                   }
                 },

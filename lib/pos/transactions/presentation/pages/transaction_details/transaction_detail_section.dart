@@ -26,20 +26,8 @@ class _TransactionDetailSectionState extends State<TransactionDetailSection> {
         ),
         child: BlocBuilder<TransactionCubit, TransactionState>(
           builder: (context, state) {
-            if (state is TransactionInitial) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Assets.icons.cube.svg(width: 48, height: 48),
-                  const UIVerticalSpace(16),
-                  UIText.bodyRegular(
-                    'Select a transaction from the list on the left \n to view details or issue a refund.',
-                    color: UIColors.textMuted,
-                    align: TextAlign.center,
-                  ),
-                ],
-              );
+            if (state is TransactionByIdLoading) {
+              return const Center(child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2));
             }
             if (state is TransactionByIdError) {
               return Center(child: Text(state.message));
@@ -47,7 +35,19 @@ class _TransactionDetailSectionState extends State<TransactionDetailSection> {
             if (state is TransactionByIdSuccess) {
               return TransactionDetails(state.transaction);
             }
-            return const Center(child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2));
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Assets.icons.cube.svg(width: 48, height: 48),
+                const UIVerticalSpace(16),
+                UIText.bodyRegular(
+                  'Select a transaction from the list on the left \n to view details or issue a refund.',
+                  color: UIColors.textMuted,
+                  align: TextAlign.center,
+                ),
+              ],
+            );
           },
         ),
       ),

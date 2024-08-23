@@ -1,9 +1,10 @@
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/core/network/models/api_query_params.dart';
 import 'package:medglobal_admin_portal/pos/register/data/dto/register_dto.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift/register.dart';
 
 abstract class RegisterApi {
   Future<List<RegisterDto>> getAllRegisters();
+  Future<List<Register>> getRegisters([int page]);
 }
 
 class RegisterApiImpl implements RegisterApi {
@@ -14,26 +15,28 @@ class RegisterApiImpl implements RegisterApi {
   @override
   Future<List<RegisterDto>> getAllRegisters() async {
     try {
-      print('registers fetch');
-      int currentPage = 1;
-      List<RegisterDto> registers = [];
-      bool hasNextPage = true;
+      final response = await _apiService.collection<RegisterDto>(
+        '/registers',
+        queryParams: {'page': 1, 'size': 10},
+        converter: RegisterDto.fromJson,
+      );
 
-      while (hasNextPage) {
-        final response = await _apiService.collection<RegisterDto>(
-          '/registers',
-          queryParams: ApiQueryParams(page: currentPage).toJson(),
-          converter: RegisterDto.fromJson,
-        );
-        if (response.items?.isNotEmpty == true) {
-          registers.addAll(response.items!.toList());
-          currentPage++;
-        } else {
-          hasNextPage = false;
-        }
-      }
+      return response.items!;
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-      return registers;
+  @override
+  Future<List<Register>> getRegisters([int page = 1]) async {
+    try {
+      final response = await _apiService.collection<RegisterDto>(
+        '/registers',
+        queryParams: {'page': page, 'size': 10},
+        converter: RegisterDto.fromJson,
+      );
+
+      return response.items?.map((item) => item.toEntity()).toList() ?? <Register>[];
     } catch (e) {
       rethrow;
     }
