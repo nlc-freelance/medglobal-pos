@@ -8,11 +8,11 @@ part 'print_receipt_state.dart';
 class PrintReceiptCubit extends Cubit<PrintReceiptState> {
   PrintReceiptCubit() : super(PrintReceiptInitial());
 
-  Future<void> printReceipt(Transaction transaction) async {
+  Future<void> generateAndPrintReceipt(Transaction transaction, double cash, double change) async {
     emit(PrintReceiptLoading());
 
     try {
-       await PrintUtil.printPdf(transaction);
+      await PrintUtil.generateAndPrintReceipt(transaction, cash, change);
       emit(PrintReceiptSuccess());
     } catch (e) {
       emit(PrintReceiptError(e.toString()));

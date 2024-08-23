@@ -1,47 +1,211 @@
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as widgets;
+import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
 
 class PrintUtil {
   const PrintUtil();
 
-  static Future<void> printPdf(Transaction transaction) async {
+  static Future<void> generateAndPrintReceipt(Transaction transaction, double cash, double change) async {
     try {
-      final doc = widgets.Document();
+      final doc = Document();
+
+      final interRegular = Font.ttf(await rootBundle.load("assets/fonts/Inter-Regular.ttf"));
+      final interMedium = Font.ttf(await rootBundle.load("assets/fonts/Inter-Medium.ttf"));
+      final interSemiBold = Font.ttf(await rootBundle.load("assets/fonts/Inter-SemiBold.ttf"));
+
+      final theme = ThemeData(
+        header1: TextStyle(font: interSemiBold, fontSize: 14, fontWeight: FontWeight.normal),
+        header2: TextStyle(font: interSemiBold, fontSize: 12, fontWeight: FontWeight.bold),
+        header3: TextStyle(font: interSemiBold, fontSize: 10, fontWeight: FontWeight.bold),
+        header4: TextStyle(font: interRegular, fontSize: 11, fontWeight: FontWeight.normal),
+        tableHeader: TextStyle(font: interSemiBold, fontSize: 10, fontWeight: FontWeight.normal),
+        tableCell: TextStyle(font: interRegular, fontSize: 11, fontWeight: FontWeight.normal),
+        paragraphStyle: TextStyle(font: interRegular, fontSize: 9, fontWeight: FontWeight.normal),
+      );
 
       doc.addPage(
-        widgets.Page(
+        Page(
+          orientation: PageOrientation.portrait,
+          theme: theme,
           pageFormat: PdfPageFormat.roll80,
-          build: (widgets.Context context) {
-            return widgets.Column(
+          build: (Context context) {
+            return Column(
               children: [
-                widgets.Text('Receipt', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text(transaction.receiptId!, style: widgets.TextStyle(fontSize: 36)),
-                widgets.Divider(),
-                widgets.SizedBox(height: 60),
-                widgets.Text('', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ABSOLUTE DISTILLED WATER', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ABSOLUTE DISTILLED WATER', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ABSOLUTE DISTILLED WATER', style: widgets.TextStyle(fontSize: 36)),
-                widgets.SizedBox(height: 60),
-                widgets.Divider(),
-                widgets.SizedBox(height: 60),
-                widgets.Text('ADVIL LIQUIGEL 200mg', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ADVIL LIQUIGEL 200mg', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ADVIL LIQUIGEL 200mg', style: widgets.TextStyle(fontSize: 36)),
-                widgets.SizedBox(height: 30),
-                widgets.Text('ADVIL LIQUIGEL 200mg', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ADVIL LIQUIGEL 200mg', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ABSOLUTE DISTILLED WATER', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ABSOLUTE DISTILLED WATER', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Divider(),
-                widgets.SizedBox(height: 60),
-                widgets.SizedBox(height: 30),
-                widgets.Text('ADVIL LIQUIGEL 200mg', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ADVIL LIQUIGEL 200mg', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ABSOLUTE DISTILLED WATER', style: widgets.TextStyle(fontSize: 36)),
-                widgets.Text('ABSOLUTE DISTILLED WATER', style: widgets.TextStyle(fontSize: 36)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          'MEDGLOBAL PHARMACY',
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Center(child: Text('${transaction.branch?.name}', style: theme.header2)),
+                      Center(child: Text(transaction.branchAddress, style: theme.tableCell)),
+                      SizedBox(height: 30),
+                      Text(
+                        'Receipt Date: ${DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now())}',
+                        style: theme.header4,
+                      ),
+                      SizedBox(height: 1),
+                      Text('Receipt ID: ${transaction.receiptId}', style: theme.header4),
+                      SizedBox(height: 1),
+                      Text('Cashier: ${transaction.employee?.name}', style: theme.header4),
+                      SizedBox(height: 1),
+                      Text('Register: ${transaction.registerNo}', style: theme.header4),
+                      SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(flex: 2, child: Text('Item', style: theme.tableHeader)),
+                          SizedBox(width: 8),
+                          Expanded(child: Text('Qty', style: theme.tableHeader)),
+                          SizedBox(width: 8),
+                          Expanded(child: Text('Price', style: theme.tableHeader)),
+                          Expanded(child: Text('Total', style: theme.tableHeader, textAlign: TextAlign.end)),
+                        ],
+                      ),
+                      SizedBox(height: 2),
+                      Container(margin: const EdgeInsets.symmetric(vertical: 2), height: 0.9, color: PdfColors.black),
+                      ...(transaction.items ?? []).map(
+                        (item) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      item.name!,
+                                      style: TextStyle(font: interMedium, fontSize: 11, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (item.discount != null && item.discount != 0 && item.discountInPeso != null) ...[
+                                SizedBox(height: 2),
+                                Text(
+                                  '*Disc. ${item.discountType == DiscountType.PERCENT ? '${item.discount}%' : '₱${item.discount.toPesoString()}'}  (-${item.discountInPeso.toPesoString()})',
+                                  style: theme.tableCell,
+                                ),
+                              ],
+                              SizedBox(height: 2),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Spacer(),
+                                  Expanded(
+                                    child: Text(
+                                      item.qty.toString(),
+                                      style: theme.tableCell,
+                                      textAlign: TextAlign.end,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      item.price.toPesoString(),
+                                      style: theme.tableCell,
+                                      textAlign: TextAlign.end,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      item.total.toPesoString(),
+                                      style: theme.tableCell,
+                                      textAlign: TextAlign.end,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '${(transaction.items ?? []).length.toString()} ITEMS',
+                          style: theme.header3,
+                        ),
+                      ),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('SUBTOTAL', style: theme.header3),
+                          Text(
+                            transaction.subtotal.toPesoString(),
+                            style: theme.header3,
+                          ),
+                        ],
+                      ),
+                      if (transaction.discount != null &&
+                          transaction.discount != 0 &&
+                          transaction.discountInPeso != null)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'DISCOUNT (${transaction.discountType == DiscountType.PERCENT ? '${transaction.discount}%' : Strings.empty})',
+                              style: theme.header3,
+                            ),
+                            Text(transaction.discountInPeso.toPesoString(), style: theme.header3),
+                          ],
+                        ),
+                      Divider(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('TOTAL', style: theme.header3),
+                            Text(transaction.total.toPesoString(), style: theme.header3),
+                          ],
+                        ),
+                      ),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('CASH', style: theme.header3),
+                          Text(cash.toPesoString(), style: theme.header3),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('CHANGE', style: theme.header3),
+                          Text(change.toPesoString(), style: theme.header3),
+                        ],
+                      ),
+                      SizedBox(height: 30),
+                      Center(
+                        child: Text(
+                          'Stay safe and take care!',
+                          style: theme.tableHeader,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'We appreciate your feedback! Please feel free to text or call us at 09177094242.',
+                        textAlign: TextAlign.center,
+                        style: theme.paragraphStyle.copyWith(lineSpacing: 0.6),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(),
               ],
             );
           },

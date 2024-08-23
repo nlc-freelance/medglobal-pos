@@ -21,7 +21,7 @@ class SaleRemoteCubit extends Cubit<SaleRemoteState> {
         final result = await _createSaleUseCase.call(CreateSaleParams(registerId, order));
         result.fold(
           (error) => emit(SaleError(message: error.message)),
-          (data) => emit(SaleSuccess(transaction: data)),
+          (data) => emit(SaleSuccess(transaction: data, cash: receivedAmount, change: receivedAmount - order.total!)),
         );
       } catch (e) {
         emit(SaleError(message: e.toString()));

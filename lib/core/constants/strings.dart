@@ -7,6 +7,7 @@ class Strings {
   static const String password = 'Password';
   static const String login = 'Login';
   static const String empty = '';
+  static const String noValue = '-';
   static const String asterisk = '*';
 
   static const String loginPlaceholder =
