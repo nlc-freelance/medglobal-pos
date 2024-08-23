@@ -51,3 +51,11 @@ class AuthErrorState extends AuthState {
   @override
   List<Object?> get props => [message];
 }
+
+class ConfirmLoginErrorState extends AuthState {
+  final String message;
+  const ConfirmLoginErrorState({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

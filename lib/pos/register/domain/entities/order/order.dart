@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order_item.dart';
 
@@ -15,6 +14,7 @@ class Order extends Equatable {
   final DiscountType? discountType;
   final double? tax;
   final double? total;
+  final double? cash;
   final List<OrderItem>? items;
 
   const Order({
@@ -25,11 +25,12 @@ class Order extends Equatable {
     this.discountType,
     this.tax,
     this.total,
+    this.cash,
     this.items,
   });
 
   @override
-  List<Object?> get props => [id, subtotal, discount, discountInPeso, discountType, tax, total, items];
+  List<Object?> get props => [id, subtotal, discount, discountInPeso, discountType, tax, total, cash, items];
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
 
@@ -43,6 +44,7 @@ class Order extends Equatable {
     DiscountType? discountType,
     double? tax,
     double? total,
+    double? cash,
     List<OrderItem>? items,
   }) {
     return Order(
@@ -53,6 +55,7 @@ class Order extends Equatable {
       discountType: discountType ?? this.discountType,
       tax: tax ?? this.tax,
       total: total ?? this.total,
+      cash: cash ?? this.cash,
       items: items ?? this.items,
     );
   }
@@ -69,7 +72,8 @@ class Order extends Equatable {
         'discount': discount,
         'discountType': discountType == DiscountType.PERCENT ? 'percentage' : 'fixed',
         'tax': tax,
-        'amountPaid': total,
+        'total': total,
+        'amountPaid': cash,
         'items': items
                 ?.map((item) => {
                       'variantId': item.itemId,

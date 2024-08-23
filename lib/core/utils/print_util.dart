@@ -9,7 +9,7 @@ import 'package:printing/printing.dart';
 class PrintUtil {
   const PrintUtil();
 
-  static Future<void> generateAndPrintReceipt(Transaction transaction, double cash, double change) async {
+  static Future<void> generateAndPrintReceipt(Transaction transaction) async {
     try {
       final doc = Document();
 
@@ -21,7 +21,7 @@ class PrintUtil {
         header1: TextStyle(font: interSemiBold, fontSize: 14, fontWeight: FontWeight.normal),
         header2: TextStyle(font: interSemiBold, fontSize: 12, fontWeight: FontWeight.bold),
         header3: TextStyle(font: interSemiBold, fontSize: 10, fontWeight: FontWeight.bold),
-        header4: TextStyle(font: interRegular, fontSize: 11, fontWeight: FontWeight.normal),
+        header4: TextStyle(font: interRegular, fontSize: 10.5, fontWeight: FontWeight.normal),
         tableHeader: TextStyle(font: interSemiBold, fontSize: 10, fontWeight: FontWeight.normal),
         tableCell: TextStyle(font: interRegular, fontSize: 11, fontWeight: FontWeight.normal),
         paragraphStyle: TextStyle(font: interRegular, fontSize: 9, fontWeight: FontWeight.normal),
@@ -178,14 +178,14 @@ class PrintUtil {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('CASH', style: theme.header3),
-                          Text(cash.toPesoString(), style: theme.header3),
+                          Text(transaction.amountPaid.toPesoString(), style: theme.header3),
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('CHANGE', style: theme.header3),
-                          Text(change.toPesoString(), style: theme.header3),
+                          Text('${transaction.amountPaid! - transaction.total!}'.toPesoString(), style: theme.header3),
                         ],
                       ),
                       SizedBox(height: 30),

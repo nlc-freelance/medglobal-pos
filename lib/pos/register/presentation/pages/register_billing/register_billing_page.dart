@@ -52,13 +52,7 @@ class RegisterBillingPage extends StatelessWidget {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      state is SaleSuccess
-                          ? PaymentConfirmed(
-                              transaction: state.transaction,
-                              cash: state.cash,
-                              change: state.change,
-                            )
-                          : const ChargePayment(),
+                      state is SaleSuccess ? PaymentConfirmed(transaction: state.transaction) : const ChargePayment(),
                       const UIVerticalSpace(20),
                       if (state is SaleError) UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
                     ],

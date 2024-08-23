@@ -51,6 +51,8 @@ class AuthApiImpl implements AuthApi {
         user: user,
         isLoggedIn: response.isSignedIn,
       );
+    } on AuthException catch (e) {
+      throw e.message;
     } catch (_) {
       rethrow;
     }
