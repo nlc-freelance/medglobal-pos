@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/print_util.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
@@ -102,12 +101,6 @@ class _RegisterPageState extends State<RegisterPage> {
               ],
             ),
           ),
-        ),
-        InkWell(
-          onTap: () {
-            PrintUtil.printPdf();
-          },
-          child: Text('Print receipt'),
         ),
         const UIHorizontalSpace(16),
         BlocBuilder<RegisterShiftBloc, RegisterShiftState>(

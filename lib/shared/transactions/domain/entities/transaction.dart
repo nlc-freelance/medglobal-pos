@@ -79,7 +79,7 @@ class Transaction extends Equatable {
         totalDiscountInPeso,
         amountPaid,
         reasonForReturn,
-        createdAt
+        createdAt,
       ];
 
   /// Sale Transaction List DataGrid
@@ -185,4 +185,18 @@ class Transaction extends Equatable {
       createdAt: createdAt ?? this.createdAt,
     );
   }
+
+  /// Receipt extensions
+
+  String get branchAddress {
+    return switch (branch?.id) {
+      1 => 'Las Pinas NCR 1550',
+      2 => 'Martinez Mandaluyong NCR 1550',
+      3 => 'Correctional  NCR 1550',
+      _ => Strings.noValue,
+    };
+  }
+
+  String get registerNo =>
+      register?.name?.isNotEmpty == true ? register!.name!.substring(register!.name!.length - 1) : Strings.noValue;
 }

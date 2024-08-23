@@ -39,6 +39,7 @@ import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
@@ -103,6 +104,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<RefundRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnRemoteCubit>()),
+        BlocProvider(create: (_) => GetIt.I<PrintReceiptCubit>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) => AppRouter.router.refresh(),
