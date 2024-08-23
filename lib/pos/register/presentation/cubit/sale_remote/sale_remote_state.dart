@@ -13,9 +13,7 @@ final class SaleLoading extends SaleRemoteState {}
 
 final class SaleSuccess extends SaleRemoteState {
   final Transaction transaction;
-  final double cash;
-  final double change;
-  const SaleSuccess({required this.transaction, required this.cash, required this.change});
+  const SaleSuccess({required this.transaction});
 
   @override
   List<Object> get props => [transaction];

@@ -10,16 +10,9 @@ import 'package:medglobal_admin_portal/shared/transactions/domain/entities/trans
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PaymentConfirmed extends StatelessWidget {
-  const PaymentConfirmed({
-    super.key,
-    required this.transaction,
-    required this.cash,
-    required this.change,
-  });
+  const PaymentConfirmed({super.key, required this.transaction});
 
   final Transaction transaction;
-  final double cash;
-  final double change;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +64,7 @@ class PaymentConfirmed extends StatelessWidget {
                   },
                   child: UIButton.filled(
                     'Print Receipt',
-                    onClick: () => context.read<PrintReceiptCubit>().generateAndPrintReceipt(transaction, cash, change),
+                    onClick: () => context.read<PrintReceiptCubit>().generateAndPrintReceipt(transaction),
                     style: UIStyleButton.filled.style?.copyWith(
                       minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
                       backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
