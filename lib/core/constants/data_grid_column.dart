@@ -71,7 +71,7 @@ class DataGridColumn {
     ColumnData('qty_ordered', 'Ordered Qty'),
     ColumnData('qty_received', 'Received Qty'),
     ColumnData('supplier_price', 'Supplier Price (PHP)'),
-    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
   ];
 
   static List<ColumnData> STOCK_RETURNS = [
@@ -159,7 +159,7 @@ class DataGridColumn {
     ColumnData('qty_at_destination', 'Qty at Destination'),
     ColumnData('qty_to_transfer', 'Qty to Transfer'),
     ColumnData('cost', 'Cost (PHP)'),
-    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
     ColumnData('action', 'Action'),
   ];
 
@@ -170,7 +170,7 @@ class DataGridColumn {
     ColumnData('qty_to_transfer', 'Transferred Qty'),
     ColumnData('qty_received', 'Received Qty'),
     ColumnData('cost', 'Cost (PHP)'),
-    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
   ];
 
   static List<ColumnData> STOCK_ITEMS_TRANSFERRED = [
@@ -180,18 +180,18 @@ class DataGridColumn {
     ColumnData('qty_transferred', 'Transferred Quantity'),
     ColumnData('qty_received', 'Received Quantity'),
     ColumnData('cost', 'Cost (PHP)'),
-    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
   ];
 
   static List<ColumnData> SALE_TRANSACTIONS = [
     ColumnData('id', 'ID'),
-    ColumnData('receipt_id', 'Receipt ID'),
-    ColumnData('date', 'Date', minWidth: 180),
-    ColumnData('register_id', 'Register'),
+    ColumnData('receipt_id', 'Receipt ID', minWidth: 200),
+    ColumnData('date', 'Date', minWidth: 160),
     ColumnData('branch', 'Branch'),
+    ColumnData('register_id', 'Register'),
     ColumnData('employee', 'Employee'),
-    ColumnData('subtotal', 'Subtotal (PHP)'),
-    ColumnData('discount_in_peso', 'Discount (PHP)'),
+    // ColumnData('subtotal', 'Subtotal (PHP)'),
+    // ColumnData('discount_in_peso', 'Discount (PHP)'),
     ColumnData('tax', 'Tax (PHP)'),
     ColumnData('total', 'Total (PHP)'),
   ];
@@ -202,8 +202,30 @@ class DataGridColumn {
     ColumnData('sku', 'SKU'),
     ColumnData('qty', 'Qty'),
     ColumnData('price', 'Price (PHP)'),
-    ColumnData('discount_in_peso', 'Discount (PHP)'),
     ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('discount_in_peso', 'Total Discount (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
+  ];
+
+  static List<ColumnData> RETURN_TRANSACTIONS = [
+    ColumnData('id', 'ID'),
+    ColumnData('receipt_id', 'Receipt ID', minWidth: 200),
+    ColumnData('date', 'Date', minWidth: 180),
+    ColumnData('branch', 'Branch'),
+    ColumnData('employee', 'Employee'),
+    ColumnData('total', 'Total (PHP)'),
+    ColumnData('reason_for_return', 'Reason for Return'),
+    ColumnData('status', 'Status'),
+  ];
+
+  static List<ColumnData> RETURN_TRANSACTIONS_ITEMS = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Product', minWidth: 300),
+    ColumnData('sku', 'SKU'),
+    ColumnData('return_qty', 'Returned Qty'),
+    ColumnData('write_off_qty', 'Write-off Qty'),
+    ColumnData('restock_qty', 'Restock Qty'),
+    ColumnData('comment', 'Comment', minWidth: 350),
   ];
 
   /// POS
@@ -213,5 +235,32 @@ class DataGridColumn {
     ColumnData('product_name', 'Product', minWidth: 400),
     ColumnData('stock', 'Stock', minWidth: 80),
     ColumnData('price', 'Price (PHP)', minWidth: 80),
+  ];
+
+  static List<ColumnData> ORDERED_ITEMS = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Product'),
+    ColumnData('qty', 'Qty'),
+    ColumnData('price', 'Price (PHP)'),
+    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('discount', 'Total Discount (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
+  ];
+
+  static List<ColumnData> ORDERED_ITEMS_EDITABLE = [
+    ColumnData('id', 'ID'),
+    ColumnData('is_selected', ''),
+    ColumnData('name', 'Product', minWidth: 350),
+    ColumnData('qty_to_refund', 'Qty to Refund'),
+    ColumnData('qty', ''),
+    ColumnData('price', 'Price'),
+    ColumnData('subtotal', 'Subtotal'),
+  ];
+  static List<ColumnData> REFUNDED_ITEMS = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Product', minWidth: 350),
+    ColumnData('qty_refunded', 'Qty Refunded'),
+    ColumnData('price', 'Price'),
+    ColumnData('subtotal', 'Subtotal'),
   ];
 }

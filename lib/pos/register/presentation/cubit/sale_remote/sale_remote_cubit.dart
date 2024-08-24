@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/usecases/create_sale_usecase.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 
 part 'sale_remote_state.dart';
 
@@ -18,7 +18,12 @@ class SaleRemoteCubit extends Cubit<SaleRemoteState> {
       emit(SaleLoading());
 
       try {
-        final result = await _createSaleUseCase.call(CreateSaleParams(registerId, order));
+        final result = await _createSaleUseCase.call(
+          CreateSaleParams(
+            registerId,
+            order.copyWith(cash: receivedAmount),
+          ),
+        );
         result.fold(
           (error) => emit(SaleError(message: error.message)),
           (data) => emit(SaleSuccess(transaction: data)),

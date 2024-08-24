@@ -6,6 +6,7 @@ import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/filter_popup.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -25,7 +26,10 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
     _tabController = TabController(length: 5, vsync: this);
     context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
 
-    /// Reset last selected purchase order
+    /// TODO: This does not reset when used the back btn or side menu to navigate back to StockTransfersPage
+    /// tho cubit should be reset to initial but since navigation uses pushNamed, it does not reset
+    /// might have to refactor side menu
+    context.read<PurchaseOrderRemoteCubit>().reset();
     context.read<PurchaseOrderCubit>().reset();
   }
 

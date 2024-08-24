@@ -109,10 +109,10 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
         ),
         BlocBuilder<StockReturnListRemoteCubit, StockReturnListRemoteState>(
           builder: (context, state) {
-            if (state is StockReturnListError) {
+            if (state is StockReturnTransactionListError) {
               return Text(state.message);
             }
-            if (state is StockReturnListLoaded) {
+            if (state is StockReturnTransactionListLoaded) {
               return Expanded(
                 child: StockReturnDataGrid(state.stockReturns),
               );

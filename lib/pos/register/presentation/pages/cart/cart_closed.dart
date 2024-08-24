@@ -46,8 +46,9 @@ class _CartClosedState extends State<CartClosed> {
         BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
           builder: (context, state) {
             return FutureBuilder(
-                future: SharedPreferencesService.isMaxShiftOpenReached(),
+                future: SharedPreferencesService.hasReachedMaxShift(),
                 builder: (context, snapshot) => Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         if (snapshot.data == true) ...[
                           Text('Opening shift can only be done once a day',
@@ -139,12 +140,13 @@ void _showOpeningClosingDialog(
                     UIText.heading6('Open register shift'),
                     const Divider(color: UIColors.borderMuted),
                     const UIVerticalSpace(24),
-                    if (datetime != null)
+                    if (datetime != null) ...[
                       Text(
                         'Closed since ${DateFormat('EEEE, d MMMM yyyy h:mm a').format(datetime.toLocal())}',
                         style: UIStyleText.bodyRegular.copyWith(fontWeight: FontWeight.w400, fontSize: 15),
                       ),
-                    const UIVerticalSpace(30),
+                      const UIVerticalSpace(30),
+                    ],
                     UIText.labelMedium('Opening Amount'),
                     const UIVerticalSpace(8),
                     UITextFormField.noLabel(

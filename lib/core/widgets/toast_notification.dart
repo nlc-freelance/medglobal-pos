@@ -11,10 +11,11 @@ class ToastNotification {
         message: message,
       );
 
-  static void success(BuildContext context, String message) => _show(
+  static void success(BuildContext context, String message, {int? duration = 5000}) => _show(
         context,
         type: ToastType.SUCCESS,
         message: message,
+        duration: duration,
       );
 
   static void invalid(BuildContext context, String message) => _show(
@@ -23,12 +24,12 @@ class ToastNotification {
         message: message,
       );
 
-  static void _show(BuildContext context, {required ToastType type, required String message}) =>
+  static void _show(BuildContext context, {required ToastType type, required String message, int? duration = 5000}) =>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
           backgroundColor: UIColors.transparent,
-          duration: const Duration(milliseconds: 5000),
+          duration: Duration(milliseconds: duration!),
           elevation: 0,
           content: Align(
             alignment: Alignment.bottomRight,
@@ -58,7 +59,7 @@ class ToastNotification {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        UIText.bodyRegular(message),
+                        Expanded(child: UIText.bodyRegular(message)),
                       ],
                     ),
                   ),

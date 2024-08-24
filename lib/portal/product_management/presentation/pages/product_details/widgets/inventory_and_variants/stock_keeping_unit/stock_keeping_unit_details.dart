@@ -8,6 +8,7 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/entities
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/repositories/supplier_repository.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_billing/widgets/charge_payment.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class StockKeepingUnitDetails extends StatelessWidget {
@@ -96,8 +97,16 @@ class StockKeepingUnitDetails extends StatelessWidget {
                       child: UITextFormField.topLabel(
                         label: 'Cost (PHP)',
                         hint: 'Enter cost',
+                        showRequired: true,
                         controller: costController,
-                        // formatter: [FilteringTextInputFormatter.digitsOnly],
+                        formatter: [CurrencyInputFormatter()],
+                        validator: (value) {
+                          if (value?.trim().isEmpty == true) return 'Please enter cost.';
+                          if (value?.trim().isNotEmpty == true && double.tryParse(value!).toPesoString() == '0.00') {
+                            return 'Cost cannot be 0.';
+                          }
+                          return null;
+                        },
                       ),
                     ),
                   ),

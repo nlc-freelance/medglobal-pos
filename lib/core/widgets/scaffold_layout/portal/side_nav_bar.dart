@@ -39,7 +39,7 @@ class _SideNavBarState extends State<SideNavBar> {
             IndexedTreeNode(key: 'Sales'),
             IndexedTreeNode(key: 'Returns'),
           ]),
-        IndexedTreeNode(key: SideMenuTree.RETURNS.title),
+        // IndexedTreeNode(key: SideMenuTree.RETURNS.title),
         IndexedTreeNode(key: SideMenuTree.REPORTS.title)
           ..addAll(
             [

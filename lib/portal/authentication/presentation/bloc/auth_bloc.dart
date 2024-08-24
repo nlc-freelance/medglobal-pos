@@ -67,11 +67,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final result = await confirmLoginWithNewPassword.call(ConfirmFirstTimeLoginParams(event.password));
       result.fold(
-        (error) => emit(AuthErrorState(message: error.message)),
+        (error) => emit(ConfirmLoginErrorState(message: error.message)),
         (data) => emit(AuthenticatedState(user: data.user!)),
       );
     } catch (e) {
-      emit(AuthErrorState(message: e.toString()));
+      emit(ConfirmLoginErrorState(message: e.toString()));
     }
   }
 

@@ -42,6 +42,6 @@ class StockTransferItemDto extends Equatable {
         qtyToTransfer: qtyToTransfer,
         qtyReceived: qtyReceived,
         cost: variant?.cost,
-        subtotal: (qtyToTransfer ?? 0) * (variant?.cost ?? 0),
+        total: (qtyToTransfer ?? 0) * (variant?.cost ?? 0),
       );
 }

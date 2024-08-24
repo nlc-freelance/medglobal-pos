@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/branch_inventory.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_billing/widgets/charge_payment.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -191,22 +192,22 @@ class BranchInventoryDataSource extends DataGridSource {
     }
 
     if (column.columnName == 'price') {
-      final newPrice = double.tryParse(newCellValue);
+      final newPrice = double.tryParse(newCellValue) ?? 0;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<double>(columnName: 'price', value: newPrice);
       _branchInventories[dataRowIndex].copyWith(price: newPrice);
 
-      _context.read<VariantFormCubit>().setPricePerBranch(_branchInventories[dataRowIndex].id!, newPrice!);
+      _context.read<VariantFormCubit>().setPricePerBranch(_branchInventories[dataRowIndex].id!, newPrice);
     }
     if (column.columnName == 'qty_on_hand') {
-      final newQtyOnHand = int.tryParse(newCellValue);
+      final newQtyOnHand = int.tryParse(newCellValue) ?? 0;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_on_hand', value: newQtyOnHand);
       _branchInventories[dataRowIndex].copyWith(qtyOnHand: newQtyOnHand);
 
-      _context.read<VariantFormCubit>().setQohPerBranch(_branchInventories[dataRowIndex].id!, newQtyOnHand!);
+      _context.read<VariantFormCubit>().setQohPerBranch(_branchInventories[dataRowIndex].id!, newQtyOnHand);
     }
   }
 
@@ -234,6 +235,10 @@ class BranchInventoryDataSource extends DataGridSource {
         autofocus: true,
         cursorHeight: 15.0,
         style: UIStyleText.bodyRegular,
+        inputFormatters: [
+          if (column.columnName == 'price') CurrencyInputFormatter(),
+          if (column.columnName == 'qty_on_hand') FilteringTextInputFormatter.digitsOnly,
+        ],
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           focusedBorder: OutlineInputBorder(

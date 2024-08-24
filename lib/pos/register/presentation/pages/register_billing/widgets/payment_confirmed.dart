@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PaymentConfirmed extends StatelessWidget {
-  const PaymentConfirmed(this.transaction, {super.key});
+  const PaymentConfirmed({super.key, required this.transaction});
 
   final Transaction transaction;
 
@@ -25,14 +28,21 @@ class PaymentConfirmed extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              UIText.heading6('TRANSACTION ID', color: UIColors.textMuted),
-              UIText.heading5('${transaction.id}'),
+              UIText.heading6('RECEIPT DATE', color: UIColors.textLight),
+              UIText.heading5(DateFormat('yyyy/MM/dd HH:mm:ss').format(transaction.createdAt!)),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              UIText.heading6('AMOUNT PAID', color: UIColors.textMuted),
+              UIText.heading6('RECEIPT ID', color: UIColors.textLight),
+              UIText.heading5('${transaction.receiptId}'),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              UIText.heading6('TOTAL PAID', color: UIColors.textLight),
               UIText.heading5('₱${transaction.total!.toStringAsFixed(2)}'),
             ],
           ),
@@ -41,15 +51,27 @@ class PaymentConfirmed extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
-                child: UIButton.filled(
-                  'Print Receipt',
-                  onClick: () {},
-                  style: UIStyleButton.filled.style?.copyWith(
-                    minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
-                    backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
-                    overlayColor: UIStyleUtil.setColor(UIColors.borderMuted),
-                    textStyle: UIStyleUtil.setTextStyle(UIStyleText.heading6),
-                    foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
+                child: BlocListener<PrintReceiptCubit, PrintReceiptState>(
+                  listener: (context, state) {
+                    if (state is PrintReceiptSuccess) {
+                      ToastNotification.success(
+                        context,
+                        'Receipt successfully generated.',
+                        duration: 5000,
+                      );
+                    }
+                    if (state is PrintReceiptError) ToastNotification.error(context, state.message);
+                  },
+                  child: UIButton.filled(
+                    'Print Receipt',
+                    onClick: () => context.read<PrintReceiptCubit>().generateAndPrintReceipt(transaction),
+                    style: UIStyleButton.filled.style?.copyWith(
+                      minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
+                      backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
+                      overlayColor: UIStyleUtil.setColor(UIColors.borderMuted),
+                      textStyle: UIStyleUtil.setTextStyle(UIStyleText.heading6),
+                      foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
+                    ),
                   ),
                 ),
               ),

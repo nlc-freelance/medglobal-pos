@@ -34,7 +34,10 @@ class _AutocompleteDropdownState extends State<AutocompleteDropdown> {
         builder: (context, _, focusNode) {
           return TextField(
             controller: _controller,
-            focusNode: focusNode,
+            focusNode: focusNode
+              ..addListener(() {
+                if (!focusNode.hasFocus) _controller.clear();
+              }),
             cursorHeight: 15,
             decoration: InputDecoration(
               hintText: 'Type to search items to add',
@@ -76,13 +79,14 @@ class _AutocompleteDropdownState extends State<AutocompleteDropdown> {
           ),
         ),
         debounceDuration: const Duration(milliseconds: 800),
+        hideOnSelect: false,
+        hideOnUnfocus: true,
         loadingBuilder: (context) =>
             const Center(child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)),
         errorBuilder: (context, error) => const Center(child: Text('Something went wrong.')),
         emptyBuilder: (context) => const Center(child: Text('No items found.')),
         onSelected: (value) {
           widget.onSelected(value);
-          _controller.clear();
         },
         controller: _controller,
       );

@@ -16,14 +16,14 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
   void setEstimatedDateOfArrival(DateTime value) =>
       emit(PurchaseOrderState(state.purchaseOrder.copyWith(estimatedDateOfArrival: value)));
 
-  void setQuantityToOrderPerItem({required int id, required int qty, required double subtotal}) {
+  void setQuantityToOrderPerItem({required int id, required int qty, required double total}) {
     final items = state.purchaseOrder.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
       if (item.id == id) {
         return item.copyWith(
           qtyToOrder: qty,
-          subtotal: subtotal.roundToTwoDecimalPlaces(),
+          total: total.roundToTwoDecimalPlaces(),
         );
       }
       return item;
@@ -32,14 +32,14 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
     emit(PurchaseOrderState(state.purchaseOrder.copyWith(items: updatedItems)));
   }
 
-  void setSupplierPricePerItem({required int id, required double price, required double subtotal}) {
+  void setSupplierPricePerItem({required int id, required double price, required double total}) {
     final items = state.purchaseOrder.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
       if (item.id == id) {
         return item.copyWith(
-          supplierPrice: price.roundToTwoDecimalPlaces(),
-          subtotal: subtotal.roundToTwoDecimalPlaces(),
+          supplierPrice: price,
+          total: total.roundToTwoDecimalPlaces(),
         );
       }
       return item;
@@ -48,14 +48,14 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
     emit(PurchaseOrderState(state.purchaseOrder.copyWith(items: updatedItems)));
   }
 
-  void setQuantityReceivedPerItem({required int id, required int qty, required double subtotal}) {
+  void setQuantityReceivedPerItem({required int id, required int qty, required double total}) {
     final items = state.purchaseOrder.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
       if (item.id == id) {
         return item.copyWith(
           qtyReceived: qty,
-          subtotal: subtotal.roundToTwoDecimalPlaces(),
+          total: total.roundToTwoDecimalPlaces(),
         );
       }
       return item;
