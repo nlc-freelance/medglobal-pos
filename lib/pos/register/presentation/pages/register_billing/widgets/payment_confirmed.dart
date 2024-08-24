@@ -56,8 +56,8 @@ class PaymentConfirmed extends StatelessWidget {
                     if (state is PrintReceiptSuccess) {
                       ToastNotification.success(
                         context,
-                        'Receipt successfully generated.\nPlease click Print or press Enter to print the receipt.',
-                        duration: 10000,
+                        'Receipt successfully generated.',
+                        duration: 5000,
                       );
                     }
                     if (state is PrintReceiptError) ToastNotification.error(context, state.message);
