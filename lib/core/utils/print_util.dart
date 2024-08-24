@@ -4,7 +4,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
-import 'package:printing/printing.dart';
+import 'package:universal_html/html.dart' as html;
 
 class PrintUtil {
   const PrintUtil();
@@ -212,9 +212,40 @@ class PrintUtil {
         ),
       );
 
-      await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => doc.save(),
-      );
+      /// This is not working in Flutter Web build/release mode
+      /// But is working fine in debug mode
+      // await Printing.layoutPdf(
+      //   onLayout: (PdfPageFormat format) async => doc.save(),
+      // );
+
+      // Convert PDF to Uint8List
+      final pdfData = await doc.save();
+
+      // Create a Blob from the Uint8List
+      final blob = html.Blob([pdfData], 'application/pdf');
+      final url = html.Url.createObjectUrlFromBlob(blob);
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+        final script = html.ScriptElement()
+          ..type = 'text/javascript'
+          ..text = '''
+                    (function() {
+                      var printWindow = window.open('$url', '_blank');
+                      // Trigger the print dialog
+                      printWindow.onload = function() {
+                        printWindow.focus(); // Ensure the new window is in focus
+                        printWindow.print(); // Trigger the print dialog
+                    }
+                    })();
+                  ''';
+        html.document.body?.append(script);
+      });
+
+      // Clean up the URL object and iframe
+      Future.delayed(const Duration(milliseconds: 500), () {
+        html.Url.revokeObjectUrl(url); // Clean up URL
+        html.document.querySelector('script')?.remove(); // Remove injected script
+      });
     } catch (e) {
       throw Exception(e);
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
+import 'package:medglobal_admin_portal/core/utils/print_util.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
@@ -12,6 +13,8 @@ import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/cart
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/cart_open.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/register/register_items_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+
+import '../../../../../shared/transactions/domain/entities/transaction.dart';
 
 class RegisterPage extends StatefulWidget {
   static String route = '/point-of-sale/register';
@@ -72,6 +75,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           );
                     }),
                   ),
+                ),
+                InkWell(
+                  onTap: () => PrintUtil.generateAndPrintReceipt(const Transaction(amountPaid: 10, total: 5)),
+                  child: Text('PRINT'),
                 ),
                 const UIVerticalSpace(36),
                 BlocBuilder<RegisterItemListRemoteCubit, RegisterItemListRemoteState>(
