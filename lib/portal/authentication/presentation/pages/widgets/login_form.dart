@@ -37,6 +37,8 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+  void _login() => context.read<AuthBloc>().add(LoginEvent(emailController.text, passwordController.text));
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
@@ -81,6 +83,7 @@ class _LoginFormState extends State<LoginForm> {
             width: 345.0,
             hint: Strings.emailAddress,
             controller: emailController,
+            onSubmitted: (_) => _login(),
           ),
           const UIVerticalSpace(20.0),
           UITextField.noLabel(
@@ -88,6 +91,7 @@ class _LoginFormState extends State<LoginForm> {
             hint: Strings.password,
             controller: passwordController,
             obscureText: obscurePassword,
+            onSubmitted: (_) => _login(),
             suffixIcon: passwordController.text.isNotEmpty
                 ? InkWell(
                     onTap: () => setState(() => obscurePassword = !obscurePassword),
@@ -102,9 +106,7 @@ class _LoginFormState extends State<LoginForm> {
               icon: Assets.icons.arrowRight1.setSize(12.0),
               iconAlign: IconAlignment.end,
               Strings.login,
-              onClick: () {
-                context.read<AuthBloc>().add(LoginEvent(emailController.text, passwordController.text));
-              },
+              onClick: _login,
             ),
           ),
         ],
