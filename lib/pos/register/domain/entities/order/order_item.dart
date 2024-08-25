@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-
 import 'package:medglobal_admin_portal/core/core.dart';
 
 part 'order_item.g.dart';
@@ -14,7 +13,9 @@ class OrderItem extends Equatable {
   final double? price;
   final double? discountedPrice;
   final double? discount;
+  final double? discountInPeso;
   final DiscountType? discountType;
+  final DiscountCategory? discountCategory;
 
   const OrderItem({
     this.id,
@@ -24,11 +25,14 @@ class OrderItem extends Equatable {
     this.price,
     this.discountedPrice,
     this.discount,
+    this.discountInPeso,
     this.discountType,
+    this.discountCategory,
   });
 
   @override
-  List<Object?> get props => [id, itemId, name, qty, price, discountedPrice, discount, discountType];
+  List<Object?> get props =>
+      [id, itemId, name, qty, price, discountedPrice, discount, discountInPeso, discountType, discountCategory];
 
   factory OrderItem.fromJson(Map<String, dynamic> json) => _$OrderItemFromJson(json);
 
@@ -42,7 +46,10 @@ class OrderItem extends Equatable {
     double? price,
     double? discountedPrice,
     double? discount,
+    double? discountInPeso,
     DiscountType? discountType,
+    DiscountCategory? discountCategory,
+    bool? removeDiscount = false,
   }) {
     return OrderItem(
       id: id ?? this.id,
@@ -50,9 +57,11 @@ class OrderItem extends Equatable {
       name: name ?? this.name,
       qty: qty ?? this.qty,
       price: price ?? this.price,
-      discountedPrice: discountedPrice ?? this.discountedPrice,
-      discount: discount ?? this.discount,
+      discountedPrice: removeDiscount == true ? null : discountedPrice ?? this.discountedPrice,
+      discount: removeDiscount == true ? 0 : discount ?? this.discount,
+      discountInPeso: removeDiscount == true ? 0 : discountInPeso ?? this.discountInPeso,
       discountType: discountType ?? this.discountType,
+      discountCategory: removeDiscount == true ? null : discountCategory ?? this.discountCategory,
     );
   }
 
@@ -61,6 +70,11 @@ class OrderItem extends Equatable {
       if (discountedPrice != null) return discountedPrice! * qty!;
       return price! * qty!;
     }
+    return 0;
+  }
+
+  double get totalOriginalPricePerItem {
+    if (qty != null) return price! * qty!;
     return 0;
   }
 

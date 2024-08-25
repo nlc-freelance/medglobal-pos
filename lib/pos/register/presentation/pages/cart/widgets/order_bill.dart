@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/horizontal_dashed_divider.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/order_discount.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class OrderBill extends StatelessWidget {
@@ -34,7 +34,17 @@ class OrderBill extends StatelessWidget {
                 ],
               ),
               const UIVerticalSpace(8),
-              OrderDiscount(isOrderPlaced: isOrderPlaced),
+
+              /// TODO: No discount for the full bill for now, requested to be removed
+              // OrderDiscount(isOrderPlaced: isOrderPlaced),
+              // const UIVerticalSpace(8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  UIText.bodyRegular('Total Discount', color: UIColors.textLight),
+                  UIText.bodyRegular('- ₱${(state.order.totalDiscountFromAllItems).toPesoString()}'),
+                ],
+              ),
               const UIVerticalSpace(8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

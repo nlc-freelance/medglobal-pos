@@ -30,7 +30,7 @@ class _TransactionItemsDataGridState extends State<TransactionItemsDataGrid> {
 
     _items = widget.transaction.items ?? [];
 
-    _transactionItemsDataSource = TransactionItemsDataSource(_items, context, widget.transaction);
+    _transactionItemsDataSource = TransactionItemsDataSource(_items, widget.transaction);
   }
 
   @override
@@ -75,7 +75,25 @@ class _TransactionItemsDataGridState extends State<TransactionItemsDataGrid> {
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'total',
+                        columnName: 'subtotal',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Total Discount',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'discount',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'subtotal',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -93,25 +111,7 @@ class _TransactionItemsDataGridState extends State<TransactionItemsDataGrid> {
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'total',
-                        summaryType: GridSummaryType.sum,
-                      ),
-                    ],
-                  ),
-                  GridTableSummaryRow(
-                    color: UIColors.background,
-                    position: GridTableSummaryRowPosition.bottom,
-                    showSummaryInRow: false,
-                    title: 'Discount',
-                    columns: [
-                      const GridSummaryColumn(
-                        name: '',
-                        columnName: 'discount',
-                        summaryType: GridSummaryType.sum,
-                      ),
-                      const GridSummaryColumn(
-                        name: '',
-                        columnName: 'total',
+                        columnName: 'subtotal',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -129,7 +129,7 @@ class _TransactionItemsDataGridState extends State<TransactionItemsDataGrid> {
                       ),
                       const GridSummaryColumn(
                         name: '',
-                        columnName: 'total',
+                        columnName: 'subtotal',
                         summaryType: GridSummaryType.sum,
                       ),
                     ],
@@ -147,11 +147,9 @@ class _TransactionItemsDataGridState extends State<TransactionItemsDataGrid> {
 class TransactionItemsDataSource extends DataGridSource {
   TransactionItemsDataSource(
     List<TransactionItem> itemsOrdered,
-    BuildContext context,
     Transaction transaction,
   ) {
     _items = itemsOrdered;
-    _context = context;
     _transaction = transaction;
     buildDataGridRows();
   }
@@ -161,8 +159,6 @@ class TransactionItemsDataSource extends DataGridSource {
   List<DataGridRow> dataGridRows = [];
 
   late Transaction _transaction;
-
-  late BuildContext _context;
 
   void buildDataGridRows() => dataGridRows = _items.map((item) => item.toTransactionItemsRow()).toList();
 
@@ -189,7 +185,7 @@ class TransactionItemsDataSource extends DataGridSource {
     DiscountType? discountType() => _items.singleWhere((sale) => sale.id == id).discountType;
 
     return switch (column) {
-      'discount_in_peso' => Row(
+      'discount' => Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             UIText.bodyRegular((cell.value as double).toPesoString()),
@@ -278,8 +274,8 @@ class TransactionItemsDataSource extends DataGridSource {
   String getSummaryValue(String label, String subtotal) {
     double? value;
     switch (label) {
-      case 'Discount':
-        value = _transaction.discountInPeso;
+      case 'Total Discount':
+        value = _transaction.totalDiscountInPeso;
       case 'Tax':
         value = _transaction.tax;
       case 'Total':

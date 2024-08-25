@@ -76,9 +76,8 @@ class TransactionItem extends Equatable {
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'qty', value: qty ?? 0),
           DataGridCell<double>(columnName: 'price', value: price ?? 0),
+          DataGridCell<double>(columnName: 'discount', value: discountInPeso ?? 0),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
-          DataGridCell<double>(columnName: 'discount_in_peso', value: discountInPeso ?? 0),
-          DataGridCell<double>(columnName: 'total', value: total ?? 0),
         ],
       );
 
@@ -100,9 +99,8 @@ class TransactionItem extends Equatable {
           DataGridCell<String>(columnName: 'name', value: name),
           DataGridCell<int>(columnName: 'qty', value: qty ?? 0),
           DataGridCell<double>(columnName: 'price', value: price ?? 0),
+          DataGridCell<double>(columnName: 'discount', value: discountInPeso ?? 0),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
-          DataGridCell<double>(columnName: 'discount_in_peso', value: discountInPeso ?? 0),
-          DataGridCell<double>(columnName: 'total', value: total ?? 0),
         ],
       );
 

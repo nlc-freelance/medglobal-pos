@@ -24,16 +24,22 @@ class Transaction extends Equatable {
   final Employee? employee;
   final List<TransactionItem>? items;
   final double? subtotal;
-  final double? discount;
-  final DiscountType? discountType;
-  final double? discountInPeso;
   final double? tax;
   final double? total;
-  final double? totalDiscountInPeso;
-  final double? amountPaid;
   final String? reasonForReturn;
   @DateTimeConverter()
   final DateTime? createdAt;
+
+  /// These are for full bill discount, but full bill discounts has been requested to be removed
+  final double? discount;
+  final DiscountType? discountType;
+  final double? discountInPeso;
+
+  /// This will be the total discount from all items (sum of all discounts per item)
+  final double? totalDiscountInPeso;
+
+  /// This is the cash the customer gave as payment
+  final double? amountPaid;
 
   const Transaction({
     this.id,
@@ -94,8 +100,8 @@ class Transaction extends Equatable {
           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'register_id', value: (register?.id ?? Strings.empty).toString()),
           DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
-          // DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
-          // DataGridCell<double>(columnName: 'discount_in_peso', value: totalDiscountInPeso ?? 0),
+          DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          DataGridCell<double>(columnName: 'total_discount', value: totalDiscountInPeso ?? 0),
           DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
           DataGridCell<double>(columnName: 'total', value: total ?? 0),
         ],
@@ -190,9 +196,9 @@ class Transaction extends Equatable {
 
   String get branchAddress {
     return switch (branch?.id) {
-      1 => 'Las Pinas NCR 1550',
-      2 => 'Martinez Mandaluyong NCR 1550',
-      3 => 'Correctional  NCR 1550',
+      4 => 'Alabang - Zapote Road Cor Arias St.Talon Dos Las Pinas City',
+      5 => '#438 Martinez St Brgy, Plainview Mandaluyong City',
+      6 => '#58 Correctional Road Brgy, Mauway Mandaluyong City',
       _ => Strings.noValue,
     };
   }
