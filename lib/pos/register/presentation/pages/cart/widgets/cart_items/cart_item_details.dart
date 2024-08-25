@@ -40,7 +40,7 @@ class _CartItemDetailsState extends State<CartItemDetails> {
     return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) {
         final item = (state.order.items ?? []).singleWhere((item) => item.id == widget.item.id);
-        final discountType = item.discountType ?? DiscountType.PERCENT;
+        // final discountType = item.discountType ?? DiscountType.PERCENT;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,6 +49,7 @@ class _CartItemDetailsState extends State<CartItemDetails> {
               children: [
                 Expanded(
                   child: UITextField.topLabel(
+                    height: 38,
                     label: 'Quantity',
                     controller: _qtyController,
                     onChanged: (value) => context.read<OrderCubit>().setQtyPerItem(
@@ -59,74 +60,97 @@ class _CartItemDetailsState extends State<CartItemDetails> {
                 ),
                 const UIHorizontalSpace(10),
                 Expanded(
-                  child: UITextField.topLabel(
+                  flex: 2,
+                  child: UIDropdownButton<DiscountCategory>.topLabel(
+                    hint: 'Add Discount',
                     label: 'Discount',
-                    hint: discountType == DiscountType.PERCENT ? '0%' : 'PHP 0',
-                    controller: _discountController,
-                    onChanged: (value) {
+                    suffixIcon: item.discountCategory != null
+                        ? InkWell(
+                            onTap: () => context.read<OrderCubit>().removeDiscountPerItem(item.id!),
+                            child: Assets.icons.close.setSize(16),
+                          )
+                        : null,
+                    items: DiscountCategory.values,
+                    itemBuilder: (discount) => discount.label,
+                    value: item.discountCategory,
+                    onSelect: (category) {
                       context.read<OrderCubit>().setDiscountPerItem(
-                            id: widget.item.id!,
-                            discount: double.tryParse(_discountController.text),
-                            type: discountType,
+                            id: item.id!,
+                            discount: category.value,
+                            discountCategory: category,
                           );
                     },
                   ),
                 ),
-                const UIHorizontalSpace(4),
-                Container(
-                  margin: const EdgeInsets.only(top: 18),
-                  height: 38,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    border: Border.all(color: UIColors.borderRegular),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InkWell(
-                        onTap: () => context
-                            .read<OrderCubit>()
-                            .setDiscountTypePerItem(id: widget.item.id!, type: DiscountType.PESO),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color:
-                                discountType == DiscountType.PESO ? UIColors.buttonSecondaryHover : UIColors.background,
-                            borderRadius: const BorderRadiusDirectional.only(
-                              topStart: Radius.circular(8),
-                              bottomStart: Radius.circular(8),
-                            ),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          child: UIText.labelSemiBold(
-                            'PHP',
-                            color: discountType == DiscountType.PESO ? UIColors.primary : UIColors.textLight,
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () => context
-                            .read<OrderCubit>()
-                            .setDiscountTypePerItem(id: widget.item.id!, type: DiscountType.PERCENT),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: discountType == DiscountType.PERCENT
-                                ? UIColors.buttonSecondaryHover
-                                : UIColors.background,
-                            borderRadius: const BorderRadiusDirectional.only(
-                              topEnd: Radius.circular(8),
-                              bottomEnd: Radius.circular(8),
-                            ),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          child: UIText.labelSemiBold(
-                            '%',
-                            color: discountType == DiscountType.PERCENT ? UIColors.primary : UIColors.textLight,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Expanded(
+                //   child: UITextField.topLabel(
+                //     label: 'Discount',
+                //     hint: discountType == DiscountType.PERCENT ? '0%' : 'PHP 0',
+                //     controller: _discountController,
+                //     onChanged: (value) {
+                //       context.read<OrderCubit>().setDiscountPerItem(
+                //             id: widget.item.id!,
+                //             discount: double.tryParse(_discountController.text),
+                //             type: discountType,
+                //           );
+                //     },
+                //   ),
+                // ),
+                // const UIHorizontalSpace(4),
+                // Container(
+                //   margin: const EdgeInsets.only(top: 18),
+                //   height: 38,
+                //   decoration: BoxDecoration(
+                //     borderRadius: const BorderRadius.all(Radius.circular(10)),
+                //     border: Border.all(color: UIColors.borderRegular),
+                //   ),
+                //   child: Row(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       InkWell(
+                //         onTap: () => context
+                //             .read<OrderCubit>()
+                //             .setDiscountTypePerItem(id: widget.item.id!, type: DiscountType.PESO),
+                //         child: Container(
+                //           decoration: BoxDecoration(
+                //             color:
+                //                 discountType == DiscountType.PESO ? UIColors.buttonSecondaryHover : UIColors.background,
+                //             borderRadius: const BorderRadiusDirectional.only(
+                //               topStart: Radius.circular(8),
+                //               bottomStart: Radius.circular(8),
+                //             ),
+                //           ),
+                //           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                //           child: UIText.labelSemiBold(
+                //             'PHP',
+                //             color: discountType == DiscountType.PESO ? UIColors.primary : UIColors.textLight,
+                //           ),
+                //         ),
+                //       ),
+                //       InkWell(
+                //         onTap: () => context
+                //             .read<OrderCubit>()
+                //             .setDiscountTypePerItem(id: widget.item.id!, type: DiscountType.PERCENT),
+                //         child: Container(
+                //           decoration: BoxDecoration(
+                //             color: discountType == DiscountType.PERCENT
+                //                 ? UIColors.buttonSecondaryHover
+                //                 : UIColors.background,
+                //             borderRadius: const BorderRadiusDirectional.only(
+                //               topEnd: Radius.circular(8),
+                //               bottomEnd: Radius.circular(8),
+                //             ),
+                //           ),
+                //           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                //           child: UIText.labelSemiBold(
+                //             '%',
+                //             color: discountType == DiscountType.PERCENT ? UIColors.primary : UIColors.textLight,
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
             // if (_discountType == DiscountType.PERCENT) ...[

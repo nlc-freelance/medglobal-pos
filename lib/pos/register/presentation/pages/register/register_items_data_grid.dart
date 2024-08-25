@@ -220,7 +220,9 @@ class RegisterItemsDataSource extends DataGridSource {
             ],
           ),
         _ => Text(
-            (cell.value ?? '').toString(),
+            cell.runtimeType.toString().contains('double')
+                ? (cell.value as double).toPesoString()
+                : cell.value.toString(),
             style: UIStyleText.bodyRegular.copyWith(fontSize: 15),
           ),
       };
