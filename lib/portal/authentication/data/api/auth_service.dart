@@ -18,7 +18,7 @@ class AuthService {
   Future<String> getToken() async {
     final auth = await getAuthSession();
 
-    final accessToken = auth.userPoolTokensResult.value.accessToken.encode();
+    final accessToken = auth.userPoolTokensResult.value.accessToken.raw;
 
     await SharedPreferencesService.setAccessToken(accessToken);
 

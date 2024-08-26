@@ -48,7 +48,13 @@ class PrintUtil {
                       ),
                       SizedBox(height: 10),
                       Center(child: Text('${transaction.branch?.name}', style: theme.header2)),
-                      Center(child: Text(transaction.branchAddress, style: theme.tableCell)),
+                      Center(
+                        child: Text(
+                          transaction.branchAddress,
+                          style: theme.tableCell,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                       SizedBox(height: 30),
                       Text(
                         'Receipt Date: ${DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now())}',
@@ -149,19 +155,16 @@ class PrintUtil {
                           ),
                         ],
                       ),
-                      if (transaction.discount != null &&
-                          transaction.discount != 0 &&
-                          transaction.discountInPeso != null)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'DISCOUNT (${transaction.discountType == DiscountType.PERCENT ? '${transaction.discount}%' : Strings.empty})',
-                              style: theme.header3,
-                            ),
-                            Text(transaction.discountInPeso.toPesoString(), style: theme.header3),
-                          ],
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'TOTAL DISCOUNT',
+                            style: theme.header3,
+                          ),
+                          Text('-${transaction.totalDiscountInPeso.toPesoString()}', style: theme.header3),
+                        ],
+                      ),
                       Divider(),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),

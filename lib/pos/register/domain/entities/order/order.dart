@@ -62,6 +62,7 @@ class Order extends Equatable {
 
   bool hasChangedInSubtotalDiscountOrType(Order other) {
     return subtotal != other.subtotal ||
+        items != other.items ||
         discount != other.discount ||
         discountInPeso != other.discountInPeso ||
         discountType != other.discountType;
@@ -84,4 +85,8 @@ class Order extends Equatable {
                 .toList() ??
             [],
       };
+
+  double get totalDiscountFromAllItems => items?.any((item) => item.discountCategory != null) == true
+      ? items?.map((item) => (item.discountInPeso ?? 0) * item.qty!).reduce((a, b) => a + b) ?? 0
+      : 0;
 }

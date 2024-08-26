@@ -37,7 +37,7 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void _login() => context.read<AuthBloc>().add(LoginEvent(emailController.text, passwordController.text));
+  void _login() => context.read<AuthBloc>().add(LoginEvent(emailController.text.trim(), passwordController.text));
 
   @override
   Widget build(BuildContext context) {
