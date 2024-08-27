@@ -25,8 +25,8 @@ import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_list/returns_page.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_details/sale_transaction_details_page.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transactions_page.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/billing/billing_page.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/pages/register/register_page.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/pages/register_billing/register_billing_page.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transactions_page.dart';
 
 abstract class AppRouter {
@@ -283,7 +283,7 @@ abstract class AppRouter {
               GoRoute(
                 name: 'Billing',
                 path: '/point-of-sale/register/billing',
-                pageBuilder: (context, state) => const NoTransitionPage(child: RegisterBillingPage()),
+                pageBuilder: (context, state) => const NoTransitionPage(child: BillingPage()),
               ),
             ],
           ),

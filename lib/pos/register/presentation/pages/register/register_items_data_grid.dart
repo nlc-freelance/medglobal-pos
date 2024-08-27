@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order_item.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/register_items/register_item.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/pos_product_list_search_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -139,7 +139,7 @@ class _RegisterItemsDataGridState extends State<RegisterItemsDataGrid> {
                                 .value;
                             final item = _registerItemsDataSource._items.firstWhere((item) => item.id == id);
 
-                            context.read<OrderCubit>().addItem(OrderItem(
+                            context.read<OrderCubit>().addItem(TransactionItem(
                                   id: const Uuid().v4().hashCode,
                                   itemId: item.id,
                                   name: item.displayName,

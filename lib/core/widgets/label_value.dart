@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-enum LabelValueType { text, status, button, chip, type, returnStatus }
+enum LabelValueType { text, bigText, status, button, chip, type, returnStatus }
 
 class LabelValue extends StatelessWidget {
   const LabelValue._({
     required this.labelType,
     required this.label,
     this.value,
+    this.textColor,
     this.status,
     this.returnStatus,
     this.button,
@@ -19,15 +20,29 @@ class LabelValue extends StatelessWidget {
   final LabelValueType labelType;
   final String label;
   final String? value;
+  final Color? textColor;
   final StockOrderStatus? status;
   final ReturnStatus? returnStatus;
   final TransactionType? type;
   final Widget? button;
   final double? chip;
 
+  factory LabelValue.bigText({
+    required String label,
+    required String? value,
+    Color? textColor,
+  }) =>
+      LabelValue._(
+        labelType: LabelValueType.bigText,
+        label: label,
+        value: value,
+        textColor: textColor,
+      );
+
   factory LabelValue.text({
     required String label,
     required String? value,
+    bool isRegular = true,
   }) =>
       LabelValue._(labelType: LabelValueType.text, label: label, value: value);
 
@@ -64,9 +79,13 @@ class LabelValue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: labelType == LabelValueType.bigText ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
-        UIText.labelSemiBold(label),
+        labelType == LabelValueType.bigText
+            ? UIText.labelMedium(label, color: UIColors.textMuted)
+            : UIText.labelSemiBold(label),
+        if (labelType == LabelValueType.bigText)
+          UIText.heading1(value ?? Strings.noValue, color: textColor ?? UIColors.textRegular),
         if (labelType == LabelValueType.text) UIText.bodyRegular(value ?? Strings.empty),
         if (labelType == LabelValueType.status) ...[
           const UIVerticalSpace(6),

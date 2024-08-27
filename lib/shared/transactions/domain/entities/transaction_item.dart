@@ -14,9 +14,13 @@ class TransactionItem extends Equatable {
   final int? qty;
   final int? qtyRefund;
   final double? price;
+
+  /// Total discount per item (discountInPeso * qty)
   final double? discountInPeso;
   final double? discount;
+  final double? discountedPrice;
   final DiscountType? discountType;
+  final DiscountCategory? discountCategory;
   final double? subtotal;
   final double? total;
   final String? comment;
@@ -36,7 +40,9 @@ class TransactionItem extends Equatable {
     this.price,
     this.discountInPeso,
     this.discount,
+    this.discountedPrice,
     this.discountType,
+    this.discountCategory,
     this.subtotal,
     this.total,
     this.comment,
@@ -55,7 +61,9 @@ class TransactionItem extends Equatable {
         qtyRefund,
         price,
         discount,
+        discountedPrice,
         discountType,
+        discountCategory,
         discountInPeso,
         subtotal,
         total,
@@ -134,14 +142,18 @@ class TransactionItem extends Equatable {
     int? qty,
     int? qtyRefund,
     double? price,
-    double? discountInPeso,
+    double? discountedPrice,
     double? discount,
+    double? discountInPeso,
     DiscountType? discountType,
+    DiscountCategory? discountCategory,
     double? subtotal,
+    double? total,
     String? comment,
     int? restockQty,
     int? writeOffQty,
     bool? isSelected,
+    bool? removeDiscount = false,
   }) {
     return TransactionItem(
       id: id ?? this.id,
@@ -151,14 +163,37 @@ class TransactionItem extends Equatable {
       qty: qty ?? this.qty,
       qtyRefund: qtyRefund ?? this.qtyRefund,
       price: price ?? this.price,
-      discountInPeso: discountInPeso ?? this.discountInPeso,
-      discount: discount ?? this.discount,
+      discountedPrice: removeDiscount == true ? null : discountedPrice ?? this.discountedPrice,
+      discount: removeDiscount == true ? null : discount ?? this.discount,
+      discountInPeso: removeDiscount == true ? null : discountInPeso ?? this.discountInPeso,
+      discountCategory: removeDiscount == true ? null : discountCategory ?? this.discountCategory,
       discountType: discountType ?? this.discountType,
       subtotal: subtotal ?? this.subtotal,
+      total: total ?? this.total,
       comment: comment ?? this.comment,
       restockQty: restockQty ?? this.restockQty,
       writeOffQty: writeOffQty ?? this.writeOffQty,
       isSelected: isSelected ?? this.isSelected,
     );
+  }
+
+  double get totalPerItem {
+    if (qty != null) {
+      if (discountedPrice != null) return discountedPrice! * qty!;
+      return price! * qty!;
+    }
+    return 0;
+  }
+
+  double get subtotalPerItem {
+    if (qty != null) return price! * qty!;
+    return 0;
+  }
+
+  bool hasChangedInQtyDiscountOrTypePerItem(TransactionItem other) {
+    return qty != other.qty || discount != other.discount;
+
+    /// This applies when there is a discount type of either peso or percentage
+    // discountType != other.discountType;
   }
 }

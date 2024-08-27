@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/cubit/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -32,6 +33,18 @@ class TransactionDetailsHeader extends StatelessWidget {
                 child: UIText.heading5(isIssuingRefund ? 'Issue Refund' : 'Sale Transaction'),
               ),
               if (!isIssuingRefund) ...[
+                const Spacer(),
+                UIButton.filled(
+                  'Print Receipt',
+                  onClick: () => context.read<PrintReceiptCubit>().generateAndPrintReceipt(transaction),
+                  style: UIStyleButton.filled.style?.copyWith(
+                    backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
+                    overlayColor: UIStyleUtil.setColor(UIColors.borderMuted),
+                    textStyle: UIStyleUtil.setTextStyle(UIStyleText.labelSemiBold),
+                    foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
+                  ),
+                ),
+                const UIHorizontalSpace(8),
                 UIButton.filled(
                   'Issue Refund',
                   onClick: onTapReceiptId,
