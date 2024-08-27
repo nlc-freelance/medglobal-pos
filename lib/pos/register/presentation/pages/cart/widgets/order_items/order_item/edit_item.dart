@@ -67,9 +67,9 @@ class _EditItemState extends State<EditItem> {
                     suffixIcon: item.discountCategory != null
                         ? InkWell(
                             onTap: () => context.read<OrderCubit>().removeDiscountPerItem(item.id!),
-                            child: Assets.icons.close.setSize(16),
+                            child: Assets.icons.xCircle.svg(),
                           )
-                        : null,
+                        : Assets.icons.arrowDown.svg(),
                     items: DiscountCategory.values,
                     itemBuilder: (discount) => discount.label,
                     value: item.discountCategory,
