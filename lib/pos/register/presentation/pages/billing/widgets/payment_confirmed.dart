@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
@@ -23,26 +22,26 @@ class PaymentConfirmed extends StatelessWidget {
         children: [
           Assets.icons.checkCircle.svg(width: 60, colorFilter: UIColors.success.toColorFilter),
           const UIVerticalSpace(30),
-          UIText.heading1('Transaction Successful'),
+          UIText.heading2('Transaction Successful'),
           const UIVerticalSpace(60),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              UIText.heading6('RECEIPT DATE', color: UIColors.textLight),
+              UIText.heading5('Receipt date'),
               UIText.heading5(DateFormat('yyyy/MM/dd HH:mm:ss').format(transaction.createdAt!)),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              UIText.heading6('RECEIPT ID', color: UIColors.textLight),
+              UIText.heading5('Receipt ID'),
               UIText.heading5('${transaction.receiptId}'),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              UIText.heading6('TOTAL PAID', color: UIColors.textLight),
+              UIText.heading5('Total paid'),
               UIText.heading5('₱${transaction.total!.toStringAsFixed(2)}'),
             ],
           ),
@@ -80,7 +79,6 @@ class PaymentConfirmed extends StatelessWidget {
                 child: UIButton.filled(
                   'New Sale',
                   onClick: () {
-                    context.read<OrderCubit>().reset();
                     context.read<SaleRemoteCubit>().reset();
                     AppRouter.router.goNamed('Register');
                   },

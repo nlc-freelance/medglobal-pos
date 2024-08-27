@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/sale_remote/sale_remote_cubit.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/order_bill.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/cart_items/cart_items.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/order_bill/order_bill.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/order_items/order_item_list.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class CartOpen extends StatelessWidget {
-  const CartOpen({super.key, this.isOrderPlaced = false});
+  const CartOpen({super.key, this.isReadOnly = false});
 
-  final bool isOrderPlaced;
+  final bool isReadOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +25,14 @@ class CartOpen extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                UIText.heading5('Order ${isOrderPlaced ? 'Summary' : 'Details'}'),
+                UIText.heading5('Order ${isReadOnly ? 'Summary' : 'Details'}'),
                 const UIHorizontalSpace(8),
                 UIText.bodyRegular('(${orderItems.length} items)', color: UIColors.textMuted),
               ],
             ),
             if (orderItems.isNotEmpty == true) ...[
               const UIVerticalSpace(30),
-              Expanded(child: CartItems(orderItems, isOrderPlaced: isOrderPlaced)),
+              Expanded(child: OrderItemList(orderItems, isReadOnly: isReadOnly)),
               const UIVerticalSpace(46),
             ] else ...[
               const Spacer(),
@@ -47,8 +47,12 @@ class CartOpen extends StatelessWidget {
               ),
               const Spacer(),
             ],
-            OrderBill(isOrderPlaced: isOrderPlaced),
-            if (orderItems.isNotEmpty == true && !isOrderPlaced) ...[
+            BlocConsumer<OrderCubit, OrderState>(
+              listenWhen: (previous, current) => previous.order.hasChangedAnyItem(current.order),
+              listener: (context, state) => context.read<OrderCubit>().computeOrderBill(),
+              builder: (context, state) => OrderBill(order: state.order, isReadOnly: isReadOnly),
+            ),
+            if (orderItems.isNotEmpty == true && !isReadOnly) ...[
               const UIVerticalSpace(16),
               Row(
                 children: [

@@ -185,8 +185,8 @@ class DataGridColumn {
 
   static List<ColumnData> SALE_TRANSACTIONS = [
     ColumnData('id', 'ID'),
-    ColumnData('receipt_id', 'Receipt ID', minWidth: 200),
-    ColumnData('date', 'Date', minWidth: 160),
+    ColumnData('receipt_id', 'Receipt ID', minWidth: 220),
+    ColumnData('date', 'Date', minWidth: 180),
     ColumnData('branch', 'Branch'),
     ColumnData('register_id', 'Register'),
     ColumnData('employee', 'Employee'),
@@ -208,7 +208,7 @@ class DataGridColumn {
 
   static List<ColumnData> RETURN_TRANSACTIONS = [
     ColumnData('id', 'ID'),
-    ColumnData('receipt_id', 'Receipt ID', minWidth: 200),
+    ColumnData('receipt_id', 'Receipt ID', minWidth: 220),
     ColumnData('date', 'Date', minWidth: 180),
     ColumnData('branch', 'Branch'),
     ColumnData('employee', 'Employee'),

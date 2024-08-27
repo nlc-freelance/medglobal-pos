@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order_item.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/cart_items/cart_item_details.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/cart_items/cart_item_title.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/order_items/order_item/edit_item.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/pages/cart/widgets/order_items/order_item/item_title.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class CartItems extends StatefulWidget {
-  const CartItems(this.items, {super.key, this.isOrderPlaced = false});
+class OrderItemList extends StatefulWidget {
+  const OrderItemList(this.items, {super.key, this.isReadOnly = false});
 
-  final List<OrderItem> items;
-  final bool isOrderPlaced;
+  final List<TransactionItem> items;
+  final bool isReadOnly;
 
   @override
-  State<CartItems> createState() => _CartItemsState();
+  State<OrderItemList> createState() => _OrderItemListState();
 }
 
-class _CartItemsState extends State<CartItems> {
+class _OrderItemListState extends State<OrderItemList> {
   int _currentPanelIndex = -1;
 
   @override
@@ -43,7 +43,7 @@ class _CartItemsState extends State<CartItems> {
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
               child: ExpansionTile(
                 key: UniqueKey(),
-                enabled: widget.isOrderPlaced != true,
+                enabled: widget.isReadOnly != true,
                 leading: const SizedBox(),
                 controlAffinity: ListTileControlAffinity.leading,
                 initiallyExpanded: index == _currentPanelIndex,
@@ -53,8 +53,8 @@ class _CartItemsState extends State<CartItems> {
                 shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
                 expandedCrossAxisAlignment: CrossAxisAlignment.start,
                 onExpansionChanged: (bool expanded) => setState(() => _currentPanelIndex = expanded ? index : -1),
-                title: CartItemTitle(item, isOrderPlaced: widget.isOrderPlaced),
-                children: [CartItemDetails(item)],
+                title: ItemTitle(item, isReadOnly: widget.isReadOnly),
+                children: [EditItem(item)],
               ),
             ),
           ),

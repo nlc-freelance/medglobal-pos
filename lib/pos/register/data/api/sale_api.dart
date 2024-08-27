@@ -1,9 +1,9 @@
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order.dart';
 import 'package:medglobal_admin_portal/shared/transactions/data/dto/transaction_dto.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 
 abstract class SaleApi {
-  Future<TransactionDto> createSale({required int registerId, required Order order});
+  Future<TransactionDto> createSale({required int registerId, required Transaction order});
 }
 
 class SaleApiImpl implements SaleApi {
@@ -12,7 +12,7 @@ class SaleApiImpl implements SaleApi {
   SaleApiImpl(this._apiService);
 
   @override
-  Future<TransactionDto> createSale({required int registerId, required Order order}) async {
+  Future<TransactionDto> createSale({required int registerId, required Transaction order}) async {
     try {
       return await _apiService.post<TransactionDto>(
         '/sales',

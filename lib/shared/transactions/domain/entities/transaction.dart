@@ -88,6 +88,10 @@ class Transaction extends Equatable {
         createdAt,
       ];
 
+  factory Transaction.fromJson(Map<String, dynamic> json) => _$TransactionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TransactionToJson(this);
+
   /// Sale Transaction List DataGrid
   DataGridRow toSaleTransactionRow() => DataGridRow(
         cells: [
@@ -150,10 +154,30 @@ class Transaction extends Equatable {
     };
   }
 
+  /// Create sale payload
+  JSON toPayload(int registerId) => {
+        'registerId': registerId,
+        'discount': discount,
+        'discountType': discountType == DiscountType.PERCENT ? 'percentage' : 'fixed',
+        'tax': tax,
+        'total': total,
+        'amountPaid': amountPaid,
+        'items': items
+                ?.map((item) => {
+                      'variantId': item.itemId,
+                      'quantity': item.qty,
+                      'discount': item.discount,
+                      'discountType': item.discountType == DiscountType.PERCENT ? 'percentage' : 'fixed',
+                    })
+                .toList() ??
+            [],
+      };
+
   Transaction copyWith({
     int? id,
     String? receiptId,
     int? saleTransactionId,
+    String? saleTransactionReceiptId,
     TransactionType? type,
     ReturnStatus? status,
     Register? register,
@@ -164,6 +188,7 @@ class Transaction extends Equatable {
     double? discount,
     DiscountType? discountType,
     double? discountInPeso,
+    double? totalDiscountInPeso,
     double? tax,
     double? total,
     double? amountPaid,
@@ -174,6 +199,7 @@ class Transaction extends Equatable {
       id: id ?? this.id,
       receiptId: receiptId ?? this.receiptId,
       saleTransactionId: saleTransactionId ?? this.saleTransactionId,
+      saleTransactionReceiptId: saleTransactionReceiptId ?? this.saleTransactionReceiptId,
       type: type ?? this.type,
       status: status ?? this.status,
       register: register ?? this.register,
@@ -184,6 +210,7 @@ class Transaction extends Equatable {
       discount: discount ?? this.discount,
       discountType: discountType ?? this.discountType,
       discountInPeso: discountInPeso ?? this.discountInPeso,
+      totalDiscountInPeso: totalDiscountInPeso ?? this.totalDiscountInPeso,
       tax: tax ?? this.tax,
       total: total ?? this.total,
       amountPaid: amountPaid ?? this.amountPaid,
@@ -192,8 +219,17 @@ class Transaction extends Equatable {
     );
   }
 
-  /// Receipt extensions
+  /// Bill
+  bool hasChangedAnyItem(Transaction other) {
+    return items != other.items;
 
+    /// These applies when there is a full bill discount
+    // discount != other.discount ||
+    // discountInPeso != other.discountInPeso ||
+    // discountType != other.discountType;
+  }
+
+  /// Receipt extensions
   String get branchAddress {
     return switch (branch?.id) {
       4 => 'Alabang - Zapote Road Cor Arias St.Talon Dos Las Pinas City',
