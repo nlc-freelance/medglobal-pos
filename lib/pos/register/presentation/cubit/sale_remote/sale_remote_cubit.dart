@@ -1,17 +1,16 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/usecases/create_sale_usecase.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 
 part 'sale_remote_state.dart';
 
-class SaleRemoteCubit extends Cubit<SaleRemoteState> {
+class SaleRemoteCubit extends HydratedCubit<SaleRemoteState> {
   final CreateSaleUseCase _createSaleUseCase;
 
   SaleRemoteCubit(this._createSaleUseCase) : super(SaleInitial());
 
-  Future<void> createSale({required int registerId, required Order order, double? receivedAmount}) async {
+  Future<void> createSale({required int registerId, required Transaction order, double? receivedAmount}) async {
     if (receivedAmount == null || receivedAmount == 0) {
       emit(const SaleError(message: 'Please enter the amount received to complete the transaction.'));
     } else {
@@ -21,7 +20,7 @@ class SaleRemoteCubit extends Cubit<SaleRemoteState> {
         final result = await _createSaleUseCase.call(
           CreateSaleParams(
             registerId,
-            order.copyWith(cash: receivedAmount),
+            order.copyWith(amountPaid: receivedAmount),
           ),
         );
         result.fold(
@@ -34,5 +33,43 @@ class SaleRemoteCubit extends Cubit<SaleRemoteState> {
     }
   }
 
-  void reset() => emit(SaleInitial());
+  Future<void> reset() async {
+    emit(SaleInitial());
+    await super.clear();
+  }
+
+  @override
+  SaleRemoteState? fromJson(Map<String, dynamic> json) {
+    try {
+      final stateType = json['stateType'] as String;
+      if (stateType == 'SaleSuccess') {
+        final transaction = Transaction.fromJson(json['transaction']);
+        return SaleSuccess(transaction: transaction);
+      } else if (stateType == 'SaleError') {
+        final message = json['message'] as String;
+        return SaleError(message: message);
+      } else {
+        return SaleInitial();
+      }
+    } catch (e) {
+      return null; // Handle deserialization error
+    }
+  }
+
+  @override
+  Map<String, dynamic>? toJson(SaleRemoteState state) {
+    if (state is SaleSuccess) {
+      return {
+        'stateType': 'SaleSuccess',
+        'transaction': state.transaction.toJson(),
+      };
+    } else if (state is SaleError) {
+      return {
+        'stateType': 'SaleError',
+        'message': state.message,
+      };
+    } else {
+      return {'stateType': 'SaleInitial'};
+    }
+  }
 }

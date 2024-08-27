@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/pos/register/domain/entities/order/order_item.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
+import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class CartItemDetails extends StatefulWidget {
-  const CartItemDetails(this.item, {super.key});
+class EditItem extends StatefulWidget {
+  const EditItem(this.item, {super.key});
 
-  final OrderItem item;
+  final TransactionItem item;
 
   @override
-  State<CartItemDetails> createState() => _CartItemDetailsState();
+  State<EditItem> createState() => _EditItemState();
 }
 
-class _CartItemDetailsState extends State<CartItemDetails> {
+class _EditItemState extends State<EditItem> {
   late TextEditingController _qtyController;
   late TextEditingController _discountController;
 
@@ -67,9 +67,9 @@ class _CartItemDetailsState extends State<CartItemDetails> {
                     suffixIcon: item.discountCategory != null
                         ? InkWell(
                             onTap: () => context.read<OrderCubit>().removeDiscountPerItem(item.id!),
-                            child: Assets.icons.close.setSize(16),
+                            child: Assets.icons.xCircle.svg(),
                           )
-                        : null,
+                        : Assets.icons.arrowDown.svg(),
                     items: DiscountCategory.values,
                     itemBuilder: (discount) => discount.label,
                     value: item.discountCategory,

@@ -5,9 +5,9 @@
 // import 'package:medglobal_shared/medglobal_shared.dart';
 //
 // class OrderDiscount extends StatefulWidget {
-//   const OrderDiscount({super.key, this.isOrderPlaced = false});
+//   const OrderDiscount({super.key, this.isReadOnly = false});
 //
-//   final bool isOrderPlaced;
+//   final bool isReadOnly;
 //
 //   @override
 //   State<OrderDiscount> createState() => _OrderDiscountState();
@@ -55,7 +55,7 @@
 //           horizontalTitleGap: 0.0,
 //           minLeadingWidth: 0,
 //           child: ExpansionTile(
-//             enabled: widget.isOrderPlaced != true && state.order.items?.isNotEmpty == true,
+//             enabled: widget.isReadOnly != true && state.order.items?.isNotEmpty == true,
 //             controlAffinity: ListTileControlAffinity.leading,
 //             leading: const SizedBox(),
 //             visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
@@ -64,7 +64,7 @@
 //               children: [
 //                 UIText.bodyRegular('Discount', color: UIColors.textLight),
 //                 const UIHorizontalSpace(8),
-//                 if (!widget.isOrderPlaced && state.order.items?.isNotEmpty == true) ...[
+//                 if (!widget.isReadOnly && state.order.items?.isNotEmpty == true) ...[
 //                   Assets.icons.edit2.svg(width: 12, colorFilter: UIColors.textLight.toColorFilter),
 //                   const UIHorizontalSpace(8),
 //                 ],

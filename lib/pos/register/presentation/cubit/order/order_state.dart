@@ -4,12 +4,12 @@ part of 'order_cubit.dart';
 class OrderState extends Equatable {
   const OrderState(this.order);
 
-  final Order order;
+  final Transaction order;
 
   @override
   List<Object> get props => [order];
 
-  factory OrderState.initial() => const OrderState(Order());
+  factory OrderState.initial() => const OrderState(Transaction());
 
   factory OrderState.fromJson(Map<String, dynamic> json) => _$OrderStateFromJson(json);
 
