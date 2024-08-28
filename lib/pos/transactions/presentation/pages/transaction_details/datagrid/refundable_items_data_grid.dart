@@ -20,11 +20,12 @@ class RefundableItemsDataGrid extends StatefulWidget {
 
 class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
   late List<TransactionItem> _items = <TransactionItem>[];
-  late double _tax;
 
   late DataGridController _dataGridController;
   late RefundableItemsDataSource _refundableItemsDataSource;
   late CustomSelectionManager customSelectionManager;
+
+  bool _isRefundAllSelected = false;
 
   @override
   void initState() {
@@ -33,9 +34,8 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
     _items = widget.transaction.items ?? [];
-    _tax = widget.transaction.tax ?? 0;
 
-    _refundableItemsDataSource = RefundableItemsDataSource(_items, context, _tax);
+    _refundableItemsDataSource = RefundableItemsDataSource(_items, context, widget.transaction);
 
     /// Set a new transaction in RefundCubit and copy the items of the original sale transaction register, id and items
     context.read<RefundCubit>().setRefund(
@@ -59,9 +59,30 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         UIText.heading6('Items Ordered'),
-        Text(
-          'Please input the quantity you wish to refund for a specific product.',
-          style: UIStyleText.hint,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Please input the quantity you wish to refund for a specific product.',
+              style: UIStyleText.hint,
+            ),
+            const Spacer(),
+            Checkbox(
+              value: _isRefundAllSelected,
+              onChanged: (isSelected) {
+                setState(() => _isRefundAllSelected = isSelected == true);
+                for (var item in _refundableItemsDataSource._items) {
+                  context.read<RefundCubit>().setRefundItemQty(
+                        id: item.id!,
+                        qtyToRefund: _isRefundAllSelected ? item.qty! : 0,
+                        subtotal: _isRefundAllSelected ? item.subtotalPerItem : 0,
+                      );
+                }
+              },
+              visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
+            ),
+            UIText.labelMedium('Refund all items'),
+          ],
         ),
         const UIVerticalSpace(8),
         Container(
@@ -96,6 +117,24 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
                         position: GridTableSummaryRowPosition.bottom,
                         showSummaryInRow: false,
                         title: 'Subtotal',
+                        columns: [
+                          const GridSummaryColumn(
+                            name: '',
+                            columnName: 'price',
+                            summaryType: GridSummaryType.sum,
+                          ),
+                          const GridSummaryColumn(
+                            name: '',
+                            columnName: 'subtotal',
+                            summaryType: GridSummaryType.sum,
+                          ),
+                        ],
+                      ),
+                      GridTableSummaryRow(
+                        color: UIColors.background,
+                        position: GridTableSummaryRowPosition.bottom,
+                        showSummaryInRow: false,
+                        title: 'Discount',
                         columns: [
                           const GridSummaryColumn(
                             name: '',
@@ -161,11 +200,11 @@ class RefundableItemsDataSource extends DataGridSource {
   RefundableItemsDataSource(
     List<TransactionItem> items,
     BuildContext context,
-    double tax,
+    Transaction transaction,
   ) {
     _items = items;
     _context = context;
-    _tax = tax;
+    _transaction = transaction;
     buildDataGridRows();
   }
 
@@ -173,7 +212,7 @@ class RefundableItemsDataSource extends DataGridSource {
 
   List<DataGridRow> dataGridRows = [];
 
-  late double _tax;
+  late Transaction _transaction;
   late BuildContext _context;
 
   void buildDataGridRows() => dataGridRows = _items.map((item) => item.toRefundableTransactionItemsRow()).toList();
@@ -323,17 +362,25 @@ class RefundableItemsDataSource extends DataGridSource {
               style: UIStyleText.labelSemiBold,
             )
           : Text(
-              summaryCellValue(_context, summaryRow.title!, summaryValue),
+              getSummaryValue(summaryRow.title!, summaryValue),
               style: UIStyleText.labelSemiBold,
             ),
     );
   }
 
-  String summaryCellValue(BuildContext context, String summaryRowTitle, String summaryValue) {
-    if (summaryRowTitle == 'Tax') {
-      return _tax.toPesoString();
+  String getSummaryValue(String label, String subtotal) {
+    double? value;
+    switch (label) {
+      case 'Discount':
+        value = _transaction.totalDiscountInPeso;
+      case 'Tax':
+        value = _transaction.tax;
+      case 'Total Refund':
+        value = subtotal != '0' ? (int.tryParse(subtotal) ?? 0) - (_transaction.totalDiscountInPeso ?? 0) : 0;
+      default:
+        return subtotal.toPesoString();
     }
 
-    return summaryValue.toPesoString();
+    return value.toPesoString();
   }
 }
