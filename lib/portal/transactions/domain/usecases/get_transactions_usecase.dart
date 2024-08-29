@@ -14,6 +14,7 @@ class GetTransactionsUseCase implements UseCase<TransactionPaginatedList, GetTra
         page: params.page,
         size: params.size,
         branch: params.branchId,
+        isAllBranches: params.isAllBranches,
       );
 }
 
@@ -21,8 +22,8 @@ class GetTransactionsParams {
   final TransactionType? type;
   final int page;
   final int size;
-  final int? registerId;
   final int? branchId;
+  final bool? isAllBranches;
 
-  GetTransactionsParams({this.type, required this.page, required this.size, this.registerId, this.branchId});
+  GetTransactionsParams({this.type, required this.page, required this.size, this.branchId, this.isAllBranches});
 }

@@ -26,16 +26,16 @@ class TransactionRepositoryImpl implements TransactionRepository {
     TransactionType? type,
     required int page,
     required int size,
-    int? register,
     int? branch,
+    bool? isAllBranches,
   }) async {
     try {
       final response = await _transactionApi.getTransactions(
         type: type,
         page: page,
         size: size,
-        register: register,
         branch: branch,
+        isAllBranches: isAllBranches,
       );
       return Right(response);
     } on DioException catch (e) {

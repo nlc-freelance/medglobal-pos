@@ -134,6 +134,24 @@ class _TransactionItemsDataGridState extends State<TransactionItemsDataGrid> {
                       ),
                     ],
                   ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Cash',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'discount',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'subtotal',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -280,6 +298,8 @@ class TransactionItemsDataSource extends DataGridSource {
         value = _transaction.tax;
       case 'Total':
         value = _transaction.total;
+      case 'Cash':
+        value = _transaction.amountPaid;
       default:
         return subtotal.toPesoString();
     }

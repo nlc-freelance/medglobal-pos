@@ -120,7 +120,7 @@ class TransactionItem extends Equatable {
           DataGridCell<int>(columnName: 'qty_to_refund', value: qtyRefund ?? 0),
           DataGridCell<int>(columnName: 'qty', value: qty ?? 0),
           DataGridCell<double>(columnName: 'price', value: price ?? 0),
-          DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          DataGridCell<double>(columnName: 'subtotal', value: price! * (qtyRefund ?? 0)),
         ],
       );
 

@@ -11,7 +11,7 @@ class SaleTransactionListCubit extends Cubit<SaleTransactionListState> {
 
   SaleTransactionListCubit(this._getTransactionsUseCase) : super(SaleTransactionListInitial());
 
-  Future<void> getTransactions({int page = 1, int size = 20, int? registerId, int? branchId}) async {
+  Future<void> getTransactions({int page = 1, int size = 20, int? branchId, bool? isAllBranches = true}) async {
     emit(SaleTransactionListLoading());
 
     try {
@@ -19,8 +19,8 @@ class SaleTransactionListCubit extends Cubit<SaleTransactionListState> {
         type: TransactionType.SALE,
         page: page,
         size: size,
-        registerId: registerId,
         branchId: branchId,
+        isAllBranches: isAllBranches,
       ));
       result.fold(
         (error) => emit(SaleTransactionListError(message: error.message)),
