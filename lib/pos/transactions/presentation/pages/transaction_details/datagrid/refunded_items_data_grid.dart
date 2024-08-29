@@ -17,7 +17,6 @@ class RefundedItemsDataGrid extends StatefulWidget {
 
 class _RefundedItemsDataGridState extends State<RefundedItemsDataGrid> {
   late List<TransactionItem> _items = <TransactionItem>[];
-  late double _tax;
 
   late DataGridController _dataGridController;
   late RefundedItemsDataSource _refundedItemsDataSource;
@@ -30,9 +29,8 @@ class _RefundedItemsDataGridState extends State<RefundedItemsDataGrid> {
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
     _items = widget.transaction.items ?? [];
-    _tax = widget.transaction.tax ?? 0;
 
-    _refundedItemsDataSource = RefundedItemsDataSource(_items, context, _tax);
+    _refundedItemsDataSource = RefundedItemsDataSource(_items, widget.transaction);
   }
 
   @override
@@ -69,6 +67,24 @@ class _RefundedItemsDataGridState extends State<RefundedItemsDataGrid> {
                     position: GridTableSummaryRowPosition.bottom,
                     showSummaryInRow: false,
                     title: 'Subtotal',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'subtotal',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Discount',
                     columns: [
                       const GridSummaryColumn(
                         name: '',
@@ -131,12 +147,10 @@ class _RefundedItemsDataGridState extends State<RefundedItemsDataGrid> {
 class RefundedItemsDataSource extends DataGridSource {
   RefundedItemsDataSource(
     List<TransactionItem> items,
-    BuildContext context,
-    double tax,
+    Transaction transaction,
   ) {
     _items = items;
-    _context = context;
-    _tax = tax;
+    _transaction = transaction;
     buildDataGridRows();
   }
 
@@ -144,8 +158,7 @@ class RefundedItemsDataSource extends DataGridSource {
 
   List<DataGridRow> dataGridRows = [];
 
-  late double _tax;
-  late BuildContext _context;
+  late Transaction _transaction;
 
   void buildDataGridRows() => dataGridRows = _items.map((item) => item.toRefundedTransactionItemsRow()).toList();
 
@@ -183,17 +196,25 @@ class RefundedItemsDataSource extends DataGridSource {
               style: UIStyleText.labelSemiBold,
             )
           : Text(
-              summaryCellValue(_context, summaryRow.title!, summaryValue),
+              getSummaryValue(summaryRow.title!, summaryValue),
               style: UIStyleText.labelSemiBold,
             ),
     );
   }
 
-  String summaryCellValue(BuildContext context, String summaryRowTitle, String summaryValue) {
-    if (summaryRowTitle == 'Tax') {
-      return _tax.toPesoString();
+  String getSummaryValue(String label, String subtotal) {
+    double? value;
+    switch (label) {
+      case 'Discount':
+        value = _transaction.totalDiscountInPeso;
+      case 'Tax':
+        value = _transaction.tax;
+      case 'Total Refund':
+        value = (int.tryParse(subtotal) ?? 0) - (_transaction.totalDiscountInPeso ?? 0);
+      default:
+        return subtotal.toPesoString();
     }
 
-    return summaryValue.toPesoString();
+    return value.toPesoString();
   }
 }
