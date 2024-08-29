@@ -42,7 +42,12 @@ class TransactionApiImpl implements TransactionApi {
     try {
       final response = await _apiService.collection<TransactionDto>(
         '/sales',
-        queryParams: {'page': page, 'size': size, 'type': type?.name.toLowerCase()},
+        queryParams: {
+          'page': page,
+          'size': size,
+          'type': type?.name.toLowerCase(),
+          'isAllBranches': true,
+        },
         converter: TransactionDto.fromJson,
       );
 
