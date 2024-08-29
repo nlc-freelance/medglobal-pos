@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
-import 'package:medglobal_admin_portal/core/widgets/filter_popup.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_list/return_transaction_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -39,11 +38,11 @@ class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
               width: 150,
               child: DatePickerPopup(onSelect: (date) {}),
             ),
-            const UIHorizontalSpace(8),
-            SizedBox(
-              width: 120,
-              child: FilterPopup(onSelect: (date) {}),
-            ),
+            // const UIHorizontalSpace(8),
+            // SizedBox(
+            //   width: 120,
+            //   child: FilterPopup(onSelect: (date) {}),
+            // ),
           ],
         ),
         const Expanded(child: ReturnTransactionPaginatedDataGrid()),
