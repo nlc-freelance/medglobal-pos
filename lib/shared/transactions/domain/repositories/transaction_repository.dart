@@ -8,8 +8,8 @@ abstract class TransactionRepository {
     TransactionType? type,
     required int page,
     required int size,
-    int? register,
     int? branch,
+    bool? isAllBranches,
   });
   Future<Either<Failure, Transaction>> getTransactionById(int id);
 }

@@ -8,8 +8,8 @@ abstract class TransactionApi {
     TransactionType? type,
     required int page,
     required int size,
-    int? register,
     int? branch,
+    bool? isAllBranches,
   });
   Future<TransactionDto> getTransactionById(int id);
 }
@@ -36,8 +36,8 @@ class TransactionApiImpl implements TransactionApi {
     TransactionType? type,
     required int page,
     required int size,
-    int? register,
     int? branch,
+    bool? isAllBranches,
   }) async {
     try {
       final response = await _apiService.collection<TransactionDto>(
@@ -46,7 +46,7 @@ class TransactionApiImpl implements TransactionApi {
           'page': page,
           'size': size,
           'type': type?.name.toLowerCase(),
-          'isAllBranches': true,
+          'isAllBranches': isAllBranches,
         },
         converter: TransactionDto.fromJson,
       );
