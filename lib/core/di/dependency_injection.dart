@@ -110,7 +110,9 @@ import 'package:medglobal_admin_portal/portal/transactions/returns/domain/usecas
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_item_api.dart';
 import 'package:medglobal_admin_portal/pos/register/data/api/register_shift_api.dart';
@@ -320,6 +322,8 @@ void initDependencyInjection() {
     ..registerFactory(() => ReturnTransactionListCubit(injector()))
     ..registerFactory(() => ReturnCubit())
     ..registerFactory(() => ReturnRemoteCubit(injector()))
+    ..registerFactory(() => SaleTransactionListFilterCubit())
+    ..registerFactory(() => ReturnTransactionListFilterCubit())
 
     /// POS
     ..registerFactory(() => RegisterShiftBloc(injector(), injector()))
