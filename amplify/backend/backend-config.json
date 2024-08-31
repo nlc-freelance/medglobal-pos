@@ -1,6 +1,6 @@
 {
   "auth": {
-    "medglobalportalb8472343": {
+    "medglobalportalaf72ee7c": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -16,35 +16,35 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_medglobalportalb8472343_nativeClientId": {
+    "AMPLIFY_auth_medglobalportalaf72ee7c_nativeClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalportalb8472343"
+          "resourceName": "medglobalportalaf72ee7c"
         }
       ]
     },
-    "AMPLIFY_auth_medglobalportalb8472343_userPoolId": {
+    "AMPLIFY_auth_medglobalportalaf72ee7c_userPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalportalb8472343"
+          "resourceName": "medglobalportalaf72ee7c"
         }
       ]
     },
-    "AMPLIFY_auth_medglobalportalb8472343_userPoolName": {
+    "AMPLIFY_auth_medglobalportalaf72ee7c_userPoolName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalportalb8472343"
+          "resourceName": "medglobalportalaf72ee7c"
         }
       ]
     },
-    "AMPLIFY_auth_medglobalportalb8472343_webClientId": {
+    "AMPLIFY_auth_medglobalportalaf72ee7c_webClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalportalb8472343"
+          "resourceName": "medglobalportalaf72ee7c"
         }
       ]
     },

@@ -27,5 +27,34 @@
         }
       }
     }
+  },
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-medglobalportal-prod-f8403-authRole",
+      "UnauthRoleArn": "arn:aws:iam::050451394536:role/amplify-medglobalportal-prod-f8403-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::050451394536:role/amplify-medglobalportal-prod-f8403-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-medglobalportal-prod-f8403-deployment",
+      "UnauthRoleName": "amplify-medglobalportal-prod-f8403-unauthRole",
+      "StackName": "amplify-medglobalportal-prod-f8403",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:050451394536:stack/amplify-medglobalportal-prod-f8403/c710fd70-67ac-11ef-bc97-061eea6752f9",
+      "AmplifyAppId": "d7n4xz1vitygv"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d7n4xz1vitygv",
+          "type": "manual"
+        }
+      },
+      "auth": {
+        "medglobalportalaf72ee7c": {
+          "userPoolId": "ap-southeast-1_kqjUDSl8u",
+          "userPoolName": "medglobal-pos-inventory-employees",
+          "webClientId": "12jregfimpbpo4jpmegrqt8htd",
+          "nativeClientId": "12jregfimpbpo4jpmegrqt8htd"
+        }
+      }
+    }
   }
 }

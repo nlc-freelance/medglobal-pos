@@ -1,16 +1,16 @@
 {
   "authSelections": "userPoolOnly",
-  "resourceName": "medglobalportalb8472343",
+  "resourceName": "medglobalportalaf72ee7c",
   "serviceType": "imported",
   "region": "ap-southeast-1",
   "usernameAttributes": [
     "email"
   ],
   "requiredAttributes": [
-    "given_name",
-    "family_name",
+    "phone_number",
     "email",
-    "updated_at"
+    "given_name",
+    "family_name"
   ],
   "passwordPolicyMinLength": 8,
   "passwordPolicyCharacters": [
