@@ -46,6 +46,7 @@ class TransactionApiImpl implements TransactionApi {
           'page': page,
           'size': size,
           'type': type?.name.toLowerCase(),
+          'branch': branch,
           'isAllBranches': isAllBranches,
         },
         converter: TransactionDto.fromJson,

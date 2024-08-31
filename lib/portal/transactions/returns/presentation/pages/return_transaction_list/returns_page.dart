@@ -35,14 +35,14 @@ class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
           ),
           filters: [
             SizedBox(
-              width: 150,
+              width: 200,
               child: DatePickerPopup(onSelect: (date) {}),
             ),
-            // const UIHorizontalSpace(8),
-            // SizedBox(
-            //   width: 120,
-            //   child: FilterPopup(onSelect: (date) {}),
-            // ),
+            const UIHorizontalSpace(8),
+            const SizedBox(
+              width: 200,
+              child: BranchFilter(TransactionType.REFUND),
+            ),
           ],
         ),
         const Expanded(child: ReturnTransactionPaginatedDataGrid()),
