@@ -7,7 +7,9 @@ import 'package:medglobal_admin_portal/core/widgets/scaffold_layout/pos/lazy_loa
 import 'package:medglobal_admin_portal/portal/branches/data/branch_api.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_filter_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -132,16 +134,29 @@ class _BranchFilterState extends State<BranchFilter> {
       position: PopupMenuPosition.under,
       tooltip: Strings.empty,
       onSelected: (branch) {
+        final saleSize = context.read<SaleTransactionListFilterCubit>().state.size;
+        final returnSize = context.read<ReturnTransactionListFilterCubit>().state.size;
+
         if (branch.id == -1) {
-          widget.type == TransactionType.SALE
-              ? context.read<SaleTransactionListCubit>().getTransactions(isAllBranches: true)
-              : context.read<ReturnTransactionListCubit>().getTransactions(isAllBranches: true);
           setState(() => _branch = null);
+
+          if (widget.type == TransactionType.SALE) {
+            context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!);
+            context.read<SaleTransactionListFilterCubit>().setBranch(null);
+          } else {
+            context.read<ReturnTransactionListCubit>().getTransactions(size: returnSize!);
+            context.read<ReturnTransactionListFilterCubit>().setBranch(null);
+          }
         } else {
-          widget.type == TransactionType.SALE
-              ? context.read<SaleTransactionListCubit>().getTransactions(isAllBranches: false, branchId: branch.id)
-              : context.read<ReturnTransactionListCubit>().getTransactions(isAllBranches: false, branchId: branch.id);
           setState(() => _branch = branch);
+
+          if (widget.type == TransactionType.SALE) {
+            context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!, branchId: branch.id);
+            context.read<SaleTransactionListFilterCubit>().setBranch(branch.id);
+          } else {
+            context.read<ReturnTransactionListCubit>().getTransactions(size: saleSize!, branchId: branch.id);
+            context.read<ReturnTransactionListFilterCubit>().setBranch(null);
+          }
         }
       },
       itemBuilder: (_) => [

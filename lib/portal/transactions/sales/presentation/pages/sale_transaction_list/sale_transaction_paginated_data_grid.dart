@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -118,28 +119,51 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                 /// TODO: Extract pager to its own widget
                 Row(
                   children: [
-                    UIPopupMenuButton.textIcon(
-                      title: '$_rowsPerPage rows',
-                      iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
-                      onSelect: (value) {
-                        setState(() => _rowsPerPage = value);
-                        // context.read<ProductListSearchCubit>().setSize(value);
-                        if (state.data.totalCount! <= value) {
-                          context.read<SaleTransactionListCubit>().getTransactions(
-                                page: 1,
-                                size: _rowsPerPage,
-                                // search: context.read<TransactionSearchCubit>().state.search,
-                              );
-                        } else {
-                          context.read<SaleTransactionListCubit>().getTransactions(
-                                page: state.data.currentPage!,
-                                size: _rowsPerPage,
-                                // search: context.read<TransactionSearchCubit>().state.search,
-                              );
-                        }
+                    BlocListener<SaleTransactionListFilterCubit, SaleTransactionListFilterState>(
+                      listenWhen: (previous, current) => previous.size != current.size,
+                      listener: (context, filter) {
+                        setState(() => _rowsPerPage = filter.size!);
                       },
-                      menu: const [20, 50, 100],
-                      menuAsString: (menu) => menu.toString(),
+                      child: UIPopupMenuButton.textIcon(
+                        title: '$_rowsPerPage rows',
+                        iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
+                        onSelect: (value) {
+                          setState(() => _rowsPerPage = value);
+                          context.read<SaleTransactionListFilterCubit>().setSize(value);
+
+                          /// Go back to page 1 when:
+                          ///  - total count is greater than the requested rows per page
+                          ///  - requested rows per page will not have data anymore in the upcoming page to request
+                          /// Example:
+                          /// Previous list is 20 rows per page and have a total of 5 pages,
+                          ///  when user now requests to have 100 rows per page, and the total page becomes less than 5,
+                          ///  the next response will be an empty list.
+                          /// To avoid, use the [totalPage], [totalCount] and the [rowsPerPage] selected to check
+                          ///  if the page to pass in the request will be greater than the [totalPage] of our data.
+                          /// If it is greater than the actual total page, then reset it to 1.
+                          if (state.data.totalCount! <= value ||
+                              state.data.totalPages! + 1 >
+                                  ((state.data.totalCount! + (_rowsPerPage - 1)) / _rowsPerPage)) {
+                            context.read<SaleTransactionListCubit>().getTransactions(
+                                  page: 1,
+                                  size: _rowsPerPage,
+                                  branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+
+                                  // search: context.read<TransactionSearchCubit>().state.search,
+                                );
+                          } else {
+                            context.read<SaleTransactionListCubit>().getTransactions(
+                                  page: state.data.currentPage!,
+                                  size: _rowsPerPage,
+                                  branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+
+                                  // search: context.read<TransactionSearchCubit>().state.search,
+                                );
+                          }
+                        },
+                        menu: const [20, 50, 100],
+                        menuAsString: (menu) => menu.toString(),
+                      ),
                     ),
                     const UIHorizontalSpace(16),
                     UIText.labelMedium(
@@ -158,6 +182,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: 1,
                                 size: _rowsPerPage,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }
@@ -173,6 +199,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }
@@ -188,6 +216,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }
@@ -205,6 +235,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }
