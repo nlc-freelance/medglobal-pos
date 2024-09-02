@@ -36,7 +36,9 @@ import 'package:medglobal_admin_portal/portal/supplier_management/presentation/c
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/print_receipt_cubit.dart';
@@ -97,8 +99,10 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<OrderCubit>()),
         BlocProvider(create: (_) => GetIt.I<SaleRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<SaleTransactionListCubit>()),
+        BlocProvider(create: (_) => GetIt.I<SaleTransactionListFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<TransactionCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnTransactionListCubit>()),
+        BlocProvider(create: (_) => GetIt.I<ReturnTransactionListFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<TransactionListByBranchCubit>()),
         BlocProvider(create: (_) => GetIt.I<RefundCubit>()),
         BlocProvider(create: (_) => GetIt.I<RefundRemoteCubit>()),
