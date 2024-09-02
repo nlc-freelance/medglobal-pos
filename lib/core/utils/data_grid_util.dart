@@ -20,6 +20,7 @@ class DataGridUtil {
       .map<GridColumn>((column) => GridColumn(
             visible: showId ?? column.name != 'id',
             columnName: column.name,
+            width: column.name == 'is_selected' ? 80 : double.nan,
             minimumWidth: column.minWidth ?? double.nan,
             label: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),

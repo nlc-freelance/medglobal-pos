@@ -238,7 +238,7 @@ class DataGridColumn {
 
   static List<ColumnData> ORDERED_ITEMS = [
     ColumnData('id', 'ID'),
-    ColumnData('name', 'Product'),
+    ColumnData('name', 'Product', minWidth: 350),
     ColumnData('qty', 'Qty'),
     ColumnData('price', 'Price (PHP)'),
     ColumnData('discount', 'Discount (PHP)'),
@@ -252,6 +252,7 @@ class DataGridColumn {
     ColumnData('qty_to_refund', 'Qty to Refund'),
     ColumnData('qty', ''),
     ColumnData('price', 'Price'),
+    ColumnData('discount', 'Unit Discount'),
     ColumnData('subtotal', 'Subtotal'),
   ];
   static List<ColumnData> REFUNDED_ITEMS = [
