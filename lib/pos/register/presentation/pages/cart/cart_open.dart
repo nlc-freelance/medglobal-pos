@@ -31,7 +31,7 @@ class CartOpen extends StatelessWidget {
               ],
             ),
             if (orderItems.isNotEmpty == true) ...[
-              const UIVerticalSpace(30),
+              const UIVerticalSpace(24),
               Expanded(child: OrderItemList(orderItems, isReadOnly: isReadOnly)),
               const UIVerticalSpace(46),
             ] else ...[

@@ -120,6 +120,9 @@ class TransactionItem extends Equatable {
           DataGridCell<int>(columnName: 'qty_to_refund', value: qtyRefund ?? 0),
           DataGridCell<int>(columnName: 'qty', value: qty ?? 0),
           DataGridCell<double>(columnName: 'price', value: price ?? 0),
+
+          /// Discount here is the discount per item unit which is being fetched on buildRow method of the data grid
+          const DataGridCell<double>(columnName: 'discount', value: 0),
           DataGridCell<double>(columnName: 'subtotal', value: price! * (qtyRefund ?? 0)),
         ],
       );
@@ -187,6 +190,12 @@ class TransactionItem extends Equatable {
 
   double get subtotalPerItem {
     if (qty != null) return price! * qty!;
+    return 0;
+  }
+
+  /// Percentage discount in peso per item unit
+  double get discountInPesoPerItemUnit {
+    if (discount != null) return price! * (discount! / 100);
     return 0;
   }
 

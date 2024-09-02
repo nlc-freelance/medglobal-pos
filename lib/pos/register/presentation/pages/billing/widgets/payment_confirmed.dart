@@ -15,34 +15,76 @@ class PaymentConfirmed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: MediaQuery.sizeOf(context).width * 0.35,
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 40),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: UIColors.background,
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 8.0,
+            offset: Offset(1, 1),
+          ),
+        ],
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Assets.icons.checkCircle.svg(width: 60, colorFilter: UIColors.success.toColorFilter),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: UIColors.success.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Assets.icons.checkCircle.svg(width: 30, colorFilter: UIColors.success.toColorFilter),
+          ),
+          const UIVerticalSpace(10),
+          Text(
+            'Transaction Successful!',
+            style: UIStyleText.heading6.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const UIVerticalSpace(40),
+          Column(
+            children: [
+              UIText.labelSemiBold('CHANGE', color: UIColors.textGray),
+              Text(
+                '₱${(transaction.amountPaid! - transaction.total!).toPesoString()}',
+                style: UIStyleText.heading1.copyWith(fontSize: 64),
+              ),
+            ],
+          ),
           const UIVerticalSpace(30),
-          UIText.heading2('Transaction Successful'),
-          const UIVerticalSpace(60),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          const Divider(color: UIColors.borderMuted),
+          const UIVerticalSpace(16),
+          Column(
             children: [
-              UIText.heading5('Receipt date'),
-              UIText.heading5(DateFormat('yyyy/MM/dd HH:mm:ss').format(transaction.createdAt!)),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              UIText.heading5('Receipt ID'),
-              UIText.heading5('${transaction.receiptId}'),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              UIText.heading5('Total paid'),
-              UIText.heading5('₱${transaction.total!.toStringAsFixed(2)}'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  UIText.labelMedium('Total Paid', color: UIColors.textMuted),
+                  UIText.heading6('₱${transaction.total!.toStringAsFixed(2)}'),
+                ],
+              ),
+              const UIVerticalSpace(16),
+              const Divider(color: UIColors.borderMuted),
+              const UIVerticalSpace(16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  UIText.labelMedium('Transaction ID', color: UIColors.textMuted),
+                  UIText.labelSemiBold('${transaction.receiptId}'),
+                ],
+              ),
+              const UIVerticalSpace(4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  UIText.labelMedium('Transaction Date', color: UIColors.textMuted),
+                  UIText.labelSemiBold(DateFormat('MM-dd-yyyy HH:mm').format(transaction.createdAt!.toLocal())),
+                ],
+              ),
             ],
           ),
           const UIVerticalSpace(80),
@@ -66,8 +108,8 @@ class PaymentConfirmed extends StatelessWidget {
                     onClick: () => context.read<PrintReceiptCubit>().generateAndPrintReceipt(transaction),
                     style: UIStyleButton.filled.style?.copyWith(
                       minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
-                      backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
-                      overlayColor: UIStyleUtil.setColor(UIColors.borderMuted),
+                      backgroundColor: UIStyleUtil.setColor(UIColors.borderMuted.withOpacity(0.9)),
+                      overlayColor: UIStyleUtil.setColor(UIColors.borderRegular),
                       textStyle: UIStyleUtil.setTextStyle(UIStyleText.heading6),
                       foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
                     ),

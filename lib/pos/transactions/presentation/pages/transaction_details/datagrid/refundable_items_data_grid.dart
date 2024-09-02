@@ -35,7 +35,7 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
 
     _items = widget.transaction.items ?? [];
 
-    _refundableItemsDataSource = RefundableItemsDataSource(_items, context, widget.transaction);
+    _refundableItemsDataSource = RefundableItemsDataSource(_items, context);
 
     /// Set a new transaction in RefundCubit and copy the items of the original sale transaction register, id and items
     context.read<RefundCubit>().setRefund(
@@ -67,19 +67,24 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
               style: UIStyleText.hint,
             ),
             const Spacer(),
-            Checkbox(
-              value: _isRefundAllSelected,
-              onChanged: (isSelected) {
-                setState(() => _isRefundAllSelected = isSelected == true);
-                for (var item in _refundableItemsDataSource._items) {
-                  context.read<RefundCubit>().setRefundItemQty(
-                        id: item.id!,
-                        qtyToRefund: _isRefundAllSelected ? item.qty! : 0,
-                        subtotal: _isRefundAllSelected ? item.subtotalPerItem : 0,
-                      );
-                }
+            BlocListener<RefundCubit, RefundState>(
+              listener: (context, state) {
+                setState(() => _isRefundAllSelected = state.refund.items?.every((item) => item.isSelected) == true);
               },
-              visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
+              child: Checkbox(
+                value: _isRefundAllSelected,
+                onChanged: (isSelected) {
+                  setState(() => _isRefundAllSelected = isSelected == true);
+                  for (var item in _refundableItemsDataSource._items) {
+                    context.read<RefundCubit>().setRefundItemQty(
+                          id: item.id!,
+                          qtyToRefund: _isRefundAllSelected ? item.qty! : 0,
+                          subtotal: _isRefundAllSelected ? item.subtotalPerItem : 0,
+                        );
+                  }
+                },
+                visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
+              ),
             ),
             UIText.labelMedium('Refund all items'),
           ],
@@ -120,7 +125,7 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
                         columns: [
                           const GridSummaryColumn(
                             name: '',
-                            columnName: 'price',
+                            columnName: 'discount',
                             summaryType: GridSummaryType.sum,
                           ),
                           const GridSummaryColumn(
@@ -138,7 +143,7 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
                         columns: [
                           const GridSummaryColumn(
                             name: '',
-                            columnName: 'price',
+                            columnName: 'discount',
                             summaryType: GridSummaryType.sum,
                           ),
                           const GridSummaryColumn(
@@ -156,7 +161,7 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
                         columns: [
                           const GridSummaryColumn(
                             name: '',
-                            columnName: 'price',
+                            columnName: 'discount',
                             summaryType: GridSummaryType.sum,
                           ),
                           const GridSummaryColumn(
@@ -174,7 +179,7 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
                         columns: [
                           const GridSummaryColumn(
                             name: '',
-                            columnName: 'price',
+                            columnName: 'discount',
                             summaryType: GridSummaryType.sum,
                           ),
                           const GridSummaryColumn(
@@ -200,11 +205,9 @@ class RefundableItemsDataSource extends DataGridSource {
   RefundableItemsDataSource(
     List<TransactionItem> items,
     BuildContext context,
-    Transaction transaction,
   ) {
     _items = items;
     _context = context;
-    _transaction = transaction;
     buildDataGridRows();
   }
 
@@ -212,7 +215,6 @@ class RefundableItemsDataSource extends DataGridSource {
 
   List<DataGridRow> dataGridRows = [];
 
-  late Transaction _transaction;
   late BuildContext _context;
 
   void buildDataGridRows() => dataGridRows = _items.map((item) => item.toRefundableTransactionItemsRow()).toList();
@@ -235,25 +237,60 @@ class RefundableItemsDataSource extends DataGridSource {
     );
   }
 
-  Widget _buildCell(String column, DataGridCell cell, int id) => switch (column) {
-        'is_selected' => IgnorePointer(child: Checkbox(value: (cell.value as bool), onChanged: (_) {})),
-        'qty_to_refund' => Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: UIColors.background,
-              border: Border.all(color: UIColors.borderRegular),
-              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-            ),
-            child: UIText.bodyRegular(cell.value.toString()),
+  Widget _buildCell(String column, DataGridCell cell, int id) {
+    double? discount() => _items.singleWhere((sale) => sale.id == id).discount;
+    double? discountInPesoPerUnit() => _items.singleWhere((sale) => sale.id == id).discountInPesoPerItemUnit;
+    DiscountType? discountType() => _items.singleWhere((sale) => sale.id == id).discountType;
+
+    return switch (column) {
+      'is_selected' => IgnorePointer(child: Checkbox(value: (cell.value as bool), onChanged: (_) {})),
+      'qty_to_refund' => Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: UIColors.background,
+            border: Border.all(color: UIColors.borderRegular),
+            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
           ),
-        'qty' => UIText.label('/ ${cell.value.toString()}'),
-        _ => UIText.bodyRegular(
-            cell.runtimeType.toString().contains('double')
-                ? (cell.value as double).toPesoString()
-                : cell.value.toString(),
-          ),
-      };
+          child: UIText.bodyRegular(cell.value.toString()),
+        ),
+      'qty' => UIText.label('/ ${cell.value.toString()}'),
+      'discount' => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
+              UIText.bodyRegular(discountInPesoPerUnit().toPesoString()),
+              const UIHorizontalSpace(8),
+              Container(
+                margin: const EdgeInsets.only(top: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: UIColors.cancelledBg.withOpacity(0.4),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
+                    const UIHorizontalSpace(8),
+                    Text(
+                      '${discount()}%',
+                      style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
+                    ),
+                  ],
+                ),
+              ),
+            ] else
+              UIText.bodyRegular(0.0.toPesoString()),
+          ],
+        ),
+      _ => UIText.bodyRegular(
+          cell.runtimeType.toString().contains('double')
+              ? (cell.value as double).toPesoString()
+              : cell.value.toString(),
+        ),
+    };
+  }
 
   /// Helps to hold the new value of all editable widget.
   /// Based on the new value we will commit the new value into the corresponding
@@ -355,7 +392,7 @@ class RefundableItemsDataSource extends DataGridSource {
       RowColumnIndex rowColumnIndex, String summaryValue) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
-      child: summaryColumn?.columnName == 'price'
+      child: summaryColumn?.columnName == 'discount'
           ? Text(
               summaryRow.title!,
               textAlign: TextAlign.right,
@@ -369,14 +406,19 @@ class RefundableItemsDataSource extends DataGridSource {
   }
 
   String getSummaryValue(String label, String subtotal) {
+    /// Get discounts
+    final refundItems = _context.read<RefundCubit>().state.refund.items?.where((item) => item.isSelected).toList();
+    final selectedItemsToRefundTotalDiscount =
+        refundItems?.fold(0.0, (discount, item) => discount + (item.discountInPesoPerItemUnit * item.qtyRefund!)) ?? 0;
+
     double? value;
     switch (label) {
       case 'Discount':
-        value = _transaction.totalDiscountInPeso;
+        value = selectedItemsToRefundTotalDiscount;
       case 'Tax':
-        value = _transaction.tax;
+        value = 0;
       case 'Total Refund':
-        value = subtotal != '0' ? (int.tryParse(subtotal) ?? 0) - (_transaction.totalDiscountInPeso ?? 0) : 0;
+        value = subtotal != '0' ? (int.tryParse(subtotal) ?? 0) - selectedItemsToRefundTotalDiscount : 0;
       default:
         return subtotal.toPesoString();
     }

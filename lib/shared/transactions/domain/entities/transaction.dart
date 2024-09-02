@@ -134,9 +134,10 @@ class Transaction extends Equatable {
       'registerId': register?.id,
       'saleTransactionId': saleTransactionId,
       'notes': reasonForReturn,
-      'items': items?.map((item) {
-        if (item.isSelected) return {'variantId': item.itemId, 'quantity': item.qtyRefund};
-      }).toList(),
+      'items': items
+          ?.where((item) => item.isSelected)
+          .map((item) => {'variantId': item.itemId, 'quantity': item.qtyRefund})
+          .toList(),
     };
   }
 

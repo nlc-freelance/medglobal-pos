@@ -47,7 +47,7 @@ class _BillingPageState extends State<BillingPage> {
             Expanded(
               flex: 8,
               child: Container(
-                padding: const EdgeInsets.all(60),
+                padding: const EdgeInsets.all(30),
                 decoration: BoxDecoration(
                   border: Border.all(color: UIColors.borderMuted, width: 1.0),
                   borderRadius: const BorderRadius.all(Radius.circular(10.0)),
@@ -61,18 +61,17 @@ class _BillingPageState extends State<BillingPage> {
                               state is SaleSuccess
                                   ? PaymentConfirmed(transaction: state.transaction)
                                   : const ChargePayment(),
-                              const UIVerticalSpace(20),
-                              if (state is SaleError)
+                              if (state is SaleError) ...[
+                                const UIVerticalSpace(30),
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Assets.icons.infoCircle.svg(),
                                     const UIHorizontalSpace(8),
-                                    Expanded(
-                                      child: UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
-                                    ),
+                                    Flexible(child: UIText.labelSemiBold(state.message, color: UIColors.buttonDanger)),
                                   ],
                                 ),
+                              ],
                             ],
                           ),
                   ),
