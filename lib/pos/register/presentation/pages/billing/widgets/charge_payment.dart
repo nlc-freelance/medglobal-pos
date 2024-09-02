@@ -43,18 +43,9 @@ class _ChargePaymentState extends State<ChargePayment> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: UIColors.textRegular.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: Assets.icons.money.svg(width: 30, colorFilter: UIColors.textLight.toColorFilter),
-              ),
-              const UIVerticalSpace(30),
               Column(
                 children: [
-                  UIText.labelSemiBold('TOTAL DUE', color: UIColors.textGray),
+                  UIText.labelSemiBold('TOTAL AMOUNT DUE', color: UIColors.textMuted),
                   Text(
                     '₱ ${(order.total ?? 0).toPesoString()}',
                     style: UIStyleText.heading1.copyWith(fontSize: 58),
@@ -84,50 +75,55 @@ class _ChargePaymentState extends State<ChargePayment> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     UIText.labelRegular('QUICK CASH', color: UIColors.textLight),
-                    const UIVerticalSpace(4.0),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            _amountReceivedController.text = (order.total ?? 0).toPesoString();
-                            setState(() => _change = 0);
-                          },
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          hoverColor: UIColors.buttonSecondaryHover.withOpacity(0.08),
-                          highlightColor: UIColors.buttonSecondaryHover.withOpacity(0.05),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                            decoration: BoxDecoration(
-                              color: UIColors.buttonSecondaryHover.withOpacity(0.05),
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Text(
-                              'EXACT',
-                              style: UIStyleText.heading6.copyWith(fontWeight: FontWeight.w600),
+                    const UIVerticalSpace(6),
+                    Center(
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        alignment: WrapAlignment.center,
+                        runAlignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              _amountReceivedController.text = (order.total ?? 0).toPesoString();
+                              setState(() => _change = 0);
+                            },
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            hoverColor: UIColors.buttonSecondaryHover.withOpacity(0.08),
+                            highlightColor: UIColors.buttonSecondaryHover.withOpacity(0.05),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+                              decoration: BoxDecoration(
+                                color: UIColors.buttonSecondaryHover.withOpacity(0.08),
+                                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child: Text(
+                                'EXACT',
+                                style: UIStyleText.heading6.copyWith(fontWeight: FontWeight.w800),
+                              ),
                             ),
                           ),
-                        ),
-                        ...quickBills.map((bill) => InkWell(
-                              onTap: () {
-                                _amountReceivedController.text = bill.toStringAsFixed(2);
-                                setState(() => _change =
-                                    (double.tryParse(_amountReceivedController.text) ?? 0) - (order.total ?? 0));
-                              },
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
-                              hoverColor: UIColors.buttonSecondaryHover.withOpacity(0.08),
-                              highlightColor: UIColors.buttonSecondaryHover.withOpacity(0.05),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                                decoration: BoxDecoration(
-                                  color: UIColors.buttonSecondaryHover.withOpacity(0.05),
-                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          ...quickBills.map((bill) => InkWell(
+                                onTap: () {
+                                  _amountReceivedController.text = bill.toStringAsFixed(2);
+                                  setState(() => _change =
+                                      (double.tryParse(_amountReceivedController.text) ?? 0) - (order.total ?? 0));
+                                },
+                                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                hoverColor: UIColors.buttonSecondaryHover.withOpacity(0.08),
+                                highlightColor: UIColors.buttonSecondaryHover.withOpacity(0.05),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+                                  decoration: BoxDecoration(
+                                    color: UIColors.buttonSecondaryHover.withOpacity(0.08),
+                                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  child: UIText.label('₱ ${bill.toStringAsFixed(2)}'),
                                 ),
-                                child: UIText.label('₱ ${bill.toStringAsFixed(2)}'),
-                              ),
-                            )),
-                      ],
+                              )),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -151,7 +147,6 @@ class _ChargePaymentState extends State<ChargePayment> {
                   ),
                   const UIHorizontalSpace(16),
                   Expanded(
-                    flex: 4,
                     child: UIButton.filled(
                       'CHARGE',
                       onClick: () {
