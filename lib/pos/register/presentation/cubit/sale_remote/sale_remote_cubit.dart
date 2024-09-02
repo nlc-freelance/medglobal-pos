@@ -12,7 +12,9 @@ class SaleRemoteCubit extends HydratedCubit<SaleRemoteState> {
 
   Future<void> createSale({required int registerId, required Transaction order, double? receivedAmount}) async {
     if (receivedAmount == null || receivedAmount == 0) {
-      emit(const SaleError(message: 'Please enter the amount received to complete the transaction.'));
+      emit(const SaleError(message: 'Please enter the cash received to proceed with the transaction.'));
+    } else if (receivedAmount < order.total!) {
+      emit(const SaleError(message: 'Received cash amount is less than the total amount due.'));
     } else {
       emit(SaleLoading());
 

@@ -38,143 +38,139 @@ class _ChargePaymentState extends State<ChargePayment> {
         final order = state.order;
         final quickBills = computePossibleAmounts(order.total ?? 0);
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(30),
-              decoration: BoxDecoration(
-                color: UIColors.whiteBg,
-                borderRadius: BorderRadius.circular(12),
+        return SizedBox(
+          width: MediaQuery.sizeOf(context).width * 0.40,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: UIColors.textRegular.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Assets.icons.money.svg(width: 30, colorFilter: UIColors.textLight.toColorFilter),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              const UIVerticalSpace(30),
+              Column(
                 children: [
-                  LabelValue.bigText(
-                    label: 'TOTAL',
-                    value: '₱${(order.total ?? 0).toPesoString()}',
-                  ),
-                  LabelValue.bigText(
-                    label: 'RECEIVED AMOUNT',
-                    value: '₱${(double.tryParse(_amountReceivedController.text) ?? 0).toPesoString()}',
-                  ),
-                  LabelValue.bigText(
-                    label: 'CHANGE',
-                    value: '₱${_change.toPesoString()}',
+                  UIText.labelSemiBold('TOTAL DUE', color: UIColors.textGray),
+                  Text(
+                    '₱ ${(order.total ?? 0).toPesoString()}',
+                    style: UIStyleText.heading1.copyWith(fontSize: 58),
                   ),
                 ],
               ),
-            ),
-            const UIVerticalSpace(60),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: Theme(
-                    data: Theme.of(context).copyWith(inputDecorationTheme: UIStyleInput.input.copyWith(isDense: false)),
-                    child: UITextField.topLabel(
-                      cursorHeight: 24,
-                      isAutoFocus: true,
-                      style: UIStyleText.heading4,
-                      label: 'Cash received',
-                      formatter: [CurrencyInputFormatter()],
-                      controller: _amountReceivedController,
-                      onChanged: (value) {
-                        final amountReceived = double.tryParse(value.replaceAll(',', ''));
-                        setState(() => _change = amountReceived == null ? 0 : amountReceived - (order.total ?? 0));
-                      },
-                    ),
-                  ),
-                ),
-                const UIHorizontalSpace(8),
-                InkWell(
-                  onTap: () {
-                    _amountReceivedController.text = (order.total ?? 0).toPesoString();
-                    setState(() => _change = 0);
+              const UIVerticalSpace(40),
+              Theme(
+                data: Theme.of(context).copyWith(inputDecorationTheme: UIStyleInput.input.copyWith(isDense: false)),
+                child: UITextField.topLabel(
+                  cursorHeight: 24,
+                  isAutoFocus: true,
+                  style: UIStyleText.heading4,
+                  label: 'CASH RECEIVED',
+                  formatter: [CurrencyInputFormatter()],
+                  controller: _amountReceivedController,
+                  onChanged: (value) {
+                    final amountReceived = double.tryParse(value.replaceAll(',', ''));
+                    setState(() => _change = amountReceived == null ? 0 : amountReceived - (order.total ?? 0));
                   },
-                  borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  hoverColor: UIColors.buttonSecondaryHover,
-                  highlightColor: UIColors.buttonSecondaryHover,
-                  child: Container(
-                    height: 60,
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: UIColors.borderRegular),
-                      borderRadius: const BorderRadius.all(Radius.circular(12)),
-                    ),
-                    child: Center(child: UIText.heading6('Exact')),
-                  ),
-                )
-              ],
-            ),
-            const UIVerticalSpace(30),
-            SizedBox(
-              height: 60,
-              child: ListView.separated(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                separatorBuilder: (context, index) => const UIHorizontalSpace(8),
-                itemCount: quickBills.length,
-                itemBuilder: (context, index) => InkWell(
-                  onTap: () {
-                    _amountReceivedController.text = quickBills[index].toStringAsFixed(2);
-                    setState(
-                        () => _change = (double.tryParse(_amountReceivedController.text) ?? 0) - (order.total ?? 0));
-                  },
-                  borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  hoverColor: UIColors.buttonSecondaryHover,
-                  highlightColor: UIColors.buttonSecondaryHover,
-                  child: Container(
-                    height: 30,
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: UIColors.borderRegular),
-                      borderRadius: const BorderRadius.all(Radius.circular(12)),
-                    ),
-                    child: Center(child: UIText.heading6(quickBills[index].toStringAsFixed(2))),
-                  ),
                 ),
               ),
-            ),
-            const UIVerticalSpace(60),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: UIButton.filled(
-                    'Go back',
-                    onClick: () => AppRouter.router.goNamed('Register'),
-                    style: UIStyleButton.filled.style?.copyWith(
-                      minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
-                      backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
-                      overlayColor: UIStyleUtil.setColor(UIColors.borderMuted),
-                      textStyle: UIStyleUtil.setTextStyle(UIStyleText.heading6),
-                      foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
+              const UIVerticalSpace(30),
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.40,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    UIText.labelRegular('QUICK CASH', color: UIColors.textLight),
+                    const UIVerticalSpace(4.0),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            _amountReceivedController.text = (order.total ?? 0).toPesoString();
+                            setState(() => _change = 0);
+                          },
+                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          hoverColor: UIColors.buttonSecondaryHover.withOpacity(0.08),
+                          highlightColor: UIColors.buttonSecondaryHover.withOpacity(0.05),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                            decoration: BoxDecoration(
+                              color: UIColors.buttonSecondaryHover.withOpacity(0.05),
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Text(
+                              'EXACT',
+                              style: UIStyleText.heading6.copyWith(fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                        ...quickBills.map((bill) => InkWell(
+                              onTap: () {
+                                _amountReceivedController.text = bill.toStringAsFixed(2);
+                                setState(() => _change =
+                                    (double.tryParse(_amountReceivedController.text) ?? 0) - (order.total ?? 0));
+                              },
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                              hoverColor: UIColors.buttonSecondaryHover.withOpacity(0.08),
+                              highlightColor: UIColors.buttonSecondaryHover.withOpacity(0.05),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: UIColors.buttonSecondaryHover.withOpacity(0.05),
+                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: UIText.label('₱ ${bill.toStringAsFixed(2)}'),
+                              ),
+                            )),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const UIVerticalSpace(60),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: UIButton.filled(
+                      'Back',
+                      onClick: () => AppRouter.router.goNamed('Register'),
+                      style: UIStyleButton.filled.style?.copyWith(
+                        minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
+                        backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
+                        overlayColor: UIStyleUtil.setColor(UIColors.borderMuted),
+                        textStyle: UIStyleUtil.setTextStyle(UIStyleText.heading6),
+                        foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
+                      ),
                     ),
                   ),
-                ),
-                const UIHorizontalSpace(16),
-                Expanded(
-                  child: UIButton.filled(
-                    'Charge',
-                    onClick: () {
-                      context.read<SaleRemoteCubit>().createSale(
-                            registerId: registerId!,
-                            order: order,
-                            receivedAmount: double.tryParse(_amountReceivedController.text),
-                          );
-                    },
-                    style: UIStyleButton.filled.style?.copyWith(
-                      minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
-                      textStyle: UIStyleUtil.setTextStyle(UIStyleText.heading6.copyWith(color: UIColors.textRegular)),
+                  const UIHorizontalSpace(16),
+                  Expanded(
+                    flex: 4,
+                    child: UIButton.filled(
+                      'CHARGE',
+                      onClick: () {
+                        context.read<SaleRemoteCubit>().createSale(
+                              registerId: registerId!,
+                              order: order,
+                              receivedAmount: double.tryParse(_amountReceivedController.text),
+                            );
+                      },
+                      style: UIStyleButton.filled.style?.copyWith(
+                        minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
+                        textStyle: UIStyleUtil.setTextStyle(UIStyleText.heading6.copyWith(color: UIColors.textRegular)),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
