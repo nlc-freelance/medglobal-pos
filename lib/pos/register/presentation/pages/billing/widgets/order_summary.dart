@@ -25,8 +25,7 @@ class OrderSummary extends StatelessWidget {
         UIText.bodyRegular('(${order.items?.length} items)', color: UIColors.textMuted),
         const UIVerticalSpace(20),
         Expanded(child: OrderItemList(order.items ?? [], isReadOnly: true)),
-        const UIVerticalSpace(46),
-        const Spacer(),
+        const UIVerticalSpace(30),
         OrderBill(order: order, isReadOnly: true),
       ],
     );
