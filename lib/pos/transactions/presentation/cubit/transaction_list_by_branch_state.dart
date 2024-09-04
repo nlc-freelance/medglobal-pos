@@ -6,6 +6,7 @@ class TransactionListByBranchState extends Equatable {
     required this.hasReachedMax,
     required this.hasNoData,
     this.isInitLoading = false,
+    this.isLoadingMore = false,
     this.error,
   });
 
@@ -13,10 +14,11 @@ class TransactionListByBranchState extends Equatable {
   final bool hasNoData;
   final bool hasReachedMax;
   final bool isInitLoading;
+  final bool isLoadingMore;
   final String? error;
 
   @override
-  List<Object?> get props => [transactions, hasNoData, hasReachedMax, isInitLoading, error];
+  List<Object?> get props => [transactions, hasNoData, hasReachedMax, isInitLoading, isLoadingMore, error];
 
   factory TransactionListByBranchState.initial() => const TransactionListByBranchState(
         transactions: [],
@@ -37,6 +39,7 @@ class TransactionListByBranchState extends Equatable {
       hasNoData: hasNoData ?? this.hasNoData,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       isInitLoading: isInitLoading ?? this.isInitLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       error: error ?? this.error,
     );
   }

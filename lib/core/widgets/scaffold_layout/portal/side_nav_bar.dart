@@ -2,6 +2,7 @@ import 'package:animated_tree_view/animated_tree_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class SideNavBar extends StatefulWidget {
@@ -55,6 +56,14 @@ class _SideNavBarState extends State<SideNavBar> {
       ],
     );
 
+  final sidebarTreePO = IndexedTreeNode.root()
+    ..addAll([
+      IndexedTreeNode(key: SideMenuTree.STOCKS.title)
+        ..addAll([
+          IndexedTreeNode(key: 'Purchase Orders'),
+        ]),
+    ]);
+
   @override
   Widget build(BuildContext context) => Drawer(
         shape: const Border(right: BorderSide(color: UIColors.borderMuted)),
@@ -79,77 +88,86 @@ class _SideNavBarState extends State<SideNavBar> {
                 ],
               ),
             ),
-            TreeView.indexed(
-              tree: sidebarTree,
-              showRootNode: false,
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              indentation: const Indentation(style: IndentStyle.none),
-              expansionBehavior: ExpansionBehavior.collapseOthers,
-              expansionIndicatorBuilder: (context, indicator) => CustomNodeTreeIcon(tree: sidebarTree),
-              onItemTap: (node) => node.isLeaf
-                  ? node.key == 'Add Product'
-                      ? AppRouter.router.pushNamed(node.key)
-                      : AppRouter.router.goNamed(node.key)
-                  : null,
-              onTreeReady: (controller) {
-                _controller = controller;
-                _selectedParentNode = _controller.elementAt(parentNodeKey);
-
-                ITreeNode? selectedChildNode;
-
-                if (_selectedParentNode.isExpanded) _controller.collapseNode(_selectedParentNode);
-
-                if (_selectedParentNode.hasAnyExpandableChildren) {
-                  selectedChildNode = _selectedParentNode.getNodeKeyOfCurrentMenu(widget.currentMenu);
-                  _controller.collapseNode(selectedChildNode);
-                }
-
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _controller.expandNode(_selectedParentNode);
-                  if (_selectedParentNode.hasAnyExpandableChildren) _controller.expandNode(selectedChildNode!);
-                });
+            BlocSelector<AuthBloc, AuthState, UserType?>(
+              selector: (state) {
+                if (state is AuthenticatedState) return state.user.type;
+                return null;
               },
-              builder: (context, node) {
-                final isSelected = widget.currentMenu == node.key;
-                // sub expansion menu not open when something is selected upon toggle of parent
-                return HoverBuilder(
-                  builder: (isHover) => Container(
-                    margin: const EdgeInsets.only(bottom: 4.0),
-                    decoration: BoxDecoration(
-                      color: isSelected || isHover ? UIColors.whiteBg : UIColors.transparent,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(4.0),
-                        bottomLeft: Radius.circular(4.0),
-                        topRight: Radius.circular(12.0),
-                        bottomRight: Radius.circular(12.0),
+              builder: (context, userType) {
+                return TreeView.indexed(
+                  tree: userType == UserType.STORE_MANAGER ? sidebarTreePO : sidebarTree,
+                  showRootNode: false,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  indentation: const Indentation(style: IndentStyle.none),
+                  expansionBehavior: ExpansionBehavior.collapseOthers,
+                  expansionIndicatorBuilder: (context, indicator) => CustomNodeTreeIcon(tree: sidebarTree),
+                  onItemTap: (node) => node.isLeaf
+                      ? node.key == 'Add Product'
+                          ? AppRouter.router.pushNamed(node.key)
+                          : AppRouter.router.goNamed(node.key)
+                      : null,
+                  onTreeReady: (controller) {
+                    _controller = controller;
+                    _selectedParentNode = _controller.elementAt(parentNodeKey);
+
+                    ITreeNode? selectedChildNode;
+
+                    if (_selectedParentNode.isExpanded) _controller.collapseNode(_selectedParentNode);
+
+                    if (_selectedParentNode.hasAnyExpandableChildren) {
+                      selectedChildNode = _selectedParentNode.getNodeKeyOfCurrentMenu(widget.currentMenu);
+                      _controller.collapseNode(selectedChildNode);
+                    }
+
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      _controller.expandNode(_selectedParentNode);
+                      if (_selectedParentNode.hasAnyExpandableChildren) _controller.expandNode(selectedChildNode!);
+                    });
+                  },
+                  builder: (context, node) {
+                    final isSelected = widget.currentMenu == node.key;
+                    // sub expansion menu not open when something is selected upon toggle of parent
+                    return HoverBuilder(
+                      builder: (isHover) => Container(
+                        margin: const EdgeInsets.only(bottom: 4.0),
+                        decoration: BoxDecoration(
+                          color: isSelected || isHover ? UIColors.whiteBg : UIColors.transparent,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(4.0),
+                            bottomLeft: Radius.circular(4.0),
+                            topRight: Radius.circular(12.0),
+                            bottomRight: Radius.circular(12.0),
+                          ),
+                          border: isSelected
+                              ? const Border(
+                                  left: BorderSide(
+                                    color: UIColors.accent,
+                                    width: 3.0,
+                                  ),
+                                )
+                              : const Border(),
+                        ),
+                        child: ListTile(
+                          shape: shape,
+                          title: Text(node.key),
+                          titleTextStyle: style,
+                          horizontalTitleGap: 8.0,
+                          visualDensity: const VisualDensity(vertical: -4.0),
+                          leading: icon(node.key)?.svg(
+                            width: 16.0,
+                            colorFilter:
+                                (isSelectedAsMenuItem(node) ? UIColors.primary : UIColors.textGray).toColorFilter,
+                          ),
+                          contentPadding: node.isLeaf
+                              ? EdgeInsets.only(left: node.level > 1 ? 30.0 : 10.0)
+                              : EdgeInsets.only(left: node.level == 2 ? 30.0 : 10.0),
+                          selectedColor: UIColors.primary,
+                          selected: isSelected || isSelectedAsMenuItem(node),
+                        ),
                       ),
-                      border: isSelected
-                          ? const Border(
-                              left: BorderSide(
-                                color: UIColors.accent,
-                                width: 3.0,
-                              ),
-                            )
-                          : const Border(),
-                    ),
-                    child: ListTile(
-                      shape: shape,
-                      title: Text(node.key),
-                      titleTextStyle: style,
-                      horizontalTitleGap: 8.0,
-                      visualDensity: const VisualDensity(vertical: -4.0),
-                      leading: icon(node.key)?.svg(
-                        width: 16.0,
-                        colorFilter: (isSelectedAsMenuItem(node) ? UIColors.primary : UIColors.textGray).toColorFilter,
-                      ),
-                      contentPadding: node.isLeaf
-                          ? EdgeInsets.only(left: node.level > 1 ? 30.0 : 10.0)
-                          : EdgeInsets.only(left: node.level == 2 ? 30.0 : 10.0),
-                      selectedColor: UIColors.primary,
-                      selected: isSelected || isSelectedAsMenuItem(node),
-                    ),
-                  ),
+                    );
+                  },
                 );
               },
             ),

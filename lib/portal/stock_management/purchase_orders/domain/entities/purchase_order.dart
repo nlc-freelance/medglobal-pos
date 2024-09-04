@@ -15,6 +15,7 @@ class PurchaseOrder extends Equatable {
   final Branch? branch;
   final Supplier? supplier;
   final StockOrderStatus? status;
+  final double? subtotal;
   final double? totalAmount;
   final double? tax;
   final double? discount;
@@ -32,6 +33,7 @@ class PurchaseOrder extends Equatable {
     this.branch,
     this.supplier,
     this.status,
+    this.subtotal,
     this.totalAmount,
     this.tax,
     this.discount,
@@ -49,6 +51,7 @@ class PurchaseOrder extends Equatable {
         branch,
         supplier,
         status,
+        subtotal,
         totalAmount,
         tax,
         discount,
@@ -167,4 +170,6 @@ class PurchaseOrder extends Equatable {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  double get itemSubtotal => items?.fold(0.0, (sub, item) => (sub ?? 0) + (item.total ?? 0)) ?? 0;
 }
