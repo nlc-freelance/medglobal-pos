@@ -141,7 +141,7 @@ enum StockTakeItemAction {
   const StockTakeItemAction(this.label);
 }
 
-enum UserType { CASHIER, ADMIN }
+enum UserType { CASHIER, ADMIN, STORE_MANAGER }
 
 enum DiscountType { PESO, PERCENT }
 

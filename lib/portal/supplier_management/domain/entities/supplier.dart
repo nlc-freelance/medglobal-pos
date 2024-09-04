@@ -83,4 +83,6 @@ class Supplier extends Equatable {
         zipCode: zipCode ?? this.zipCode,
         country: country ?? this.country,
       );
+
+  String get address => [street1, street2, city, state, zipCode, country].where((e) => e?.isNotEmpty == true).join(' ');
 }

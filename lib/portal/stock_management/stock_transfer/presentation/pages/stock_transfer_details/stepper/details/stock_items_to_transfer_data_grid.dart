@@ -93,6 +93,28 @@ class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataG
                         columnWidthMode: ColumnWidthMode.fill,
                         headerGridLinesVisibility: GridLinesVisibility.none,
                         editingGestureType: EditingGestureType.tap,
+                        footerHeight: 80,
+                        footer: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.sizeOf(context).width * 0.3,
+                                child: AutocompleteDropdown(
+                                  branchId:
+                                      context.read<StockTransferCubit>().state.stockTransfer.destinationBranch?.id,
+                                  onSelected: (value) {
+                                    final stockTransferItem = value.toStockTransferItem();
+
+                                    /// Add newly added items to the current stock transfer in state
+                                    context.read<StockTransferCubit>().addItem(stockTransferItem);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         tableSummaryRows: [
                           GridTableSummaryRow(
                             color: UIColors.background,

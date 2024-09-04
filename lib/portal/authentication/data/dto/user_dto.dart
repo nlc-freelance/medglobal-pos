@@ -46,6 +46,8 @@ class UserDto extends Equatable {
         return UserType.CASHIER;
       case 'admin':
         return UserType.ADMIN;
+      case 'store_manager':
+        return UserType.STORE_MANAGER;
       default:
         return null;
     }
