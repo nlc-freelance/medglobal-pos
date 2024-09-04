@@ -34,17 +34,22 @@ class TransactionListByBranchCubit extends Cubit<TransactionListByBranchState> {
       _currentPage = 1;
     }
 
-    if (_currentPage == 1) emit(state.copyWith(isInitLoading: true));
+    if (_currentPage == 1) {
+      emit(state.copyWith(isInitLoading: true));
+    } else {
+      emit(state.copyWith(isLoadingMore: true));
+    }
 
     try {
       final result = await _getTransactionsUseCase.call(GetTransactionsParams(page: _currentPage, size: 10));
       result.fold(
-        (error) => emit(state.copyWith(isInitLoading: false, error: error.message)),
+        (error) => emit(state.copyWith(isInitLoading: false, isLoadingMore: false, error: error.message)),
         (data) {
           _currentPage++;
           _transactions = {..._transactions, ...?data.transactions};
           emit(state.copyWith(
             isInitLoading: false,
+            isLoadingMore: false,
             transactions: _transactions.toList(),
             hasNoData: data.totalCount == 0 && data.transactions?.isEmpty == true,
             hasReachedMax: data.currentPage == data.totalPages,
@@ -53,7 +58,7 @@ class TransactionListByBranchCubit extends Cubit<TransactionListByBranchState> {
         },
       );
     } catch (e) {
-      emit(state.copyWith(isInitLoading: false, error: e.toString()));
+      emit(state.copyWith(isInitLoading: false, isLoadingMore: false, error: e.toString()));
     }
   }
 }

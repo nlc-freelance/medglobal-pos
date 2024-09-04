@@ -39,7 +39,7 @@ abstract class AppRouter {
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => RouteGuard(
-          allowedTypes: const [UserType.ADMIN],
+          allowedTypes: const [UserType.ADMIN, UserType.STORE_MANAGER],
           child: ScaffoldLayout(
             routerState: state,
             navigationShell: navigationShell,
@@ -306,6 +306,7 @@ abstract class AppRouter {
       if (authState is UnauthenticatedState && !isLoginRoute) {
         return LoginPage.route;
       } else if (authState is AuthenticatedState && isLoginRoute) {
+        if (authState.user.type == UserType.STORE_MANAGER) return PurchaseOrdersPage.route;
         return authState.user.type == UserType.CASHIER ? RegisterPage.route : ProductsPage.route;
       }
 

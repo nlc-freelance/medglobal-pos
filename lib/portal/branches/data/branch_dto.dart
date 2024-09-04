@@ -9,6 +9,7 @@ part 'branch_dto.g.dart';
 class BranchDto extends Equatable {
   final int? id;
   final String? name;
+  final String? address;
   final int? accountId;
   @DateTimeConverter()
   final DateTime? createdAt;
@@ -18,13 +19,14 @@ class BranchDto extends Equatable {
   const BranchDto({
     this.id,
     this.name,
+    this.address,
     this.accountId,
     this.createdAt,
     this.updatedAt,
   });
 
   @override
-  List<Object?> get props => [id, name, accountId, createdAt, updatedAt];
+  List<Object?> get props => [id, name, address, accountId, createdAt, updatedAt];
 
   factory BranchDto.fromJson(Map<String, dynamic> json) => _$BranchDtoFromJson(json);
 
@@ -33,6 +35,7 @@ class BranchDto extends Equatable {
   Branch toEntity() => Branch(
         id: id,
         name: name ?? Strings.empty,
+        address: address,
         accountId: accountId,
         createdAt: createdAt,
         updatedAt: updatedAt,

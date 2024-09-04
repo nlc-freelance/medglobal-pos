@@ -231,15 +231,6 @@ class Transaction extends Equatable {
   }
 
   /// Receipt extensions
-  String get branchAddress {
-    return switch (branch?.id) {
-      4 => 'Alabang - Zapote Road Cor Arias St.Talon Dos Las Pinas City',
-      5 => '#438 Martinez St Brgy, Plainview Mandaluyong City',
-      6 => '#58 Correctional Road Brgy, Mauway Mandaluyong City',
-      _ => Strings.noValue,
-    };
-  }
-
   String get registerNo =>
       register?.name?.isNotEmpty == true ? register!.name!.substring(register!.name!.length - 1) : Strings.noValue;
 }
