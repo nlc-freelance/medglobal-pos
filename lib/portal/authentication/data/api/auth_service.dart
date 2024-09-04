@@ -20,8 +20,6 @@ class AuthService {
 
     final accessToken = auth.userPoolTokensResult.value.accessToken.raw;
 
-    await SharedPreferencesService.setAccessToken(accessToken);
-
     return accessToken;
   }
 
@@ -40,7 +38,6 @@ class AuthService {
       if (attribute.userAttributeKey == const CognitoUserAttributeKey.custom('custom:user_id')) {
         userId = int.parse(attribute.value);
         await SharedPreferencesService.setUserId(userId);
-        getToken();
       }
       if (attribute.userAttributeKey == AuthUserAttributeKey.givenName) givenName = attribute.value;
       if (attribute.userAttributeKey == AuthUserAttributeKey.familyName) familyName = attribute.value;

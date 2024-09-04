@@ -4,7 +4,14 @@ import 'package:medglobal_admin_portal/core/core.dart';
 
 Future<void> configureAmplify() async {
   try {
-    final authPlugin = AmplifyAuthCognito();
+    // Define secure storage options
+    final secureStorage = AmplifySecureStorage.factoryFrom(
+      webOptions: WebSecureStorageOptions(
+        persistenceOption: WebPersistenceOption.inMemory,
+      ),
+    );
+
+    final authPlugin = AmplifyAuthCognito(secureStorageFactory: secureStorage);
     await Amplify.addPlugin(authPlugin);
 
     await Amplify.configure(amplifyconfig);

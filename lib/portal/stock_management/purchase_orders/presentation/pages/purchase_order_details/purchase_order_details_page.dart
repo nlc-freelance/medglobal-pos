@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/print_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
@@ -34,7 +35,7 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
       case StockOrderStatus.FOR_RECEIVING:
         return 'Receive Purchase Order';
       case StockOrderStatus.COMPLETED || StockOrderStatus.CANCELLED:
-        return 'Purchase Order Details';
+        return 'Purchase Order';
       default:
         return Strings.empty;
     }
@@ -89,9 +90,13 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
                 ),
                 const UIHorizontalSpace(12),
                 if (_purchaseOrder.status == StockOrderStatus.NEW ||
-                    _purchaseOrder.status == StockOrderStatus.FOR_RECEIVING)
+                    _purchaseOrder.status == StockOrderStatus.FOR_RECEIVING ||
+                    _purchaseOrder.status == StockOrderStatus.COMPLETED)
                   UIPopupMenuButton.icon(
                     onSelect: (menu) {
+                      if (menu == 'Print Purchase Order') {
+                        PrintUtil.generateAndPrintOpenPO(_purchaseOrder);
+                      }
                       if (menu == 'Cancel Purchase Order') {
                         context.read<PurchaseOrderRemoteCubit>().update(
                               StockOrderUpdate.CANCEL,
@@ -104,7 +109,16 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
                       }
                     },
                     icon: Assets.icons.more.setSize(20),
-                    menu: const ['Cancel Purchase Order', 'Delete Purchase Order'],
+                    menu: [
+                      if (_purchaseOrder.status == StockOrderStatus.FOR_RECEIVING ||
+                          _purchaseOrder.status == StockOrderStatus.COMPLETED)
+                        'Print Purchase Order',
+                      if (_purchaseOrder.status == StockOrderStatus.NEW ||
+                          _purchaseOrder.status == StockOrderStatus.FOR_RECEIVING) ...[
+                        'Cancel Purchase Order',
+                        'Delete Purchase Order',
+                      ],
+                    ],
                     menuAsString: (menu) => menu,
                   ),
                 if (state is PurchaseOrderCancelLoading || state is PurchaseOrderDeleteLoading) ...[

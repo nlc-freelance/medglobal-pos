@@ -11,6 +11,8 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/p
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PurchaseOrdersPage extends StatefulWidget {
+  static String route = SideMenuTreeItem.PURCHASE_ORDERS.route;
+
   const PurchaseOrdersPage({super.key});
 
   @override

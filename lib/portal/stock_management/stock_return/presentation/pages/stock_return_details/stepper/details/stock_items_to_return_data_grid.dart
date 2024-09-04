@@ -100,6 +100,28 @@ class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid>
                         columnWidthMode: ColumnWidthMode.fill,
                         headerGridLinesVisibility: GridLinesVisibility.none,
                         editingGestureType: EditingGestureType.tap,
+                        footerHeight: 80,
+                        footer: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.sizeOf(context).width * 0.3,
+                                child: AutocompleteDropdown(
+                                  supplierId: context.read<StockReturnCubit>().state.stockReturn.supplier?.id,
+                                  branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
+                                  onSelected: (value) {
+                                    final purchaseOrderItem = value.toStockReturnItem();
+
+                                    /// Add newly added items to the current stock return in state
+                                    context.read<StockReturnCubit>().addItem(purchaseOrderItem);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         tableSummaryRows: [
                           GridTableSummaryRow(
                             color: UIColors.background,
