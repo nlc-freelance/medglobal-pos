@@ -83,4 +83,9 @@ class PurchaseOrderItem extends Equatable {
       total: total ?? this.total,
     );
   }
+
+  @override
+  String toString() {
+    return 'PurchaseOrderItem{id: $id, variantId: $variantId, name: $name, sku: $sku, qtyOnHand: $qtyOnHand, qtyToOrder: $qtyToOrder, qtyReceived: $qtyReceived, supplierPrice: $supplierPrice, total: $total}';
+  }
 }

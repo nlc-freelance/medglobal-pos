@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
+import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/autocomplete_dropdown.dart';
@@ -58,6 +59,11 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
               supplierId: context.read<PurchaseOrderCubit>().state.purchaseOrder.supplier?.id,
               branchId: context.read<PurchaseOrderCubit>().state.purchaseOrder.branch?.id,
               onSelected: (value) {
+                if (_purchaseItemsDataSource._itemsToOrder.any((item) => item.variantId == value.id) == true) {
+                  ToastNotification.duplicate(context, 'Item was already added.');
+                  return;
+                }
+
                 final purchaseOrderItem = value.toPurchaseOrderItem();
 
                 /// Add newly added items to the current PO in state
@@ -245,7 +251,7 @@ class PurchaseItemsDataSource extends DataGridSource {
   }
 
   Widget cellBuilder(String key, DataGridCell cell, int id) => switch (key) {
-        'qty_to_order' || 'supplier_price' => Container(
+        'qty_to_order' => Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -253,9 +259,21 @@ class PurchaseItemsDataSource extends DataGridSource {
               border: Border.all(color: UIColors.borderRegular),
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
-            child: key == 'supplier_price'
-                ? UIText.bodyRegular((cell.value as double).toStringAsFixed(3))
-                : UIText.bodyRegular(cell.value.toString()),
+            child: cell.value == null
+                ? UIText.bodyRegular('0', color: UIColors.textMuted)
+                : UIText.bodyRegular((cell.value as double).toString()),
+          ),
+        'supplier_price' => Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: UIColors.background,
+              border: Border.all(color: UIColors.borderRegular),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+            ),
+            child: cell.value == null
+                ? UIText.bodyRegular('0', color: UIColors.textMuted)
+                : UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
           ),
         'action' => LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
@@ -298,29 +316,28 @@ class PurchaseItemsDataSource extends DataGridSource {
 
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
 
-    if (newCellValue == null || oldValue == newCellValue) {
-      return;
-    }
+    if (oldValue == newCellValue) return;
 
     if (column.columnName == 'qty_to_order') {
-      final newQtyToOrder = int.tryParse(newCellValue);
+      final newQtyToOrder = int.tryParse(newCellValue.toString()) ?? 0;
+
       double supplierPrice = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_to_order', value: newQtyToOrder);
 
       /// Compute new total per item and update the value in the DataGridRows
-      double newTotalPerItem = (newQtyToOrder ?? 0) * (supplierPrice);
+      double newTotalPerItem = (newQtyToOrder) * (supplierPrice);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<PurchaseOrderCubit>().setQuantityToOrderPerItem(
             id: _itemsToOrder[dataRowIndex].id!,
-            qty: newQtyToOrder!,
+            qty: newQtyToOrder,
             total: newTotalPerItem,
           );
     }
     if (column.columnName == 'supplier_price') {
-      final newSupplierPrice = double.tryParse(newCellValue) ?? 0;
+      final newSupplierPrice = double.tryParse(newCellValue.toString()) ?? 0;
       double qtyToOrder = dataGridRows[dataRowIndex].getCells()[4].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
@@ -374,7 +391,7 @@ class PurchaseItemsDataSource extends DataGridSource {
           ),
         ),
         onTapOutside: (event) => submitCell(),
-        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : null,
+        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : 0,
         onSubmitted: (String value) {
           /// Call [CellSubmit] callback to fire the canSubmitCell and
           /// onCellSubmit to commit the new value in single place.
@@ -427,12 +444,13 @@ class PurchaseItemsDataSource extends DataGridSource {
             // if (title == 'Tax') _context.read<PurchaseOrderCubit>().setTax(double.tryParse(value) ?? 0);
             if (title == 'Discount') _context.read<PurchaseOrderCubit>().setDiscount((double.tryParse(value) ?? 0));
           },
-          style: UIStyleText.bodyRegular,
+          style: UIStyleText.labelSemiBold,
           inputFormatters: [CurrencyInputFormatter()],
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: '0',
-            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            focusedBorder: OutlineInputBorder(
+            hintStyle: UIStyleText.labelSemiBold,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            focusedBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
               borderSide: BorderSide(color: UIColors.textGray),
             ),
@@ -441,11 +459,11 @@ class PurchaseItemsDataSource extends DataGridSource {
       );
     }
 
-    if (title == 'Subtotal') return UIText.bodyRegular(summaryValue.toPesoString());
-    if (title == 'Tax') return UIText.bodyRegular('0.00');
+    if (title == 'Subtotal') return UIText.labelSemiBold(summaryValue.toPesoString());
+    if (title == 'Tax') return UIText.labelSemiBold('0.00');
 
     /// Total is subtotal less discount
-    return UIText.label((((double.tryParse(summaryValue) ?? 0)) - _discount).toPesoString());
+    return UIText.labelSemiBold((((double.tryParse(summaryValue) ?? 0)) - _discount).toPesoString());
     // return UIText.labelSemiBold((((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toString());
   }
 }

@@ -211,7 +211,9 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
                   border: Border.all(color: UIColors.borderRegular),
                   borderRadius: const BorderRadius.all(Radius.circular(10.0)),
                 ),
-                child: UIText.bodyRegular(cell.value.toString()),
+                child: cell.value == null
+                    ? UIText.bodyRegular('0', color: UIColors.textMuted)
+                    : UIText.bodyRegular((cell.value as double).toString()),
               )
             : UIText.bodyRegular(cell.value.toString()),
         'supplier_price' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
@@ -249,24 +251,22 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
 
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
 
-    if (newCellValue == null || oldValue == newCellValue) {
-      return;
-    }
+    if (oldValue == newCellValue) return;
 
     if (column.columnName == 'qty_received') {
-      final newQtyReceived = int.tryParse(newCellValue);
+      final newQtyReceived = int.tryParse(newCellValue.toString()) ?? 0;
       double cost = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_received', value: newQtyReceived);
 
       /// Compute new total per item and update the value in the DataGridRows
-      double newTotalPerItem = (newQtyReceived ?? 0) * (cost);
+      double newTotalPerItem = (newQtyReceived) * (cost);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
             id: _itemsReceived[dataRowIndex].id!,
-            qty: newQtyReceived!,
+            qty: newQtyReceived,
             total: newTotalPerItem,
           );
     }
@@ -305,7 +305,7 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
           ),
         ),
         onTapOutside: (event) => submitCell(),
-        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : null,
+        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : 0,
         onSubmitted: (String value) {
           /// Call [CellSubmit] callback to fire the canSubmitCell and
           /// onCellSubmit to commit the new value in single place.
@@ -328,7 +328,7 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
             )
           : Text(
               summaryCellValue(_context, summaryRow.title!, summaryValue),
-              style: summaryRow.title == 'Total' ? UIStyleText.label : UIStyleText.bodyRegular,
+              style: UIStyleText.labelSemiBold,
             ),
     );
   }
