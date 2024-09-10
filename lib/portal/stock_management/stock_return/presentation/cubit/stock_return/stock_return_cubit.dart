@@ -13,23 +13,30 @@ class StockReturnCubit extends Cubit<StockReturnState> {
 
   void setStockReturn(StockReturn stockReturn) => emit(StockReturnState(stockReturn));
 
-  void setQuantityToReturnPerItem({required int id, required int qty, required double total}) {
+  void setQuantityToReturnPerItem({required int id, int? qty, required double total}) {
     final items = state.stockReturn.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
-      if (item.id == id) return item.copyWith(qtyToReturn: qty, total: total);
+      if (item.id == id) {
+        return item.copyWith(
+          nullQtyToReturn: qty == null,
+          qtyToReturn: qty,
+          total: total.roundToTwoDecimalPlaces(),
+        );
+      }
       return item;
     }).toList();
 
     emit(StockReturnState(state.stockReturn.copyWith(items: updatedItems)));
   }
 
-  void setSupplierPricePerItem({required int id, required double price, required double total}) {
+  void setSupplierPricePerItem({required int id, double? price, required double total}) {
     final items = state.stockReturn.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
       if (item.id == id) {
         return item.copyWith(
+          nullSupplierPrice: price == null,
           supplierPrice: price,
           total: total.roundToTwoDecimalPlaces(),
         );

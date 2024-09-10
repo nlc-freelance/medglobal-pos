@@ -36,9 +36,9 @@ class StockReturnItem extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'variant_name', value: name),
           DataGridCell<String>(columnName: 'sku', value: sku),
-          DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand ?? 0),
-          DataGridCell<int>(columnName: 'qty_to_return', value: qtyToReturn ?? 0),
-          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice ?? 0),
+          DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand),
+          DataGridCell<int>(columnName: 'qty_to_return', value: qtyToReturn),
+          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice),
           DataGridCell<double>(columnName: 'total', value: total ?? 0),
           const DataGridCell(columnName: 'action', value: null),
         ],
@@ -48,10 +48,10 @@ class StockReturnItem extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'variant_name', value: name),
           DataGridCell<String>(columnName: 'sku', value: sku),
-          DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand ?? 0),
-          DataGridCell<int>(columnName: 'qty_returned', value: qtyToReturn ?? 0),
-          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice ?? 0),
-          DataGridCell<double>(columnName: 'total', value: total ?? 0),
+          DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand),
+          DataGridCell<int>(columnName: 'qty_returned', value: qtyToReturn),
+          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice),
+          DataGridCell<double>(columnName: 'total', value: total),
         ],
       );
 
@@ -64,6 +64,8 @@ class StockReturnItem extends Equatable {
     int? qtyToReturn,
     double? supplierPrice,
     double? total,
+    bool? nullQtyToReturn = false,
+    bool? nullSupplierPrice = false,
   }) {
     return StockReturnItem(
       id: id ?? this.id,
@@ -71,8 +73,8 @@ class StockReturnItem extends Equatable {
       name: name ?? this.name,
       sku: sku ?? this.sku,
       qtyOnHand: qtyOnHand ?? this.qtyOnHand,
-      qtyToReturn: qtyToReturn ?? this.qtyToReturn,
-      supplierPrice: supplierPrice ?? this.supplierPrice,
+      qtyToReturn: nullQtyToReturn == true ? null : qtyToReturn ?? this.qtyToReturn,
+      supplierPrice: nullSupplierPrice == true ? null : supplierPrice ?? this.supplierPrice,
       total: total ?? this.total,
     );
   }
