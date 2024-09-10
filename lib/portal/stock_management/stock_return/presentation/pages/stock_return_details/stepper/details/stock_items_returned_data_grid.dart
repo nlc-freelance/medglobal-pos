@@ -199,7 +199,7 @@ class StockItemsReturnedDataSource extends DataGridSource {
             )
           : Text(
               summaryCellValue(_context, summaryRow.title!, summaryValue),
-              style: summaryRow.title == 'Total' ? UIStyleText.label : UIStyleText.bodyRegular,
+              style: UIStyleText.labelSemiBold,
             ),
     );
   }

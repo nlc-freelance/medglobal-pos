@@ -118,6 +118,12 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
                                   supplierId: context.read<PurchaseOrderCubit>().state.purchaseOrder.supplier?.id,
                                   branchId: context.read<PurchaseOrderCubit>().state.purchaseOrder.branch?.id,
                                   onSelected: (value) {
+                                    if (_purchaseItemsDataSource._itemsToOrder
+                                            .any((item) => item.variantId == value.id) ==
+                                        true) {
+                                      ToastNotification.duplicate(context, 'Item was already added.');
+                                      return;
+                                    }
                                     final purchaseOrderItem = value.toPurchaseOrderItem();
 
                                     /// Add newly added items to the current PO in state
@@ -261,7 +267,7 @@ class PurchaseItemsDataSource extends DataGridSource {
             ),
             child: cell.value == null
                 ? UIText.bodyRegular('0', color: UIColors.textMuted)
-                : UIText.bodyRegular((cell.value as double).toString()),
+                : UIText.bodyRegular((cell.value as int).toString()),
           ),
         'supplier_price' => Container(
             width: double.infinity,
@@ -272,7 +278,7 @@ class PurchaseItemsDataSource extends DataGridSource {
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
             child: cell.value == null
-                ? UIText.bodyRegular('0', color: UIColors.textMuted)
+                ? UIText.bodyRegular(0.toStringAsFixed(3), color: UIColors.textMuted)
                 : UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
           ),
         'action' => LayoutBuilder(
@@ -319,15 +325,14 @@ class PurchaseItemsDataSource extends DataGridSource {
     if (oldValue == newCellValue) return;
 
     if (column.columnName == 'qty_to_order') {
-      final newQtyToOrder = int.tryParse(newCellValue.toString()) ?? 0;
-
-      double supplierPrice = dataGridRows[dataRowIndex].getCells()[5].value;
+      final newQtyToOrder = int.tryParse(newCellValue.toString());
+      double? supplierPrice = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_to_order', value: newQtyToOrder);
 
       /// Compute new total per item and update the value in the DataGridRows
-      double newTotalPerItem = (newQtyToOrder) * (supplierPrice);
+      double newTotalPerItem = (newQtyToOrder ?? 0) * (supplierPrice ?? 0);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<PurchaseOrderCubit>().setQuantityToOrderPerItem(
@@ -337,14 +342,14 @@ class PurchaseItemsDataSource extends DataGridSource {
           );
     }
     if (column.columnName == 'supplier_price') {
-      final newSupplierPrice = double.tryParse(newCellValue.toString()) ?? 0;
-      double qtyToOrder = dataGridRows[dataRowIndex].getCells()[4].value;
+      final newSupplierPrice = double.tryParse(newCellValue.toString());
+      double? qtyToOrder = dataGridRows[dataRowIndex].getCells()[4].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<double>(columnName: 'supplier_price', value: newSupplierPrice);
 
       /// Compute new total per item and update the value in the DataGridRows
-      double newTotalPerItem = (newSupplierPrice) * (qtyToOrder);
+      double newTotalPerItem = (newSupplierPrice ?? 0) * (qtyToOrder ?? 0);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<PurchaseOrderCubit>().setSupplierPricePerItem(
@@ -358,18 +363,19 @@ class PurchaseItemsDataSource extends DataGridSource {
   @override
   Widget? buildEditWidget(
       DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
-    // Text going to display on editable widget
-    final String displayText = dataGridRow
-            .getCells()
-            .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
-            .value
-            ?.toString() ??
-        '';
+    String format(dynamic text) => text == null
+        ? Strings.empty
+        : column.columnName == 'supplier_price'
+            ? text.toStringAsFixed(3)
+            : text.toString();
 
-    // The new cell value must be reset.
-    // To avoid committing the [DataGridCell] value that was previously edited
-    // into the current non-modified [DataGridCell].
-    newCellValue = null;
+    // Text going to display on editable widget
+    final String displayText = format(dataGridRow
+        .getCells()
+        .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
+        .value);
+
+    newCellValue = displayText;
 
     return Container(
       alignment: Alignment.centerLeft,
@@ -391,7 +397,7 @@ class PurchaseItemsDataSource extends DataGridSource {
           ),
         ),
         onTapOutside: (event) => submitCell(),
-        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : 0,
+        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : null,
         onSubmitted: (String value) {
           /// Call [CellSubmit] callback to fire the canSubmitCell and
           /// onCellSubmit to commit the new value in single place.

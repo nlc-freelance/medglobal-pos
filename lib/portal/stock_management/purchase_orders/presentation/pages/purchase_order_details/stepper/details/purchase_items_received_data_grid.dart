@@ -168,7 +168,20 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
     _isReceiving = isReceiving;
     _tax = tax;
     _discount = discount;
-    buildDataGridRows();
+
+    /// When receiving initially, auto populate received qty column with the ordered qty value
+    if (isReceiving) {
+      for (var item in itemsReceived) {
+        _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
+              id: item.id!,
+              qty: item.qtyToOrder,
+              total: (item.qtyToOrder ?? 0) * (item.supplierPrice ?? 0),
+            );
+      }
+      dataGridRows = itemsReceived.map((item) => item.toDataGridRowItemsReceived()).toList();
+    } else {
+      buildDataGridRows();
+    }
   }
 
   List<PurchaseOrderItem> _itemsReceived = [];
@@ -213,7 +226,7 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
                 ),
                 child: cell.value == null
                     ? UIText.bodyRegular('0', color: UIColors.textMuted)
-                    : UIText.bodyRegular((cell.value as double).toString()),
+                    : UIText.bodyRegular((cell.value as int).toString()),
               )
             : UIText.bodyRegular(cell.value.toString()),
         'supplier_price' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
@@ -254,14 +267,14 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
     if (oldValue == newCellValue) return;
 
     if (column.columnName == 'qty_received') {
-      final newQtyReceived = int.tryParse(newCellValue.toString()) ?? 0;
+      final newQtyReceived = int.tryParse(newCellValue.toString());
       double cost = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_received', value: newQtyReceived);
 
       /// Compute new total per item and update the value in the DataGridRows
-      double newTotalPerItem = (newQtyReceived) * (cost);
+      double newTotalPerItem = (newQtyReceived ?? 0) * (cost);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
@@ -283,10 +296,7 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
             ?.toString() ??
         '';
 
-    // The new cell value must be reset.
-    // To avoid committing the [DataGridCell] value that was previously edited
-    // into the current non-modified [DataGridCell].
-    newCellValue = null;
+    newCellValue = displayText;
 
     return Container(
       alignment: Alignment.centerLeft,
@@ -305,7 +315,7 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
           ),
         ),
         onTapOutside: (event) => submitCell(),
-        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : 0,
+        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : null,
         onSubmitted: (String value) {
           /// Call [CellSubmit] callback to fire the canSubmitCell and
           /// onCellSubmit to commit the new value in single place.
