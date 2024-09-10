@@ -38,9 +38,9 @@ class PurchaseOrderItem extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'variant_name', value: name),
           DataGridCell<String>(columnName: 'sku', value: sku),
-          DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand ?? 0),
-          DataGridCell<int>(columnName: 'qty_to_order', value: qtyToOrder ?? 0),
-          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice ?? 0),
+          DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand),
+          DataGridCell<int>(columnName: 'qty_to_order', value: qtyToOrder),
+          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice),
           DataGridCell<double>(columnName: 'total', value: total ?? 0),
           const DataGridCell(columnName: 'action', value: null),
         ],
@@ -50,9 +50,9 @@ class PurchaseOrderItem extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'variant_name', value: name),
           DataGridCell<String>(columnName: 'sku', value: sku),
-          DataGridCell<int>(columnName: 'qty_ordered', value: qtyToOrder ?? 0),
-          DataGridCell<int>(columnName: 'qty_received', value: qtyReceived ?? 0),
-          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice ?? 0),
+          DataGridCell<int>(columnName: 'qty_ordered', value: qtyToOrder),
+          DataGridCell<int>(columnName: 'qty_received', value: qtyReceived),
+          DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice),
           DataGridCell<double>(
             columnName: 'total',
             value: (qtyReceived ?? 0) * (supplierPrice ?? 0),
@@ -70,6 +70,9 @@ class PurchaseOrderItem extends Equatable {
     int? qtyReceived,
     double? supplierPrice,
     double? total,
+    bool? nullQtyToOrder = false,
+    bool? nullQtyReceived = false,
+    bool? nullSupplierPrice = false,
   }) {
     return PurchaseOrderItem(
       id: id ?? this.id,
@@ -77,10 +80,15 @@ class PurchaseOrderItem extends Equatable {
       name: name ?? this.name,
       sku: sku ?? this.sku,
       qtyOnHand: qtyOnHand ?? this.qtyOnHand,
-      qtyToOrder: qtyToOrder ?? this.qtyToOrder,
-      qtyReceived: qtyReceived ?? this.qtyReceived,
-      supplierPrice: supplierPrice ?? this.supplierPrice,
+      qtyToOrder: nullQtyToOrder == true ? null : qtyToOrder ?? this.qtyToOrder,
+      qtyReceived: nullQtyReceived == true ? null : qtyReceived ?? this.qtyReceived,
+      supplierPrice: nullSupplierPrice == true ? null : supplierPrice ?? this.supplierPrice,
       total: total ?? this.total,
     );
+  }
+
+  @override
+  String toString() {
+    return 'PurchaseOrderItem{id: $id, variantId: $variantId, name: $name, sku: $sku, qtyOnHand: $qtyOnHand, qtyToOrder: $qtyToOrder, qtyReceived: $qtyReceived, supplierPrice: $supplierPrice, total: $total}';
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
+import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/autocomplete_dropdown.dart';
@@ -55,6 +56,11 @@ class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataG
             child: AutocompleteDropdown(
               branchId: context.read<StockTransferCubit>().state.stockTransfer.destinationBranch?.id,
               onSelected: (value) {
+                if (_stockItemsToTransferDataSource._itemsToTransfer.any((item) => item.variantId == value.id) ==
+                    true) {
+                  ToastNotification.duplicate(context, 'Item was already added.');
+                  return;
+                }
                 final stockTransferItem = value.toStockTransferItem();
 
                 /// Add newly added items to the current stock transfer in state
@@ -105,6 +111,12 @@ class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataG
                                   branchId:
                                       context.read<StockTransferCubit>().state.stockTransfer.destinationBranch?.id,
                                   onSelected: (value) {
+                                    if (_stockItemsToTransferDataSource._itemsToTransfer
+                                            .any((item) => item.variantId == value.id) ==
+                                        true) {
+                                      ToastNotification.duplicate(context, 'Item was already added.');
+                                      return;
+                                    }
                                     final stockTransferItem = value.toStockTransferItem();
 
                                     /// Add newly added items to the current stock transfer in state
@@ -188,7 +200,9 @@ class StockItemsToTransferDataSource extends DataGridSource {
               border: Border.all(color: UIColors.borderRegular),
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
-            child: UIText.bodyRegular(cell.value.toString()),
+            child: cell.value == null
+                ? UIText.bodyRegular('0', color: UIColors.textMuted)
+                : UIText.bodyRegular((cell.value as int).toString()),
           ),
         'cost' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
         'action' => LayoutBuilder(
@@ -232,12 +246,10 @@ class StockItemsToTransferDataSource extends DataGridSource {
 
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
 
-    if (newCellValue == null || oldValue == newCellValue) {
-      return;
-    }
+    if (oldValue == newCellValue) return;
 
     if (column.columnName == 'qty_to_transfer') {
-      final newQtyToTransfer = int.tryParse(newCellValue);
+      final newQtyToTransfer = int.tryParse(newCellValue.toString());
       double cost = dataGridRows[dataRowIndex].getCells()[6].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
@@ -249,7 +261,7 @@ class StockItemsToTransferDataSource extends DataGridSource {
 
       _context.read<StockTransferCubit>().setQuantityToTransferPerItem(
             id: _itemsToTransfer[dataRowIndex].id!,
-            qty: newQtyToTransfer!,
+            qty: newQtyToTransfer,
             total: newTotalPerItem,
           );
     }
@@ -266,10 +278,7 @@ class StockItemsToTransferDataSource extends DataGridSource {
             ?.toString() ??
         '';
 
-    // The new cell value must be reset.
-    // To avoid committing the [DataGridCell] value that was previously edited
-    // into the current non-modified [DataGridCell].
-    newCellValue = null;
+    newCellValue = displayText;
 
     return Container(
       alignment: Alignment.centerLeft,
@@ -302,13 +311,13 @@ class StockItemsToTransferDataSource extends DataGridSource {
   Widget? buildTableSummaryCellWidget(GridTableSummaryRow summaryRow, GridSummaryColumn? summaryColumn,
       RowColumnIndex rowColumnIndex, String summaryValue) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
       child: summaryColumn?.columnName == 'cost'
           ? UIText.labelSemiBold(
               summaryRow.title!,
               align: TextAlign.end,
             )
-          : UIText.label(summaryValue.toPesoString()),
+          : UIText.labelSemiBold(summaryValue.toPesoString()),
     );
   }
 }

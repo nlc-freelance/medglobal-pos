@@ -7,7 +7,7 @@ Future<void> configureAmplify() async {
     // Define secure storage options
     final secureStorage = AmplifySecureStorage.factoryFrom(
       webOptions: WebSecureStorageOptions(
-        persistenceOption: WebPersistenceOption.inMemory,
+        persistenceOption: WebPersistenceOption.indexedDB,
       ),
     );
 
