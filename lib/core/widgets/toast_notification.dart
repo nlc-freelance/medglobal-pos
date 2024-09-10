@@ -24,6 +24,21 @@ class ToastNotification {
         message: message,
       );
 
+  static void duplicate(BuildContext context, String message) => _show(
+        context,
+        type: ToastType.DUPLICATE,
+        message: message,
+        duration: 3000,
+      );
+
+  static Color _color(ToastType type) {
+    return switch (type) {
+      ToastType.SUCCESS => UIColors.success,
+      ToastType.ERROR => UIColors.error,
+      ToastType.INVALID || ToastType.DUPLICATE => UIColors.warning,
+    };
+  }
+
   static void _show(BuildContext context, {required ToastType type, required String message, int? duration = 5000}) =>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -35,33 +50,40 @@ class ToastNotification {
             alignment: Alignment.bottomRight,
             child: Container(
               constraints: const BoxConstraints(maxWidth: 500),
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: type == ToastType.SUCCESS ? UIColors.completedBg : UIColors.cancelledBg,
-                border: Border.all(color: type == ToastType.SUCCESS ? UIColors.completedBg : UIColors.cancelledBg),
-                borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                color: UIColors.background,
+                border: Border(left: BorderSide(color: _color(type), width: 5)),
+                boxShadow: const [
+                  BoxShadow(
+                    color: UIColors.borderRegular,
+                    blurRadius: 8.0,
+                    offset: Offset(1, 1),
+                  ),
+                ],
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
               ),
-              child: Column(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      type == ToastType.SUCCESS
-                          ? Assets.icons.checkCircle.svg(width: 18)
-                          : Assets.icons.infoCircle.svg(width: 18),
-                      const UIHorizontalSpace(8),
-                      UIText.heading6(type.title),
-                      const UIHorizontalSpace(16),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 28.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(child: UIText.bodyRegular(message)),
-                      ],
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: _color(type).withOpacity(0.1),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
                     ),
+                    child: type == ToastType.SUCCESS
+                        ? Assets.icons.checkCircle.svg(width: 18, colorFilter: _color(type).toColorFilter)
+                        : Assets.icons.infoCircle.svg(width: 18, colorFilter: _color(type).toColorFilter),
+                  ),
+                  const UIHorizontalSpace(20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      UIText.heading6(type.title),
+                      const UIVerticalSpace(2),
+                      UIText.bodyRegular(message),
+                    ],
                   ),
                 ],
               ),
