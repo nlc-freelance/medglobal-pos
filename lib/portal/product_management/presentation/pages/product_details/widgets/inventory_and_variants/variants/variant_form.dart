@@ -101,7 +101,7 @@ class _VariantFormState extends State<VariantForm> {
                       /// If variant name is default, meaning the product has no variant initially
                       /// Therefore if user decides to try and add a variant and change his mind,
                       /// the values will still exist outside the variant form
-                      if (variant?.name != 'default') _variantFormCubit.resetForm();
+                      // if (widget.nameController.text.isNotEmpty) _variantFormCubit.resetForm();
 
                       Navigator.pop(context);
                     },
@@ -129,7 +129,7 @@ class _VariantFormState extends State<VariantForm> {
                         Navigator.pop(context);
                       } else {
                         setState(() => _hasMissingRequiredFieldsError =
-                            'One of the required field is empty. Please check your inputs.');
+                            'One or more required fields are empty. Please check your inputs.');
                       }
                     },
                   ),

@@ -157,7 +157,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               setState(() => _hasMissingRequiredFieldsError = null);
                             } else {
                               setState(() => _hasMissingRequiredFieldsError =
-                                  'One of the required field is empty. Please check your inputs.');
+                                  'One or more required fields are empty. Please check your inputs.');
                             }
                           },
                         ),

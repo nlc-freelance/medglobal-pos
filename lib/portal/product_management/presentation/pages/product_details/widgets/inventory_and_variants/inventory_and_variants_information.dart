@@ -124,6 +124,9 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
                       'Add Variant',
                       iconBuilder: (_) => Assets.icons.add.svg(colorFilter: UIColors.primary.toColorFilter),
                       onClick: () {
+                        if (product?.hasVariants == true) {
+                          _variantFormCubit.resetForm();
+                        }
                         _variantFormUiCubit.showVariantFormUi();
                       },
                     ),
