@@ -16,12 +16,13 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
   void setEstimatedDateOfArrival(DateTime value) =>
       emit(PurchaseOrderState(state.purchaseOrder.copyWith(estimatedDateOfArrival: value)));
 
-  void setQuantityToOrderPerItem({required int id, required int qty, required double total}) {
+  void setQuantityToOrderPerItem({required int id, int? qty, required double total}) {
     final items = state.purchaseOrder.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
       if (item.id == id) {
         return item.copyWith(
+          nullQtyToOrder: qty == null,
           qtyToOrder: qty,
           total: total.roundToTwoDecimalPlaces(),
         );
@@ -32,12 +33,13 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
     emit(PurchaseOrderState(state.purchaseOrder.copyWith(items: updatedItems)));
   }
 
-  void setSupplierPricePerItem({required int id, required double price, required double total}) {
+  void setSupplierPricePerItem({required int id, double? price, required double total}) {
     final items = state.purchaseOrder.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
       if (item.id == id) {
         return item.copyWith(
+          nullSupplierPrice: price == null,
           supplierPrice: price,
           total: total.roundToTwoDecimalPlaces(),
         );
@@ -48,12 +50,13 @@ class PurchaseOrderCubit extends Cubit<PurchaseOrderState> {
     emit(PurchaseOrderState(state.purchaseOrder.copyWith(items: updatedItems)));
   }
 
-  void setQuantityReceivedPerItem({required int id, required int qty, required double total}) {
+  void setQuantityReceivedPerItem({required int id, int? qty, required double total}) {
     final items = state.purchaseOrder.items?.toList() ?? [];
 
     final updatedItems = items.map((item) {
       if (item.id == id) {
         return item.copyWith(
+          nullQtyReceived: qty == null,
           qtyReceived: qty,
           total: total.roundToTwoDecimalPlaces(),
         );

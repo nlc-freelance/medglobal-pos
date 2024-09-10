@@ -168,7 +168,20 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
     _isReceiving = isReceiving;
     _tax = tax;
     _discount = discount;
-    buildDataGridRows();
+
+    /// When receiving initially, auto populate received qty column with the ordered qty value
+    if (isReceiving) {
+      for (var item in itemsReceived) {
+        _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
+              id: item.id!,
+              qty: item.qtyToOrder,
+              total: (item.qtyToOrder ?? 0) * (item.supplierPrice ?? 0),
+            );
+      }
+      dataGridRows = itemsReceived.map((item) => item.toDataGridRowItemsReceived()).toList();
+    } else {
+      buildDataGridRows();
+    }
   }
 
   List<PurchaseOrderItem> _itemsReceived = [];
@@ -211,7 +224,9 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
                   border: Border.all(color: UIColors.borderRegular),
                   borderRadius: const BorderRadius.all(Radius.circular(10.0)),
                 ),
-                child: UIText.bodyRegular(cell.value.toString()),
+                child: cell.value == null
+                    ? UIText.bodyRegular('0', color: UIColors.textMuted)
+                    : UIText.bodyRegular((cell.value as int).toString()),
               )
             : UIText.bodyRegular(cell.value.toString()),
         'supplier_price' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
@@ -249,12 +264,10 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
 
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
 
-    if (newCellValue == null || oldValue == newCellValue) {
-      return;
-    }
+    if (oldValue == newCellValue) return;
 
     if (column.columnName == 'qty_received') {
-      final newQtyReceived = int.tryParse(newCellValue);
+      final newQtyReceived = int.tryParse(newCellValue.toString());
       double cost = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
@@ -266,7 +279,7 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
 
       _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
             id: _itemsReceived[dataRowIndex].id!,
-            qty: newQtyReceived!,
+            qty: newQtyReceived,
             total: newTotalPerItem,
           );
     }
@@ -283,10 +296,7 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
             ?.toString() ??
         '';
 
-    // The new cell value must be reset.
-    // To avoid committing the [DataGridCell] value that was previously edited
-    // into the current non-modified [DataGridCell].
-    newCellValue = null;
+    newCellValue = displayText;
 
     return Container(
       alignment: Alignment.centerLeft,
@@ -328,7 +338,7 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
             )
           : Text(
               summaryCellValue(_context, summaryRow.title!, summaryValue),
-              style: summaryRow.title == 'Total' ? UIStyleText.label : UIStyleText.bodyRegular,
+              style: UIStyleText.labelSemiBold,
             ),
     );
   }

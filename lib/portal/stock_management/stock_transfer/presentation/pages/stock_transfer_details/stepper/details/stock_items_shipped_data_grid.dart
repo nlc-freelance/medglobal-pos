@@ -98,7 +98,16 @@ class StockItemsShippedDataSource extends DataGridSource {
   StockItemsShippedDataSource(List<StockTransferItem> itemsShipped, BuildContext context) {
     _itemsShipped = itemsShipped;
     _context = context;
-    buildDataGridRows();
+
+    /// Initially, auto populate received qty column with the transferred qty value
+    for (var item in itemsShipped) {
+      _context.read<StockTransferCubit>().setQuantityReceivedPerItem(
+            id: item.id!,
+            qty: item.qtyToTransfer,
+            total: (item.qtyToTransfer ?? 0) * (item.cost ?? 0),
+          );
+    }
+    dataGridRows = itemsShipped.map((item) => item.toDataGridRowItemsShipped()).toList();
   }
 
   List<StockTransferItem> _itemsShipped = [];
@@ -136,7 +145,9 @@ class StockItemsShippedDataSource extends DataGridSource {
               border: Border.all(color: UIColors.borderRegular),
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
-            child: UIText.bodyRegular(cell.value.toString()),
+            child: cell.value == null
+                ? UIText.bodyRegular('0', color: UIColors.textMuted)
+                : UIText.bodyRegular((cell.value as int).toString()),
           ),
         'cost' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
         _ => UIText.bodyRegular(
@@ -173,12 +184,10 @@ class StockItemsShippedDataSource extends DataGridSource {
 
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
 
-    if (newCellValue == null || oldValue == newCellValue) {
-      return;
-    }
+    if (oldValue == newCellValue) return;
 
     if (column.columnName == 'qty_received') {
-      final newQtyReceived = int.tryParse(newCellValue);
+      final newQtyReceived = int.tryParse(newCellValue.toString());
       double cost = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
@@ -190,7 +199,7 @@ class StockItemsShippedDataSource extends DataGridSource {
 
       _context.read<StockTransferCubit>().setQuantityReceivedPerItem(
             id: _itemsShipped[dataRowIndex].id!,
-            qty: newQtyReceived!,
+            qty: newQtyReceived,
             total: newTotalPerItem,
           );
     }
@@ -207,10 +216,7 @@ class StockItemsShippedDataSource extends DataGridSource {
             ?.toString() ??
         '';
 
-    // The new cell value must be reset.
-    // To avoid committing the [DataGridCell] value that was previously edited
-    // into the current non-modified [DataGridCell].
-    newCellValue = null;
+    newCellValue = displayText;
 
     return Container(
       alignment: Alignment.centerLeft,
@@ -243,13 +249,13 @@ class StockItemsShippedDataSource extends DataGridSource {
   Widget? buildTableSummaryCellWidget(GridTableSummaryRow summaryRow, GridSummaryColumn? summaryColumn,
       RowColumnIndex rowColumnIndex, String summaryValue) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
       child: summaryColumn?.columnName == 'cost'
           ? UIText.labelSemiBold(
               summaryRow.title!,
               align: TextAlign.end,
             )
-          : UIText.label(summaryValue.toPesoString()),
+          : UIText.labelSemiBold(summaryValue.toPesoString()),
     );
   }
 }

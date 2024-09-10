@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
+import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/autocomplete_dropdown.dart';
@@ -58,6 +59,10 @@ class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid>
               supplierId: context.read<StockReturnCubit>().state.stockReturn.supplier?.id,
               branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
               onSelected: (value) {
+                if (_stockItemsToReturnDataSource._itemsToReturn.any((item) => item.variantId == value.id) == true) {
+                  ToastNotification.duplicate(context, 'Item was already added.');
+                  return;
+                }
                 final purchaseOrderItem = value.toStockReturnItem();
 
                 /// Add newly added items to the current stock return in state
@@ -112,6 +117,12 @@ class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid>
                                   supplierId: context.read<StockReturnCubit>().state.stockReturn.supplier?.id,
                                   branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
                                   onSelected: (value) {
+                                    if (_stockItemsToReturnDataSource._itemsToReturn
+                                            .any((item) => item.variantId == value.id) ==
+                                        true) {
+                                      ToastNotification.duplicate(context, 'Item was already added.');
+                                      return;
+                                    }
                                     final purchaseOrderItem = value.toStockReturnItem();
 
                                     /// Add newly added items to the current stock return in state
@@ -245,7 +256,7 @@ class StockItemsToReturnDataSource extends DataGridSource {
   }
 
   Widget cellBuilder(String key, DataGridCell cell, int id) => switch (key) {
-        'qty_to_return' || 'supplier_price' => Container(
+        'qty_to_return' => Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -253,9 +264,21 @@ class StockItemsToReturnDataSource extends DataGridSource {
               border: Border.all(color: UIColors.borderRegular),
               borderRadius: const BorderRadius.all(Radius.circular(10.0)),
             ),
-            child: key == 'supplier_price'
-                ? UIText.bodyRegular((cell.value as double).toStringAsFixed(3))
-                : UIText.bodyRegular(cell.value.toString()),
+            child: cell.value == null
+                ? UIText.bodyRegular('0', color: UIColors.textMuted)
+                : UIText.bodyRegular((cell.value as int).toString()),
+          ),
+        'supplier_price' => Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: UIColors.background,
+              border: Border.all(color: UIColors.borderRegular),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+            ),
+            child: cell.value == null
+                ? UIText.bodyRegular(0.toStringAsFixed(3), color: UIColors.textMuted)
+                : UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
           ),
         'action' => LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
@@ -298,36 +321,34 @@ class StockItemsToReturnDataSource extends DataGridSource {
 
     final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
 
-    if (newCellValue == null || oldValue == newCellValue) {
-      return;
-    }
+    if (oldValue == newCellValue) return;
 
     if (column.columnName == 'qty_to_return') {
-      final newQtyToOrder = int.tryParse(newCellValue);
-      double supplierPrice = dataGridRows[dataRowIndex].getCells()[5].value;
+      final newQtyToOrder = int.tryParse(newCellValue.toString());
+      double? supplierPrice = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_to_return', value: newQtyToOrder);
 
       /// Compute new total and update the value in the DataGridRows
-      double newTotal = (newQtyToOrder ?? 0) * (supplierPrice);
+      double newTotal = (newQtyToOrder ?? 0) * (supplierPrice ?? 0);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotal);
 
       _context.read<StockReturnCubit>().setQuantityToReturnPerItem(
             id: _itemsToReturn[dataRowIndex].id!,
-            qty: newQtyToOrder!,
+            qty: newQtyToOrder,
             total: newTotal,
           );
     }
     if (column.columnName == 'supplier_price') {
-      final newSupplierPrice = double.tryParse(newCellValue) ?? 0;
-      double qtyToReturn = dataGridRows[dataRowIndex].getCells()[4].value;
+      final newSupplierPrice = double.tryParse(newCellValue.toString());
+      double? qtyToReturn = dataGridRows[dataRowIndex].getCells()[4].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<double>(columnName: 'supplier_price', value: newSupplierPrice);
 
       /// Compute new total and update the value in the DataGridRows
-      double newTotal = (newSupplierPrice) * (qtyToReturn);
+      double newTotal = (newSupplierPrice ?? 0) * (qtyToReturn ?? 0);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotal);
 
       _context.read<StockReturnCubit>().setSupplierPricePerItem(
@@ -341,18 +362,19 @@ class StockItemsToReturnDataSource extends DataGridSource {
   @override
   Widget? buildEditWidget(
       DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
-    // Text going to display on editable widget
-    final String displayText = dataGridRow
-            .getCells()
-            .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
-            .value
-            ?.toString() ??
-        '';
+    String format(dynamic text) => text == null
+        ? Strings.empty
+        : column.columnName == 'supplier_price'
+            ? text.toStringAsFixed(3)
+            : text.toString();
 
-    // The new cell value must be reset.
-    // To avoid committing the [DataGridCell] value that was previously edited
-    // into the current non-modified [DataGridCell].
-    newCellValue = null;
+    // Text going to display on editable widget
+    final String displayText = format(dataGridRow
+        .getCells()
+        .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
+        .value);
+
+    newCellValue = displayText;
 
     return Container(
       alignment: Alignment.centerLeft,
@@ -427,12 +449,13 @@ class StockItemsToReturnDataSource extends DataGridSource {
             // if (title == 'Tax') _context.read<StockReturnCubit>().setTax(double.tryParse(value) ?? 0);
             if (title == 'Discount') _context.read<StockReturnCubit>().setDiscount(double.tryParse(value) ?? 0);
           },
-          style: UIStyleText.bodyRegular,
+          style: UIStyleText.labelSemiBold,
           inputFormatters: [CurrencyInputFormatter()],
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: '0',
-            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            focusedBorder: OutlineInputBorder(
+            hintStyle: UIStyleText.labelSemiBold,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            focusedBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
               borderSide: BorderSide(color: UIColors.textGray),
             ),
@@ -441,11 +464,11 @@ class StockItemsToReturnDataSource extends DataGridSource {
       );
     }
 
-    if (title == 'Subtotal') return UIText.bodyRegular(summaryValue.toPesoString());
-    if (title == 'Tax') return UIText.bodyRegular('0.00');
+    if (title == 'Subtotal') return UIText.labelSemiBold(summaryValue.toPesoString());
+    if (title == 'Tax') return UIText.labelSemiBold('0.00');
 
     /// Total is subtotal less discount
-    return UIText.label((((double.tryParse(summaryValue) ?? 0)) - _discount).toPesoString());
+    return UIText.labelSemiBold((((double.tryParse(summaryValue) ?? 0)) - _discount).toPesoString());
     // return UIText.heading6((((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toString());
   }
 }

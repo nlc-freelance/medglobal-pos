@@ -4,10 +4,10 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/variant.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product/product_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form/product_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/widgets/general/general_information.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/widgets/inventory_and_variants/inventory_and_variants_information.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -30,6 +30,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   late VariantFormCubit _variantFormCubit;
 
   late int _id;
+
+  String? _hasMissingRequiredFieldsError;
 
   @override
   void initState() {
@@ -102,21 +104,25 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         child: Column(
                           children: [
                             GeneralInformation(productNameController: _productNameController),
-                            InventoryAndVariantsInformation(formKey: _formKey),
+                            const InventoryAndVariantsInformation(),
                           ],
                         ),
                       ),
                     ),
-                    const UIVerticalSpace(60),
+                    const UIVerticalSpace(30),
                     if (state is ProductError)
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Assets.icons.infoCircle.svg(),
                           const UIHorizontalSpace(8),
-                          UIText.labelSemiBold('Something went wrong. ${state.message}', color: UIColors.buttonDanger),
+                          UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
                         ],
                       ),
+                    if (_hasMissingRequiredFieldsError != null) ...[
+                      UIText.labelSemiBold(_hasMissingRequiredFieldsError!, color: UIColors.buttonDanger),
+                      const UIVerticalSpace(8),
+                    ],
                     Row(
                       children: [
                         if (isEditingProduct)
@@ -148,9 +154,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               } else {
                                 _productCubit.update(product.id!, product);
                               }
+                              setState(() => _hasMissingRequiredFieldsError = null);
                             } else {
-                              ToastNotification.invalid(
-                                  context, 'One of the required field is empty. Please check your inputs.');
+                              setState(() => _hasMissingRequiredFieldsError =
+                                  'One or more required fields are empty. Please check your inputs.');
                             }
                           },
                         ),

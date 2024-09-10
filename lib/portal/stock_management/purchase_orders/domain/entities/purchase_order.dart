@@ -172,4 +172,9 @@ class PurchaseOrder extends Equatable {
   }
 
   double get itemSubtotal => items?.fold(0.0, (sub, item) => (sub ?? 0) + (item.total ?? 0)) ?? 0;
+
+  @override
+  String toString() {
+    return 'PurchaseOrder{id: $id, branch: $branch, supplier: $supplier, status: $status, subtotal: $subtotal, totalAmount: $totalAmount, tax: $tax, discount: $discount, notes: $notes, items: $items, estimatedDateOfArrival: $estimatedDateOfArrival, createdAt: $createdAt, updatedAt: $updatedAt}';
+  }
 }

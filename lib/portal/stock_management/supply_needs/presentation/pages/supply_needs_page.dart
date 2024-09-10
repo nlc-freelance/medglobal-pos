@@ -42,16 +42,6 @@ class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          DataGridToolbar(
-                            filters: [
-                              UIButton.outlined(
-                                'All Branches',
-                                iconAlign: IconAlignment.end,
-                                iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
-                                onClick: () {},
-                              ),
-                            ],
-                          ),
                           Expanded(
                             child: SingleChildScrollView(
                               child: Column(

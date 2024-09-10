@@ -3,19 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/variant.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form/product_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/widgets/inventory_and_variants/inventory_per_branch/inventory_per_branch.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/widgets/inventory_and_variants/stock_keeping_unit/stock_keeping_unit_details.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/widgets/inventory_and_variants/variants/variant_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/widgets/inventory_and_variants/variants/variant_form.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
-import 'variants/variant_form.dart';
 
 class InventoryAndVariantsInformation extends StatefulWidget {
-  const InventoryAndVariantsInformation({super.key, required this.formKey});
-
-  final GlobalKey<FormState> formKey;
+  const InventoryAndVariantsInformation({super.key});
 
   @override
   State<InventoryAndVariantsInformation> createState() => _InventoryAndVariantsInformationState();
@@ -73,56 +71,82 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
   }
 
   @override
-  Widget build(BuildContext context) => BlocSelector<ProductFormCubit, ProductFormState, Product?>(
-        selector: (state) => state.product,
-        builder: (context, product) {
-          return BlocListener<VariantFormCubit, VariantFormState>(
-            listenWhen: (previous, current) =>
-                previous.variant?.id != current.variant?.id || current.variant == const Variant(),
-            listener: (context, state) {
-              final variant = state.variant;
-
-              _nameController.text = variant?.name ?? '';
-              _skuController.text = variant?.sku ?? '';
-              _warningStockController.text = (variant?.warningStock ?? '').toString();
-              _idealStockController.text = (variant?.idealStock ?? '').toString();
-              _costController.text = (variant?.cost ?? '').toString();
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const PageSectionTitle(title: 'Inventory and Variants'),
-                if (context.select((VariantFormUiCubit cubit) => cubit.state))
-                  VariantForm(
-                    formKey: widget.formKey,
+  Widget build(BuildContext context) => BlocListener<VariantFormUiCubit, bool>(
+        listener: (context, showVariantForm) {
+          if (showVariantForm) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => Dialog(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: UIColors.background,
+                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  ),
+                  padding: const EdgeInsets.all(24),
+                  height: MediaQuery.sizeOf(context).height * 0.8,
+                  width: MediaQuery.sizeOf(context).width * 0.6,
+                  child: VariantForm(
                     nameController: _nameController,
                     skuController: _skuController,
                     warningStockController: _warningStockController,
                     idealStockController: _idealStockController,
                     costController: _costController,
-                  )
-                else ...[
-                  UIButton.secondary(
-                    'Add Variant',
-                    iconBuilder: (_) => Assets.icons.add.svg(colorFilter: UIColors.primary.toColorFilter),
-                    onClick: () => _variantFormUiCubit.showVariantFormUi(),
                   ),
-                  const UIVerticalSpace(30),
-                  if (product?.hasVariants == false) ...[
-                    StockKeepingUnitDetails(
-                      skuController: _skuController,
-                      warningStockController: _warningStockController,
-                      idealStockController: _idealStockController,
-                      costController: _costController,
-                    ),
-                    const InventoryPerBranch(),
-                  ],
-                ],
-                if (product?.hasVariants == true) const VariantDataGrid(),
-                const UIVerticalSpace(60),
-              ],
-            ),
-          );
+                ),
+              ),
+            );
+          }
         },
+        child: BlocSelector<ProductFormCubit, ProductFormState, Product?>(
+          selector: (state) => state.product,
+          builder: (context, product) {
+            return BlocListener<VariantFormCubit, VariantFormState>(
+              listenWhen: (previous, current) =>
+                  previous.variant?.id != current.variant?.id || current.variant == const Variant(),
+              listener: (context, state) {
+                final variant = state.variant;
+
+                _nameController.text = variant?.name ?? '';
+                _skuController.text = variant?.sku ?? '';
+                _warningStockController.text = (variant?.warningStock ?? '').toString();
+                _idealStockController.text = (variant?.idealStock ?? '').toString();
+                _costController.text = (variant?.cost ?? '').toString();
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const PageSectionTitle(title: 'Inventory and Variants'),
+                  if (context.select((VariantFormUiCubit cubit) => cubit.state))
+                    const SizedBox()
+                  else ...[
+                    UIButton.secondary(
+                      'Add Variant',
+                      iconBuilder: (_) => Assets.icons.add.svg(colorFilter: UIColors.primary.toColorFilter),
+                      onClick: () {
+                        if (product?.hasVariants == true) {
+                          _variantFormCubit.resetForm();
+                        }
+                        _variantFormUiCubit.showVariantFormUi();
+                      },
+                    ),
+                    const UIVerticalSpace(30),
+                    if (product?.hasVariants == false) ...[
+                      StockKeepingUnitDetails(
+                        skuController: _skuController,
+                        warningStockController: _warningStockController,
+                        idealStockController: _idealStockController,
+                        costController: _costController,
+                      ),
+                      const InventoryPerBranch(),
+                    ],
+                  ],
+                  if (product?.hasVariants == true) const VariantDataGrid(),
+                  const UIVerticalSpace(60),
+                ],
+              ),
+            );
+          },
+        ),
       );
 }
