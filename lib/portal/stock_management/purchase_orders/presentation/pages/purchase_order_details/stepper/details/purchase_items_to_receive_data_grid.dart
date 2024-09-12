@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class StockItemsShippedDataGrid extends StatefulWidget {
-  const StockItemsShippedDataGrid({super.key});
+class PurchaseItemsToReceiveDataGrid extends StatefulWidget {
+  const PurchaseItemsToReceiveDataGrid({super.key});
 
   @override
-  State<StockItemsShippedDataGrid> createState() => _StockItemsShippedDataGridState();
+  State<PurchaseItemsToReceiveDataGrid> createState() => _PurchaseItemsToReceiveDataGridState();
 }
 
-class _StockItemsShippedDataGridState extends State<StockItemsShippedDataGrid> {
-  List<StockTransferItem> _itemsShipped = <StockTransferItem>[];
+class _PurchaseItemsToReceiveDataGridState extends State<PurchaseItemsToReceiveDataGrid> {
+  List<PurchaseOrderItem> _itemsToReceive = <PurchaseOrderItem>[];
 
   late DataGridController _dataGridController;
-  late StockItemsShippedDataSource _stockItemsShippedDataSource;
+  late PurchaseItemsToReceiveDataSource _purchaseItemsToReceiveDataSource;
   late CustomSelectionManager customSelectionManager;
 
   @override
@@ -28,10 +28,12 @@ class _StockItemsShippedDataGridState extends State<StockItemsShippedDataGrid> {
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
-    final stockTransfer = context.read<StockTransferCubit>().state.stockTransfer;
+    final purchaseOrder = context.read<PurchaseOrderCubit>().state.purchaseOrder;
+    final tax = purchaseOrder.tax ?? 0;
+    final discount = purchaseOrder.discount ?? 0;
 
-    _itemsShipped = stockTransfer.items ?? [];
-    _stockItemsShippedDataSource = StockItemsShippedDataSource(_itemsShipped, context);
+    _itemsToReceive = purchaseOrder.items ?? [];
+    _purchaseItemsToReceiveDataSource = PurchaseItemsToReceiveDataSource(_itemsToReceive, context, tax, discount);
   }
 
   @override
@@ -45,16 +47,16 @@ class _StockItemsShippedDataGridState extends State<StockItemsShippedDataGrid> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const PageSectionTitle(title: 'Items Shipped'),
-        BlocBuilder<StockTransferCubit, StockTransferState>(
+        const PageSectionTitle(title: 'Items Received'),
+        BlocBuilder<PurchaseOrderCubit, PurchaseOrderState>(
           builder: (context, state) {
             return ClipRect(
               clipper: HorizontalBorderClipper(),
               child: SfDataGridTheme(
                 data: DataGridUtil.cellNavigationStyle,
                 child: SfDataGrid(
-                  source: _stockItemsShippedDataSource,
-                  columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFER_ITEMS_SHIPPED),
+                  source: _purchaseItemsToReceiveDataSource,
+                  columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS_RECEIVED),
                   controller: _dataGridController,
                   selectionManager: customSelectionManager,
                   shrinkWrapRows: true,
@@ -69,11 +71,65 @@ class _StockItemsShippedDataGridState extends State<StockItemsShippedDataGrid> {
                       color: UIColors.background,
                       position: GridTableSummaryRowPosition.bottom,
                       showSummaryInRow: false,
+                      title: 'Subtotal',
+                      columns: [
+                        const GridSummaryColumn(
+                          name: '',
+                          columnName: 'supplier_price',
+                          summaryType: GridSummaryType.sum,
+                        ),
+                        const GridSummaryColumn(
+                          name: '',
+                          columnName: 'total',
+                          summaryType: GridSummaryType.sum,
+                        ),
+                      ],
+                    ),
+                    GridTableSummaryRow(
+                      color: UIColors.background,
+                      position: GridTableSummaryRowPosition.bottom,
+                      showSummaryInRow: false,
+                      title: 'Tax',
+                      columns: [
+                        const GridSummaryColumn(
+                          name: '',
+                          columnName: 'supplier_price',
+                          summaryType: GridSummaryType.sum,
+                        ),
+                        const GridSummaryColumn(
+                          name: '',
+                          columnName: 'total',
+                          summaryType: GridSummaryType.sum,
+                        ),
+                      ],
+                    ),
+                    GridTableSummaryRow(
+                      color: UIColors.background,
+                      position: GridTableSummaryRowPosition.bottom,
+                      showSummaryInRow: false,
+                      title: 'Discount',
+                      columns: [
+                        const GridSummaryColumn(
+                          name: '',
+                          columnName: 'supplier_price',
+                          summaryType: GridSummaryType.sum,
+                        ),
+                        const GridSummaryColumn(
+                          name: '',
+                          columnName: 'total',
+                          summaryType: GridSummaryType.sum,
+                        ),
+                      ],
+                    ),
+                    GridTableSummaryRow(
+                      color: UIColors.background,
+                      position: GridTableSummaryRowPosition.bottom,
+                      showSummaryInRow: false,
                       title: 'Total',
                       columns: [
                         const GridSummaryColumn(
                           name: '',
-                          columnName: 'cost',
+                          columnName: 'supplier_price',
                           summaryType: GridSummaryType.sum,
                         ),
                         const GridSummaryColumn(
@@ -94,21 +150,26 @@ class _StockItemsShippedDataGridState extends State<StockItemsShippedDataGrid> {
   }
 }
 
-class StockItemsShippedDataSource extends DataGridSource {
-  StockItemsShippedDataSource(List<StockTransferItem> itemsShipped, BuildContext context) {
-    _itemsShipped = itemsShipped;
+class PurchaseItemsToReceiveDataSource extends DataGridSource {
+  PurchaseItemsToReceiveDataSource(
+      List<PurchaseOrderItem> itemsToReceive, BuildContext context, double tax, double discount) {
+    _itemsToReceive = itemsToReceive;
     _context = context;
+    _tax = tax;
+    _discount = discount;
 
     buildDataGridRows();
   }
 
-  List<StockTransferItem> _itemsShipped = [];
+  List<PurchaseOrderItem> _itemsToReceive = [];
 
   List<DataGridRow> dataGridRows = [];
 
+  late double _tax;
+  late double _discount;
   late BuildContext _context;
 
-  void buildDataGridRows() => dataGridRows = _itemsShipped.map((item) => item.toDataGridRowItemsShipped()).toList();
+  void buildDataGridRows() => dataGridRows = _itemsToReceive.map((item) => item.toDataGridRowItemsReceived()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -141,7 +202,7 @@ class StockItemsShippedDataSource extends DataGridSource {
                 ? UIText.bodyRegular('0', color: UIColors.textMuted)
                 : UIText.bodyRegular((cell.value as int).toString()),
           ),
-        'cost' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
+        'supplier_price' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
         _ => UIText.bodyRegular(
             cell.runtimeType.toString().contains('double')
                 ? (cell.value as double).toPesoString()
@@ -189,8 +250,8 @@ class StockItemsShippedDataSource extends DataGridSource {
       double newTotalPerItem = (newQtyReceived ?? 0) * (cost);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
-      _context.read<StockTransferCubit>().setQuantityReceivedPerItem(
-            id: _itemsShipped[dataRowIndex].id!,
+      _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
+            id: _itemsToReceive[dataRowIndex].id!,
             qty: newQtyReceived,
             total: newTotalPerItem,
           );
@@ -241,13 +302,30 @@ class StockItemsShippedDataSource extends DataGridSource {
   Widget? buildTableSummaryCellWidget(GridTableSummaryRow summaryRow, GridSummaryColumn? summaryColumn,
       RowColumnIndex rowColumnIndex, String summaryValue) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-      child: summaryColumn?.columnName == 'cost'
-          ? UIText.labelSemiBold(
+      padding: const EdgeInsets.all(16),
+      child: summaryColumn?.columnName == 'supplier_price'
+          ? Text(
               summaryRow.title!,
-              align: TextAlign.end,
+              textAlign: TextAlign.end,
+              style: UIStyleText.labelSemiBold,
             )
-          : UIText.labelSemiBold(summaryValue.toPesoString()),
+          : Text(
+              summaryCellValue(_context, summaryRow.title!, summaryValue),
+              style: UIStyleText.labelSemiBold,
+            ),
     );
+  }
+
+  String summaryCellValue(BuildContext context, String summaryRowTitle, String summaryValue) {
+    if (summaryRowTitle == 'Tax') {
+      return _tax.toPesoString();
+    }
+    if (summaryRowTitle == 'Discount') {
+      return _discount.toPesoString();
+    }
+    if (summaryRowTitle == 'Subtotal') {
+      return summaryValue.toPesoString();
+    }
+    return (((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toPesoString();
   }
 }

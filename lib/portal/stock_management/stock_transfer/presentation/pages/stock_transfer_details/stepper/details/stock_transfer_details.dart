@@ -77,7 +77,9 @@ class _StockTransferDetailsState extends State<StockTransferDetails> {
             const UIVerticalSpace(40),
             if (stockTransfer.status == StockOrderStatus.NEW) const StockItemsToTransferDataGrid(),
             if (stockTransfer.status == StockOrderStatus.SHIPPED) const StockItemsShippedDataGrid(),
-            if (stockTransfer.status == StockOrderStatus.COMPLETED) const StockItemsTransferredDataGrid(),
+            if (stockTransfer.status == StockOrderStatus.COMPLETED ||
+                stockTransfer.status == StockOrderStatus.CANCELLED)
+              const StockItemsTransferredDataGrid(),
             const UIVerticalSpace(60),
             const PageSectionTitle(title: 'Notes'),
             stockTransfer.status == StockOrderStatus.COMPLETED || stockTransfer.status == StockOrderStatus.CANCELLED

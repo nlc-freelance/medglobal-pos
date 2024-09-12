@@ -55,12 +55,10 @@ class _StockItemsTransferredDataGridState extends State<StockItemsTransferredDat
               controller: _dataGridController,
               selectionManager: customSelectionManager,
               shrinkWrapRows: true,
-              allowEditing: true,
               navigationMode: GridNavigationMode.cell,
               selectionMode: SelectionMode.single,
               columnWidthMode: ColumnWidthMode.fill,
               headerGridLinesVisibility: GridLinesVisibility.none,
-              editingGestureType: EditingGestureType.tap,
               tableSummaryRows: [
                 GridTableSummaryRow(
                   color: UIColors.background,
@@ -119,7 +117,7 @@ class StockItemsTransferredDataSource extends DataGridSource {
               : UIText.bodyRegular(
                   cell.runtimeType.toString().contains('double')
                       ? (cell.value as double).toPesoString()
-                      : cell.value.toString(),
+                      : (cell.value ?? '-').toString(),
                 ),
         );
       }).toList(),
