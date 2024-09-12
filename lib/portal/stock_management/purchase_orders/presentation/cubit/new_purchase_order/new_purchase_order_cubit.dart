@@ -10,4 +10,6 @@ class NewPurchaseOrderCubit extends Cubit<NewPurchaseOrderState> {
   void setBranchId(int value) => emit(NewPurchaseOrderState(state.payload.copyWith(branchId: value)));
   void setSupplierId(int value) => emit(NewPurchaseOrderState(state.payload.copyWith(supplierId: value)));
   void setAutoFill(bool value) => emit(NewPurchaseOrderState(state.payload.copyWith(isAutoFill: value)));
+
+  void reset() => emit(NewPurchaseOrderState.initial());
 }

@@ -10,4 +10,6 @@ class NewStockTransferCubit extends Cubit<NewStockTransferState> {
   void setSourceBranchId(int value) => emit(NewStockTransferState(state.payload.copyWith(fromBranch: value)));
   void setDestinationBranchId(int value) => emit(NewStockTransferState(state.payload.copyWith(toBranch: value)));
   void setAutoFill(bool value) => emit(NewStockTransferState(state.payload.copyWith(isAutoFill: value)));
+
+  void reset() => emit(NewStockTransferState.initial());
 }

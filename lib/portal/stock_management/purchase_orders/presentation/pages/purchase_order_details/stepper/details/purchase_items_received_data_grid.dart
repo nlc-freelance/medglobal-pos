@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
@@ -9,9 +8,7 @@ import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class PurchaseItemsReceivedDataGrid extends StatefulWidget {
-  const PurchaseItemsReceivedDataGrid({super.key, required this.isReceiving});
-
-  final bool isReceiving;
+  const PurchaseItemsReceivedDataGrid({super.key});
 
   @override
   State<PurchaseItemsReceivedDataGrid> createState() => _PurchaseItemsReceivedDataGridState();
@@ -35,8 +32,7 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
     final discount = purchaseOrder.discount ?? 0;
 
     _itemsReceived = purchaseOrder.items ?? [];
-    _purchaseItemsReceivedDataSource =
-        PurchaseItemsReceivedDataSource(_itemsReceived, context, widget.isReceiving, tax, discount);
+    _purchaseItemsReceivedDataSource = PurchaseItemsReceivedDataSource(_itemsReceived, context, tax, discount);
   }
 
   @override
@@ -51,107 +47,94 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageSectionTitle(title: 'Items Received'),
-        BlocListener<PurchaseOrderCubit, PurchaseOrderState>(
-          listenWhen: (previous, current) =>
-              previous.purchaseOrder.items != current.purchaseOrder.items ||
-              previous.purchaseOrder.totalAmount != current.purchaseOrder.totalAmount,
-          listener: (context, state) {
-            _purchaseItemsReceivedDataSource._itemsReceived = state.purchaseOrder.items ?? [];
-
-            _purchaseItemsReceivedDataSource.buildDataGridRows();
-            _purchaseItemsReceivedDataSource.updateDataGridSource();
-          },
-          child: ClipRect(
-            clipper: HorizontalBorderClipper(),
-            child: SfDataGridTheme(
-              data: DataGridUtil.cellNavigationStyle,
-              child: SfDataGrid(
-                source: _purchaseItemsReceivedDataSource,
-                columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS_RECEIVED),
-                controller: _dataGridController,
-                selectionManager: customSelectionManager,
-                shrinkWrapRows: true,
-                allowEditing: true,
-                navigationMode: GridNavigationMode.cell,
-                selectionMode: SelectionMode.single,
-                columnWidthMode: ColumnWidthMode.fill,
-                headerGridLinesVisibility: GridLinesVisibility.none,
-                editingGestureType: EditingGestureType.tap,
-                tableSummaryRows: [
-                  GridTableSummaryRow(
-                    color: UIColors.background,
-                    position: GridTableSummaryRowPosition.bottom,
-                    showSummaryInRow: false,
-                    title: 'Subtotal',
-                    columns: [
-                      const GridSummaryColumn(
-                        name: '',
-                        columnName: 'supplier_price',
-                        summaryType: GridSummaryType.sum,
-                      ),
-                      const GridSummaryColumn(
-                        name: '',
-                        columnName: 'total',
-                        summaryType: GridSummaryType.sum,
-                      ),
-                    ],
-                  ),
-                  GridTableSummaryRow(
-                    color: UIColors.background,
-                    position: GridTableSummaryRowPosition.bottom,
-                    showSummaryInRow: false,
-                    title: 'Tax',
-                    columns: [
-                      const GridSummaryColumn(
-                        name: '',
-                        columnName: 'supplier_price',
-                        summaryType: GridSummaryType.sum,
-                      ),
-                      const GridSummaryColumn(
-                        name: '',
-                        columnName: 'total',
-                        summaryType: GridSummaryType.sum,
-                      ),
-                    ],
-                  ),
-                  GridTableSummaryRow(
-                    color: UIColors.background,
-                    position: GridTableSummaryRowPosition.bottom,
-                    showSummaryInRow: false,
-                    title: 'Discount',
-                    columns: [
-                      const GridSummaryColumn(
-                        name: '',
-                        columnName: 'supplier_price',
-                        summaryType: GridSummaryType.sum,
-                      ),
-                      const GridSummaryColumn(
-                        name: '',
-                        columnName: 'total',
-                        summaryType: GridSummaryType.sum,
-                      ),
-                    ],
-                  ),
-                  GridTableSummaryRow(
-                    color: UIColors.background,
-                    position: GridTableSummaryRowPosition.bottom,
-                    showSummaryInRow: false,
-                    title: 'Total',
-                    columns: [
-                      const GridSummaryColumn(
-                        name: '',
-                        columnName: 'supplier_price',
-                        summaryType: GridSummaryType.sum,
-                      ),
-                      const GridSummaryColumn(
-                        name: '',
-                        columnName: 'total',
-                        summaryType: GridSummaryType.sum,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+        ClipRect(
+          clipper: HorizontalBorderClipper(),
+          child: SfDataGridTheme(
+            data: DataGridUtil.cellNavigationStyle,
+            child: SfDataGrid(
+              source: _purchaseItemsReceivedDataSource,
+              columns: DataGridUtil.getColumns(DataGridColumn.PO_ITEMS_RECEIVED),
+              controller: _dataGridController,
+              selectionManager: customSelectionManager,
+              shrinkWrapRows: true,
+              navigationMode: GridNavigationMode.cell,
+              selectionMode: SelectionMode.single,
+              columnWidthMode: ColumnWidthMode.fill,
+              headerGridLinesVisibility: GridLinesVisibility.none,
+              tableSummaryRows: [
+                GridTableSummaryRow(
+                  color: UIColors.background,
+                  position: GridTableSummaryRowPosition.bottom,
+                  showSummaryInRow: false,
+                  title: 'Subtotal',
+                  columns: [
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'supplier_price',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'total',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                  ],
+                ),
+                GridTableSummaryRow(
+                  color: UIColors.background,
+                  position: GridTableSummaryRowPosition.bottom,
+                  showSummaryInRow: false,
+                  title: 'Tax',
+                  columns: [
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'supplier_price',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'total',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                  ],
+                ),
+                GridTableSummaryRow(
+                  color: UIColors.background,
+                  position: GridTableSummaryRowPosition.bottom,
+                  showSummaryInRow: false,
+                  title: 'Discount',
+                  columns: [
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'supplier_price',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'total',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                  ],
+                ),
+                GridTableSummaryRow(
+                  color: UIColors.background,
+                  position: GridTableSummaryRowPosition.bottom,
+                  showSummaryInRow: false,
+                  title: 'Total',
+                  columns: [
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'supplier_price',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                    const GridSummaryColumn(
+                      name: '',
+                      columnName: 'total',
+                      summaryType: GridSummaryType.sum,
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
@@ -162,27 +145,18 @@ class _PurchaseItemsReceivedDataGridState extends State<PurchaseItemsReceivedDat
 
 class PurchaseItemsReceivedDataSource extends DataGridSource {
   PurchaseItemsReceivedDataSource(
-      List<PurchaseOrderItem> itemsReceived, BuildContext context, bool isReceiving, double tax, double discount) {
+      List<PurchaseOrderItem> itemsReceived, BuildContext context, double tax, double discount) {
     _itemsReceived = itemsReceived;
     _context = context;
-    _isReceiving = isReceiving;
     _tax = tax;
     _discount = discount;
-
-    /// This data grid is used for both receiving and completed view
-    /// When receiving initially, auto populate received qty column with the ordered qty value. Else map data as usual
-    if (isReceiving) {
-      dataGridRows = itemsReceived.map((item) => item.toDataGridRowItemsReceived(isInitReceiving: true)).toList();
-    } else {
-      buildDataGridRows();
-    }
+    buildDataGridRows();
   }
 
   List<PurchaseOrderItem> _itemsReceived = [];
 
   List<DataGridRow> dataGridRows = [];
 
-  late bool _isReceiving;
   late double _tax;
   late double _discount;
 
@@ -209,115 +183,13 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
   }
 
   Widget cellBuilder(String key, DataGridCell cell, int id) => switch (key) {
-        'qty_received' => _isReceiving
-            ? Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: UIColors.background,
-                  border: Border.all(color: UIColors.borderRegular),
-                  borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-                ),
-                child: cell.value == null
-                    ? UIText.bodyRegular('0', color: UIColors.textMuted)
-                    : UIText.bodyRegular((cell.value as int).toString()),
-              )
-            : UIText.bodyRegular(cell.value.toString()),
         'supplier_price' => UIText.bodyRegular((cell.value as double).toStringAsFixed(3)),
         _ => UIText.bodyRegular(
             cell.runtimeType.toString().contains('double')
                 ? (cell.value as double).toPesoString()
-                : cell.value.toString(),
+                : (cell.value ?? '-').toString(),
           ),
       };
-
-  /// Helps to hold the new value of all editable widget.
-  /// Based on the new value we will commit the new value into the corresponding
-  /// [DataGridCell] on [onSubmitCell] method.
-  dynamic newCellValue;
-
-  /// Help to control the editable text in [TextField] widget.
-  TextEditingController editingController = TextEditingController();
-
-  @override
-  bool onCellBeginEdit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) {
-    if (column.columnName == 'qty_received' && _isReceiving) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @override
-  Future<void> onCellSubmit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
-    final dynamic oldValue = dataGridRow
-            .getCells()
-            .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
-            .value ??
-        '';
-
-    final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
-
-    if (oldValue == newCellValue) return;
-
-    if (column.columnName == 'qty_received') {
-      final newQtyReceived = int.tryParse(newCellValue.toString());
-      double cost = dataGridRows[dataRowIndex].getCells()[5].value;
-
-      dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
-          DataGridCell<int>(columnName: 'qty_received', value: newQtyReceived);
-
-      /// Compute new total per item and update the value in the DataGridRows
-      double newTotalPerItem = (newQtyReceived ?? 0) * (cost);
-      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
-
-      _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
-            id: _itemsReceived[dataRowIndex].id!,
-            qty: newQtyReceived,
-            total: newTotalPerItem,
-          );
-    }
-  }
-
-  @override
-  Widget? buildEditWidget(
-      DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
-    // Text going to display on editable widget
-    final String displayText = dataGridRow
-            .getCells()
-            .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
-            .value
-            ?.toString() ??
-        '';
-
-    newCellValue = displayText;
-
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: TextField(
-        controller: editingController..text = displayText,
-        autofocus: true,
-        cursorHeight: 15.0,
-        style: UIStyleText.bodyRegular,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            borderSide: BorderSide(color: UIColors.textGray),
-          ),
-        ),
-        onTapOutside: (event) => submitCell(),
-        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : null,
-        onSubmitted: (String value) {
-          /// Call [CellSubmit] callback to fire the canSubmitCell and
-          /// onCellSubmit to commit the new value in single place.
-          submitCell();
-        },
-      ),
-    );
-  }
 
   @override
   Widget? buildTableSummaryCellWidget(GridTableSummaryRow summaryRow, GridSummaryColumn? summaryColumn,
