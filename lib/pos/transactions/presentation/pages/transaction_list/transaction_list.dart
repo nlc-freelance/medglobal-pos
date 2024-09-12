@@ -133,6 +133,7 @@ class _TransactionListState extends State<TransactionList> {
                                   if (transactions.isNotEmpty == true)
                                     ...transactions.map(
                                       (item) => Container(
+                                        margin: const EdgeInsets.symmetric(vertical: 2),
                                         decoration: UIStyleContainer.topBorder,
                                         child: BlocSelector<TransactionCubit, TransactionState, Transaction?>(
                                           selector: (state) {
@@ -190,7 +191,7 @@ class _TransactionListState extends State<TransactionList> {
                                                   ],
                                                 ),
                                                 subtitle: Padding(
-                                                  padding: const EdgeInsets.only(top: 6),
+                                                  padding: const EdgeInsets.only(top: 8),
                                                   child: Row(
                                                     children: [
                                                       Text(
