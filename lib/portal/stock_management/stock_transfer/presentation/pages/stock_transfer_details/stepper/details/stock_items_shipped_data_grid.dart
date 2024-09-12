@@ -100,14 +100,7 @@ class StockItemsShippedDataSource extends DataGridSource {
     _context = context;
 
     /// Initially, auto populate received qty column with the transferred qty value
-    for (var item in itemsShipped) {
-      _context.read<StockTransferCubit>().setQuantityReceivedPerItem(
-            id: item.id!,
-            qty: item.qtyToTransfer,
-            total: (item.qtyToTransfer ?? 0) * (item.cost ?? 0),
-          );
-    }
-    dataGridRows = itemsShipped.map((item) => item.toDataGridRowItemsShipped()).toList();
+    dataGridRows = itemsShipped.map((item) => item.toDataGridRowItemsShipped(isInit: true)).toList();
   }
 
   List<StockTransferItem> _itemsShipped = [];

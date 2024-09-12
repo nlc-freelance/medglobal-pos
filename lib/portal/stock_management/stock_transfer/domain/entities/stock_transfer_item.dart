@@ -49,15 +49,15 @@ class StockTransferItem extends Equatable {
           const DataGridCell(columnName: 'action', value: null),
         ],
       );
-  DataGridRow toDataGridRowItemsShipped() => DataGridRow(
+  DataGridRow toDataGridRowItemsShipped({bool isInit = false}) => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'variant_name', value: name),
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'qty_transferred', value: qtyToTransfer),
-          DataGridCell<int>(columnName: 'qty_received', value: qtyReceived),
+          DataGridCell<int>(columnName: 'qty_received', value: isInit ? qtyToTransfer : qtyReceived),
           DataGridCell<double>(columnName: 'cost', value: cost ?? 0),
-          DataGridCell<double>(columnName: 'total', value: (qtyReceived ?? 0) * (cost ?? 0)),
+          DataGridCell<double>(columnName: 'total', value: ((isInit ? qtyToTransfer : qtyReceived) ?? 0) * (cost ?? 0)),
         ],
       );
   DataGridRow toDataGridRowItemsTransferred() => DataGridRow(
