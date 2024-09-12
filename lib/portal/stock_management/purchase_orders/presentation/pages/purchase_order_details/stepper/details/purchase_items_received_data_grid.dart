@@ -169,16 +169,10 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
     _tax = tax;
     _discount = discount;
 
-    /// When receiving initially, auto populate received qty column with the ordered qty value
+    /// This data grid is used for both receiving and completed view
+    /// When receiving initially, auto populate received qty column with the ordered qty value. Else map data as usual
     if (isReceiving) {
-      for (var item in itemsReceived) {
-        _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
-              id: item.id!,
-              qty: item.qtyToOrder,
-              total: (item.qtyToOrder ?? 0) * (item.supplierPrice ?? 0),
-            );
-      }
-      dataGridRows = itemsReceived.map((item) => item.toDataGridRowItemsReceived()).toList();
+      dataGridRows = itemsReceived.map((item) => item.toDataGridRowItemsReceived(isInitReceiving: true)).toList();
     } else {
       buildDataGridRows();
     }

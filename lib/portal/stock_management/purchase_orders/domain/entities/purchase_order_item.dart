@@ -45,17 +45,18 @@ class PurchaseOrderItem extends Equatable {
           const DataGridCell(columnName: 'action', value: null),
         ],
       );
-  DataGridRow toDataGridRowItemsReceived() => DataGridRow(
+
+  DataGridRow toDataGridRowItemsReceived({bool isInitReceiving = false}) => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'variant_name', value: name),
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'qty_ordered', value: qtyToOrder),
-          DataGridCell<int>(columnName: 'qty_received', value: qtyReceived),
+          DataGridCell<int>(columnName: 'qty_received', value: isInitReceiving ? qtyToOrder : qtyReceived),
           DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice),
           DataGridCell<double>(
             columnName: 'total',
-            value: (qtyReceived ?? 0) * (supplierPrice ?? 0),
+            value: ((isInitReceiving ? qtyToOrder : qtyReceived) ?? 0) * (supplierPrice ?? 0),
           ),
         ],
       );

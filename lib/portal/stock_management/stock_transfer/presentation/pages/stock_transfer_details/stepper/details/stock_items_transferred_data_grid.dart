@@ -136,7 +136,7 @@ class StockItemsTransferredDataSource extends DataGridSource {
               summaryRow.title!,
               align: TextAlign.end,
             )
-          : UIText.label(summaryValue.toPesoString()),
+          : UIText.labelSemiBold(summaryValue.toPesoString()),
     );
   }
 }
