@@ -11,9 +11,11 @@ import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/get
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/logout.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
-import 'package:medglobal_admin_portal/portal/branches/data/branch_api.dart';
-import 'package:medglobal_admin_portal/portal/branches/data/branch_repository_impl.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch_repository.dart';
+import 'package:medglobal_admin_portal/portal/branches/cubit/branch_lazy_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/branches/data/api/branch_api.dart';
+import 'package:medglobal_admin_portal/portal/branches/data/repositories/branch_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/branches/domain/repository/branch_repository.dart';
+import 'package:medglobal_admin_portal/portal/branches/domain/usecases/get_branches_usecase.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/api/category_api.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/api/product_api.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/repositories/category_repository_impl.dart';
@@ -21,6 +23,7 @@ import 'package:medglobal_admin_portal/portal/product_management/data/repositori
 import 'package:medglobal_admin_portal/portal/product_management/domain/repositories/category_repository.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/repositories/product_repository.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/category/add_category_usecase.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/category/get_categories_usecase.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/products/bulk_delete_products_usecase.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/products/bulk_update_products_usecase.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/products/create_product_usecase.dart';
@@ -29,6 +32,7 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/usecases
 import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/products/get_products_usecase.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/usecases/products/update_product_usecase.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product/product_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form/product_form_cubit.dart';
@@ -100,6 +104,7 @@ import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecase
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecases/get_suppliers_usecase.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecases/update_supplier_usecase.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_lazy_list/supplier_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transaction_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transactions_usecase.dart';
@@ -223,8 +228,12 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => UpdateSupplierUseCase(injector()))
     ..registerLazySingleton(() => DeleteSupplierUseCase(injector()))
 
+    /// Branch UseCase
+    ..registerLazySingleton(() => GetBranchesUseCase(injector()))
+
     /// Category UseCase
     ..registerLazySingleton(() => AddCategoryUseCase(injector()))
+    ..registerLazySingleton(() => GetCategoriesUseCase(injector()))
 
     /// Product UseCase
     ..registerLazySingleton(() => GetProductsUseCase(injector()))
@@ -324,6 +333,9 @@ void initDependencyInjection() {
     ..registerFactory(() => ReturnRemoteCubit(injector()))
     ..registerFactory(() => SaleTransactionListFilterCubit())
     ..registerFactory(() => ReturnTransactionListFilterCubit())
+    ..registerFactory(() => CategoryLazyListCubit(injector()))
+    ..registerFactory(() => BranchLazyListCubit(injector()))
+    ..registerFactory(() => SupplierLazyListCubit(injector()))
 
     /// POS
     ..registerFactory(() => RegisterShiftBloc(injector(), injector()))

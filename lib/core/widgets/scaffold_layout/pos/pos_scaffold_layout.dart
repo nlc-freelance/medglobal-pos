@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/typeahead_dropdown.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold_layout/pos/pos_app_nav_bar.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_admin_portal/pos/register/data/api/register_api.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift/register.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/entities/register_shift/register_shift.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register/register_cubit.dart';
@@ -14,8 +19,6 @@ import 'package:medglobal_admin_portal/pos/register/presentation/cubit/register_
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
-
-import 'lazy_load_dropdown.dart';
 
 class POSScaffoldLayout extends StatefulWidget {
   const POSScaffoldLayout({
@@ -63,33 +66,31 @@ class _POSScaffoldLayoutState extends State<POSScaffoldLayout> {
                             const UIVerticalSpace(16),
                             Text('Please choose the register you need to use', style: UIStyleText.bodyRegular),
                             const UIVerticalSpace(30),
-                            const LazyLoadDropdown(),
-                            // SearchDropdown<Register>.single(
-                            //   hint: 'Select a register',
-                            //   label: 'Register',
-                            //   itemAsString: (register) => register.name!,
-                            //   asyncItemsCallback: GetIt.I<RegisterRepository>().getAllRegisters(),
-                            //   onSelectItem: (register) async {
-                            //     context.read<RegisterCubit>().setRegister(register);
-                            //
-                            //     RegisterShift? shiftDetail = register.shiftDetail;
-                            //
-                            //     if (shiftDetail != null) {
-                            //       if (shiftDetail.status == 'open') {
-                            //         context
-                            //             .read<RegisterShiftBloc>()
-                            //             .add(SetShiftAsOpenOnLoginEvent(shiftDetail: shiftDetail));
-                            //       }
-                            //       if (shiftDetail.status == 'close') {
-                            //         context
-                            //             .read<RegisterShiftBloc>()
-                            //             .add(SetShiftAsClosedOnLoginEvent(shiftDetail: shiftDetail));
-                            //       }
-                            //     } else {
-                            //       context.read<RegisterShiftBloc>().add(SetShiftAsClosedOnFirstTimeEvent());
-                            //     }
-                            //   },
-                            // ),
+                            TypeAheadDropdown<Register>(
+                              hint: 'Select register',
+                              itemAsString: (register) => register.name!,
+                              suggestionCallback: (String search) => GetIt.I<RegisterApi>().getRegisters(),
+                              onSelected: (Register value) {
+                                context.read<RegisterCubit>().setRegister(value);
+
+                                RegisterShift? shiftDetail = value.shiftDetail;
+
+                                if (shiftDetail != null) {
+                                  if (shiftDetail.status == 'open') {
+                                    context
+                                        .read<RegisterShiftBloc>()
+                                        .add(SetShiftAsOpenOnLoginEvent(shiftDetail: shiftDetail));
+                                  }
+                                  if (shiftDetail.status == 'close') {
+                                    context
+                                        .read<RegisterShiftBloc>()
+                                        .add(SetShiftAsClosedOnLoginEvent(shiftDetail: shiftDetail));
+                                  }
+                                } else {
+                                  context.read<RegisterShiftBloc>().add(SetShiftAsClosedOnFirstTimeEvent());
+                                }
+                              },
+                            ),
                             const UIVerticalSpace(30),
                             if (state.error != null) UIText.labelSemiBold(state.error!, color: UIColors.buttonDanger),
                             Align(

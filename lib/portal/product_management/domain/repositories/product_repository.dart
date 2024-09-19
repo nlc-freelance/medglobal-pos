@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product_paginated_list.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product_paginated_list.dart';
 
 abstract class ProductRepository {
   Future<Either<Failure, ProductPaginatedList>> getProducts({required int page, required int size, String? search});

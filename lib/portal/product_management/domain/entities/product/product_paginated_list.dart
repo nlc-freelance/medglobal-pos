@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'product/product.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 
 class ProductPaginatedList extends Equatable {
   final List<Product>? products;

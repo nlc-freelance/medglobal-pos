@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/widgets/category_dropdown.dart';
@@ -123,31 +124,33 @@ class _BulkActionPopupMenuState extends State<BulkActionPopupMenu> {
           listener: (context, state) {
             if (state is ProductBulkActionSuccess || state is ProductBulkActionError) Navigator.pop(context);
           },
-          builder: (context, state) => Dialog(
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-            child: Container(
-              width: MediaQuery.sizeOf(context).width * 0.35,
-              color: UIColors.background,
-              padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  UIText.heading6(title),
-                  if (subtitle != null) UIText.subtitle(subtitle),
-                  const Divider(color: UIColors.borderMuted),
-                  const UIVerticalSpace(16),
-                  if (message != null) UIText.bodyRegular(message),
-                  if (content != null) content,
-                  const UIVerticalSpace(30),
-                  CancelActionButton(
-                    isLoading: state is ProductBulkActionLoading,
-                    actionLabel: message != null ? 'Confirm' : 'Apply',
-                    actionStyle: message != null ? UIStyleButton.danger : null,
-                    onCancel: () => Navigator.pop(context),
-                    onAction: onAction,
-                  ),
-                ],
+          builder: (context, state) => Portal(
+            child: Dialog(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+              child: Container(
+                width: MediaQuery.sizeOf(context).width * 0.35,
+                color: UIColors.background,
+                padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    UIText.heading6(title),
+                    if (subtitle != null) UIText.subtitle(subtitle),
+                    const Divider(color: UIColors.borderMuted),
+                    const UIVerticalSpace(16),
+                    if (message != null) UIText.bodyRegular(message),
+                    if (content != null) content,
+                    const UIVerticalSpace(30),
+                    CancelActionButton(
+                      isLoading: state is ProductBulkActionLoading,
+                      actionLabel: message != null ? 'Confirm' : 'Apply',
+                      actionStyle: message != null ? UIStyleButton.danger : null,
+                      onCancel: () => Navigator.pop(context),
+                      onAction: onAction,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

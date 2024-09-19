@@ -44,10 +44,6 @@ class _AutocompleteDropdownState extends State<AutocompleteDropdown> {
               hintStyle: UIStyleText.hint,
               constraints: const BoxConstraints(maxHeight: 38),
               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 22),
-              // contentPadding: EdgeInsets.zero,
-              // border: InputBorder.none,
-              // focusedBorder: InputBorder.none,
-              // enabledBorder: InputBorder.none,
               prefixIcon: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Assets.icons.search.setSize(14),

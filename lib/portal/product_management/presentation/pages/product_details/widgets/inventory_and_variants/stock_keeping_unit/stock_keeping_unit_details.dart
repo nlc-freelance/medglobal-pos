@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/dropdowns/search_dropdown/search_dropdown.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/supplier_dropdown.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/variant.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/domain/repositories/supplier_repository.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class StockKeepingUnitDetails extends StatelessWidget {
@@ -74,18 +71,15 @@ class StockKeepingUnitDetails extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8),
-                      child: SearchDropdown<Supplier>.multi(
-                        label: 'Suppliers',
+                      child: SupplierDropdown.input_top(
                         hint: 'Select suppliers',
-                        isRequired: true,
-                        itemAsString: (supplier) => supplier.name,
-                        asyncItemsCallback: GetIt.I<SupplierRepository>().getAllSuppliers(),
-                        onSelectItems: (suppliers) => context.read<VariantFormCubit>().setSuppliers(suppliers),
+                        label: 'Suppliers',
+                        required: true,
+                        isMultiSelect: true,
+                        showSelectedItems: true,
+                        onSelectItem: (supplier) => context.read<VariantFormCubit>().setSuppliers(supplier),
                         selectedItems: variant?.suppliers ?? [],
-                        validator: (_) {
-                          if (variant?.suppliers?.isEmpty == true) return 'Please select atleast one supplier.';
-                          return null;
-                        },
+                        onDeleteItem: (id) => context.read<VariantFormCubit>().removeSupplier(id),
                       ),
                     ),
                   ),

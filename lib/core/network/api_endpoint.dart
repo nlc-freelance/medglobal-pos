@@ -1,12 +1,9 @@
-import 'package:flutter/foundation.dart';
-
 class ApiEndpoint {
   final String path;
 
   ApiEndpoint(this.path);
 
   static String baseUrl(path) {
-    String sandboxBaseUrl = 'https://rgg6sphmg6.execute-api.ap-southeast-1.amazonaws.com/sandbox/';
     String devBaseUrl = 'https://059iccwuk4.execute-api.ap-southeast-1.amazonaws.com/dev';
 
     // if (path.contains('/suppliers')) {
@@ -29,7 +26,7 @@ class ApiEndpoint {
     //   url = sandboxBaseUrl;
     // }
 
-    return kDebugMode ? sandboxBaseUrl : devBaseUrl;
+    return devBaseUrl;
   }
 
   /// Supplier
