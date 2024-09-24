@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/variant.dart';
@@ -77,21 +78,23 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
             showDialog(
               context: context,
               barrierDismissible: false,
-              builder: (context) => Dialog(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: UIColors.background,
-                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                  ),
-                  padding: const EdgeInsets.all(24),
-                  height: MediaQuery.sizeOf(context).height * 0.8,
-                  width: MediaQuery.sizeOf(context).width * 0.6,
-                  child: VariantForm(
-                    nameController: _nameController,
-                    skuController: _skuController,
-                    warningStockController: _warningStockController,
-                    idealStockController: _idealStockController,
-                    costController: _costController,
+              builder: (context) => Portal(
+                child: Dialog(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: UIColors.background,
+                      borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                    ),
+                    padding: const EdgeInsets.all(24),
+                    height: MediaQuery.sizeOf(context).height * 0.8,
+                    width: MediaQuery.sizeOf(context).width * 0.6,
+                    child: VariantForm(
+                      nameController: _nameController,
+                      skuController: _skuController,
+                      warningStockController: _warningStockController,
+                      idealStockController: _idealStockController,
+                      costController: _costController,
+                    ),
                   ),
                 ),
               ),
@@ -139,6 +142,7 @@ class _InventoryAndVariantsInformationState extends State<InventoryAndVariantsIn
                         costController: _costController,
                       ),
                       const InventoryPerBranch(),
+                      const UIVerticalSpace(30),
                     ],
                   ],
                   if (product?.hasVariants == true) const VariantDataGrid(),

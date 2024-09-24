@@ -14,6 +14,8 @@ class SaleTransactionListCubit extends Cubit<SaleTransactionListState> {
   Future<void> getTransactions({int page = 1, int size = 20, int? branchId}) async {
     emit(SaleTransactionListLoading());
 
+    print('AAA $branchId');
+
     try {
       final result = await _getTransactionsUseCase.call(GetTransactionsParams(
         type: TransactionType.SALE,

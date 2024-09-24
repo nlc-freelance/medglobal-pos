@@ -1,11 +1,11 @@
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/core/network/models/api_query_params.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/dto/category_dto.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category_paginated_list.dart';
 
 abstract class CategoryApi {
   Future<CategoryDto> addNewCategory(String name);
-  Future<List<CategoryDto>> getAllCategories();
+  Future<CategoryPaginatedList> getCategories({required int page});
 }
 
 class CategoryApiImpl implements CategoryApi {
@@ -27,29 +27,21 @@ class CategoryApiImpl implements CategoryApi {
   }
 
   @override
-  Future<List<CategoryDto>> getAllCategories() async {
-    print('category fetch');
+  Future<CategoryPaginatedList> getCategories({required int page}) async {
     try {
-      int currentPage = 1;
-      List<CategoryDto> categories = [];
-      bool hasNextPage = true;
+      final response = await api.collection<CategoryDto>(
+        ApiEndpoint.productCategories,
+        queryParams: {'page': page, 'size': 10},
+        converter: CategoryDto.fromJson,
+      );
 
-      while (hasNextPage) {
-        final response = await api.collection<CategoryDto>(
-          ApiEndpoint.productCategories,
-          queryParams: ApiQueryParams(page: currentPage).toJson(),
-          converter: CategoryDto.fromJson,
-        );
-        if (response.items?.isNotEmpty == true) {
-          categories.addAll(response.items!.toList());
-          currentPage++;
-        } else {
-          hasNextPage = false;
-        }
-      }
-
-      return categories;
-    } catch (_) {
+      return CategoryPaginatedList(
+        categories: response.items?.map((item) => item.toEntity()).toList(),
+        currentPage: response.pageInfo?.page,
+        totalPages: response.pageInfo?.totalPages,
+        totalCount: response.pageInfo?.totalCount,
+      );
+    } catch (e) {
       rethrow;
     }
   }

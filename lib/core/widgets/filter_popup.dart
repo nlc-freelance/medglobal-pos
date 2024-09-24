@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/dropdowns/search_dropdown/search_dropdown.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch_repository.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/domain/repositories/supplier_repository.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class FilterPopup extends StatefulWidget {
@@ -51,13 +45,6 @@ class _FilterPopupState extends State<FilterPopup> {
                     UIButton.text('Clear', onClick: () {}),
                   ],
                 ),
-                SearchDropdown<Branch>.single(
-                  hint: 'All branches',
-                  label: '',
-                  itemAsString: (branch) => branch.name,
-                  asyncItemsCallback: GetIt.I<BranchRepository>().getAllBranches(),
-                  onSelectItem: (Branch value) => {},
-                ),
                 const UIVerticalSpace(16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -65,13 +52,6 @@ class _FilterPopupState extends State<FilterPopup> {
                     UIText.labelRegular('Supplier'),
                     UIButton.text('Clear', onClick: () {}),
                   ],
-                ),
-                SearchDropdown<Supplier>.single(
-                  hint: 'All suppliers',
-                  label: '',
-                  itemAsString: (branch) => branch.name,
-                  asyncItemsCallback: GetIt.I<SupplierRepository>().getAllSuppliers(),
-                  onSelectItem: (Supplier value) => {},
                 ),
                 const UIVerticalSpace(12),
                 Row(

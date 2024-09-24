@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/branch_inventory.dart';
 
 part 'branch_inventory_dto.g.dart';

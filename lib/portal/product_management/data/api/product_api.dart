@@ -1,9 +1,9 @@
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/dto/product_dto.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product_paginated_list.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product_paginated_list.dart';
 
 abstract class ProductApi {
   Future<void> bulkDelete(List<int> ids);

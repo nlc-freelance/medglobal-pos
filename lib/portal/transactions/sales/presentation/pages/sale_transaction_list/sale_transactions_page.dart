@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transaction_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -39,9 +43,21 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
               child: DatePickerPopup(onSelect: (date) {}),
             ),
             const UIHorizontalSpace(8),
-            const SizedBox(
+            SizedBox(
               width: 200,
-              child: BranchFilter(TransactionType.SALE),
+              child: BranchDropdown.select(
+                onSelectItem: (branch) {
+                  final saleSize = context.read<SaleTransactionListFilterCubit>().state.size;
+                  if (branch.id == -1) {
+                    /// No filter, get all sale transactions
+                    context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!);
+                    context.read<SaleTransactionListFilterCubit>().setBranch(null);
+                  } else {
+                    context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!, branchId: branch.id);
+                    context.read<SaleTransactionListFilterCubit>().setBranch(branch.id);
+                  }
+                },
+              ),
             ),
           ],
         ),

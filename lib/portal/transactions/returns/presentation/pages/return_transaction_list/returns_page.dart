@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_list/return_transaction_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -39,9 +43,21 @@ class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
               child: DatePickerPopup(onSelect: (date) {}),
             ),
             const UIHorizontalSpace(8),
-            const SizedBox(
+            SizedBox(
               width: 200,
-              child: BranchFilter(TransactionType.REFUND),
+              child: BranchDropdown.select(
+                onSelectItem: (branch) {
+                  final returnSize = context.read<ReturnTransactionListFilterCubit>().state.size;
+                  if (branch.id == -1) {
+                    /// No filter, get all return transactions
+                    context.read<ReturnTransactionListCubit>().getTransactions(size: returnSize!);
+                    context.read<ReturnTransactionListFilterCubit>().setBranch(null);
+                  } else {
+                    context.read<ReturnTransactionListCubit>().getTransactions(size: returnSize!, branchId: branch.id);
+                    context.read<ReturnTransactionListFilterCubit>().setBranch(branch.id);
+                  }
+                },
+              ),
             ),
           ],
         ),
