@@ -12,11 +12,11 @@ final class PurchaseOrderListInitial extends PurchaseOrderListRemoteState {}
 final class PurchaseOrderListLoading extends PurchaseOrderListRemoteState {}
 
 final class PurchaseOrderListLoaded extends PurchaseOrderListRemoteState {
-  final List<PurchaseOrder> purchaseOrders;
-  const PurchaseOrderListLoaded({required this.purchaseOrders});
+  final PurchaseOrderPaginatedList data;
+  const PurchaseOrderListLoaded({required this.data});
 
   @override
-  List<Object> get props => [purchaseOrders];
+  List<Object> get props => [data];
 }
 
 final class PurchaseOrderListError extends PurchaseOrderListRemoteState {

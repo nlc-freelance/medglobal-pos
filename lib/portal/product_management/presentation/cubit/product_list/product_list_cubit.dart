@@ -21,7 +21,7 @@ class ProductListCubit extends Cubit<ProductListState> {
           if (search != null && data.totalCount == 0 && data.products?.isEmpty == true) {
             emit(ProductListNoResultFound(message: 'No results found for \'$search\''));
           } else {
-            emit(ProductListLoaded(products: data));
+            emit(ProductListLoaded(data: data));
           }
         },
       );

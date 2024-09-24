@@ -3,9 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/enums/enums.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/api/purchase_order_api.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_paginated_list.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
 
 class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
@@ -34,9 +34,19 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
   }
 
   @override
-  Future<Either<Failure, PurchaseOrderPaginatedList>> getPurchaseOrders({int? page, StockOrderStatus? status}) async {
+  Future<Either<Failure, PurchaseOrderPaginatedList>> getPurchaseOrders({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    int? branch,
+  }) async {
     try {
-      final response = await _purchaseOrderApi.getPurchaseOrders(page: page, status: status);
+      final response = await _purchaseOrderApi.getPurchaseOrders(
+        page: page,
+        size: size,
+        status: status,
+        branch: branch,
+      );
       return Right(response);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));

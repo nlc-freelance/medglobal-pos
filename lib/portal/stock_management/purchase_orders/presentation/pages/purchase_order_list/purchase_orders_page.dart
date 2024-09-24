@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
-import 'package:medglobal_admin_portal/core/widgets/filter_popup.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_filter/purchase_order_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_data_grid.dart';
@@ -42,20 +42,44 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
   }
 
   void onChangeTab(int index) {
+    final branch = context.read<PurchaseOrderListFilterCubit>().state.branch;
+    final size = context.read<PurchaseOrderListFilterCubit>().state.size!;
+
     if (index == 0) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(branch: branch, size: size);
+      context.read<PurchaseOrderListFilterCubit>().setStatus(null);
     }
     if (index == 1) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.NEW);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+            status: StockOrderStatus.NEW,
+            branch: branch,
+            size: size,
+          );
+      context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.NEW);
     }
     if (index == 2) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.FOR_RECEIVING);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+            status: StockOrderStatus.FOR_RECEIVING,
+            branch: branch,
+            size: size,
+          );
+      context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.FOR_RECEIVING);
     }
     if (index == 3) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.COMPLETED);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+            status: StockOrderStatus.COMPLETED,
+            branch: branch,
+            size: size,
+          );
+      context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.COMPLETED);
     }
     if (index == 4) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.CANCELLED);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+            status: StockOrderStatus.CANCELLED,
+            branch: branch,
+            size: size,
+          );
+      context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.CANCELLED);
     }
   }
 
@@ -114,27 +138,30 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
             ),
             const UIHorizontalSpace(8),
             SizedBox(
-              width: 120,
-              child: FilterPopup(onSelect: (date) {}),
+              width: 200,
+              child: BranchDropdown.select(
+                onSelectItem: (branch) {
+                  final size = context.read<PurchaseOrderListFilterCubit>().state.size;
+                  final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+
+                  if (branch.id == -1) {
+                    /// No filter, get all purchase orders
+                    context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(size: size!, status: status);
+                    context.read<PurchaseOrderListFilterCubit>().setBranch(null);
+                  } else {
+                    context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                          size: size!,
+                          status: status,
+                          branch: branch.id,
+                        );
+                    context.read<PurchaseOrderListFilterCubit>().setBranch(branch.id);
+                  }
+                },
+              ),
             ),
           ],
         ),
-        BlocBuilder<PurchaseOrderListRemoteCubit, PurchaseOrderListRemoteState>(
-          builder: (context, state) {
-            if (state is PurchaseOrderListError) {
-              return Text(state.message);
-            }
-            if (state is PurchaseOrderListLoaded) {
-              return Expanded(
-                child: PurchaseOrderDataGrid(state.purchaseOrders),
-              );
-            }
-            return DataGridLoading(
-              columns: DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS, showId: true),
-              source: PurchaseOrderDataSource([]),
-            );
-          },
-        ),
+        const Expanded(child: PurchaseOrderPaginatedDataGrid()),
       ],
     );
   }
