@@ -51,6 +51,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/d
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/update_purchase_order_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_filter/purchase_order_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/data/api/stock_return_api.dart';
@@ -316,6 +317,7 @@ void initDependencyInjection() {
     ..registerFactory(() => SupplyNeedsCubit(injector()))
     ..registerFactory(() => SupplyNeedCubit())
     ..registerFactory(() => PurchaseOrderListRemoteCubit(injector()))
+    ..registerFactory(() => PurchaseOrderListFilterCubit())
     ..registerFactory(() => PurchaseOrderRemoteCubit(injector(), injector(), injector(), injector()))
     ..registerFactory(() => PurchaseOrderCubit())
     ..registerFactory(() => NewPurchaseOrderCubit())

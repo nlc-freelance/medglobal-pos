@@ -1,6 +1,5 @@
 part of 'supplier_lazy_list_cubit.dart';
 
-@JsonSerializable()
 class SupplierLazyListState extends Equatable {
   const SupplierLazyListState({
     required this.suppliers,

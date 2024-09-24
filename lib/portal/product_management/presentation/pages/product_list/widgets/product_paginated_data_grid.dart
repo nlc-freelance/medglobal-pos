@@ -38,14 +38,14 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
     return BlocConsumer<ProductListCubit, ProductListState>(
       listenWhen: (previous, current) {
         if (previous is ProductListLoading && current is ProductListLoaded) {
-          return ((current.products.currentPage! <= current.products.totalPages!) == true);
+          return ((current.data.currentPage! <= current.data.totalPages!) == true);
         }
         if (current is ProductListNoResultFound) return true;
         return false;
       },
       listener: (context, state) {
         if (state is ProductListLoaded) {
-          _products = state.products.products ?? [];
+          _products = state.data.products ?? [];
           _productDataGridSource = ProductDataGridSource(_products, _rowsPerPage);
         }
         if (state is ProductListNoResultFound) {
@@ -120,7 +120,19 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                     onSelect: (value) {
                       setState(() => _rowsPerPage = value);
                       context.read<ProductListSearchCubit>().setSize(value);
-                      if (state.products.totalCount! <= value) {
+
+                      /// Go back to page 1 when:
+                      ///  - total count is greater than the requested rows per page
+                      ///  - requested rows per page will not have data anymore in the upcoming page to request
+                      /// Example:
+                      /// Previous list is 20 rows per page and have a total of 5 pages,
+                      ///  when user now requests to have 100 rows per page, and the total page becomes less than 5,
+                      ///  the next response will be an empty list.
+                      /// To avoid, use the [totalPage], [totalCount] and the [rowsPerPage] selected to check
+                      ///  if the page to pass in the request will be greater than the [totalPage] of our data.
+                      /// If it is greater than the actual total page, then reset it to 1.
+                      if (state.data.totalCount! <= value ||
+                          state.data.totalPages! + 1 > ((state.data.totalCount! + (_rowsPerPage - 1)) / _rowsPerPage)) {
                         context.read<ProductListCubit>().getProducts(
                               page: 1,
                               size: _rowsPerPage,
@@ -128,7 +140,7 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                             );
                       } else {
                         context.read<ProductListCubit>().getProducts(
-                              page: state.products.currentPage!,
+                              page: state.data.currentPage!,
                               size: _rowsPerPage,
                               search: context.read<ProductListSearchCubit>().state.search,
                             );
@@ -139,18 +151,18 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                   ),
                   const UIHorizontalSpace(16),
                   UIText.labelMedium(
-                    'Viewing ${(state.products.currentPage! - 1) * _rowsPerPage + 1} - ${state.products.currentPage! * _rowsPerPage > state.products.totalCount! ? state.products.totalCount! : state.products.currentPage! * _rowsPerPage} of ${state.products.totalCount} records',
+                    'Viewing ${(state.data.currentPage! - 1) * _rowsPerPage + 1} - ${state.data.currentPage! * _rowsPerPage > state.data.totalCount! ? state.data.totalCount! : state.data.currentPage! * _rowsPerPage} of ${state.data.totalCount} records',
                     color: UIColors.textLight,
                   ),
                   const Spacer(),
                   UIText.labelMedium(
-                    'Page ${state.products.currentPage} of ${state.products.totalPages}',
+                    'Page ${state.data.currentPage} of ${state.data.totalPages}',
                     color: UIColors.textLight,
                   ),
                   const UIHorizontalSpace(16),
                   IconButton(
                     onPressed: () {
-                      if (state.products.currentPage != 1) {
+                      if (state.data.currentPage != 1) {
                         context.read<ProductListCubit>().getProducts(
                               page: 1,
                               size: _rowsPerPage,
@@ -160,14 +172,14 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                     },
                     icon: Assets.icons.firstPage.svg(
                       colorFilter:
-                          (state.products.currentPage == 1 ? UIColors.textMuted : UIColors.textRegular).toColorFilter,
+                          (state.data.currentPage == 1 ? UIColors.textMuted : UIColors.textRegular).toColorFilter,
                     ),
                   ),
                   IconButton(
                     onPressed: () {
-                      if (state.products.currentPage != 1) {
+                      if (state.data.currentPage != 1) {
                         context.read<ProductListCubit>().getProducts(
-                              page: state.products.currentPage! - 1,
+                              page: state.data.currentPage! - 1,
                               size: _rowsPerPage,
                               search: context.read<ProductListSearchCubit>().state.search,
                             );
@@ -175,41 +187,39 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                     },
                     icon: Assets.icons.arrowLeft.svg(
                       colorFilter:
-                          (state.products.currentPage == 1 ? UIColors.textMuted : UIColors.textRegular).toColorFilter,
+                          (state.data.currentPage == 1 ? UIColors.textMuted : UIColors.textRegular).toColorFilter,
                     ),
                   ),
                   IconButton(
                     onPressed: () {
-                      if (state.products.currentPage != state.products.totalPages) {
+                      if (state.data.currentPage != state.data.totalPages) {
                         context.read<ProductListCubit>().getProducts(
-                              page: state.products.currentPage! + 1,
+                              page: state.data.currentPage! + 1,
                               size: _rowsPerPage,
                               search: context.read<ProductListSearchCubit>().state.search,
                             );
                       }
                     },
                     icon: Assets.icons.arrowRight.svg(
-                      colorFilter: (state.products.currentPage == state.products.totalPages
-                              ? UIColors.textMuted
-                              : UIColors.textRegular)
-                          .toColorFilter,
+                      colorFilter:
+                          (state.data.currentPage == state.data.totalPages ? UIColors.textMuted : UIColors.textRegular)
+                              .toColorFilter,
                     ),
                   ),
                   IconButton(
                     onPressed: () {
-                      if (state.products.currentPage != state.products.totalPages) {
+                      if (state.data.currentPage != state.data.totalPages) {
                         context.read<ProductListCubit>().getProducts(
-                              page: state.products.totalPages!,
+                              page: state.data.totalPages!,
                               size: _rowsPerPage,
                               search: context.read<ProductListSearchCubit>().state.search,
                             );
                       }
                     },
                     icon: Assets.icons.lastPage.svg(
-                      colorFilter: (state.products.currentPage == state.products.totalPages
-                              ? UIColors.textMuted
-                              : UIColors.textRegular)
-                          .toColorFilter,
+                      colorFilter:
+                          (state.data.currentPage == state.data.totalPages ? UIColors.textMuted : UIColors.textRegular)
+                              .toColorFilter,
                     ),
                   ),
                 ],

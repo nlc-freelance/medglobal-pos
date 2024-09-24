@@ -221,7 +221,7 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
   @override
   void initState() {
     super.initState();
-    setState(() => _selectedItem = widget.selectedItem);
+    if (widget.selectedItem != null) setState(() => _selectedItem = widget.selectedItem);
     _scrollController = ScrollController()..addListener(_scrollListener);
     context.read<BranchLazyListCubit>().getBranches();
   }
@@ -236,7 +236,7 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
 
   @override
   void didUpdateWidget(covariant _BranchDropdownOverlay oldWidget) {
-    setState(() => _selectedItem = widget.selectedItem);
+    if (widget.selectedItem != null) setState(() => _selectedItem = widget.selectedItem);
     super.didUpdateWidget(oldWidget);
   }
 
@@ -250,27 +250,28 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
         borderRadius: const BorderRadius.all(Radius.circular(12.0)),
         onTap: () => setState(() => _isVisible = true),
         child: widget.isSelectType
-            ? HoverBuilder(
-                builder: (isHover) => Container(
+            ? HoverBuilder(builder: (isHover) {
+                final highlight = isHover || (_selectedItem != null && _selectedItem?.id != -1);
+                return Container(
                   padding: const EdgeInsets.symmetric(vertical: 6.5, horizontal: 16.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: UIColors.background,
-                    border: Border.all(color: isHover ? UIColors.buttonPrimaryHover : UIColors.borderRegular),
+                    color: highlight ? UIColors.secondary : UIColors.background,
+                    border: Border.all(color: highlight ? UIColors.primary.withOpacity(0.2) : UIColors.borderRegular),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       UIText.labelMedium(
                         _selectedItem != null ? _selectedItem!.name : 'All Branches',
-                        color: isHover ? UIColors.primary : UIColors.textRegular,
+                        color: highlight ? UIColors.primary : UIColors.textRegular,
                       ),
                       const UIHorizontalSpace(30),
-                      Assets.icons.arrowDown.setColorOnHover(isHover)
+                      Assets.icons.arrowDown.setColorOnHover(highlight)
                     ],
                   ),
-                ),
-              )
+                );
+              })
             : TextFormField(
                 readOnly: true,
                 enabled: false,

@@ -12,13 +12,17 @@ class GetPurchaseOrdersUseCase implements UseCase<PurchaseOrderPaginatedList, Ge
   Future<Either<Failure, PurchaseOrderPaginatedList>> call(GetPurchaseOrdersParams params) =>
       _repository.getPurchaseOrders(
         page: params.page,
+        size: params.size,
         status: params.status,
+        branch: params.branch,
       );
 }
 
 class GetPurchaseOrdersParams {
-  final int? page;
+  final int page;
+  final int size;
   final StockOrderStatus? status;
+  final int? branch;
 
-  GetPurchaseOrdersParams({this.page, this.status});
+  GetPurchaseOrdersParams({required this.page, required this.size, this.status, this.branch});
 }
