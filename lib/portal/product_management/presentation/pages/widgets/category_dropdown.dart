@@ -169,9 +169,18 @@ class _CategoryDropdownOverlayState extends State<_CategoryDropdownOverlay> {
                     if (state.INITIAL_LOADING)
                       const CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)
                     else if (state.EMPTY)
-                      UIText.labelMedium('No data available')
+                      UIText.labelMedium('No data available', align: TextAlign.center)
                     else if (state.ERROR)
-                      UIText.labelMedium(state.error!)
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            UIText.labelMedium(state.error!, align: TextAlign.center),
+                            UIButton.text('Reload',
+                                onClick: () => context.read<CategoryLazyListCubit>().getCategories())
+                          ],
+                        ),
+                      )
                     else ...[
                       Expanded(
                         child: ListView.builder(
@@ -195,10 +204,7 @@ class _CategoryDropdownOverlayState extends State<_CategoryDropdownOverlay> {
                                 },
                                 dense: true,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                title: UIText.labelMedium(
-                                  categoryList[index].name!,
-                                  color: categoryList[index].id == -1 ? UIColors.textMuted : UIColors.textRegular,
-                                ),
+                                title: UIText.labelMedium(categoryList[index].name!),
                               ),
                             );
                           },

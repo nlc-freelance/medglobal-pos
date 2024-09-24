@@ -1,6 +1,5 @@
 part of 'branch_lazy_list_cubit.dart';
 
-@JsonSerializable()
 class BranchLazyListState extends Equatable {
   const BranchLazyListState({
     required this.branches,
@@ -41,7 +40,7 @@ class BranchLazyListState extends Equatable {
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       isInitLoading: isInitLoading ?? this.isInitLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      error: error ?? this.error,
+      error: error,
     );
   }
 

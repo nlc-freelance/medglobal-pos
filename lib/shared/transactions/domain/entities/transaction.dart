@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/employee.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/register.dart';
+import 'package:medglobal_admin_portal/shared/employee/entities/employee.dart';
+import 'package:medglobal_admin_portal/shared/register/domain/entities/register.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 

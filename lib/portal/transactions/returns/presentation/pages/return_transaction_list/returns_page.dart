@@ -53,8 +53,8 @@ class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
                     context.read<ReturnTransactionListCubit>().getTransactions(size: returnSize!);
                     context.read<ReturnTransactionListFilterCubit>().setBranch(null);
                   } else {
-                    context.read<ReturnTransactionListCubit>().getTransactions(size: returnSize!);
-                    context.read<ReturnTransactionListFilterCubit>().setBranch(null);
+                    context.read<ReturnTransactionListCubit>().getTransactions(size: returnSize!, branchId: branch.id);
+                    context.read<ReturnTransactionListFilterCubit>().setBranch(branch.id);
                   }
                 },
               ),

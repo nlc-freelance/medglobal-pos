@@ -1,6 +1,5 @@
 part of 'category_lazy_list_cubit.dart';
 
-@JsonSerializable()
 class CategoryLazyListState extends Equatable {
   const CategoryLazyListState({
     required this.categories,
@@ -41,7 +40,7 @@ class CategoryLazyListState extends Equatable {
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       isInitLoading: isInitLoading ?? this.isInitLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      error: error ?? this.error,
+      error: error,
     );
   }
 

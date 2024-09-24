@@ -309,23 +309,18 @@ class _SupplierDropdownOverlayState extends State<_SupplierDropdownOverlay> {
                 if (state.INITIAL_LOADING)
                   const CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)
                 else if (state.EMPTY)
-                  UIText.labelMedium('No data available')
+                  UIText.labelMedium('No data available', align: TextAlign.center)
                 else if (state.ERROR)
-                  UIText.labelMedium(state.error!)
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        UIText.labelMedium(state.error!, align: TextAlign.center),
+                        UIButton.text('Reload', onClick: () => context.read<SupplierLazyListCubit>().getSuppliers())
+                      ],
+                    ),
+                  )
                 else ...[
-                  // if (widget.isSelectType)
-                  //   Material(
-                  //     type: MaterialType.transparency,
-                  //     child: ListTile(
-                  //       onTap: () => setState(() {
-                  //         _selectedItem = null;
-                  //         _isVisible = false;
-                  //       }),
-                  //       dense: true,
-                  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  //       title: UIText.labelMedium('All Suppliers', color: UIColors.textLight),
-                  //     ),
-                  //   ),
                   Expanded(
                     child: ListView.builder(
                       controller: _scrollController,

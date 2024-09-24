@@ -41,7 +41,7 @@ class SupplierLazyListState extends Equatable {
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       isInitLoading: isInitLoading ?? this.isInitLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-      error: error ?? this.error,
+      error: error,
     );
   }
 

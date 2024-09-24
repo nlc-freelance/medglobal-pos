@@ -59,6 +59,7 @@ class PurchaseOrderDto extends Equatable {
       ];
 
   factory PurchaseOrderDto.fromJson(Map<String, dynamic> json) => _$PurchaseOrderDtoFromJson(json);
+  Map<String, dynamic> toJson() => _$PurchaseOrderDtoToJson(this);
 
   PurchaseOrder toEntity() => PurchaseOrder(
         id: id,

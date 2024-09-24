@@ -313,9 +313,17 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                 if (state.INITIAL_LOADING)
                   const CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)
                 else if (state.EMPTY)
-                  UIText.labelMedium('No data available')
+                  UIText.labelMedium('No data available', align: TextAlign.center)
                 else if (state.ERROR)
-                  UIText.labelMedium(state.error!)
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        UIText.labelMedium(state.error!, align: TextAlign.center),
+                        UIButton.text('Reload', onClick: () => context.read<BranchLazyListCubit>().getBranches())
+                      ],
+                    ),
+                  )
                 else ...[
                   Expanded(
                     child: ListView.builder(
@@ -355,10 +363,7 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                  child: UIText.labelMedium(
-                                    branchList[index].name,
-                                    color: branchList[index].id == -1 ? UIColors.textMuted : UIColors.textRegular,
-                                  ),
+                                  child: UIText.labelMedium(branchList[index].name),
                                 ),
                                 if (widget.isMultiSelect)
                                   Checkbox(

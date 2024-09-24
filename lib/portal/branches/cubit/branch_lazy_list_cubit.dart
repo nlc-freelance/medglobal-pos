@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/usecases/get_branches_usecase.dart';
 

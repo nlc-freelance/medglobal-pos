@@ -52,7 +52,6 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
               selectionColor: UIColors.primary,
               showNavigationArrow: true,
               onSelectionChanged: (args) {
-                print('AAA ${args.value}');
                 // setState(() => _selectedDate = args.value);
                 // widget.onSelect(args.value);
                 // Navigator.pop(context);
