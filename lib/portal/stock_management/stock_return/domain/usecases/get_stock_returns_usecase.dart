@@ -11,13 +11,17 @@ class GetStockReturnsUseCase implements UseCase<StockReturnPaginatedList, GetSto
   @override
   Future<Either<Failure, StockReturnPaginatedList>> call(GetStockReturnsParams params) => _repository.getStockReturns(
         page: params.page,
+        size: params.size,
         status: params.status,
+        branchId: params.branchId,
       );
 }
 
 class GetStockReturnsParams {
-  final int? page;
+  final int page;
+  final int size;
   final StockOrderStatus? status;
+  final int? branchId;
 
-  GetStockReturnsParams({this.page, this.status});
+  GetStockReturnsParams({required this.page, required this.size, this.status, this.branchId});
 }

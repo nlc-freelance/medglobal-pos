@@ -6,8 +6,7 @@ import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.da
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_filter/purchase_order_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PurchaseOrdersPage extends StatefulWidget {
@@ -26,12 +25,13 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+
+    /// TODO: The list does not update when using the back button or side menu to navigate back to this page
+    /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
+    /// Ex. /stock-management/purchase-orders/id=1 to /stock-management/purchase-orders/
     context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
 
-    /// TODO: This does not reset when used the back btn or side menu to navigate back to StockTransfersPage
-    /// tho cubit should be reset to initial but since navigation uses pushNamed, it does not reset
-    /// might have to refactor side menu
-    context.read<PurchaseOrderRemoteCubit>().reset();
+    /// Reset last selected purchase order
     context.read<PurchaseOrderCubit>().reset();
   }
 
@@ -42,17 +42,17 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
   }
 
   void onChangeTab(int index) {
-    final branch = context.read<PurchaseOrderListFilterCubit>().state.branch;
+    final branchId = context.read<PurchaseOrderListFilterCubit>().state.branchId;
     final size = context.read<PurchaseOrderListFilterCubit>().state.size!;
 
     if (index == 0) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(branch: branch, size: size);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(branchId: branchId, size: size);
       context.read<PurchaseOrderListFilterCubit>().setStatus(null);
     }
     if (index == 1) {
       context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
             status: StockOrderStatus.NEW,
-            branch: branch,
+            branchId: branchId,
             size: size,
           );
       context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.NEW);
@@ -60,7 +60,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
     if (index == 2) {
       context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
             status: StockOrderStatus.FOR_RECEIVING,
-            branch: branch,
+            branchId: branchId,
             size: size,
           );
       context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.FOR_RECEIVING);
@@ -68,7 +68,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
     if (index == 3) {
       context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
             status: StockOrderStatus.COMPLETED,
-            branch: branch,
+            branchId: branchId,
             size: size,
           );
       context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.COMPLETED);
@@ -76,7 +76,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
     if (index == 4) {
       context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
             status: StockOrderStatus.CANCELLED,
-            branch: branch,
+            branchId: branchId,
             size: size,
           );
       context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.CANCELLED);
@@ -152,7 +152,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
                     context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
                           size: size!,
                           status: status,
-                          branch: branch.id,
+                          branchId: branch.id,
                         );
                     context.read<PurchaseOrderListFilterCubit>().setBranch(branch.id);
                   }

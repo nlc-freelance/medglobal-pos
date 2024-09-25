@@ -9,4 +9,6 @@ class NewStockReturnCubit extends Cubit<NewStockReturnState> {
 
   void setBranchId(int value) => emit(NewStockReturnState(state.payload.copyWith(branch: value)));
   void setSupplierId(int value) => emit(NewStockReturnState(state.payload.copyWith(supplier: value)));
+
+  void reset() => emit(NewStockReturnState.initial());
 }

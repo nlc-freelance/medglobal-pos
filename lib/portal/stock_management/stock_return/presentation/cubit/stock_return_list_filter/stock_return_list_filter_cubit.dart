@@ -2,10 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 
-part 'purchase_order_list_filter_state.dart';
+part 'stock_return_list_filter_state.dart';
 
-class PurchaseOrderListFilterCubit extends Cubit<PurchaseOrderListFilterState> {
-  PurchaseOrderListFilterCubit() : super(const PurchaseOrderListFilterState());
+class StockReturnListFilterCubit extends Cubit<StockReturnListFilterState> {
+  StockReturnListFilterCubit() : super(const StockReturnListFilterState());
 
   void setSize(int value) => emit(state.copyWith(size: value));
 

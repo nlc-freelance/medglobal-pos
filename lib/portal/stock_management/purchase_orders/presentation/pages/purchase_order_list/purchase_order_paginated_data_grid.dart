@@ -27,7 +27,6 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    // _purchaseOrderDataSource = PurchaseOrderDataSource(widget.purchaseOrders);
     context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
   }
 
@@ -129,13 +128,13 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                             context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
                                   page: 1,
                                   size: _rowsPerPage,
-                                  branch: context.read<PurchaseOrderListFilterCubit>().state.branch,
+                                  branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                                 );
                           } else {
                             context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
-                                  branch: context.read<PurchaseOrderListFilterCubit>().state.branch,
+                                  branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                                 );
                           }
                         },
@@ -160,7 +159,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                           context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
                                 page: 1,
                                 size: _rowsPerPage,
-                                branch: context.read<PurchaseOrderListFilterCubit>().state.branch,
+                                branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                               );
                         }
                       },
@@ -175,7 +174,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                           context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
-                                branch: context.read<PurchaseOrderListFilterCubit>().state.branch,
+                                branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                               );
                         }
                       },
@@ -190,7 +189,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                           context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
-                                branch: context.read<PurchaseOrderListFilterCubit>().state.branch,
+                                branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                               );
                         }
                       },
@@ -207,7 +206,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                           context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
-                                branch: context.read<PurchaseOrderListFilterCubit>().state.branch,
+                                branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                               );
                         }
                       },
@@ -269,8 +268,6 @@ class PurchaseOrderDataSource extends DataGridSource {
 
   void buildDataGridRows(List<PurchaseOrder> purchaseOrders) =>
       dataGridRows = purchaseOrders.map((order) => order.toDataGridRow()).toList();
-
-  // void buildDataGridRows() => dataGridRows = _purchaseOrders.map((order) => order.toDataGridRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 

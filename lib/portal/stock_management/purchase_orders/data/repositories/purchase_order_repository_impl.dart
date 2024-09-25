@@ -38,14 +38,14 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
     required int page,
     required int size,
     StockOrderStatus? status,
-    int? branch,
+    int? branchId,
   }) async {
     try {
       final response = await _purchaseOrderApi.getPurchaseOrders(
         page: page,
         size: size,
         status: status,
-        branch: branch,
+        branchId: branchId,
       );
       return Right(response);
     } on DioException catch (e) {

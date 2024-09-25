@@ -25,7 +25,6 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
   void initState() {
     super.initState();
     if (widget.currentStep != null) _currentStep = widget.currentStep!;
-    context.read<StockReturnRemoteCubit>().reset();
   }
 
   @override
@@ -70,9 +69,8 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
                 }
               },
               builder: (context, state) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (state is StockReturnError) ...[
                       Row(
@@ -83,55 +81,61 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
                           UIText.labelSemiBold('Something went wrong. ${state.message}', color: UIColors.buttonDanger),
                         ],
                       ),
-                      const Spacer(),
+                      const UIVerticalSpace(16),
                     ],
-                    if (_currentStep != 2)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: UIButton.outlined(
-                          'Cancel',
-                          onClick: () => AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_RETURNS.name),
-                        ),
-                      ),
-                    if (_currentStep == 0)
-                      UIButton.filled(
-                        'Create',
-                        icon: Assets.icons.arrowRight1.setSize(12),
-                        iconAlign: IconAlignment.end,
-                        isLoading: state is StockReturnCreateLoading,
-                        onClick: () => context.read<StockReturnRemoteCubit>().create(payload),
-                      ),
-                    if (_currentStep == 1) ...[
-                      UIButton.filled(
-                        'Save',
-                        isLoading: state is StockReturnSaveLoading,
-                        onClick: () => context.read<StockReturnRemoteCubit>().update(
-                              StockOrderUpdate.SAVE,
-                              id: stockReturn.id!,
-                              stockReturn: stockReturn,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (_currentStep != 2)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: UIButton.outlined(
+                              'Cancel',
+                              onClick: () => AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_RETURNS.name),
                             ),
-                      ),
-                      const UIHorizontalSpace(8),
+                          ),
+                        if (_currentStep == 0)
+                          UIButton.filled(
+                            'Create',
+                            icon: Assets.icons.arrowRight1.setSize(12),
+                            iconAlign: IconAlignment.end,
+                            isLoading: state is StockReturnCreateLoading,
+                            onClick: () => context.read<StockReturnRemoteCubit>().create(payload),
+                          ),
+                        if (_currentStep == 1) ...[
+                          UIButton.filled(
+                            'Save',
+                            isLoading: state is StockReturnSaveLoading,
+                            onClick: () => context.read<StockReturnRemoteCubit>().update(
+                                  StockOrderUpdate.SAVE,
+                                  id: stockReturn.id!,
+                                  stockReturn: stockReturn,
+                                ),
+                          ),
+                          const UIHorizontalSpace(8),
 
-                      /// When will a stock return be tagged as Completed?
-                      UIButton.filled(
-                        'Save and Mark as Shipped',
-                        isLoading: state is StockReturnSaveAndMarkAsShippedLoading,
-                        icon: Assets.icons.arrowRight1.setSize(12),
-                        iconAlign: IconAlignment.end,
-                        onClick: () {
-                          context.read<StockReturnRemoteCubit>().update(
-                                /// If stockReturnItems has negative id (added locally)
-                                /// Pass SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS else SAVE_AND_MARK_AS_SHIPPED
-                                stockReturn.items?.any((item) => item.id! < 0) == true
-                                    ? StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS
-                                    : StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
-                                id: stockReturn.id!,
-                                stockReturn: stockReturn,
-                              );
-                        },
-                      ),
-                    ]
+                          /// When will a stock return be tagged as Completed?
+                          UIButton.filled(
+                            'Save and Mark as Shipped',
+                            isLoading: state is StockReturnSaveAndMarkAsShippedLoading,
+                            icon: Assets.icons.arrowRight1.setSize(12),
+                            iconAlign: IconAlignment.end,
+                            onClick: () {
+                              context.read<StockReturnRemoteCubit>().update(
+                                    /// If stockReturnItems has negative id (added locally)
+                                    /// Pass SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS else SAVE_AND_MARK_AS_SHIPPED
+                                    stockReturn.items?.any((item) => item.id! < 0) == true
+                                        ? StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS
+                                        : StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
+                                    id: stockReturn.id!,
+                                    stockReturn: stockReturn,
+                                  );
+                            },
+                          ),
+                        ]
+                      ],
+                    ),
                   ],
                 );
               },

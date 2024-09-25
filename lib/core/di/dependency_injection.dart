@@ -63,6 +63,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_return/doma
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/usecases/update_stock_return_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/new_stock_return/new_stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_filter/stock_return_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/data/api/stock_take_api.dart';
@@ -322,6 +323,7 @@ void initDependencyInjection() {
     ..registerFactory(() => PurchaseOrderCubit())
     ..registerFactory(() => NewPurchaseOrderCubit())
     ..registerFactory(() => StockReturnListRemoteCubit(injector()))
+    ..registerFactory(() => StockReturnListFilterCubit())
     ..registerFactory(() => StockReturnRemoteCubit(injector(), injector(), injector()))
     ..registerFactory(() => StockReturnCubit())
     ..registerFactory(() => NewStockReturnCubit())

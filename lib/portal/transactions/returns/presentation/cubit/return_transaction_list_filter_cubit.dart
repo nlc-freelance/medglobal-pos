@@ -7,6 +7,6 @@ class ReturnTransactionListFilterCubit extends Cubit<ReturnTransactionListFilter
   ReturnTransactionListFilterCubit() : super(const ReturnTransactionListFilterState());
 
   void setSize(int value) => emit(state.copyWith(size: value));
-  void setSearchKey(String? value) => emit(state.copyWith(search: value));
-  void setBranch(int? value) => emit(state.copyWith(branch: value));
+  void setSearch(String? value) => emit(state.copyWith(search: value));
+  void setBranch(int? value) => emit(state.copyWith(branchId: value));
 }

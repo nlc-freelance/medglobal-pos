@@ -5,8 +5,12 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/d
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_paginated_list.dart';
 
 abstract class PurchaseOrderRepository {
-  Future<Either<Failure, PurchaseOrderPaginatedList>> getPurchaseOrders(
-      {required int page, required int size, StockOrderStatus? status, int? branch});
+  Future<Either<Failure, PurchaseOrderPaginatedList>> getPurchaseOrders({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    int? branchId,
+  });
   Future<Either<Failure, PurchaseOrder>> getPurchaseOrderById(int id);
   Future<Either<Failure, PurchaseOrder>> create(NewPurchaseOrder payload);
   Future<Either<Failure, PurchaseOrder>> update(StockOrderUpdate type,

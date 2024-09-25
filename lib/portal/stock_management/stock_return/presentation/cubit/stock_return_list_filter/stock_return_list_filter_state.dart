@@ -1,7 +1,7 @@
-part of 'purchase_order_list_filter_cubit.dart';
+part of 'stock_return_list_filter_cubit.dart';
 
-class PurchaseOrderListFilterState extends Equatable {
-  const PurchaseOrderListFilterState({this.size = 20, this.branchId, this.status});
+class StockReturnListFilterState extends Equatable {
+  const StockReturnListFilterState({this.size = 20, this.branchId, this.status});
 
   final int? size;
   final int? branchId;
@@ -10,14 +10,14 @@ class PurchaseOrderListFilterState extends Equatable {
   @override
   List<Object?> get props => [size, branchId, status];
 
-  PurchaseOrderListFilterState copyWith({
+  StockReturnListFilterState copyWith({
     int? size,
     int? branchId,
     StockOrderStatus? status,
     bool? nullBranch = false,
     bool? nullStatus = false,
   }) {
-    return PurchaseOrderListFilterState(
+    return StockReturnListFilterState(
       size: size ?? this.size,
       branchId: nullBranch == true ? null : branchId ?? this.branchId,
       status: nullStatus == true ? null : status ?? this.status,

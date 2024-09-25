@@ -11,7 +11,7 @@ class PurchaseOrderListRemoteCubit extends Cubit<PurchaseOrderListRemoteState> {
 
   PurchaseOrderListRemoteCubit(this._getPurchaseOrdersUseCase) : super(PurchaseOrderListInitial());
 
-  Future<void> getPurchaseOrders({int page = 1, int size = 20, StockOrderStatus? status, int? branch}) async {
+  Future<void> getPurchaseOrders({int page = 1, int size = 20, StockOrderStatus? status, int? branchId}) async {
     emit(PurchaseOrderListLoading());
 
     try {
@@ -19,7 +19,7 @@ class PurchaseOrderListRemoteCubit extends Cubit<PurchaseOrderListRemoteState> {
         page: page,
         size: size,
         status: status,
-        branch: branch,
+        branchId: branchId,
       ));
       result.fold(
         (error) => emit(PurchaseOrderListError(message: error.message)),

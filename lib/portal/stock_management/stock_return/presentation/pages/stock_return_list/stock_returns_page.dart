@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
+import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_filter/stock_return_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_list/stock_return_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_list/stock_return_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class StockReturnsPage extends StatefulWidget {
@@ -21,6 +23,9 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+
+    /// TODO: The list does not update when using the back button or side menu to navigate back to this page
+    /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
     context.read<StockReturnListRemoteCubit>().getStockReturns();
 
     /// Reset last selected stock return
@@ -34,14 +39,28 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
   }
 
   void onChangeTab(int index) {
+    final branchId = context.read<StockReturnListFilterCubit>().state.branchId;
+    final size = context.read<StockReturnListFilterCubit>().state.size!;
+
     if (index == 0) {
-      context.read<StockReturnListRemoteCubit>().getStockReturns();
+      context.read<StockReturnListRemoteCubit>().getStockReturns(branchId: branchId, size: size);
+      context.read<StockReturnListFilterCubit>().setStatus(null);
     }
     if (index == 1) {
-      context.read<StockReturnListRemoteCubit>().getStockReturns(status: StockOrderStatus.NEW);
+      context.read<StockReturnListRemoteCubit>().getStockReturns(
+            status: StockOrderStatus.NEW,
+            branchId: branchId,
+            size: size,
+          );
+      context.read<StockReturnListFilterCubit>().setStatus(StockOrderStatus.NEW);
     }
     if (index == 2) {
-      context.read<StockReturnListRemoteCubit>().getStockReturns(status: StockOrderStatus.COMPLETED);
+      context.read<StockReturnListRemoteCubit>().getStockReturns(
+            status: StockOrderStatus.COMPLETED,
+            branchId: branchId,
+            size: size,
+          );
+      context.read<StockReturnListFilterCubit>().setStatus(StockOrderStatus.COMPLETED);
     }
   }
 
@@ -92,37 +111,36 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
         DataGridToolbar(
           isDownloadable: true,
           filters: [
-            UIButton.outlined(
-              'Date',
-              iconAlign: IconAlignment.end,
-              iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
-              onClick: () {},
+            SizedBox(
+              width: 150,
+              child: DatePickerPopup(onSelect: (date) {}),
             ),
             const UIHorizontalSpace(8),
-            UIButton.outlined(
-              'Filter',
-              iconAlign: IconAlignment.end,
-              iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
-              onClick: () {},
+            SizedBox(
+              width: 200,
+              child: BranchDropdown.select(
+                onSelectItem: (branch) {
+                  final size = context.read<StockReturnListFilterCubit>().state.size;
+                  final status = context.read<StockReturnListFilterCubit>().state.status;
+
+                  if (branch.id == -1) {
+                    /// No filter, get all purchase orders
+                    context.read<StockReturnListRemoteCubit>().getStockReturns(size: size!, status: status);
+                    context.read<StockReturnListFilterCubit>().setBranch(null);
+                  } else {
+                    context.read<StockReturnListRemoteCubit>().getStockReturns(
+                          size: size!,
+                          status: status,
+                          branchId: branch.id,
+                        );
+                    context.read<StockReturnListFilterCubit>().setBranch(branch.id);
+                  }
+                },
+              ),
             ),
           ],
         ),
-        BlocBuilder<StockReturnListRemoteCubit, StockReturnListRemoteState>(
-          builder: (context, state) {
-            if (state is StockReturnTransactionListError) {
-              return Text(state.message);
-            }
-            if (state is StockReturnTransactionListLoaded) {
-              return Expanded(
-                child: StockReturnDataGrid(state.stockReturns),
-              );
-            }
-            return DataGridLoading(
-              columns: DataGridUtil.getColumns(DataGridColumn.STOCK_RETURNS),
-              source: StockReturnDataSource([]),
-            );
-          },
-        ),
+        const Expanded(child: StockReturnPaginatedDataGrid()),
       ],
     );
   }
