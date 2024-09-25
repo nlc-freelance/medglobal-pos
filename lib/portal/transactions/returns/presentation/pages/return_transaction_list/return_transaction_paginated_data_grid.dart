@@ -139,7 +139,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                             context.read<ReturnTransactionListCubit>().getTransactions(
                                   page: 1,
                                   size: _rowsPerPage,
-                                  branchId: context.read<ReturnTransactionListFilterCubit>().state.branch,
+                                  branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
 
                                   // search: context.read<TransactionSearchCubit>().state.search,
                                 );
@@ -147,7 +147,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                             context.read<ReturnTransactionListCubit>().getTransactions(
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
-                                  branchId: context.read<ReturnTransactionListFilterCubit>().state.branch,
+                                  branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
 
                                   // search: context.read<TransactionSearchCubit>().state.search,
                                 );
@@ -174,7 +174,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                           context.read<ReturnTransactionListCubit>().getTransactions(
                                 page: 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<ReturnTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
@@ -191,7 +191,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                           context.read<ReturnTransactionListCubit>().getTransactions(
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<ReturnTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
@@ -208,7 +208,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                           context.read<ReturnTransactionListCubit>().getTransactions(
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<ReturnTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
@@ -227,7 +227,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                           context.read<ReturnTransactionListCubit>().getTransactions(
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
-                                branchId: context.read<ReturnTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );

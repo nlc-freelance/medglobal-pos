@@ -147,7 +147,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                             context.read<SaleTransactionListCubit>().getTransactions(
                                   page: 1,
                                   size: _rowsPerPage,
-                                  branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                  branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                   // search: context.read<TransactionSearchCubit>().state.search,
                                 );
@@ -155,7 +155,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                             context.read<SaleTransactionListCubit>().getTransactions(
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
-                                  branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                  branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                   // search: context.read<TransactionSearchCubit>().state.search,
                                 );
@@ -182,7 +182,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
@@ -199,7 +199,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
@@ -216,7 +216,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
@@ -235,7 +235,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
-                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );

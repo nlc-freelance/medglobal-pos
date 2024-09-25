@@ -25,7 +25,6 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
   void initState() {
     super.initState();
     if (widget.currentStep != null) _currentStep = widget.currentStep!;
-    context.read<PurchaseOrderRemoteCubit>().reset();
   }
 
   @override

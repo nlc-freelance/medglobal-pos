@@ -3,9 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/enums/enums.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/data/api/stock_return_api.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/new_stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_paginated_list.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/new_stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/repositories/stock_return_repository.dart';
 
 class StockReturnRepositoryImpl implements StockReturnRepository {
@@ -34,9 +34,15 @@ class StockReturnRepositoryImpl implements StockReturnRepository {
   }
 
   @override
-  Future<Either<Failure, StockReturnPaginatedList>> getStockReturns({int? page, StockOrderStatus? status}) async {
+  Future<Either<Failure, StockReturnPaginatedList>> getStockReturns({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    int? branchId,
+  }) async {
     try {
-      final response = await _stockReturnApi.getStockReturns(page: page, status: status);
+      final response =
+          await _stockReturnApi.getStockReturns(page: page, size: size, status: status, branchId: branchId);
       return Right(response);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));

@@ -1,12 +1,17 @@
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/data/dto/stock_return_dto.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/new_stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_paginated_list.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/new_stock_return.dart';
 
 abstract class StockReturnApi {
-  Future<StockReturnPaginatedList> getStockReturns({int? page, StockOrderStatus? status});
+  Future<StockReturnPaginatedList> getStockReturns({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    int? branchId,
+  });
   Future<StockReturnDto> getStockReturnById(int id);
   Future<StockReturnDto> create(NewStockReturn payload);
   Future<StockReturnDto> update(StockOrderUpdate type, {required int id, required StockReturn stockReturn});
@@ -18,11 +23,21 @@ class StockReturnApiImpl implements StockReturnApi {
   StockReturnApiImpl(this._apiService);
 
   @override
-  Future<StockReturnPaginatedList> getStockReturns({int? page, StockOrderStatus? status}) async {
+  Future<StockReturnPaginatedList> getStockReturns({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    int? branchId,
+  }) async {
     try {
       final response = await _apiService.collection<StockReturnDto>(
         '/stock-returns',
-        queryParams: {'page': page, 'status': status?.label.toLowerCase()},
+        queryParams: {
+          'page': page,
+          'size': size,
+          'status': status?.label.toLowerCase(),
+          'branch': branchId,
+        },
         converter: StockReturnDto.fromJson,
       );
 

@@ -10,7 +10,7 @@ abstract class PurchaseOrderApi {
     required int page,
     required int size,
     StockOrderStatus? status,
-    int? branch,
+    int? branchId,
   });
   Future<PurchaseOrderDto> getPurchaseOrderById(int id);
   Future<PurchaseOrderDto> create(NewPurchaseOrder payload);
@@ -28,7 +28,7 @@ class PurchaseOrderApiImpl implements PurchaseOrderApi {
     required int page,
     required int size,
     StockOrderStatus? status,
-    int? branch,
+    int? branchId,
   }) async {
     try {
       final response = await _apiService.collection<PurchaseOrderDto>(
@@ -37,7 +37,7 @@ class PurchaseOrderApiImpl implements PurchaseOrderApi {
           'page': page,
           'size': size,
           'status': status?.label.toLowerCase(),
-          'branch': branch,
+          'branch': branchId,
         },
         converter: PurchaseOrderDto.fromJson,
       );
