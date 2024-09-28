@@ -2,32 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_filter/purchase_order_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_filter/stock_transfer_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_remote/stock_transfer_list_remote_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class PurchaseOrderPaginatedDataGrid extends StatefulWidget {
-  const PurchaseOrderPaginatedDataGrid({super.key});
+class StockTransferPaginatedDataGrid extends StatefulWidget {
+  const StockTransferPaginatedDataGrid({super.key});
 
   @override
-  State<PurchaseOrderPaginatedDataGrid> createState() => _PurchaseOrderPaginatedDataGridState();
+  State<StockTransferPaginatedDataGrid> createState() => _StockTransferPaginatedDataGridState();
 }
 
-class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedDataGrid> {
+class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedDataGrid> {
   late DataGridController _dataGridController;
-  late PurchaseOrderDataSource _purchaseOrderDataSource;
+  late StockTransferDataSource _stockTransferDataSource;
 
-  List<PurchaseOrder> purchaseOrders = [];
+  List<StockTransfer> stockTransfers = [];
   int _rowsPerPage = 20;
 
   @override
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
+    context.read<StockTransferListRemoteCubit>().getStockTransfers();
   }
 
   @override
@@ -38,24 +38,24 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PurchaseOrderListRemoteCubit, PurchaseOrderListRemoteState>(
+    return BlocConsumer<StockTransferListRemoteCubit, StockTransferListRemoteState>(
       listenWhen: (previous, current) {
-        if (previous is PurchaseOrderListLoading && current is PurchaseOrderListLoaded) {
+        if (previous is StockTransferListLoading && current is StockTransferListLoaded) {
           return ((current.data.currentPage! <= current.data.totalPages!) == true);
         }
         return false;
       },
       listener: (context, state) {
-        if (state is PurchaseOrderListLoaded) {
-          purchaseOrders = state.data.purchaseOrders ?? [];
-          _purchaseOrderDataSource = PurchaseOrderDataSource(purchaseOrders, _rowsPerPage);
+        if (state is StockTransferListLoaded) {
+          stockTransfers = state.data.stockTransfers ?? [];
+          _stockTransferDataSource = StockTransferDataSource(stockTransfers, _rowsPerPage);
         }
       },
       builder: (context, state) {
-        if (state is PurchaseOrderListError) {
+        if (state is StockTransferListError) {
           return Text(state.message);
         }
-        if (state is PurchaseOrderListLoaded) {
+        if (state is StockTransferListLoaded) {
           return Column(
             children: [
               Expanded(
@@ -66,8 +66,8 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                     child: SfDataGridTheme(
                       data: DataGridUtil.rowNavigationStyle,
                       child: SfDataGrid(
-                        source: _purchaseOrderDataSource,
-                        columns: DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS, showId: true),
+                        source: _stockTransferDataSource,
+                        columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFERS, showId: true),
                         controller: _dataGridController,
                         shrinkWrapRows: true,
                         navigationMode: GridNavigationMode.row,
@@ -76,7 +76,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                         gridLinesVisibility: GridLinesVisibility.horizontal,
                         headerRowHeight: 38,
                         footerHeight: 100,
-                        footer: _purchaseOrderDataSource.rows.isEmpty
+                        footer: _stockTransferDataSource.rows.isEmpty
                             ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -95,12 +95,12 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                 ),
               ),
               const UIVerticalSpace(16),
-              if (state.data.purchaseOrders?.isNotEmpty == true)
+              if (state.data.stockTransfers?.isNotEmpty == true)
 
                 /// TODO: Extract pager to its own widget
                 Row(
                   children: [
-                    BlocListener<PurchaseOrderListFilterCubit, PurchaseOrderListFilterState>(
+                    BlocListener<StockTransferListFilterCubit, StockTransferListFilterState>(
                       listenWhen: (previous, current) => previous.size != current.size,
                       listener: (context, filter) {
                         setState(() => _rowsPerPage = filter.size!);
@@ -110,7 +110,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                         iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
                         onSelect: (value) {
                           setState(() => _rowsPerPage = value);
-                          context.read<PurchaseOrderListFilterCubit>().setSize(value);
+                          context.read<StockTransferListFilterCubit>().setSize(value);
 
                           /// Go back to page 1 when:
                           ///  - total count is greater than the requested rows per page
@@ -125,16 +125,20 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                           if (state.data.totalCount! <= value ||
                               state.data.totalPages! + 1 >
                                   ((state.data.totalCount! + (_rowsPerPage - 1)) / _rowsPerPage)) {
-                            context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                            context.read<StockTransferListRemoteCubit>().getStockTransfers(
                                   page: 1,
                                   size: _rowsPerPage,
-                                  branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                  sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
+                                  destinationBranchId:
+                                      context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                 );
                           } else {
-                            context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                            context.read<StockTransferListRemoteCubit>().getStockTransfers(
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
-                                  branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                  sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
+                                  destinationBranchId:
+                                      context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                 );
                           }
                         },
@@ -156,10 +160,12 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                     IconButton(
                       onPressed: () {
                         if (state.data.currentPage != 1) {
-                          context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                          context.read<StockTransferListRemoteCubit>().getStockTransfers(
                                 page: 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
+                                destinationBranchId:
+                                    context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                               );
                         }
                       },
@@ -171,10 +177,12 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                     IconButton(
                       onPressed: () {
                         if (state.data.currentPage != 1) {
-                          context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                          context.read<StockTransferListRemoteCubit>().getStockTransfers(
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
+                                destinationBranchId:
+                                    context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                               );
                         }
                       },
@@ -186,10 +194,12 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                     IconButton(
                       onPressed: () {
                         if (state.data.currentPage != state.data.totalPages) {
-                          context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                          context.read<StockTransferListRemoteCubit>().getStockTransfers(
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
+                                destinationBranchId:
+                                    context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                               );
                         }
                       },
@@ -203,10 +213,12 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                     IconButton(
                       onPressed: () {
                         if (state.data.currentPage != state.data.totalPages) {
-                          context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                          context.read<StockTransferListRemoteCubit>().getStockTransfers(
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
-                                branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
+                                destinationBranchId:
+                                    context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                               );
                         }
                       },
@@ -223,27 +235,27 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
           );
         }
         return DataGridLoading(
-          columns: DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS, showId: true),
-          source: _purchaseOrderDataSource = PurchaseOrderDataSource([], _rowsPerPage),
+          columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFERS, showId: true),
+          source: _stockTransferDataSource = StockTransferDataSource([], _rowsPerPage),
         );
       },
     );
   }
 }
 
-class PurchaseOrderDataSource extends DataGridSource {
-  PurchaseOrderDataSource(List<PurchaseOrder> purchaseOrders, int rowsPerPage) {
+class StockTransferDataSource extends DataGridSource {
+  StockTransferDataSource(List<StockTransfer> stockTransfers, int rowsPerPage) {
     _rowsPerPage = rowsPerPage;
-    _purchaseOrders = purchaseOrders;
-    _paginatedPurchaseOrders = _purchaseOrders.getRange(0, purchaseOrders.length).toList(growable: false);
-    buildDataGridRows(_purchaseOrders);
+    _stockTransfers = stockTransfers;
+    _paginatedStockTransfers = _stockTransfers.getRange(0, stockTransfers.length).toList(growable: false);
+    buildDataGridRows(_stockTransfers);
   }
 
   late int _rowsPerPage;
 
-  List<PurchaseOrder> _purchaseOrders = [];
+  List<StockTransfer> _stockTransfers = [];
 
-  List<PurchaseOrder> _paginatedPurchaseOrders = [];
+  List<StockTransfer> _paginatedStockTransfers = [];
 
   List<DataGridRow> dataGridRows = [];
 
@@ -255,19 +267,19 @@ class PurchaseOrderDataSource extends DataGridSource {
     int startIndex = newPageIndex * _rowsPerPage;
     int endIndex = startIndex + _rowsPerPage;
 
-    if (startIndex < _purchaseOrders.length && endIndex <= _purchaseOrders.length) {
-      _paginatedPurchaseOrders = _purchaseOrders.getRange(startIndex, endIndex).toList(growable: false);
-      buildDataGridRows(_paginatedPurchaseOrders);
+    if (startIndex < _stockTransfers.length && endIndex <= _stockTransfers.length) {
+      _paginatedStockTransfers = _stockTransfers.getRange(startIndex, endIndex).toList(growable: false);
+      buildDataGridRows(_paginatedStockTransfers);
       notifyListeners();
     } else {
-      _paginatedPurchaseOrders = [];
+      _paginatedStockTransfers = [];
     }
 
     return true;
   }
 
-  void buildDataGridRows(List<PurchaseOrder> purchaseOrders) =>
-      dataGridRows = purchaseOrders.map((order) => order.toDataGridRow()).toList();
+  void buildDataGridRows(List<StockTransfer> stockTransfers) =>
+      dataGridRows = _stockTransfers.map((stock) => stock.toDataGridRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -288,7 +300,7 @@ class PurchaseOrderDataSource extends DataGridSource {
         'id' => HoverBuilder(
             builder: (isHover) => InkWell(
               onTap: () => AppRouter.router.goNamed(
-                'Purchase Order Details',
+                'Stock Transfer Details',
                 pathParameters: {'id': id.toString()},
               ),
               hoverColor: UIColors.transparent,
@@ -319,10 +331,6 @@ class PurchaseOrderDataSource extends DataGridSource {
               ],
             ),
           ),
-        _ => UIText.dataGridText(
-            cell.runtimeType.toString().contains('double')
-                ? (cell.value as double).toPesoString()
-                : cell.value.toString(),
-          ),
+        _ => UIText.dataGridText(cell.value.toString()),
       };
 }

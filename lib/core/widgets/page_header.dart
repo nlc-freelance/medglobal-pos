@@ -18,7 +18,7 @@ class PageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 30.0),
+      padding: const EdgeInsets.only(bottom: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -35,8 +35,8 @@ class PageHeader extends StatelessWidget {
                   ],
                 ],
               ),
-              const UIVerticalSpace(4.0),
-              UIText.subtitle(subtitle)
+              const UIVerticalSpace(2),
+              Text(subtitle, style: UIStyleText.hint.copyWith(color: UIColors.textGray)),
             ],
           ),
           Row(

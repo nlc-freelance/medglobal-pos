@@ -71,7 +71,7 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
       children: [
         PageHeader(
           title: 'Stock Returns',
-          subtitle: Strings.subtitlePlaceholder,
+          subtitle: 'View all stock return operations to keep track of returned stocks in your inventory.',
           actions: [
             UIButton.filled(
               'New Stock Return',
@@ -84,26 +84,37 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
           controller: _tabController,
           onTap: onChangeTab,
           tabs: [
-            const Tab(text: 'All Returns'),
-            Tab(text: StockOrderStatus.NEW.label),
-            Tab(text: StockOrderStatus.COMPLETED.label),
-          ],
+            'All Returns',
+            StockOrderStatus.NEW.label,
+            StockOrderStatus.COMPLETED.label,
+          ]
+              .map((status) => Container(
+                    margin: const EdgeInsets.only(right: 12),
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Tab(text: status),
+                  ))
+              .toList(),
           isScrollable: true,
           tabAlignment: TabAlignment.start,
+          labelPadding: const EdgeInsets.only(left: 0, right: 0),
           dividerColor: UIColors.borderMuted,
+          dividerHeight: 0.8,
           labelColor: UIColors.primary,
-          labelStyle: UIStyleText.labelMedium,
+          labelStyle: UIStyleText.labelSemiBold,
           unselectedLabelColor: UIColors.textMuted,
+          unselectedLabelStyle: UIStyleText.labelMedium.copyWith(color: UIColors.textLight),
           indicatorPadding: EdgeInsets.zero,
-          indicatorSize: TabBarIndicatorSize.tab,
-          indicator: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: UIColors.primary, width: 2.0),
+          indicatorSize: TabBarIndicatorSize.label,
+          indicator: const UnderlineTabIndicator(
+            borderSide: BorderSide(
+              width: 2.3,
+              color: UIColors.primary,
             ),
+            insets: EdgeInsets.only(left: 0, right: 26, bottom: 0),
           ),
           overlayColor: WidgetStateColor.resolveWith((state) {
             if (state.contains(WidgetState.pressed)) return UIColors.transparent;
-            if (state.contains(WidgetState.hovered)) return UIColors.whiteBg;
+            if (state.contains(WidgetState.hovered)) return UIColors.transparent;
             return UIColors.transparent;
           }),
         ),
@@ -116,27 +127,25 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
               child: DatePickerPopup(onSelect: (date) {}),
             ),
             const UIHorizontalSpace(8),
-            SizedBox(
-              width: 200,
-              child: BranchDropdown.select(
-                onSelectItem: (branch) {
-                  final size = context.read<StockReturnListFilterCubit>().state.size;
-                  final status = context.read<StockReturnListFilterCubit>().state.status;
+            BranchDropdown.select(
+              onRemoveSelectedItem: () {
+                final size = context.read<StockReturnListFilterCubit>().state.size;
+                final status = context.read<StockReturnListFilterCubit>().state.status;
 
-                  if (branch.id == -1) {
-                    /// No filter, get all purchase orders
-                    context.read<StockReturnListRemoteCubit>().getStockReturns(size: size!, status: status);
-                    context.read<StockReturnListFilterCubit>().setBranch(null);
-                  } else {
-                    context.read<StockReturnListRemoteCubit>().getStockReturns(
-                          size: size!,
-                          status: status,
-                          branchId: branch.id,
-                        );
-                    context.read<StockReturnListFilterCubit>().setBranch(branch.id);
-                  }
-                },
-              ),
+                context.read<StockReturnListRemoteCubit>().getStockReturns(size: size!, status: status);
+                context.read<StockReturnListFilterCubit>().setBranch(null);
+              },
+              onSelectItem: (branch) {
+                final size = context.read<StockReturnListFilterCubit>().state.size;
+                final status = context.read<StockReturnListFilterCubit>().state.status;
+
+                context.read<StockReturnListRemoteCubit>().getStockReturns(
+                      size: size!,
+                      status: status,
+                      branchId: branch.id,
+                    );
+                context.read<StockReturnListFilterCubit>().setBranch(branch.id);
+              },
             ),
           ],
         ),
