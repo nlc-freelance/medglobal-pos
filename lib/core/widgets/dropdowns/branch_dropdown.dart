@@ -265,9 +265,10 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
             ? HoverBuilder(builder: (isHover) {
                 final highlight = _selectedItem != null && _selectedItem?.id != -1;
                 return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6.5, horizontal: 10.0),
+                  constraints: const BoxConstraints(minWidth: 150),
+                  padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     color: highlight
                         ? UIColors.secondary
                         : isHover
@@ -278,22 +279,29 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text.rich(
-                        TextSpan(
-                          text: widget.hint ?? 'Branch',
-                          style: UIStyleText.labelMedium.copyWith(color: UIColors.textMuted),
-                          children: [
-                            TextSpan(
-                              text: '  ${_selectedItem != null ? _selectedItem!.name : 'All Branches'}',
-                              style: UIStyleText.labelMedium,
+                      widget.hint == null
+                          ? UIText.labelMedium(
+                              _selectedItem != null ? _selectedItem!.name : 'All Branches',
+                              color: _selectedItem != null ? UIColors.primary : UIColors.textLight,
+                            )
+                          : Text.rich(
+                              TextSpan(
+                                text: widget.hint!,
+                                style: UIStyleText.labelMedium.copyWith(color: UIColors.textMuted),
+                                children: [
+                                  TextSpan(
+                                    text: '  ${_selectedItem != null ? _selectedItem!.name : 'All Branches'}',
+                                    style: UIStyleText.labelMedium.copyWith(
+                                      color: _selectedItem != null ? UIColors.primary : UIColors.textLight,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                      const UIHorizontalSpace(8),
+                      const UIHorizontalSpace(10),
                       _selectedItem != null
                           ? SizedBox(
-                              height: 16,
+                              height: 18,
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(50),
                                 onTap: () {
@@ -303,7 +311,7 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                                 child: Assets.icons.close.svg(height: 22),
                               ),
                             )
-                          : Assets.icons.arrowDown.svg(height: 12)
+                          : Assets.icons.arrowDown.svg(height: 10)
                     ],
                   ),
                 );

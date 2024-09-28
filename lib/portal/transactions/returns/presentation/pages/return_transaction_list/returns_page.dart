@@ -23,11 +23,10 @@ class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
       children: [
         const PageHeader(
           title: 'Returns',
-          subtitle: Strings.subtitlePlaceholder,
+          subtitle: 'View all return transactions and manage returned stocks.',
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          isDownloadable: true,
           search: UISearchField(
             fieldWidth: 500.0,
             hint: 'Search receipt ID',
@@ -39,7 +38,7 @@ class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
           ),
           filters: [
             SizedBox(
-              width: 200,
+              width: 150,
               child: DatePickerPopup(onSelect: (date) {}),
             ),
             const UIHorizontalSpace(8),

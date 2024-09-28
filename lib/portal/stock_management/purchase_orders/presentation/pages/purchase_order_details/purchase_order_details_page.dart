@@ -71,7 +71,6 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
           children: [
             PageHeader(
               title: _title,
-              subtitle: Strings.subtitlePlaceholder,
               titleTrailings: [
                 Padding(
                   padding: const EdgeInsets.only(top: 1),

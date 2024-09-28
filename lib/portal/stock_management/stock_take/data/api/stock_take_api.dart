@@ -6,7 +6,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_paginated_list.dart';
 
 abstract class StockTakeApi {
-  Future<StockTakePaginatedList> getStockTakes({int? page, StockOrderStatus? status});
+  Future<StockTakePaginatedList> getStockTakes({required int page, required int size, StockOrderStatus? status});
   Future<StockTakeDto> getStockTakeById(int id);
   Future<StockTakeDto> create(NewStockTake payload);
   Future<StockTakeDto> update(StockOrderUpdate type, {required int id, required StockTake stockTake});
@@ -18,11 +18,11 @@ class StockTakeApiImpl implements StockTakeApi {
   StockTakeApiImpl(this._apiService);
 
   @override
-  Future<StockTakePaginatedList> getStockTakes({int? page, StockOrderStatus? status}) async {
+  Future<StockTakePaginatedList> getStockTakes({required int page, required int size, StockOrderStatus? status}) async {
     try {
       final response = await _apiService.collection<StockTakeDto>(
         '/stock-takes',
-        queryParams: {'page': page, 'status': status?.label.toLowerCase()},
+        queryParams: {'page': page, 'size': size, 'status': status?.label.toLowerCase()},
         converter: StockTakeDto.fromJson,
       );
 

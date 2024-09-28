@@ -52,7 +52,6 @@ class _StockReturnDetailsPageState extends State<StockReturnDetailsPage> {
           children: [
             PageHeader(
               title: _stockReturn.status == StockOrderStatus.NEW ? 'Edit Stock Return' : 'Stock Return Details',
-              subtitle: Strings.subtitlePlaceholder,
               titleTrailings: [
                 Padding(
                   padding: const EdgeInsets.only(top: 1),

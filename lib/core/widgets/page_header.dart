@@ -3,13 +3,13 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PageHeader extends StatelessWidget {
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final List<Widget>? actions;
   final List<Widget>? titleTrailings;
 
   const PageHeader({
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     this.actions,
     this.titleTrailings,
     super.key,
@@ -35,8 +35,10 @@ class PageHeader extends StatelessWidget {
                   ],
                 ],
               ),
-              const UIVerticalSpace(2),
-              Text(subtitle, style: UIStyleText.hint.copyWith(color: UIColors.textGray)),
+              if (subtitle != null) ...[
+                const UIVerticalSpace(2),
+                Text(subtitle!, style: UIStyleText.hint.copyWith(color: UIColors.textGray)),
+              ],
             ],
           ),
           Row(

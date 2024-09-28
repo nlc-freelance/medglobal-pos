@@ -69,29 +69,21 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
         ],
         child: HoverBuilder(
           builder: (isHover) => Container(
-            padding: const EdgeInsets.symmetric(vertical: 6.5, horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               color: isHover ? UIColors.whiteBg : UIColors.background,
               border: Border.all(color: UIColors.borderRegular),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text.rich(
-                  TextSpan(
-                    text: 'Date   ',
-                    style: UIStyleText.labelMedium.copyWith(color: UIColors.textMuted),
-                    children: [
-                      TextSpan(
-                        text: _selectedDate != null ? DateFormat('MMMM dd, yyyy').format(_selectedDate!) : 'All Time',
-                        style: (UIStyleText.labelMedium),
-                      )
-                    ],
-                  ),
+                UIText.labelMedium(
+                  _selectedDate != null ? DateFormat('MMMM dd, yyyy').format(_selectedDate!) : 'All Time',
+                  color: _selectedDate != null ? UIColors.primary : UIColors.textLight,
                 ),
                 const Spacer(),
-                Assets.icons.arrowDown.svg(),
+                Assets.icons.arrowDown.svg(height: 10),
               ],
             ),
           ),

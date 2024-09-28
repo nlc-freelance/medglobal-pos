@@ -72,8 +72,8 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> {
           children: [
             PageHeader(
               title: _stockTake.status == StockOrderStatus.IN_PROGRESS ? 'Edit Stock Take' : 'Stock Take Details',
-              subtitle: Strings.subtitlePlaceholder,
             ),
+            const UIVerticalSpace(20),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(

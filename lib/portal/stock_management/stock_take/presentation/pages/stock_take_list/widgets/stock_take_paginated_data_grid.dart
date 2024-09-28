@@ -2,32 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_filter/stock_transfer_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_remote/stock_transfer_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class StockTransferPaginatedDataGrid extends StatefulWidget {
-  const StockTransferPaginatedDataGrid({super.key});
+class StockTakePaginatedDataGrid extends StatefulWidget {
+  const StockTakePaginatedDataGrid({super.key});
 
   @override
-  State<StockTransferPaginatedDataGrid> createState() => _StockTransferPaginatedDataGridState();
+  State<StockTakePaginatedDataGrid> createState() => _StockTakePaginatedDataGridState();
 }
 
-class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedDataGrid> {
+class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid> {
   late DataGridController _dataGridController;
-  late StockTransferDataSource _stockTransferDataSource;
+  late StockTakeDataSource _stockReturnDataSource;
 
-  List<StockTransfer> stockTransfers = [];
+  List<StockTake> stockTakes = [];
   int _rowsPerPage = 20;
 
   @override
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    context.read<StockTransferListRemoteCubit>().getStockTransfers();
+    context.read<StockTakeListRemoteCubit>().getStockTakes();
   }
 
   @override
@@ -38,24 +38,24 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<StockTransferListRemoteCubit, StockTransferListRemoteState>(
+    return BlocConsumer<StockTakeListRemoteCubit, StockTakeListRemoteState>(
       listenWhen: (previous, current) {
-        if (previous is StockTransferListLoading && current is StockTransferListLoaded) {
+        if (previous is StockTakeListLoading && current is StockTakeListLoaded) {
           return ((current.data.currentPage! <= current.data.totalPages!) == true);
         }
         return false;
       },
       listener: (context, state) {
-        if (state is StockTransferListLoaded) {
-          stockTransfers = state.data.stockTransfers ?? [];
-          _stockTransferDataSource = StockTransferDataSource(stockTransfers, _rowsPerPage);
+        if (state is StockTakeListLoaded) {
+          stockTakes = state.data.stockTakes ?? [];
+          _stockReturnDataSource = StockTakeDataSource(stockTakes, _rowsPerPage);
         }
       },
       builder: (context, state) {
-        if (state is StockTransferListError) {
+        if (state is StockTakeListError) {
           return Text(state.message);
         }
-        if (state is StockTransferListLoaded) {
+        if (state is StockTakeListLoaded) {
           return Column(
             children: [
               Expanded(
@@ -66,8 +66,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                     child: SfDataGridTheme(
                       data: DataGridUtil.rowNavigationStyle,
                       child: SfDataGrid(
-                        source: _stockTransferDataSource,
-                        columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFERS, showId: true),
+                        source: _stockReturnDataSource,
+                        columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TAKES),
                         controller: _dataGridController,
                         shrinkWrapRows: true,
                         navigationMode: GridNavigationMode.row,
@@ -76,7 +76,7 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                         gridLinesVisibility: GridLinesVisibility.horizontal,
                         headerRowHeight: 38,
                         footerHeight: 100,
-                        footer: _stockTransferDataSource.rows.isEmpty
+                        footer: _stockReturnDataSource.rows.isEmpty
                             ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -95,12 +95,12 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                 ),
               ),
               const UIVerticalSpace(16),
-              if (state.data.stockTransfers?.isNotEmpty == true)
+              if (state.data.stockTakes?.isNotEmpty == true)
 
                 /// TODO: Extract pager to its own widget
                 Row(
                   children: [
-                    BlocListener<StockTransferListFilterCubit, StockTransferListFilterState>(
+                    BlocListener<StockTakeListFilterCubit, StockTakeListFilterState>(
                       listenWhen: (previous, current) => previous.size != current.size,
                       listener: (context, filter) {
                         setState(() => _rowsPerPage = filter.size!);
@@ -110,7 +110,7 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                         iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
                         onSelect: (value) {
                           setState(() => _rowsPerPage = value);
-                          context.read<StockTransferListFilterCubit>().setSize(value);
+                          context.read<StockTakeListFilterCubit>().setSize(value);
 
                           /// Go back to page 1 when:
                           ///  - total count is greater than the requested rows per page
@@ -125,22 +125,16 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                           if (state.data.totalCount! <= value ||
                               state.data.totalPages! + 1 >
                                   ((state.data.totalCount! + (_rowsPerPage - 1)) / _rowsPerPage)) {
-                            context.read<StockTransferListRemoteCubit>().getStockTransfers(
+                            context.read<StockTakeListRemoteCubit>().getStockTakes(
                                   page: 1,
                                   size: _rowsPerPage,
-                                  sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
-                                  destinationBranchId:
-                                      context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
-                                  status: context.read<StockTransferListFilterCubit>().state.status,
+                                  status: context.read<StockTakeListFilterCubit>().state.status,
                                 );
                           } else {
-                            context.read<StockTransferListRemoteCubit>().getStockTransfers(
+                            context.read<StockTakeListRemoteCubit>().getStockTakes(
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
-                                  sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
-                                  destinationBranchId:
-                                      context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
-                                  status: context.read<StockTransferListFilterCubit>().state.status,
+                                  status: context.read<StockTakeListFilterCubit>().state.status,
                                 );
                           }
                         },
@@ -162,13 +156,10 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                     IconButton(
                       onPressed: () {
                         if (state.data.currentPage != 1) {
-                          context.read<StockTransferListRemoteCubit>().getStockTransfers(
+                          context.read<StockTakeListRemoteCubit>().getStockTakes(
                                 page: 1,
                                 size: _rowsPerPage,
-                                sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
-                                destinationBranchId:
-                                    context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
-                                status: context.read<StockTransferListFilterCubit>().state.status,
+                                status: context.read<StockTakeListFilterCubit>().state.status,
                               );
                         }
                       },
@@ -180,13 +171,10 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                     IconButton(
                       onPressed: () {
                         if (state.data.currentPage != 1) {
-                          context.read<StockTransferListRemoteCubit>().getStockTransfers(
+                          context.read<StockTakeListRemoteCubit>().getStockTakes(
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
-                                sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
-                                destinationBranchId:
-                                    context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
-                                status: context.read<StockTransferListFilterCubit>().state.status,
+                                status: context.read<StockTakeListFilterCubit>().state.status,
                               );
                         }
                       },
@@ -198,13 +186,10 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                     IconButton(
                       onPressed: () {
                         if (state.data.currentPage != state.data.totalPages) {
-                          context.read<StockTransferListRemoteCubit>().getStockTransfers(
+                          context.read<StockTakeListRemoteCubit>().getStockTakes(
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
-                                sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
-                                destinationBranchId:
-                                    context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
-                                status: context.read<StockTransferListFilterCubit>().state.status,
+                                status: context.read<StockTakeListFilterCubit>().state.status,
                               );
                         }
                       },
@@ -218,13 +203,10 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                     IconButton(
                       onPressed: () {
                         if (state.data.currentPage != state.data.totalPages) {
-                          context.read<StockTransferListRemoteCubit>().getStockTransfers(
+                          context.read<StockTakeListRemoteCubit>().getStockTakes(
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
-                                sourceBranchId: context.read<StockTransferListFilterCubit>().state.sourceBranch?.id,
-                                destinationBranchId:
-                                    context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
-                                status: context.read<StockTransferListFilterCubit>().state.status,
+                                status: context.read<StockTakeListFilterCubit>().state.status,
                               );
                         }
                       },
@@ -241,27 +223,27 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
           );
         }
         return DataGridLoading(
-          columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFERS, showId: true),
-          source: _stockTransferDataSource = StockTransferDataSource([], _rowsPerPage),
+          columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TAKES),
+          source: _stockReturnDataSource = StockTakeDataSource([], _rowsPerPage),
         );
       },
     );
   }
 }
 
-class StockTransferDataSource extends DataGridSource {
-  StockTransferDataSource(List<StockTransfer> stockTransfers, int rowsPerPage) {
+class StockTakeDataSource extends DataGridSource {
+  StockTakeDataSource(List<StockTake> stockTakes, int rowsPerPage) {
     _rowsPerPage = rowsPerPage;
-    _stockTransfers = stockTransfers;
-    _paginatedStockTransfers = _stockTransfers.getRange(0, stockTransfers.length).toList(growable: false);
-    buildDataGridRows(_stockTransfers);
+    _stockTakes = stockTakes;
+    _paginatedStockTakes = _stockTakes.getRange(0, stockTakes.length).toList(growable: false);
+    buildDataGridRows(_stockTakes);
   }
 
   late int _rowsPerPage;
 
-  List<StockTransfer> _stockTransfers = [];
+  List<StockTake> _stockTakes = [];
 
-  List<StockTransfer> _paginatedStockTransfers = [];
+  List<StockTake> _paginatedStockTakes = [];
 
   List<DataGridRow> dataGridRows = [];
 
@@ -273,19 +255,19 @@ class StockTransferDataSource extends DataGridSource {
     int startIndex = newPageIndex * _rowsPerPage;
     int endIndex = startIndex + _rowsPerPage;
 
-    if (startIndex < _stockTransfers.length && endIndex <= _stockTransfers.length) {
-      _paginatedStockTransfers = _stockTransfers.getRange(startIndex, endIndex).toList(growable: false);
-      buildDataGridRows(_paginatedStockTransfers);
+    if (startIndex < _stockTakes.length && endIndex <= _stockTakes.length) {
+      _paginatedStockTakes = _stockTakes.getRange(startIndex, endIndex).toList(growable: false);
+      buildDataGridRows(_paginatedStockTakes);
       notifyListeners();
     } else {
-      _paginatedStockTransfers = [];
+      _paginatedStockTakes = [];
     }
 
     return true;
   }
 
-  void buildDataGridRows(List<StockTransfer> stockTransfers) =>
-      dataGridRows = _stockTransfers.map((stock) => stock.toDataGridRow()).toList();
+  void buildDataGridRows(List<StockTake> stockTakes) =>
+      dataGridRows = stockTakes.map((take) => take.toDataGridRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -303,10 +285,10 @@ class StockTransferDataSource extends DataGridSource {
   }
 
   Widget _buildCell(String column, DataGridCell cell, int id) => switch (column) {
-        'id' => HoverBuilder(
+        'start_time' => HoverBuilder(
             builder: (isHover) => InkWell(
               onTap: () => AppRouter.router.goNamed(
-                'Stock Transfer Details',
+                SideMenuTreeItem.STOCK_TAKE_DETAILS.name,
                 pathParameters: {'id': id.toString()},
               ),
               hoverColor: UIColors.transparent,

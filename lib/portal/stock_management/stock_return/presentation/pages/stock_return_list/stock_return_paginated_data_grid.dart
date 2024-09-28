@@ -126,12 +126,14 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                                 page: 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<StockReturnListFilterCubit>().state.branchId,
+                                status: context.read<StockReturnListFilterCubit>().state.status,
                               );
                         } else {
                           context.read<StockReturnListRemoteCubit>().getStockReturns(
                                 page: state.data.currentPage!,
                                 size: _rowsPerPage,
                                 branchId: context.read<StockReturnListFilterCubit>().state.branchId,
+                                status: context.read<StockReturnListFilterCubit>().state.status,
                               );
                         }
                       },
@@ -157,6 +159,7 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                               page: 1,
                               size: _rowsPerPage,
                               branchId: context.read<StockReturnListFilterCubit>().state.branchId,
+                              status: context.read<StockReturnListFilterCubit>().state.status,
                             );
                       }
                     },
@@ -172,6 +175,7 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                               page: state.data.currentPage! - 1,
                               size: _rowsPerPage,
                               branchId: context.read<StockReturnListFilterCubit>().state.branchId,
+                              status: context.read<StockReturnListFilterCubit>().state.status,
                             );
                       }
                     },
@@ -187,6 +191,7 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                               page: state.data.currentPage! + 1,
                               size: _rowsPerPage,
                               branchId: context.read<StockReturnListFilterCubit>().state.branchId,
+                              status: context.read<StockReturnListFilterCubit>().state.status,
                             );
                       }
                     },
@@ -203,6 +208,7 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                               page: state.data.totalPages!,
                               size: _rowsPerPage,
                               branchId: context.read<StockReturnListFilterCubit>().state.branchId,
+                              status: context.read<StockReturnListFilterCubit>().state.status,
                             );
                       }
                     },

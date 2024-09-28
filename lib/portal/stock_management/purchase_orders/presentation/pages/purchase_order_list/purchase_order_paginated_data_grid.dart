@@ -129,12 +129,14 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                   page: 1,
                                   size: _rowsPerPage,
                                   branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                  status: context.read<PurchaseOrderListFilterCubit>().state.status,
                                 );
                           } else {
                             context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
                                   branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                  status: context.read<PurchaseOrderListFilterCubit>().state.status,
                                 );
                           }
                         },
@@ -160,6 +162,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                 page: 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                status: context.read<PurchaseOrderListFilterCubit>().state.status,
                               );
                         }
                       },
@@ -175,6 +178,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                status: context.read<PurchaseOrderListFilterCubit>().state.status,
                               );
                         }
                       },
@@ -190,6 +194,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                status: context.read<PurchaseOrderListFilterCubit>().state.status,
                               );
                         }
                       },
@@ -207,6 +212,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
                                 branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
+                                status: context.read<PurchaseOrderListFilterCubit>().state.status,
                               );
                         }
                       },
