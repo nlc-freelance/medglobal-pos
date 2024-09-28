@@ -24,6 +24,7 @@ class BranchDropdown extends StatelessWidget {
     this.selectedItem,
     this.selectedItems,
     this.onDeleteItem,
+    this.onRemoveSelectedItem,
   });
 
   final BranchDropdownType type;
@@ -36,15 +37,22 @@ class BranchDropdown extends StatelessWidget {
   final Branch? selectedItem;
   final List<Branch>? selectedItems;
   final Function(int value)? onDeleteItem;
+  final VoidCallback? onRemoveSelectedItem;
 
   factory BranchDropdown.select({
     required Function(Branch value)? onSelectItem,
+    required VoidCallback? onRemoveSelectedItem,
+    String? hint,
+    Branch? selectedItem,
     Key? key,
   }) =>
       BranchDropdown._(
         key: key,
         type: BranchDropdownType.select,
+        hint: hint,
         onSelectItem: onSelectItem,
+        selectedItem: selectedItem,
+        onRemoveSelectedItem: onRemoveSelectedItem,
       );
 
   factory BranchDropdown.input_top({
@@ -116,6 +124,8 @@ class BranchDropdown extends StatelessWidget {
           isSelectType: true,
           hint: hint,
           onSelectItem: onSelectItem,
+          selectedItem: selectedItem,
+          onRemoveSelectedItem: onRemoveSelectedItem,
         );
       case BranchDropdownType.input_top:
         return Column(
@@ -197,6 +207,7 @@ class _BranchDropdownOverlay extends StatefulWidget {
     this.selectedItem,
     this.selectedItems,
     this.onDeleteItem,
+    this.onRemoveSelectedItem,
   });
 
   final bool isSelectType;
@@ -206,6 +217,7 @@ class _BranchDropdownOverlay extends StatefulWidget {
   final List<Branch>? selectedItems;
   final Branch? selectedItem;
   final Function(int value)? onDeleteItem;
+  final VoidCallback? onRemoveSelectedItem;
 
   @override
   State<_BranchDropdownOverlay> createState() => _BranchDropdownOverlayState();
@@ -251,23 +263,47 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
         onTap: () => setState(() => _isVisible = true),
         child: widget.isSelectType
             ? HoverBuilder(builder: (isHover) {
-                final highlight = isHover || (_selectedItem != null && _selectedItem?.id != -1);
+                final highlight = _selectedItem != null && _selectedItem?.id != -1;
                 return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6.5, horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(vertical: 6.5, horizontal: 10.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: highlight ? UIColors.secondary : UIColors.background,
+                    color: highlight
+                        ? UIColors.secondary
+                        : isHover
+                            ? UIColors.whiteBg
+                            : UIColors.background,
                     border: Border.all(color: highlight ? UIColors.primary.withOpacity(0.2) : UIColors.borderRegular),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      UIText.labelMedium(
-                        _selectedItem != null ? _selectedItem!.name : 'All Branches',
-                        color: highlight ? UIColors.primary : UIColors.textRegular,
+                      Text.rich(
+                        TextSpan(
+                          text: widget.hint ?? 'Branch',
+                          style: UIStyleText.labelMedium.copyWith(color: UIColors.textMuted),
+                          children: [
+                            TextSpan(
+                              text: '  ${_selectedItem != null ? _selectedItem!.name : 'All Branches'}',
+                              style: UIStyleText.labelMedium,
+                            ),
+                          ],
+                        ),
                       ),
-                      const UIHorizontalSpace(30),
-                      Assets.icons.arrowDown.setColorOnHover(highlight)
+                      const UIHorizontalSpace(8),
+                      _selectedItem != null
+                          ? SizedBox(
+                              height: 16,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(50),
+                                onTap: () {
+                                  setState(() => _selectedItem = null);
+                                  widget.onRemoveSelectedItem!();
+                                },
+                                child: Assets.icons.close.svg(height: 22),
+                              ),
+                            )
+                          : Assets.icons.arrowDown.svg(height: 12)
                     ],
                   ),
                 );
@@ -294,7 +330,7 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
       ),
       body: BlocBuilder<BranchLazyListCubit, BranchLazyListState>(
         builder: (context, state) {
-          final branchList = [if (widget.isSelectType) const Branch(id: -1, name: 'All Branches'), ...state.branches];
+          final branchList = state.branches;
 
           double itemHeight = widget.isMultiSelect ? 48 : 40;
           double totalHeight = (state.branches.isNotEmpty ? branchList.length : 3) * itemHeight;
@@ -337,6 +373,7 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                         return Material(
                           type: MaterialType.transparency,
                           child: ListTile(
+                            contentPadding: EdgeInsets.zero,
                             onTap: () {
                               final branch = branchList[index];
 
@@ -360,18 +397,21 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                             },
                             dense: true,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: UIText.labelMedium(branchList[index].name),
-                                ),
-                                if (widget.isMultiSelect)
-                                  Checkbox(
-                                    value: isSelected,
-                                    onChanged: null,
+                            title: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: UIText.labelMedium(branchList[index].name),
                                   ),
-                              ],
+                                  if (widget.isMultiSelect)
+                                    Checkbox(
+                                      value: isSelected,
+                                      onChanged: null,
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
                         );

@@ -27,9 +27,10 @@ class DataGridUtil {
               alignment: Alignment.centerLeft,
               child: Text(
                 column.label,
-                style: UIStyleText.labelMedium.copyWith(
-                  color: UIColors.textLight,
-                  fontWeight: FontWeight.w600,
+                style: UIStyleText.labelRegular.copyWith(
+                  color: UIColors.textMuted,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w500,
                   decoration: TextDecoration.none,
                 ),
               ),
@@ -41,10 +42,10 @@ class DataGridUtil {
         columnDragIndicatorStrokeWidth: 1.0,
         columnDragIndicatorColor: UIColors.primary,
         headerHoverColor: UIColors.transparent,
-        rowHoverColor: UIColors.buttonSecondaryHover,
-        selectionColor: UIColors.secondary,
+        rowHoverColor: UIColors.whiteBg.withOpacity(0.6),
+        selectionColor: UIColors.whiteBg.withOpacity(0.6),
         gridLineColor: UIColors.borderMuted,
-        gridLineStrokeWidth: 0.8,
+        gridLineStrokeWidth: 0.6,
 
         /// Column group icon indent
         indentColumnWidth: 0,

@@ -70,8 +70,8 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                       navigationMode: GridNavigationMode.row,
                       columnWidthMode: ColumnWidthMode.fill,
                       headerGridLinesVisibility: GridLinesVisibility.none,
-                      gridLinesVisibility: GridLinesVisibility.none,
-                      headerRowHeight: 46,
+                      gridLinesVisibility: GridLinesVisibility.horizontal,
+                      headerRowHeight: 38,
                       footerHeight: 100,
                       footer: _stockReturnDataSource.rows.isEmpty
                           ? Padding(
@@ -218,7 +218,7 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
         );
       }
       return DataGridLoading(
-        columns: DataGridUtil.getColumns(DataGridColumn.STOCK_RETURNS),
+        columns: DataGridUtil.getColumns(DataGridColumn.STOCK_RETURNS, showId: true),
         source: _stockReturnDataSource = StockReturnDataSource([], _rowsPerPage),
       );
     });
@@ -267,19 +267,9 @@ class StockReturnDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    Color getRowBackgroundColor() {
-      final int index = effectiveRows.indexOf(row);
-      if (index % 2 != 0) {
-        return UIColors.transparent;
-      }
-
-      return UIColors.whiteBg.withOpacity(0.5);
-    }
-
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
         return Container(
-          color: getRowBackgroundColor(),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: _buildCell(cell.columnName, cell, row.getCells().first.value),
@@ -303,17 +293,24 @@ class StockReturnDataSource extends DataGridSource {
               ),
             ),
           ),
-        'status' => Chip(
-            label: UIText.labelRegular(
-              (cell.value as StockOrderStatus).label,
-              color: StatusMapper.textColor(cell.value),
+        'status' => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: StatusMapper.color(cell.value).withOpacity(0.6),
             ),
-            backgroundColor: StatusMapper.color(cell.value),
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: UIColors.transparent),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  (cell.value as StockOrderStatus).label,
+                  style: UIStyleText.hint.copyWith(
+                    color: StatusMapper.textColor(cell.value),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
         _ => UIText.dataGridText(

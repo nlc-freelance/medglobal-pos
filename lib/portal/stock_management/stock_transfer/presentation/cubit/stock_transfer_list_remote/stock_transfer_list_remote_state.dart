@@ -12,11 +12,11 @@ final class StockTransferListInitial extends StockTransferListRemoteState {}
 final class StockTransferListLoading extends StockTransferListRemoteState {}
 
 final class StockTransferListLoaded extends StockTransferListRemoteState {
-  final List<StockTransfer> stockTransfers;
-  const StockTransferListLoaded({required this.stockTransfers});
+  final StockTransferPaginatedList data;
+  const StockTransferListLoaded({required this.data});
 
   @override
-  List<Object> get props => [stockTransfers];
+  List<Object> get props => [data];
 }
 
 final class StockTransferListError extends StockTransferListRemoteState {

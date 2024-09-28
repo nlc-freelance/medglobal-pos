@@ -21,7 +21,7 @@ class DataGridToolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding ?? const EdgeInsets.only(bottom: 20.0),
+      padding: padding ?? const EdgeInsets.only(bottom: 24),
       child: Row(
         children: [
           if (search != null) ...[

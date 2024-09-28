@@ -43,21 +43,19 @@ class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
               child: DatePickerPopup(onSelect: (date) {}),
             ),
             const UIHorizontalSpace(8),
-            SizedBox(
-              width: 200,
-              child: BranchDropdown.select(
-                onSelectItem: (branch) {
-                  final returnSize = context.read<ReturnTransactionListFilterCubit>().state.size;
-                  if (branch.id == -1) {
-                    /// No filter, get all return transactions
-                    context.read<ReturnTransactionListCubit>().getTransactions(size: returnSize!);
-                    context.read<ReturnTransactionListFilterCubit>().setBranch(null);
-                  } else {
-                    context.read<ReturnTransactionListCubit>().getTransactions(size: returnSize!, branchId: branch.id);
-                    context.read<ReturnTransactionListFilterCubit>().setBranch(branch.id);
-                  }
-                },
-              ),
+            BranchDropdown.select(
+              onRemoveSelectedItem: () {
+                final returnSize = context.read<ReturnTransactionListFilterCubit>().state.size;
+
+                context.read<ReturnTransactionListCubit>().getTransactions(size: returnSize!);
+                context.read<ReturnTransactionListFilterCubit>().setBranch(null);
+              },
+              onSelectItem: (branch) {
+                final returnSize = context.read<ReturnTransactionListFilterCubit>().state.size;
+
+                context.read<ReturnTransactionListCubit>().getTransactions(size: returnSize!, branchId: branch.id);
+                context.read<ReturnTransactionListFilterCubit>().setBranch(branch.id);
+              },
             ),
           ],
         ),

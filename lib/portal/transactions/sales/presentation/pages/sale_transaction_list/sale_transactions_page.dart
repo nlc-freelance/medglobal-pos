@@ -43,21 +43,19 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
               child: DatePickerPopup(onSelect: (date) {}),
             ),
             const UIHorizontalSpace(8),
-            SizedBox(
-              width: 200,
-              child: BranchDropdown.select(
-                onSelectItem: (branch) {
-                  final saleSize = context.read<SaleTransactionListFilterCubit>().state.size;
-                  if (branch.id == -1) {
-                    /// No filter, get all sale transactions
-                    context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!);
-                    context.read<SaleTransactionListFilterCubit>().setBranch(null);
-                  } else {
-                    context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!, branchId: branch.id);
-                    context.read<SaleTransactionListFilterCubit>().setBranch(branch.id);
-                  }
-                },
-              ),
+            BranchDropdown.select(
+              onRemoveSelectedItem: () {
+                final saleSize = context.read<SaleTransactionListFilterCubit>().state.size;
+
+                context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!);
+                context.read<SaleTransactionListFilterCubit>().setBranch(null);
+              },
+              onSelectItem: (branch) {
+                final saleSize = context.read<SaleTransactionListFilterCubit>().state.size;
+
+                context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!, branchId: branch.id);
+                context.read<SaleTransactionListFilterCubit>().setBranch(branch.id);
+              },
             ),
           ],
         ),

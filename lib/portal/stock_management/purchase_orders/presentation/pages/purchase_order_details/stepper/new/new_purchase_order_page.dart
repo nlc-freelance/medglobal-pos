@@ -21,7 +21,7 @@ class _NewPurchaseOrderPageState extends State<NewPurchaseOrderPage> {
     context.read<PurchaseOrderRemoteCubit>().reset();
     context.read<NewPurchaseOrderCubit>().reset();
 
-    /// TODO: Can be removed if the initState is triggered when navigating the [PurchaseOrdersPage]
+    /// TODO: Can be removed if the initState is always triggered when navigating to [PurchaseOrdersPage]
     context.read<PurchaseOrderCubit>().reset();
   }
 

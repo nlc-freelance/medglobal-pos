@@ -6,7 +6,13 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/do
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_paginated_list.dart';
 
 abstract class StockTransferApi {
-  Future<StockTransferPaginatedList> getStockTransfers({int? page, StockOrderStatus? status});
+  Future<StockTransferPaginatedList> getStockTransfers({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    int? sourceBranchId,
+    int? destinationBranchId,
+  });
   Future<StockTransferDto> getStockTransferById(int id);
   Future<StockTransferDto> create(NewStockTransfer payload);
   Future<StockTransferDto> update(StockOrderUpdate type, {required int id, required StockTransfer stockTransfer});
@@ -19,11 +25,23 @@ class StockTransferApiImpl implements StockTransferApi {
   StockTransferApiImpl(this._apiService);
 
   @override
-  Future<StockTransferPaginatedList> getStockTransfers({int? page, StockOrderStatus? status}) async {
+  Future<StockTransferPaginatedList> getStockTransfers({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    int? sourceBranchId,
+    int? destinationBranchId,
+  }) async {
     try {
       final response = await _apiService.collection<StockTransferDto>(
         '/stock-transfers',
-        queryParams: {'page': page, 'status': status?.label.toLowerCase()},
+        queryParams: {
+          'page': page,
+          'size': size,
+          'status': status?.label.toLowerCase(),
+          'fromBranch': sourceBranchId,
+          'toBranch': destinationBranchId,
+        },
         converter: StockTransferDto.fromJson,
       );
 

@@ -34,9 +34,21 @@ class StockTransferRepositoryImpl implements StockTransferRepository {
   }
 
   @override
-  Future<Either<Failure, StockTransferPaginatedList>> getStockTransfers({int? page, StockOrderStatus? status}) async {
+  Future<Either<Failure, StockTransferPaginatedList>> getStockTransfers({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    int? sourceBranchId,
+    int? destinationBranchId,
+  }) async {
     try {
-      final response = await _stockTransferApi.getStockTransfers(page: page, status: status);
+      final response = await _stockTransferApi.getStockTransfers(
+        page: page,
+        size: size,
+        status: status,
+        sourceBranchId: sourceBranchId,
+        destinationBranchId: destinationBranchId,
+      );
       return Right(response);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
