@@ -12,11 +12,11 @@ final class StockTakeListInitial extends StockTakeListRemoteState {}
 final class StockTakeListLoading extends StockTakeListRemoteState {}
 
 final class StockTakeListLoaded extends StockTakeListRemoteState {
-  final List<StockTake> stockTakes;
-  const StockTakeListLoaded({required this.stockTakes});
+  final StockTakePaginatedList data;
+  const StockTakeListLoaded({required this.data});
 
   @override
-  List<Object> get props => [stockTakes];
+  List<Object> get props => [data];
 }
 
 final class StockTakeListError extends StockTakeListRemoteState {

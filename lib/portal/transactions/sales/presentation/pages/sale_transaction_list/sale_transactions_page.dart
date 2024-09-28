@@ -23,7 +23,7 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
       children: [
         const PageHeader(
           title: 'Sales',
-          subtitle: Strings.subtitlePlaceholder,
+          subtitle: 'View all sale transactions to analyze sales performance.',
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
@@ -39,7 +39,7 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
           ),
           filters: [
             SizedBox(
-              width: 200,
+              width: 150,
               child: DatePickerPopup(onSelect: (date) {}),
             ),
             const UIHorizontalSpace(8),

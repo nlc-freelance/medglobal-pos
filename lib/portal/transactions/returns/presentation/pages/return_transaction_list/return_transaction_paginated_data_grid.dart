@@ -71,7 +71,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
             children: [
               Expanded(
                 child: Container(
-                  decoration: UIStyleContainer.horizontalBorder,
+                  decoration: UIStyleContainer.topBorder,
                   child: ClipRect(
                     clipper: HorizontalBorderClipper(),
                     child: SfDataGridTheme(
@@ -84,8 +84,8 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                         navigationMode: GridNavigationMode.row,
                         columnWidthMode: ColumnWidthMode.fill,
                         headerGridLinesVisibility: GridLinesVisibility.none,
-                        gridLinesVisibility: GridLinesVisibility.none,
-                        headerRowHeight: 46,
+                        gridLinesVisibility: GridLinesVisibility.horizontal,
+                        headerRowHeight: 38,
                         footerHeight: 100,
                         footer: _returnTransactionDataSource.rows.isEmpty
                             ? Padding(
@@ -296,19 +296,9 @@ class ReturnTransactionDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    Color getRowBackgroundColor() {
-      final int index = effectiveRows.indexOf(row);
-      if (index % 2 != 0) {
-        return UIColors.transparent;
-      }
-
-      return UIColors.whiteBg.withOpacity(0.5);
-    }
-
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
         return Container(
-          color: getRowBackgroundColor(),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: _buildCell(cell.columnName, cell, row.getCells().first.value),
@@ -330,21 +320,29 @@ class ReturnTransactionDataSource extends DataGridSource {
             ),
           ),
         ),
-      'status' => Chip(
-          label: UIText.labelRegular(
-            (cell.value as ReturnStatus).label,
-            color: (cell.value as ReturnStatus) == ReturnStatus.AWAITING_ACTION
-                ? UIColors.awaitingAction
-                : UIColors.completed,
+      'status' => Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: ((cell.value as ReturnStatus) == ReturnStatus.AWAITING_ACTION
+                    ? UIColors.awaitingActionBg
+                    : UIColors.completedBg)
+                .withOpacity(0.6),
           ),
-          backgroundColor: (cell.value as ReturnStatus) == ReturnStatus.AWAITING_ACTION
-              ? UIColors.awaitingActionBg
-              : UIColors.completedBg,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(color: UIColors.transparent),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                (cell.value as ReturnStatus).label,
+                style: UIStyleText.hint.copyWith(
+                  color: (cell.value as ReturnStatus) == ReturnStatus.AWAITING_ACTION
+                      ? UIColors.awaitingAction
+                      : UIColors.completed,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ),
       _ => UIText.dataGridText(

@@ -29,10 +29,7 @@ class _SaleTransactionDetailsPageState extends State<SaleTransactionDetailsPage>
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const PageHeader(
-              title: 'Sale Details',
-              subtitle: Strings.subtitlePlaceholder,
-            ),
+            const PageHeader(title: 'Sale Details'),
             const UIVerticalSpace(20),
             if (state is TransactionByIdLoading) ...[
               const UIVerticalSpace(30.0),
@@ -50,6 +47,7 @@ class _SaleTransactionDetailsPageState extends State<SaleTransactionDetailsPage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const PageSectionTitle(title: 'General Information'),
                       GridView(
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
