@@ -19,5 +19,5 @@ class GetSuppliersParams {
   final int size;
   final String? search;
 
-  GetSuppliersParams({required this.page, this.size = 10, this.search});
+  GetSuppliersParams({required this.page, required this.size, this.search});
 }

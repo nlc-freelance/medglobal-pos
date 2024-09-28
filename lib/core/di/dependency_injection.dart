@@ -110,6 +110,7 @@ import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecase
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_lazy_list/supplier_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list_filter/supplier_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transaction_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transactions_usecase.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/data/api/return_api.dart';
@@ -307,6 +308,7 @@ void initDependencyInjection() {
     ..registerFactory(() => AuthBloc(injector(), injector(), injector(), injector()))
     ..registerFactory(() => SidebarCubit())
     ..registerFactory(() => SupplierListCubit(injector()))
+    ..registerFactory(() => SupplierListFilterCubit())
     ..registerFactory(() => SupplierCubit(injector(), injector(), injector(), injector()))
     ..registerFactory(() => CategoryCubit(injector()))
     ..registerFactory(() => ProductSelectionCubit())

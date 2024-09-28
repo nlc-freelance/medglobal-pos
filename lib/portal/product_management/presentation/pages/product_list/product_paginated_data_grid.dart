@@ -68,7 +68,7 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
             children: [
               Expanded(
                 child: Container(
-                  decoration: UIStyleContainer.horizontalBorder,
+                  decoration: UIStyleContainer.topBorder,
                   child: ClipRect(
                     clipper: HorizontalBorderClipper(),
                     child: SfDataGridTheme(
@@ -83,9 +83,9 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                         navigationMode: GridNavigationMode.row,
                         selectionMode: SelectionMode.multiple,
                         columnWidthMode: ColumnWidthMode.fill,
-                        headerRowHeight: 46,
+                        headerRowHeight: 38,
                         headerGridLinesVisibility: GridLinesVisibility.none,
-                        gridLinesVisibility: GridLinesVisibility.none,
+                        gridLinesVisibility: GridLinesVisibility.horizontal,
                         footerHeight: 100,
                         footer: _productDataGridSource.rows.isEmpty
                             ? Padding(
@@ -287,19 +287,9 @@ class ProductDataGridSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    Color getRowBackgroundColor() {
-      final int index = effectiveRows.indexOf(row);
-      if (index % 2 != 0) {
-        return UIColors.transparent;
-      }
-
-      return UIColors.whiteBg.withOpacity(0.5);
-    }
-
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
         return Container(
-          color: getRowBackgroundColor(),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: cell.columnName == 'name'

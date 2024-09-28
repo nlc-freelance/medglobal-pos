@@ -61,7 +61,6 @@ class DataGridUtil {
       );
 
   static SfDataGridThemeData get cellNavigationStyle => baseStyle.copyWith(
-        rowHoverColor: UIColors.secondary,
         selectionColor: UIColors.transparent,
         currentCellStyle: const DataGridCurrentCellStyle(
           borderColor: UIColors.transparent,
