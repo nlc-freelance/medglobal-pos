@@ -40,6 +40,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/pres
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_lazy_list/supplier_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list_filter/supplier_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
@@ -71,6 +72,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<AuthBloc>()..add(const AppInitEvent())),
         BlocProvider(create: (_) => GetIt.I<SidebarCubit>()),
         BlocProvider(create: (_) => GetIt.I<SupplierListCubit>()),
+        BlocProvider(create: (_) => GetIt.I<SupplierListFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<SupplierCubit>()),
         BlocProvider(create: (_) => GetIt.I<CategoryCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductSelectionCubit>()),

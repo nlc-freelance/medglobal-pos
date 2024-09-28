@@ -72,8 +72,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       children: [
         PageHeader(
           title: isEditingProduct ? 'Edit Product' : 'Add Product',
-          subtitle: Strings.subtitlePlaceholder,
         ),
+        const UIVerticalSpace(20),
         Expanded(
           child: BlocConsumer<ProductCubit, ProductState>(
             listener: (_, state) {

@@ -6,8 +6,8 @@ import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_search_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/product_paginated_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/selected_products_toolbar.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/product_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class ProductsPage extends StatefulWidget {
@@ -51,7 +51,7 @@ class _ProductsPageState extends State<ProductsPage> {
         children: [
           PageHeader(
             title: 'Manage Products',
-            subtitle: Strings.subtitlePlaceholder,
+            subtitle: 'View and manage products to keep track your inventory items.',
             actions: [
               UIButton.filled(
                 'New Product',
@@ -60,6 +60,7 @@ class _ProductsPageState extends State<ProductsPage> {
               ),
             ],
           ),
+          const UIVerticalSpace(20),
           DataGridToolbar(
             isDownloadable: true,
             search: UISearchField(
