@@ -71,14 +71,21 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_take/data/r
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/repositories/stock_take_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/usecases/create_stock_take_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/usecases/get_stock_take_by_id_usecase.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/usecases/get_stock_take_items_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/usecases/get_stock_takes_usecase.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/usecases/update_stock_items_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/usecases/update_stock_take_usecase.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/uncounted_items/uncounted_items_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/uncounted_items_draft/uncounted_items_draft_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/counted_items_list/counted_items_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/counted_items_list/counted_items_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/stock_take_items_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/uncounted_items_list/uncounted_items_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/uncounted_items_list/uncounted_items_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_remote/stock_take_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/data/api/stock_transfer_api.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/data/repositories/stock_transfer_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/repositories/stock_transfer_repository.dart';
@@ -278,8 +285,10 @@ void initDependencyInjection() {
     /// Stock Take
     ..registerLazySingleton(() => GetStockTakesUseCase(injector()))
     ..registerLazySingleton(() => GetStockTakeByIdUseCase(injector()))
+    ..registerLazySingleton(() => GetStockTakeItemsByIdUseCase(injector()))
     ..registerLazySingleton(() => CreateStockTakeUseCase(injector()))
     ..registerLazySingleton(() => UpdateStockTakeUseCase(injector()))
+    ..registerLazySingleton(() => UpdateStockTakeItemsByIdUseCase(injector()))
 
     /// Transactions
     ..registerLazySingleton(() => GetTransactionsUseCase(injector()))
@@ -338,10 +347,15 @@ void initDependencyInjection() {
     ..registerFactory(() => NewStockTransferCubit())
     ..registerFactory(() => StockTakeListRemoteCubit(injector()))
     ..registerFactory(() => StockTakeListFilterCubit())
-    ..registerFactory(() => StockTakeRemoteCubit(injector(), injector(), injector()))
+    ..registerFactory(() => StockTakeBloc(injector(), injector(), injector()))
+    ..registerFactory(() => UncountedItemsListCubit(injector()))
+    ..registerFactory(() => UncountedItemsListFilterCubit())
+    ..registerFactory(() => CountedItemsListCubit(injector()))
+    ..registerFactory(() => CountedItemsListFilterCubit())
     ..registerFactory(() => StockTakeCubit())
+    ..registerFactory(() => StockTakeItemsCubit(injector()))
     ..registerFactory(() => NewStockTakeCubit())
-    ..registerFactory(() => UncountedItemsCubit())
+    ..registerFactory(() => UncountedItemsDraftCubit())
     ..registerFactory(() => SaleTransactionListCubit(injector()))
     ..registerFactory(() => TransactionCubit(injector()))
     ..registerFactory(() => ReturnTransactionListCubit(injector()))

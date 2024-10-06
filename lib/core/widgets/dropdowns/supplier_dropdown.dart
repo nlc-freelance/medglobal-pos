@@ -36,12 +36,14 @@ class SupplierDropdown extends StatelessWidget {
 
   factory SupplierDropdown.select({
     required Function(Supplier value)? onSelectItem,
+    Supplier? selectedItem,
     Key? key,
   }) =>
       SupplierDropdown._(
         key: key,
         type: SupplierDropdownType.select,
         onSelectItem: onSelectItem,
+        selectedItem: selectedItem,
       );
 
   factory SupplierDropdown.input_top({
@@ -113,6 +115,7 @@ class SupplierDropdown extends StatelessWidget {
           isSelectType: true,
           hint: hint,
           onSelectItem: onSelectItem,
+          selectedItem: selectedItem,
         );
       case SupplierDropdownType.input_top:
         return Column(
@@ -218,8 +221,7 @@ class _SupplierDropdownOverlayState extends State<_SupplierDropdownOverlay> {
   @override
   void initState() {
     super.initState();
-    setState(() => _selectedItem = widget.selectedItem);
-
+    if (widget.selectedItem != null) setState(() => _selectedItem = widget.selectedItem);
     _scrollController = ScrollController()..addListener(_scrollListener);
     context.read<SupplierLazyListCubit>().getSuppliers();
   }
@@ -234,7 +236,7 @@ class _SupplierDropdownOverlayState extends State<_SupplierDropdownOverlay> {
 
   @override
   void didUpdateWidget(covariant _SupplierDropdownOverlay oldWidget) {
-    setState(() => _selectedItem = widget.selectedItem);
+    if (widget.selectedItem != null) setState(() => _selectedItem = widget.selectedItem);
     super.didUpdateWidget(oldWidget);
   }
 

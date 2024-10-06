@@ -62,7 +62,7 @@ class _StockTransferDetailsState extends State<StockTransferDetails> {
                   label: 'Created Date',
                   value: stockTransfer.createdAt != null
                       ? DateFormat.yMd().format(stockTransfer.createdAt!)
-                      : Strings.empty,
+                      : Strings.noValue,
                 ),
                 LabelValue.text(
                   label: 'Source Branch',

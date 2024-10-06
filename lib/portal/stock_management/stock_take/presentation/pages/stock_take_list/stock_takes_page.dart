@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/stock_take_paginated_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/widgets/new_stock_take_dialog.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/widgets/stock_take_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class StockTakesPage extends StatefulWidget {
@@ -24,9 +23,6 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     context.read<StockTakeListRemoteCubit>().getStockTakes();
-
-    /// Reset NewStockTakeCubit
-    context.read<NewStockTakeCubit>().reset();
   }
 
   @override

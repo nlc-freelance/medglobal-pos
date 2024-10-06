@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'stock_take_item.g.dart';
@@ -60,7 +61,7 @@ class StockTakeItem extends Equatable {
           DataGridCell<int>(columnName: 'qty_expected', value: qtyExpected ?? 0),
           DataGridCell<int>(columnName: 'qty_counted', value: qtyCounted ?? 0),
           DataGridCell<int>(columnName: 'difference', value: difference ?? 0),
-          DataGridCell<double>(columnName: 'cost_difference', value: costDifference),
+          DataGridCell<String>(columnName: 'cost_difference', value: costDifference.toPesoString()),
         ],
       );
 
@@ -79,7 +80,7 @@ class StockTakeItem extends Equatable {
       variantId: variantId ?? this.variantId,
       name: name ?? this.name,
       sku: sku ?? this.sku,
-      qtyCounted: qtyCounted,
+      qtyCounted: qtyCounted ?? this.qtyCounted,
       qtyExpected: qtyExpected ?? this.qtyExpected,
       difference: difference ?? this.difference,
       costDifference: costDifference ?? this.costDifference,

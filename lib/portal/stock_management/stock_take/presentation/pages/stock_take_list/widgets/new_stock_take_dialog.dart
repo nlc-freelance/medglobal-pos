@@ -5,8 +5,8 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/supplier_dropdown.dart';
 import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_remote/stock_take_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -24,10 +24,13 @@ class _NewStockTakeDialogState extends State<NewStockTakeDialog> {
   void initState() {
     super.initState();
     setState(() => _isInitialRebuild = true);
+
+    /// Reset NewStockTakeCubit
+    context.read<NewStockTakeCubit>().reset();
   }
 
   @override
-  Widget build(BuildContext context) => BlocConsumer<StockTakeRemoteCubit, StockTakeRemoteState>(
+  Widget build(BuildContext context) => BlocConsumer<StockTakeBloc, StockTakeBlocRemoteState>(
         listener: (context, state) {
           if (state is StockTakeCreateSuccess) {
             final id = state.stockTake.id;
@@ -80,8 +83,9 @@ class _NewStockTakeDialogState extends State<NewStockTakeDialog> {
                       actionLabel: 'Start',
                       isLoading: state is StockTakeCreateLoading,
                       onCancel: () => Navigator.pop(context),
-                      onAction: () =>
-                          context.read<StockTakeRemoteCubit>().create(context.read<NewStockTakeCubit>().state.payload),
+                      onAction: () => context
+                          .read<StockTakeBloc>()
+                          .add(CreateStockTakeEvent(context.read<NewStockTakeCubit>().state.payload)),
                     ),
                   ],
                 ),

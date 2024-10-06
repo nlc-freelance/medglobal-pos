@@ -8,9 +8,11 @@ class DatePickerPopup extends StatefulWidget {
   const DatePickerPopup({
     super.key,
     this.selectedDate,
+    this.isInput = false,
     required this.onSelect,
   });
 
+  final bool isInput;
   final DateTime? selectedDate;
   final void Function(DateTime value) onSelect;
 
@@ -48,7 +50,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
               child: SfDateRangePicker(
                 view: DateRangePickerView.month,
                 selectionMode: DateRangePickerSelectionMode.single,
-                enableMultiView: true,
+                enableMultiView: false,
                 navigationDirection: DateRangePickerNavigationDirection.horizontal,
                 viewSpacing: 20,
                 headerHeight: 60,
@@ -59,9 +61,12 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
                 selectionColor: UIColors.primary,
                 showNavigationArrow: true,
                 onSelectionChanged: (args) {
-                  // setState(() => _selectedDate = args.value);
-                  // widget.onSelect(args.value);
-                  // Navigator.pop(context);
+                  if (widget.isInput) {
+                    // TODO: Input dates vs. Select dates (as filter)
+                    setState(() => _selectedDate = args.value);
+                    widget.onSelect(args.value);
+                  }
+                  Navigator.pop(context);
                 },
               ),
             ),
@@ -79,8 +84,12 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 UIText.labelMedium(
-                  _selectedDate != null ? DateFormat('MMMM dd, yyyy').format(_selectedDate!) : 'All Time',
-                  color: _selectedDate != null ? UIColors.primary : UIColors.textLight,
+                  _selectedDate != null
+                      ? DateFormat('MMMM dd, yyyy').format(_selectedDate!)
+                      : widget.isInput
+                          ? 'Select date'
+                          : 'All Time',
+                  color: UIColors.textLight,
                 ),
                 const Spacer(),
                 Assets.icons.arrowDown.svg(height: 10),

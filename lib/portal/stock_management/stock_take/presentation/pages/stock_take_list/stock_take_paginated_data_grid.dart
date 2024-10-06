@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -27,7 +27,6 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
-    context.read<StockTakeListRemoteCubit>().getStockTakes();
   }
 
   @override

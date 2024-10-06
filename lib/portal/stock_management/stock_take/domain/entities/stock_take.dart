@@ -83,7 +83,7 @@ class StockTake extends Equatable {
         ],
       );
 
-  JSON toPayload(StockOrderUpdate type) {
+  JSON toPayload(StockOrderUpdate type, {int? uncountedItemsValue}) {
     String? status;
     if (type == StockOrderUpdate.SAVE) status = 'in progress';
     if (type == StockOrderUpdate.MARK_AS_COMPLETE) status = 'completed';
@@ -91,12 +91,7 @@ class StockTake extends Equatable {
 
     return {
       'status': status,
-      'stockTakeDetails': items
-          ?.map((item) => {
-                'id': item.id,
-                'countedQuantity': item.qtyCounted,
-              })
-          .toList(),
+      if (type == StockOrderUpdate.MARK_AS_COMPLETE) 'uncountedItemValue': uncountedItemsValue,
       'notes': description,
     };
   }
