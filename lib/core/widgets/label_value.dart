@@ -123,7 +123,7 @@ class LabelValue extends StatelessWidget {
           const UIVerticalSpace(6),
           Chip(
             label: Text(
-              chip.toString(),
+              chip.toPesoString(),
               style: UIStyleText.chip.copyWith(color: chip! > 0 ? UIColors.completed : UIColors.cancelled),
             ),
             backgroundColor: chip! > 0 ? UIColors.completedBg : UIColors.cancelledBg,

@@ -31,12 +31,12 @@ class DataGridToolbar extends StatelessWidget {
           ],
           ...?filters,
           if (search == null) const Spacer(),
-          if (isImportCSV)
-            UIButton.outlined(
-              'Import from CSV',
-              iconBuilder: (isHover) => Assets.icons.import.setColorOnHover(isHover),
-              onClick: () {},
-            ),
+          // if (isImportCSV)
+          //   UIButton.outlined(
+          //     'Import from CSV',
+          //     iconBuilder: (isHover) => Assets.icons.import.setColorOnHover(isHover),
+          //     onClick: () {},
+          //   ),
           if (isDownloadable) ...[
             const UIHorizontalSpace(8),
             UIButton.outlined(

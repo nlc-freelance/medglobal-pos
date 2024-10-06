@@ -24,12 +24,17 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_return/pres
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_filter/stock_return_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/uncounted_items/uncounted_items_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/uncounted_items_draft/uncounted_items_draft_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/counted_items_list/counted_items_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/counted_items_list/counted_items_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/stock_take_items_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/uncounted_items_list/uncounted_items_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/uncounted_items_list/uncounted_items_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_remote/stock_take_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/new_stock_transfer/new_stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_filter/stock_transfer_list_filter_cubit.dart';
@@ -94,6 +99,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<StockReturnListFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnCubit>()),
+        BlocProvider(create: (_) => GetIt.I<StockTakeItemsCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewStockReturnCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockTransferListRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockTransferListFilterCubit>()),
@@ -102,10 +108,14 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<NewStockTransferCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockTakeListRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockTakeListFilterCubit>()),
-        BlocProvider(create: (_) => GetIt.I<StockTakeRemoteCubit>()),
+        BlocProvider(create: (_) => GetIt.I<StockTakeBloc>()),
+        BlocProvider(create: (_) => GetIt.I<UncountedItemsListCubit>()),
+        BlocProvider(create: (_) => GetIt.I<UncountedItemsListFilterCubit>()),
+        BlocProvider(create: (_) => GetIt.I<CountedItemsListCubit>()),
+        BlocProvider(create: (_) => GetIt.I<CountedItemsListFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockTakeCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewStockTakeCubit>()),
-        BlocProvider(create: (_) => GetIt.I<UncountedItemsCubit>()),
+        BlocProvider(create: (_) => GetIt.I<UncountedItemsDraftCubit>()),
         BlocProvider(create: (_) => GetIt.I<RegisterCubit>()),
         BlocProvider(create: (_) => GetIt.I<RegisterShiftBloc>()),
         BlocProvider(create: (_) => GetIt.I<POSProductListRemoteCubit>()),
