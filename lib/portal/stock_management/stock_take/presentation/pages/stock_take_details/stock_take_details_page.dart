@@ -175,14 +175,15 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
                                 ],
                               ),
                               const UIVerticalSpace(30),
-                              if (stockTake.status == StockOrderStatus.IN_PROGRESS) ...[
+                              if (stockTake.status == StockOrderStatus.IN_PROGRESS ||
+                                  stockTake.status == StockOrderStatus.NEW) ...[
                                 UIText.heading5('Items'),
                                 const Divider(color: UIColors.borderMuted),
                                 MultiBlocListener(
                                   listeners: [
                                     BlocListener<UncountedItemsListCubit, UncountedItemsListState>(
                                       listener: (context, state) {
-                                        if (state is StockTakeUncountedItemsListLoaded) {
+                                        if (state is UncountedItemsListLoaded) {
                                           /// No need to update the count displayed in the Tab when data displayed is from a search result
                                           if (state.search == null) {
                                             setState(() => _uncountedTotal = state.data.totalCount);
@@ -192,7 +193,7 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
                                     ),
                                     BlocListener<CountedItemsListCubit, CountedItemsListState>(
                                       listener: (context, state) {
-                                        if (state is StockTakeCountedItemsListLoaded) {
+                                        if (state is CountedItemsListLoaded) {
                                           /// No need to update the count displayed in the Tab when data displayed is from a search result
                                           if (state.search == null) {
                                             setState(() => _countedTotal = state.data.totalCount);

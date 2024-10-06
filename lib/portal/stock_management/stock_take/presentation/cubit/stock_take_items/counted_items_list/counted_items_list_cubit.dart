@@ -7,10 +7,12 @@ part 'counted_items_list_state.dart';
 
 class CountedItemsListCubit extends Cubit<CountedItemsListState> {
   final GetStockTakeItemsByIdUseCase _getItemsByIdUseCase;
-  CountedItemsListCubit(this._getItemsByIdUseCase) : super(StockTakeCountedItemsListInitial());
+  CountedItemsListCubit(this._getItemsByIdUseCase) : super(CountedItemsListInitial());
+
+  void reset() => emit(CountedItemsListInitial());
 
   Future<void> getItems({required int id, int page = 1, int size = 20, String? search}) async {
-    emit(StockTakeCountedItemsListLoading());
+    emit(CountedItemsListLoading());
 
     try {
       final result = await _getItemsByIdUseCase.call(
@@ -23,11 +25,11 @@ class CountedItemsListCubit extends Cubit<CountedItemsListState> {
         ),
       );
       result.fold(
-        (error) => emit(StockTakeCountedItemsListError(message: error.message)),
-        (data) => emit(StockTakeCountedItemsListLoaded(data: data, search: search)),
+        (error) => emit(CountedItemsListError(message: error.message)),
+        (data) => emit(CountedItemsListLoaded(data: data, search: search)),
       );
     } catch (e) {
-      emit(StockTakeCountedItemsListError(message: e.toString()));
+      emit(CountedItemsListError(message: e.toString()));
     }
   }
 }

@@ -57,7 +57,7 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
           return Text(state.message);
         }
         if (state is ProductListNoResultFound) {
-          return DataGridNoData.search(
+          return DataGridNoData.custom(
             message: state.message,
             columns: DataGridUtil.getColumns(DataGridColumn.PRODUCTS),
             source: _productDataGridSource,

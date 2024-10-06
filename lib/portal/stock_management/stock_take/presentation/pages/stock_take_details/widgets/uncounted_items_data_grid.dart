@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
@@ -117,7 +118,7 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> with Si
     context.read<UncountedItemsListFilterCubit>().setSearch(value);
   }
 
-  void _onNextPage(StockTakeUncountedItemsListLoaded state) {
+  void _onNextPage(UncountedItemsListLoaded state) {
     if (state.data.currentPage != state.data.totalPages) {
       context.read<UncountedItemsListCubit>().getItems(
             id: context.read<StockTakeCubit>().state.stockTake.id!,
@@ -128,7 +129,7 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> with Si
     }
   }
 
-  void _onPreviousPage(StockTakeUncountedItemsListLoaded state) {
+  void _onPreviousPage(UncountedItemsListLoaded state) {
     if (state.data.currentPage != 1) {
       context.read<UncountedItemsListCubit>().getItems(
             id: context.read<StockTakeCubit>().state.stockTake.id!,
@@ -139,7 +140,7 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> with Si
     }
   }
 
-  void _onFirstPage(StockTakeUncountedItemsListLoaded state) {
+  void _onFirstPage(UncountedItemsListLoaded state) {
     if (state.data.currentPage != 1) {
       context.read<UncountedItemsListCubit>().getItems(
             id: context.read<StockTakeCubit>().state.stockTake.id!,
@@ -150,7 +151,7 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> with Si
     }
   }
 
-  void _onLastPage(StockTakeUncountedItemsListLoaded state) {
+  void _onLastPage(UncountedItemsListLoaded state) {
     if (state.data.currentPage != state.data.totalPages) {
       context.read<UncountedItemsListCubit>().getItems(
             id: context.read<StockTakeCubit>().state.stockTake.id!,
@@ -161,7 +162,7 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> with Si
     }
   }
 
-  void _onChangeRowsPerPage(StockTakeUncountedItemsListLoaded state, int value) {
+  void _onChangeRowsPerPage(UncountedItemsListLoaded state, int value) {
     setState(() => _rowsPerPage = value);
     context.read<UncountedItemsListFilterCubit>().setSize(value);
 
@@ -209,7 +210,7 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> with Si
       },
       child: BlocConsumer<UncountedItemsListCubit, UncountedItemsListState>(
         listener: (context, state) {
-          if (state is StockTakeUncountedItemsListLoaded) {
+          if (state is UncountedItemsListLoaded) {
             _uncountedItemsDataSource = UncountedItemsDataSource(state.data.stockTakeItems ?? [], context);
           }
         },
@@ -236,9 +237,15 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> with Si
                 },
               ),
               const UIVerticalSpace(16),
-              if (state is StockTakeUncountedItemsListError)
+              if (state is UncountedItemsListInitial)
+                DataGridNoData.custom(
+                  columns: DataGridUtil.getColumns(DataGridColumn.ST_UNCOUNTED_ITEMS),
+                  source: _uncountedItemsDataSource = UncountedItemsDataSource([], context),
+                  message: 'Items will be loaded when the stock take is generated.',
+                )
+              else if (state is UncountedItemsListError)
                 Text(state.message)
-              else if (state is StockTakeUncountedItemsListLoaded) ...[
+              else if (state is UncountedItemsListLoaded) ...[
                 Expanded(
                   child: Container(
                     decoration: UIStyleContainer.topBorder,
@@ -258,11 +265,22 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> with Si
                           columnWidthMode: ColumnWidthMode.fill,
                           headerGridLinesVisibility: GridLinesVisibility.none,
                           headerRowHeight: 38,
-                          footer: state.data.totalCount == 0
-                              ? Center(
-                                  child: UIText.bodyRegular(_searchController.text.isNotEmpty
-                                      ? 'No results found for \'${_searchController.text}\''
-                                      : 'No data available'),
+                          footerHeight: state.data.stockTakeItems?.isEmpty == true ? 100 : 0,
+                          footer: state.data.stockTakeItems?.isEmpty == true
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Assets.icons.cube.svg(),
+                                      const UIVerticalSpace(12),
+                                      UIText.labelMedium(
+                                        _searchController.text.isNotEmpty
+                                            ? 'No results found for \'${_searchController.text}\''
+                                            : 'No data available',
+                                        color: UIColors.textMuted,
+                                      ),
+                                    ],
+                                  ),
                                 )
                               : null,
                         ),

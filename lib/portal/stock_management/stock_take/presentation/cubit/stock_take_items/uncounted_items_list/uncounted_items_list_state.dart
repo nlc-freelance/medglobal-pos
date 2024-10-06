@@ -7,22 +7,22 @@ sealed class UncountedItemsListState extends Equatable {
   List<Object?> get props => [];
 }
 
-final class StockTakeUncountedItemsListInitial extends UncountedItemsListState {}
+final class UncountedItemsListInitial extends UncountedItemsListState {}
 
-final class StockTakeUncountedItemsListLoading extends UncountedItemsListState {}
+final class UncountedItemsListLoading extends UncountedItemsListState {}
 
-final class StockTakeUncountedItemsListLoaded extends UncountedItemsListState {
+final class UncountedItemsListLoaded extends UncountedItemsListState {
   final StockTakeItemsPaginatedList data;
   final String? search;
-  const StockTakeUncountedItemsListLoaded({required this.data, this.search});
+  const UncountedItemsListLoaded({required this.data, this.search});
 
   @override
   List<Object?> get props => [data, search];
 }
 
-final class StockTakeUncountedItemsListError extends UncountedItemsListState {
+final class UncountedItemsListError extends UncountedItemsListState {
   final String message;
-  const StockTakeUncountedItemsListError({required this.message});
+  const UncountedItemsListError({required this.message});
 
   @override
   List<Object> get props => [message];

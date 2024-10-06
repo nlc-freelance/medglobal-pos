@@ -88,7 +88,7 @@ class StockTakeBloc extends Bloc<StockTakeEvent, StockTakeBlocRemoteState> {
   }
 
   Future<void> update(event, emit) async {
-    if (event.action == null) {
+    if (event.type == StockOrderUpdate.MARK_AS_COMPLETE && event.action == null) {
       emit(const StockTakeMarkAsCompletedError(message: 'Please select an action.'));
       return;
     }

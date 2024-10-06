@@ -7,6 +7,8 @@ import 'package:medglobal_admin_portal/core/widgets/dropdowns/supplier_dropdown.
 import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/counted_items_list/counted_items_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/uncounted_items_list/uncounted_items_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -27,6 +29,8 @@ class _NewStockTakeDialogState extends State<NewStockTakeDialog> {
 
     /// Reset NewStockTakeCubit
     context.read<NewStockTakeCubit>().reset();
+    context.read<UncountedItemsListCubit>().reset();
+    context.read<CountedItemsListCubit>().reset();
   }
 
   @override

@@ -66,8 +66,6 @@ class _StockTakeMarkAsCompletedDialogState extends State<StockTakeMarkAsComplete
                         itemAsString: (item) => item.label,
                         onSelect: (value) {
                           setState(() => action = value);
-                          // if (value == StockTakeItemAction.SET_QTY_TO_ZERO) setState(() => action = value);
-                          // if (value == StockTakeItemAction.DO_NOTHING) setState(() => uncountedItemsValue = null);
                         },
                       ),
                       const UIVerticalSpace(30),
@@ -77,14 +75,17 @@ class _StockTakeMarkAsCompletedDialogState extends State<StockTakeMarkAsComplete
                         actionLabel: 'Continue',
                         isLoading: state is StockTakeMarkAsCompletedLoading,
                         onCancel: () => Navigator.pop(context),
-                        onAction: () => context.read<StockTakeBloc>().add(
-                              UpdateStockTakeEvent(
-                                StockOrderUpdate.MARK_AS_COMPLETE,
-                                id: widget.stockTake.id!,
-                                stockTake: widget.stockTake,
-                                action: action,
-                              ),
-                            ),
+                        onAction: () {
+                          context.read<StockTakeBloc>().add(
+                                UpdateStockTakeEvent(
+                                  StockOrderUpdate.MARK_AS_COMPLETE,
+                                  id: widget.stockTake.id!,
+                                  stockTake: widget.stockTake,
+                                  action: action,
+                                ),
+                              );
+                          context.read<CountedItemsListCubit>().reset();
+                        },
                       ),
                     ],
                   ),

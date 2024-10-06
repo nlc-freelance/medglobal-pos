@@ -7,22 +7,22 @@ sealed class CountedItemsListState extends Equatable {
   List<Object?> get props => [];
 }
 
-final class StockTakeCountedItemsListInitial extends CountedItemsListState {}
+final class CountedItemsListInitial extends CountedItemsListState {}
 
-final class StockTakeCountedItemsListLoading extends CountedItemsListState {}
+final class CountedItemsListLoading extends CountedItemsListState {}
 
-final class StockTakeCountedItemsListLoaded extends CountedItemsListState {
+final class CountedItemsListLoaded extends CountedItemsListState {
   final StockTakeItemsPaginatedList data;
   final String? search;
-  const StockTakeCountedItemsListLoaded({required this.data, this.search});
+  const CountedItemsListLoaded({required this.data, this.search});
 
   @override
   List<Object?> get props => [data, search];
 }
 
-final class StockTakeCountedItemsListError extends CountedItemsListState {
+final class CountedItemsListError extends CountedItemsListState {
   final String message;
-  const StockTakeCountedItemsListError({required this.message});
+  const CountedItemsListError({required this.message});
 
   @override
   List<Object> get props => [message];

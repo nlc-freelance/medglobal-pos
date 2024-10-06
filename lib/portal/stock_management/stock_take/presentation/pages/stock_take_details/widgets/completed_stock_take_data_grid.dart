@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/counted_items_list/counted_items_list_cubit.dart';
@@ -52,7 +53,7 @@ class _CompletedStockTakeDataGridState extends State<CompletedStockTakeDataGrid>
   Widget build(BuildContext context) {
     return BlocConsumer<CountedItemsListCubit, CountedItemsListState>(
       listener: (context, state) {
-        if (state is StockTakeCountedItemsListLoaded) {
+        if (state is CountedItemsListLoaded) {
           _completedStockTakeDataSource = CompletedStockTakeDataSource(state.data.stockTakeItems ?? []);
           if (state.search == null) setState(() => _countedTotal = state.data.totalCount ?? 0);
         }
@@ -74,7 +75,7 @@ class _CompletedStockTakeDataGridState extends State<CompletedStockTakeDataGrid>
             const Divider(color: UIColors.borderMuted),
             const UIVerticalSpace(8),
             DataGridToolbar(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: 16),
               search: UISearchField(
                 fieldWidth: 500.0,
                 hint: 'Search variant name',
@@ -95,16 +96,22 @@ class _CompletedStockTakeDataGridState extends State<CompletedStockTakeDataGrid>
                 ),
               ),
             ),
-            if (state is StockTakeCountedItemsListError)
+            if (state is CountedItemsListInitial)
+              DataGridNoData.custom(
+                columns: DataGridUtil.getColumns(DataGridColumn.ST_COUNTED_ITEMS),
+                source: _completedStockTakeDataSource = CompletedStockTakeDataSource([]),
+                message: 'Items will be loaded when the stock take has been completed.',
+              )
+            else if (state is CountedItemsListError)
               Text(state.message)
-            else if (state is StockTakeCountedItemsListLoaded) ...[
+            else if (state is CountedItemsListLoaded) ...[
               Expanded(
                 child: Container(
                   decoration: UIStyleContainer.topBorder,
                   child: ClipRect(
                     clipper: HorizontalBorderClipper(),
                     child: SfDataGridTheme(
-                      data: DataGridUtil.baseStyle,
+                      data: DataGridUtil.rowNavigationStyle,
                       child: SfDataGrid(
                         source: _completedStockTakeDataSource,
                         columns: DataGridUtil.getColumns(DataGridColumn.ST_COMPLETED_COUNTED_ITEMS),
@@ -116,11 +123,22 @@ class _CompletedStockTakeDataGridState extends State<CompletedStockTakeDataGrid>
                         columnWidthMode: ColumnWidthMode.fill,
                         headerGridLinesVisibility: GridLinesVisibility.none,
                         headerRowHeight: 38,
-                        footer: state.data.totalCount == 0
-                            ? Center(
-                                child: UIText.bodyRegular(_searchController.text.isNotEmpty
-                                    ? 'No results found for \'${_searchController.text}\''
-                                    : 'No data available'),
+                        footerHeight: state.data.stockTakeItems?.isEmpty == true ? 100 : 0,
+                        footer: state.data.stockTakeItems?.isEmpty == true
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Assets.icons.cube.svg(),
+                                    const UIVerticalSpace(12),
+                                    UIText.labelMedium(
+                                      _searchController.text.isNotEmpty
+                                          ? 'No results found for \'${_searchController.text}\''
+                                          : 'No data available',
+                                      color: UIColors.textMuted,
+                                    ),
+                                  ],
+                                ),
                               )
                             : null,
                       ),
