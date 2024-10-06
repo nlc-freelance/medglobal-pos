@@ -27,7 +27,7 @@ class StockTakeItemsCubit extends Cubit<StockTakeItemsState> {
       final result = await _updateStockTakeItemsByIdUseCase.call(UpdateStockTakeItemsByIdParams(id: id, items: items));
       result.fold(
         (error) => emit(StockTakeItemsError(stockItemId, message: error.message)),
-        (_) => emit(StockTakeItemsSuccess()),
+        (_) => emit(StockTakeItemsSuccess(type == StockItemUpdate.CONFIRM ? stockItemId : null)),
       );
     } catch (e) {
       emit(StockTakeItemsError(stockItemId, message: e.toString()));

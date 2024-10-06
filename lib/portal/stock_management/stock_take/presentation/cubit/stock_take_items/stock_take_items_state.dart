@@ -4,7 +4,7 @@ sealed class StockTakeItemsState extends Equatable {
   const StockTakeItemsState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class StockTakeItemsInitial extends StockTakeItemsState {}
@@ -17,7 +17,13 @@ final class StockTakeItemsLoading extends StockTakeItemsState {
   List<Object> get props => [id];
 }
 
-final class StockTakeItemsSuccess extends StockTakeItemsState {}
+final class StockTakeItemsSuccess extends StockTakeItemsState {
+  final int? stockItemId;
+  const StockTakeItemsSuccess([this.stockItemId]);
+
+  @override
+  List<Object?> get props => [stockItemId];
+}
 
 final class StockTakeItemsNullCountedQtyError extends StockTakeItemsState {
   final String message;

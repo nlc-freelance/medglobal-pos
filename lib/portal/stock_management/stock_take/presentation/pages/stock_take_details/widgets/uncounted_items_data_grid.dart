@@ -203,6 +203,12 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> with Si
           ToastNotification.success(context, 'The stock item has been successfully updated!');
           context.read<UncountedItemsListCubit>().getItems(id: context.read<StockTakeCubit>().state.stockTake.id!);
           context.read<CountedItemsListCubit>().getItems(id: context.read<StockTakeCubit>().state.stockTake.id!);
+
+          /// Remove the stock take item from draft once successfully confirmed the counted quantity.
+          /// Use the id from state since API response do not have the stock take item data
+          if (state.stockItemId != null) {
+            context.read<UncountedItemsDraftCubit>().removeCountedItemFromDraft(state.stockItemId!);
+          }
         }
         if (state is StockTakeItemsNullCountedQtyError) {
           Timer(const Duration(seconds: 3), () => context.read<StockTakeItemsCubit>().reset());
