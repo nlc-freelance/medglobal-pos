@@ -144,12 +144,9 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
         DataGridToolbar(
           isDownloadable: true,
           filters: [
-            SizedBox(
-              width: 150,
-              child: DatePickerPopup(
-                onSelect: (date) {},
-                selectionMode: DateRangePickerSelectionMode.range,
-              ),
+            DatePickerPopup(
+              onSelectRange: (dates) {},
+              selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(8),
             BranchDropdown.select(

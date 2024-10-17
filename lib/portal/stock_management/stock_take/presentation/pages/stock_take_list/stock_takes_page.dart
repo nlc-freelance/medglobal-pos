@@ -116,12 +116,9 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
         DataGridToolbar(
           isDownloadable: true,
           filters: [
-            SizedBox(
-              width: 150,
-              child: DatePickerPopup(
-                onSelect: (date) {},
-                selectionMode: DateRangePickerSelectionMode.range,
-              ),
+            DatePickerPopup(
+              onSelectRange: (dates) {},
+              selectionMode: DateRangePickerSelectionMode.range,
             ),
           ],
         ),

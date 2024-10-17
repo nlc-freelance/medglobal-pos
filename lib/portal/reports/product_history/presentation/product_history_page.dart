@@ -99,6 +99,7 @@ class _ProductHistoryPageState extends State<ProductHistoryPage> {
                         variantId: _productVariantId!,
                         branchId: _branchId!,
                         startDate: DateFormat('MM-dd-yyyy').format(_sinceDate!),
+                        size: context.read<ProductHistoryListFilterCubit>().state.size!,
                       ),
                 ),
             ],
