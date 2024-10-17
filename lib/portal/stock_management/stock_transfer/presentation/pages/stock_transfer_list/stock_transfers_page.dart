@@ -152,12 +152,9 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
         DataGridToolbar(
           isDownloadable: true,
           filters: [
-            SizedBox(
-              width: 150,
-              child: DatePickerPopup(
-                onSelect: (date) {},
-                selectionMode: DateRangePickerSelectionMode.range,
-              ),
+            DatePickerPopup(
+              onSelectRange: (dates) {},
+              selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(16),
             BranchDropdown.select(

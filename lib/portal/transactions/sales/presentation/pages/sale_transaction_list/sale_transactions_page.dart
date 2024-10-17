@@ -40,7 +40,7 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
           ),
           filters: [
             DatePickerPopup(
-              onSelectRange: (dates) => print('AAA $dates'),
+              onSelectRange: (dates) {},
               selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(8),

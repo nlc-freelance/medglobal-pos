@@ -38,12 +38,9 @@ class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
             onChanged: (value) {},
           ),
           filters: [
-            SizedBox(
-              width: 150,
-              child: DatePickerPopup(
-                onSelect: (date) {},
-                selectionMode: DateRangePickerSelectionMode.range,
-              ),
+            DatePickerPopup(
+              onSelectRange: (dates) {},
+              selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(8),
             BranchDropdown.select(
