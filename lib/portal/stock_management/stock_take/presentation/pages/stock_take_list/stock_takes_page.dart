@@ -7,6 +7,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presen
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/stock_take_paginated_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/widgets/new_stock_take_dialog.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class StockTakesPage extends StatefulWidget {
   const StockTakesPage({super.key});
@@ -117,7 +118,10 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
           filters: [
             SizedBox(
               width: 150,
-              child: DatePickerPopup(onSelect: (date) {}),
+              child: DatePickerPopup(
+                onSelect: (date) {},
+                selectionMode: DateRangePickerSelectionMode.range,
+              ),
             ),
           ],
         ),

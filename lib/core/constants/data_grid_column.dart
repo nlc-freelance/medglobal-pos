@@ -16,6 +16,7 @@ class DataGridColumn {
     ColumnData('email', 'Email'),
     ColumnData('phone', 'Phone'),
   ];
+
   static List<ColumnData> BRANCH_INVENTORIES = [
     ColumnData('id', 'ID'),
     ColumnData('name', 'Branch'),
@@ -225,6 +226,16 @@ class DataGridColumn {
     ColumnData('write_off_qty', 'Write-off Qty'),
     ColumnData('restock_qty', 'Restock Qty'),
     ColumnData('comment', 'Comment', minWidth: 350),
+  ];
+
+  static List<ColumnData> PRODUCT_HISTORY = [
+    ColumnData('id', 'ID'),
+    ColumnData('datetime', 'Datetime'),
+    ColumnData('employee_name', 'Employee'),
+    ColumnData('action', 'Action'),
+    ColumnData('qty_before', 'Qty Before'),
+    ColumnData('change', 'Change'),
+    ColumnData('qty_after', 'Qty After'),
   ];
 
   /// POS

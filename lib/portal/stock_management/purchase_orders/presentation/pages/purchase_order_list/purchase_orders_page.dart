@@ -8,6 +8,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/p
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class PurchaseOrdersPage extends StatefulWidget {
   static String route = SideMenuTreeItem.PURCHASE_ORDERS.route;
@@ -145,7 +146,10 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
           filters: [
             SizedBox(
               width: 150,
-              child: DatePickerPopup(onSelect: (date) {}),
+              child: DatePickerPopup(
+                onSelect: (date) {},
+                selectionMode: DateRangePickerSelectionMode.range,
+              ),
             ),
             const UIHorizontalSpace(8),
             BranchDropdown.select(
