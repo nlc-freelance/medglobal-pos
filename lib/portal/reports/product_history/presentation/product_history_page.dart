@@ -1,0 +1,112 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
+import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/cubit/product_history_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/cubit/product_history_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/product_history_paginated_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/widgets/product_typeahead_search.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+class ProductHistoryPage extends StatefulWidget {
+  const ProductHistoryPage({super.key});
+
+  @override
+  State<ProductHistoryPage> createState() => _ProductHistoryPageState();
+}
+
+class _ProductHistoryPageState extends State<ProductHistoryPage> {
+  int? _productVariantId;
+  int? _branchId;
+  DateTime? _sinceDate;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<ProductHistoryListFilterCubit, ProductHistoryListFilterState>(
+      listener: (context, state) {
+        if (state.variantId == null || state.branchId == null || state.startDate == null) {
+          context.read<ProductHistoryListCubit>().reset();
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const PageHeader(
+            title: 'Product History',
+            subtitle: 'View product history to track and analyze changes and events in the product\'s lifecycle.',
+          ),
+          const UIVerticalSpace(20),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              UIText.labelMedium('Check'),
+              const UIHorizontalSpace(8),
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width * 0.25,
+                child: ProductTypeAheadSearch(
+                  onSelected: (value) {
+                    setState(() => _productVariantId = value.id);
+                    context.read<ProductHistoryListFilterCubit>().setVariantId(value.id!);
+                  },
+                  onClear: () {
+                    setState(() => _productVariantId = null);
+                    context.read<ProductHistoryListFilterCubit>().setVariantId(null);
+                  },
+                ),
+              ),
+              const UIHorizontalSpace(16),
+              UIText.labelMedium('Of'),
+              const UIHorizontalSpace(8),
+              BranchDropdown.select(
+                isSelectInputType: true,
+                onSelectItem: (branch) {
+                  setState(() => _branchId = branch.id);
+                  context.read<ProductHistoryListFilterCubit>().setBranchId(branch.id!);
+                },
+                onRemoveSelectedItem: () {
+                  setState(() => _branchId = null);
+                  context.read<ProductHistoryListFilterCubit>().setBranchId(null);
+                },
+              ),
+              const UIHorizontalSpace(16),
+              UIText.labelMedium('Since'),
+              const UIHorizontalSpace(8),
+              DatePickerPopup(
+                isInput: true,
+                selectionMode: DateRangePickerSelectionMode.single,
+                onSelect: (date) {
+                  setState(() => _sinceDate = date);
+                  context.read<ProductHistoryListFilterCubit>().setStartDate(DateFormat('MM-dd-yyyy').format(date));
+                },
+                onRemoveSelected: () {
+                  setState(() => _sinceDate = null);
+                  context.read<ProductHistoryListFilterCubit>().setStartDate(null);
+                },
+              ),
+              const UIHorizontalSpace(16),
+              if ([_productVariantId, _branchId, _sinceDate].every((param) => param != null) == true)
+                UIButton.filled(
+                  'Search',
+                  onClick: () => context.read<ProductHistoryListCubit>().getProductHistory(
+                        variantId: _productVariantId!,
+                        branchId: _branchId!,
+                        startDate: DateFormat('MM-dd-yyyy').format(_sinceDate!),
+                      ),
+                ),
+            ],
+          ),
+          const UIVerticalSpace(20),
+          const Expanded(child: ProductHistoryPaginatedDataGrid()),
+        ],
+      ),
+    );
+  }
+}

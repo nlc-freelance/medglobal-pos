@@ -119,6 +119,7 @@ enum StockOrderStatus {
   IN_PROGRESS('In Progress'),
   SHIPPED('Shipped'),
   COMPLETED('Completed'),
+  PENDING('Pending'),
   CANCELLED('Cancelled');
 
   final String label;

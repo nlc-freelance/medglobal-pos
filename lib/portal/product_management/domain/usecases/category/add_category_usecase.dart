@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
+
 import '../../../../../core/core.dart';
-import '../../entities/category.dart';
+import '../../entities/category/category.dart';
 import '../../repositories/category_repository.dart';
 
 class AddCategoryUseCase implements UseCase<Category, AddCategoryParams> {

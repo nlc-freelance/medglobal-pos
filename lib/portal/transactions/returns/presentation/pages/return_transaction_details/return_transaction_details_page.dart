@@ -32,10 +32,7 @@ class _ReturnTransactionDetailsPageState extends State<ReturnTransactionDetailsP
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const PageHeader(
-              title: 'Return Details',
-              subtitle: Strings.subtitlePlaceholder,
-            ),
+            const PageHeader(title: 'Return Details'),
             const UIVerticalSpace(20),
             if (state is TransactionByIdLoading) ...[
               const UIVerticalSpace(30.0),

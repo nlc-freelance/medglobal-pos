@@ -15,7 +15,7 @@ class ProductVariantApiImpl implements ProductVariantApi {
     try {
       final response = await _apiService.collection<ProductVariantDto>(
         '/products/variants',
-        queryParams: {'size': 100, 'search': search, 'supplier': supplierId, 'branch': branchId},
+        queryParams: {'size': 10, 'search': search, 'supplier': supplierId, 'branch': branchId},
         converter: ProductVariantDto.fromJson,
       );
 

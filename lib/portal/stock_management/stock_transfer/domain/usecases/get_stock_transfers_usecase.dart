@@ -12,13 +12,25 @@ class GetStockTransfersUseCase implements UseCase<StockTransferPaginatedList, Ge
   Future<Either<Failure, StockTransferPaginatedList>> call(GetStockTransfersParams params) =>
       _repository.getStockTransfers(
         page: params.page,
+        size: params.size,
         status: params.status,
+        sourceBranchId: params.sourceBranchId,
+        destinationBranchId: params.destinationBranchId,
       );
 }
 
 class GetStockTransfersParams {
-  final int? page;
+  final int page;
+  final int size;
+  final int? sourceBranchId;
+  final int? destinationBranchId;
   final StockOrderStatus? status;
 
-  GetStockTransfersParams({this.page, this.status});
+  GetStockTransfersParams({
+    required this.page,
+    required this.size,
+    this.status,
+    this.sourceBranchId,
+    this.destinationBranchId,
+  });
 }

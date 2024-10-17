@@ -27,4 +27,9 @@ class NewPurchaseOrder {
       isAutoFill: isAutoFill ?? this.isAutoFill,
     );
   }
+
+  @override
+  String toString() {
+    return 'NewPurchaseOrder{branchId: $branchId, supplierId: $supplierId, isAutoFill: $isAutoFill}';
+  }
 }

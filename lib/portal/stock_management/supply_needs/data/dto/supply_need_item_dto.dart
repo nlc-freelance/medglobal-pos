@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/domain/entities/supply_need_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 

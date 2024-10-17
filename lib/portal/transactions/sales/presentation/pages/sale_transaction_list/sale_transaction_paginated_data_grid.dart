@@ -71,7 +71,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
             children: [
               Expanded(
                 child: Container(
-                  decoration: UIStyleContainer.horizontalBorder,
+                  decoration: UIStyleContainer.topBorder,
                   child: ClipRect(
                     clipper: HorizontalBorderClipper(),
                     child: SfDataGridTheme(
@@ -84,8 +84,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                         navigationMode: GridNavigationMode.row,
                         columnWidthMode: ColumnWidthMode.fill,
                         headerGridLinesVisibility: GridLinesVisibility.none,
-                        gridLinesVisibility: GridLinesVisibility.none,
-                        headerRowHeight: 46,
+                        gridLinesVisibility: GridLinesVisibility.horizontal,
+                        headerRowHeight: 38,
                         footerHeight: 100,
                         footer: _saleTransactionDataSource.rows.isEmpty
                             ? Padding(
@@ -147,7 +147,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                             context.read<SaleTransactionListCubit>().getTransactions(
                                   page: 1,
                                   size: _rowsPerPage,
-                                  branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                  branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                   // search: context.read<TransactionSearchCubit>().state.search,
                                 );
@@ -155,7 +155,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                             context.read<SaleTransactionListCubit>().getTransactions(
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
-                                  branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                  branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                   // search: context.read<TransactionSearchCubit>().state.search,
                                 );
@@ -182,7 +182,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
@@ -199,7 +199,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
@@ -216,7 +216,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
-                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
@@ -235,7 +235,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                           context.read<SaleTransactionListCubit>().getTransactions(
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
-                                branchId: context.read<SaleTransactionListFilterCubit>().state.branch,
+                                branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
 
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
@@ -304,19 +304,9 @@ class SaleTransactionDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
-    Color getRowBackgroundColor() {
-      final int index = effectiveRows.indexOf(row);
-      if (index % 2 != 0) {
-        return UIColors.transparent;
-      }
-
-      return UIColors.whiteBg.withOpacity(0.5);
-    }
-
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
         return Container(
-          color: getRowBackgroundColor(),
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: _buildCell(cell.columnName, cell, row.getCells().first.value),

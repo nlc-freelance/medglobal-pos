@@ -51,6 +51,7 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
         }
         if (state is PurchaseOrderSuccess) {
           _purchaseOrder = state.purchaseOrder;
+          context.read<PurchaseOrderCubit>().setPurchaseOrder(state.purchaseOrder);
           ToastNotification.success(context, 'Purchase Order updated successfully.');
         }
         if (state is PurchaseOrderDeleteSuccess) {
@@ -70,7 +71,6 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
           children: [
             PageHeader(
               title: _title,
-              subtitle: Strings.subtitlePlaceholder,
               titleTrailings: [
                 Padding(
                   padding: const EdgeInsets.only(top: 1),

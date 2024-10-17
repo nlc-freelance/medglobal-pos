@@ -23,11 +23,11 @@ class SupplierListLoading extends SupplierListState {
 }
 
 class SupplierListLoaded extends SupplierListState {
-  final List<Supplier> suppliers;
-  const SupplierListLoaded({required this.suppliers});
+  final SupplierPaginatedList data;
+  const SupplierListLoaded({required this.data});
 
   @override
-  List<Object?> get props => [suppliers];
+  List<Object?> get props => [data];
 }
 
 class SupplierListError extends SupplierListState {

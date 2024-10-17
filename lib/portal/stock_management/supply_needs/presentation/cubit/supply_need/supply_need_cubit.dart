@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
 
 part 'supply_need_state.dart';
 

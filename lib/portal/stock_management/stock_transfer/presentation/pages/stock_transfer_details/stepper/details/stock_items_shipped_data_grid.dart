@@ -99,8 +99,7 @@ class StockItemsShippedDataSource extends DataGridSource {
     _itemsShipped = itemsShipped;
     _context = context;
 
-    /// Initially, auto populate received qty column with the transferred qty value
-    dataGridRows = itemsShipped.map((item) => item.toDataGridRowItemsShipped(isInit: true)).toList();
+    buildDataGridRows();
   }
 
   List<StockTransferItem> _itemsShipped = [];

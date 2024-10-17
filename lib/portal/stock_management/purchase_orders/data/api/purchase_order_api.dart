@@ -1,12 +1,17 @@
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/dto/purchase_order_dto.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_paginated_list.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/new_purchase_order.dart';
 
 abstract class PurchaseOrderApi {
-  Future<PurchaseOrderPaginatedList> getPurchaseOrders({int? page, StockOrderStatus? status});
+  Future<PurchaseOrderPaginatedList> getPurchaseOrders({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    int? branchId,
+  });
   Future<PurchaseOrderDto> getPurchaseOrderById(int id);
   Future<PurchaseOrderDto> create(NewPurchaseOrder payload);
   Future<PurchaseOrderDto> update(StockOrderUpdate type, {required int id, required PurchaseOrder purchaseOrder});
@@ -19,11 +24,21 @@ class PurchaseOrderApiImpl implements PurchaseOrderApi {
   PurchaseOrderApiImpl(this._apiService);
 
   @override
-  Future<PurchaseOrderPaginatedList> getPurchaseOrders({int? page, StockOrderStatus? status}) async {
+  Future<PurchaseOrderPaginatedList> getPurchaseOrders({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    int? branchId,
+  }) async {
     try {
       final response = await _apiService.collection<PurchaseOrderDto>(
         '/purchase-orders',
-        queryParams: {'page': page, 'status': status?.label.toLowerCase()},
+        queryParams: {
+          'page': page,
+          'size': size,
+          'status': status?.label.toLowerCase(),
+          'branch': branchId,
+        },
         converter: PurchaseOrderDto.fromJson,
       );
 

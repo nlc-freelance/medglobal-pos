@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/dto/purchase_order_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
@@ -59,6 +59,7 @@ class PurchaseOrderDto extends Equatable {
       ];
 
   factory PurchaseOrderDto.fromJson(Map<String, dynamic> json) => _$PurchaseOrderDtoFromJson(json);
+  Map<String, dynamic> toJson() => _$PurchaseOrderDtoToJson(this);
 
   PurchaseOrder toEntity() => PurchaseOrder(
         id: id,

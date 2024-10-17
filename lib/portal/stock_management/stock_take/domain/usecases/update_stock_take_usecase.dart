@@ -9,14 +9,19 @@ class UpdateStockTakeUseCase implements UseCase<StockTake, UpdateStockTakeParams
   const UpdateStockTakeUseCase(this.repository);
 
   @override
-  Future<Either<Failure, StockTake>> call(UpdateStockTakeParams params) =>
-      repository.update(params.type, id: params.id, stockTake: params.stockTake);
+  Future<Either<Failure, StockTake>> call(UpdateStockTakeParams params) => repository.update(
+        params.type,
+        id: params.id,
+        stockTake: params.stockTake,
+        uncountedItemsValue: params.uncountedItemsValue,
+      );
 }
 
 class UpdateStockTakeParams {
   final StockOrderUpdate type;
   final int id;
   final StockTake stockTake;
+  final int? uncountedItemsValue;
 
-  UpdateStockTakeParams(this.type, {required this.id, required this.stockTake});
+  UpdateStockTakeParams(this.type, {required this.id, required this.stockTake, this.uncountedItemsValue});
 }

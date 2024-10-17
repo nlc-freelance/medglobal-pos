@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/new_stock_transfer/new_stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_remote/stock_transfer_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stepper/stock_transfer_stepper.dart';
@@ -18,6 +19,9 @@ class _NewStockTransferPageState extends State<NewStockTransferPage> {
   void initState() {
     super.initState();
     context.read<StockTransferRemoteCubit>().reset();
+    context.read<NewStockTransferCubit>().reset();
+
+    /// TODO: Can be removed if the initState is always triggered when navigating to [StockTransfersPage]
     context.read<StockTransferCubit>().reset();
   }
 

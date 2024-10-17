@@ -1,15 +1,30 @@
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/data/dto/stock_take_dto.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/data/dto/stock_take_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/new_stock_take.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_items_paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_paginated_list.dart';
 
 abstract class StockTakeApi {
-  Future<StockTakePaginatedList> getStockTakes({int? page, StockOrderStatus? status});
+  Future<StockTakePaginatedList> getStockTakes({required int page, required int size, StockOrderStatus? status});
   Future<StockTakeDto> getStockTakeById(int id);
+  Future<StockTakeItemsPaginatedList> getItemsById(
+    int id, {
+    required int page,
+    required int size,
+    required bool isCounted,
+    String? search,
+  });
   Future<StockTakeDto> create(NewStockTake payload);
-  Future<StockTakeDto> update(StockOrderUpdate type, {required int id, required StockTake stockTake});
+  Future<void> updateStockTakeItemsById({required int id, required Map<int, int?> items});
+  Future<StockTakeDto> update(
+    StockOrderUpdate type, {
+    required int id,
+    required StockTake stockTake,
+    int? uncountedItemsValue,
+  });
 }
 
 class StockTakeApiImpl implements StockTakeApi {
@@ -18,11 +33,11 @@ class StockTakeApiImpl implements StockTakeApi {
   StockTakeApiImpl(this._apiService);
 
   @override
-  Future<StockTakePaginatedList> getStockTakes({int? page, StockOrderStatus? status}) async {
+  Future<StockTakePaginatedList> getStockTakes({required int page, required int size, StockOrderStatus? status}) async {
     try {
       final response = await _apiService.collection<StockTakeDto>(
         '/stock-takes',
-        queryParams: {'page': page, 'status': status?.label.toLowerCase()},
+        queryParams: {'page': page, 'size': size, 'status': status?.label.toLowerCase()},
         converter: StockTakeDto.fromJson,
       );
 
@@ -63,15 +78,63 @@ class StockTakeApiImpl implements StockTakeApi {
   }
 
   @override
-  Future<StockTakeDto> update(StockOrderUpdate type, {required int id, required StockTake stockTake}) async {
+  Future<StockTakeDto> update(
+    StockOrderUpdate type, {
+    required int id,
+    required StockTake stockTake,
+    int? uncountedItemsValue,
+  }) async {
     try {
       final response = await _apiService.update<StockTakeDto>(
         '/stock-takes/$id',
-        data: stockTake.toPayload(type),
+        data: stockTake.toPayload(type, uncountedItemsValue: uncountedItemsValue),
         converter: StockTakeDto.fromJson,
       );
 
       return response!;
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<StockTakeItemsPaginatedList> getItemsById(
+    int id, {
+    required int page,
+    required int size,
+    required bool isCounted,
+    String? search,
+  }) async {
+    try {
+      final response = await _apiService.collection<StockTakeItemDto>(
+        '/stock-takes/$id/items',
+        queryParams: {'page': page, 'isCounted': isCounted, 'size': size, 'search': search},
+        converter: StockTakeItemDto.fromJson,
+      );
+
+      return StockTakeItemsPaginatedList(
+        stockTakeItems: response.items?.map((item) => item.toEntity()).toList(),
+        currentPage: response.pageInfo?.page,
+        totalPages: response.pageInfo?.totalPages,
+        totalCount: response.pageInfo?.totalCount,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateStockTakeItemsById({required int id, required Map<int, int?> items}) async {
+    try {
+      await _apiService.update<StockTakeItemDto>(
+        '/stock-takes/$id/items',
+        data: {
+          'items': [
+            ...items.entries.map((entry) => {'id': entry.key, 'countedQuantity': entry.value}),
+          ],
+        },
+        converter: StockTakeItemDto.fromJson,
+      );
     } catch (_) {
       rethrow;
     }

@@ -32,9 +32,9 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
       case StockOrderStatus.NEW:
         return 'Edit Stock Transfer';
       case StockOrderStatus.SHIPPED:
-        return 'Confirm Stock Transfer';
+        return 'Receive Stock Transfer';
       case StockOrderStatus.COMPLETED || StockOrderStatus.CANCELLED:
-        return 'Stock Transfer Details';
+        return 'Stock Transfer';
       default:
         return Strings.empty;
     }
@@ -69,7 +69,6 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
           children: [
             PageHeader(
               title: _title,
-              subtitle: Strings.subtitlePlaceholder,
               titleTrailings: [
                 Padding(
                   padding: const EdgeInsets.only(top: 1),

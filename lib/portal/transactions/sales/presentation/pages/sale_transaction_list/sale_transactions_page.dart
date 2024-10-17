@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transaction_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class SaleTransactionsPage extends StatefulWidget {
   const SaleTransactionsPage({super.key});
@@ -19,7 +24,7 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
       children: [
         const PageHeader(
           title: 'Sales',
-          subtitle: Strings.subtitlePlaceholder,
+          subtitle: 'View all sale transactions to analyze sales performance.',
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
@@ -34,14 +39,24 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
             onChanged: (value) {},
           ),
           filters: [
-            SizedBox(
-              width: 200,
-              child: DatePickerPopup(onSelect: (date) {}),
+            DatePickerPopup(
+              onSelectRange: (dates) => print('AAA $dates'),
+              selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(8),
-            const SizedBox(
-              width: 200,
-              child: BranchFilter(TransactionType.SALE),
+            BranchDropdown.select(
+              onRemoveSelectedItem: () {
+                final saleSize = context.read<SaleTransactionListFilterCubit>().state.size;
+
+                context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!);
+                context.read<SaleTransactionListFilterCubit>().setBranch(null);
+              },
+              onSelectItem: (branch) {
+                final saleSize = context.read<SaleTransactionListFilterCubit>().state.size;
+
+                context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!, branchId: branch.id);
+                context.read<SaleTransactionListFilterCubit>().setBranch(branch.id);
+              },
             ),
           ],
         ),

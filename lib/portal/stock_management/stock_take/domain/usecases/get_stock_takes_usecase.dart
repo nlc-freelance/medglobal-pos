@@ -11,13 +11,15 @@ class GetStockTakesUseCase implements UseCase<StockTakePaginatedList, GetStockTa
   @override
   Future<Either<Failure, StockTakePaginatedList>> call(GetStockTakesParams params) => _repository.getStockTakes(
         page: params.page,
+        size: params.size,
         status: params.status,
       );
 }
 
 class GetStockTakesParams {
-  final int? page;
+  final int page;
+  final int size;
   final StockOrderStatus? status;
 
-  GetStockTakesParams({this.page, this.status});
+  GetStockTakesParams({required this.page, required this.size, this.status});
 }

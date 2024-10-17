@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/details/stock_items_to_return_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/details/stock_items_returned_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/details/stock_items_to_return_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class StockReturnDetails extends StatefulWidget {
@@ -60,7 +60,7 @@ class _StockReturnDetailsState extends State<StockReturnDetails> {
                 LabelValue.text(
                   label: 'Created Date',
                   value:
-                      stockReturn.createdAt != null ? DateFormat.yMd().format(stockReturn.createdAt!) : Strings.empty,
+                      stockReturn.createdAt != null ? DateFormat.yMd().format(stockReturn.createdAt!) : Strings.noValue,
                 ),
                 LabelValue.text(
                   label: 'Supplier',

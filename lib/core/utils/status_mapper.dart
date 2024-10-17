@@ -18,6 +18,8 @@ class StatusMapper {
         return StockOrderStatus.SHIPPED;
       case 'completed':
         return StockOrderStatus.COMPLETED;
+      case 'pending':
+        return StockOrderStatus.PENDING;
       case 'cancelled':
         return StockOrderStatus.CANCELLED;
       default:
@@ -37,6 +39,8 @@ class StatusMapper {
         return UIColors.shippedBg;
       case StockOrderStatus.COMPLETED:
         return UIColors.completedBg;
+      case StockOrderStatus.PENDING:
+        return UIColors.borderMuted;
       case StockOrderStatus.CANCELLED:
         return UIColors.cancelledBg;
       default:
@@ -56,6 +60,8 @@ class StatusMapper {
         return UIColors.shipped;
       case StockOrderStatus.COMPLETED:
         return UIColors.completed;
+      case StockOrderStatus.PENDING:
+        return UIColors.textLight;
       case StockOrderStatus.CANCELLED:
         return UIColors.cancelled;
       default:
