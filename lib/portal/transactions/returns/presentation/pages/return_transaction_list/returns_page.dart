@@ -7,6 +7,7 @@ import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_list/return_transaction_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class ReturnTransactionsPage extends StatefulWidget {
   const ReturnTransactionsPage({super.key});
@@ -39,7 +40,10 @@ class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
           filters: [
             SizedBox(
               width: 150,
-              child: DatePickerPopup(onSelect: (date) {}),
+              child: DatePickerPopup(
+                onSelect: (date) {},
+                selectionMode: DateRangePickerSelectionMode.range,
+              ),
             ),
             const UIHorizontalSpace(8),
             BranchDropdown.select(

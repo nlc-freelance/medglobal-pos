@@ -8,6 +8,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_return/pres
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_list/stock_return_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class StockReturnsPage extends StatefulWidget {
   const StockReturnsPage({super.key});
@@ -124,7 +125,10 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
           filters: [
             SizedBox(
               width: 150,
-              child: DatePickerPopup(onSelect: (date) {}),
+              child: DatePickerPopup(
+                onSelect: (date) {},
+                selectionMode: DateRangePickerSelectionMode.range,
+              ),
             ),
             const UIHorizontalSpace(8),
             BranchDropdown.select(

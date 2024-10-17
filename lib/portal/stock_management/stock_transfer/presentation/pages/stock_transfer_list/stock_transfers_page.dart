@@ -8,6 +8,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_remote/stock_transfer_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfer_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class StockTransfersPage extends StatefulWidget {
   const StockTransfersPage({super.key});
@@ -153,11 +154,15 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
           filters: [
             SizedBox(
               width: 150,
-              child: DatePickerPopup(onSelect: (date) {}),
+              child: DatePickerPopup(
+                onSelect: (date) {},
+                selectionMode: DateRangePickerSelectionMode.range,
+              ),
             ),
             const UIHorizontalSpace(16),
             BranchDropdown.select(
               hint: 'Source',
+              isInlineHint: true,
               onRemoveSelectedItem: () {
                 final size = context.read<StockTransferListFilterCubit>().state.size;
                 final status = context.read<StockTransferListFilterCubit>().state.status;
@@ -189,6 +194,7 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
             const UIHorizontalSpace(16),
             BranchDropdown.select(
               hint: 'Destination',
+              isInlineHint: true,
               onRemoveSelectedItem: () {
                 final size = context.read<StockTransferListFilterCubit>().state.size;
                 final status = context.read<StockTransferListFilterCubit>().state.status;

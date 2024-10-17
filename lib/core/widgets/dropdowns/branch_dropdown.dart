@@ -17,7 +17,9 @@ class BranchDropdown extends StatelessWidget {
     required this.type,
     this.hint,
     this.label,
+    this.isInlineHint = false,
     this.required = false,
+    this.isSelectInputType = false,
     this.isMultiSelect = false,
     this.showSelectedItems = false,
     this.onSelectItem,
@@ -31,6 +33,8 @@ class BranchDropdown extends StatelessWidget {
   final String? label;
   final String? hint;
   final bool required;
+  final bool isInlineHint;
+  final bool isSelectInputType;
   final bool isMultiSelect;
   final bool showSelectedItems;
   final Function(Branch value)? onSelectItem;
@@ -43,6 +47,8 @@ class BranchDropdown extends StatelessWidget {
     required Function(Branch value)? onSelectItem,
     required VoidCallback? onRemoveSelectedItem,
     String? hint,
+    bool isInlineHint = false,
+    bool isSelectInputType = false,
     Branch? selectedItem,
     Key? key,
   }) =>
@@ -50,6 +56,8 @@ class BranchDropdown extends StatelessWidget {
         key: key,
         type: BranchDropdownType.select,
         hint: hint,
+        isInlineHint: isInlineHint,
+        isSelectInputType: isSelectInputType,
         onSelectItem: onSelectItem,
         selectedItem: selectedItem,
         onRemoveSelectedItem: onRemoveSelectedItem,
@@ -123,6 +131,8 @@ class BranchDropdown extends StatelessWidget {
         return _BranchDropdownOverlay(
           isSelectType: true,
           hint: hint,
+          isInlineHint: isInlineHint,
+          isSelectInputType: isSelectInputType,
           onSelectItem: onSelectItem,
           selectedItem: selectedItem,
           onRemoveSelectedItem: onRemoveSelectedItem,
@@ -201,7 +211,9 @@ class BranchDropdown extends StatelessWidget {
 class _BranchDropdownOverlay extends StatefulWidget {
   const _BranchDropdownOverlay({
     this.hint,
+    this.isInlineHint,
     this.isSelectType = false,
+    this.isSelectInputType = false,
     this.isMultiSelect = false,
     this.onSelectItem,
     this.selectedItem,
@@ -211,8 +223,10 @@ class _BranchDropdownOverlay extends StatefulWidget {
   });
 
   final bool isSelectType;
+  final bool isSelectInputType;
   final bool isMultiSelect;
   final String? hint;
+  final bool? isInlineHint;
   final Function(Branch value)? onSelectItem;
   final List<Branch>? selectedItems;
   final Branch? selectedItem;
@@ -269,22 +283,21 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                   padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: highlight
+                    color: highlight && widget.isSelectInputType == false
                         ? UIColors.secondary
                         : isHover
                             ? UIColors.whiteBg
                             : UIColors.background,
-                    border: Border.all(color: highlight ? UIColors.primary.withOpacity(0.2) : UIColors.borderRegular),
+                    border: Border.all(
+                        color: highlight && widget.isSelectInputType == false
+                            ? UIColors.primary.withOpacity(0.2)
+                            : UIColors.borderRegular),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      widget.hint == null
-                          ? UIText.labelMedium(
-                              _selectedItem != null ? _selectedItem!.name : 'All Branches',
-                              color: _selectedItem != null ? UIColors.primary : UIColors.textLight,
-                            )
-                          : Text.rich(
+                      widget.isInlineHint == true
+                          ? Text.rich(
                               TextSpan(
                                 text: widget.hint!,
                                 style: UIStyleText.labelMedium.copyWith(color: UIColors.textMuted),
@@ -297,7 +310,23 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                                   ),
                                 ],
                               ),
-                            ),
+                            )
+                          : widget.isSelectInputType == true
+
+                              /// Select type for input
+                              ? Text(
+                                  _selectedItem != null ? _selectedItem!.name : 'Select branch',
+                                  style: UIStyleText.hint.copyWith(
+                                    color: _selectedItem != null ? UIColors.textRegular : UIColors.textMuted,
+                                    fontWeight: _selectedItem != null ? FontWeight.w500 : FontWeight.w400,
+                                  ),
+                                )
+
+                              /// Select type for selecting e.g., filter
+                              : UIText.labelMedium(
+                                  _selectedItem != null ? _selectedItem!.name : 'All Branches',
+                                  color: _selectedItem != null ? UIColors.primary : UIColors.textLight,
+                                ),
                       const UIHorizontalSpace(10),
                       _selectedItem != null
                           ? SizedBox(

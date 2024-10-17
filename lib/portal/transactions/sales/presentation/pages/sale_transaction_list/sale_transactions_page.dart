@@ -7,6 +7,7 @@ import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cu
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transaction_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class SaleTransactionsPage extends StatefulWidget {
   const SaleTransactionsPage({super.key});
@@ -38,9 +39,9 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
             onChanged: (value) {},
           ),
           filters: [
-            SizedBox(
-              width: 150,
-              child: DatePickerPopup(onSelect: (date) {}),
+            DatePickerPopup(
+              onSelectRange: (dates) => print('AAA $dates'),
+              selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(8),
             BranchDropdown.select(

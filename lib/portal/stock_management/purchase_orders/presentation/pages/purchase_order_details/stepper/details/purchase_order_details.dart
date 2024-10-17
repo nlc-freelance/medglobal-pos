@@ -9,6 +9,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/p
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_items_received_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_items_to_receive_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class PurchaseOrderDetails extends StatefulWidget {
   const PurchaseOrderDetails({super.key});
@@ -92,6 +93,7 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
                     label: 'Estimated Date of Arrival',
                     button: DatePickerPopup(
                       isInput: true,
+                      selectionMode: DateRangePickerSelectionMode.single,
                       selectedDate: purchaseOrder.estimatedDateOfArrival,
                       onSelect: (date) => context.read<PurchaseOrderCubit>().setEstimatedDateOfArrival(date),
                     ),
