@@ -12,9 +12,14 @@ class SidePeekModal extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: Material(
+        type: MaterialType.transparency,
         child: Container(
+          margin: const EdgeInsets.all(16),
           width: MediaQuery.sizeOf(context).width * 0.45,
-          color: UIColors.background,
+          decoration: BoxDecoration(
+            color: UIColors.background,
+            borderRadius: BorderRadius.circular(10),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

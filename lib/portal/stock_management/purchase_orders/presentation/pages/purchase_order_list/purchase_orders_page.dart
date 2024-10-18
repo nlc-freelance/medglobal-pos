@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
-import 'package:medglobal_admin_portal/core/widgets/filter_popup.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_filter/purchase_order_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class PurchaseOrdersPage extends StatefulWidget {
   static String route = SideMenuTreeItem.PURCHASE_ORDERS.route;
@@ -26,12 +26,13 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
+
+    /// TODO: The list does not update when using the back button or side menu to navigate back to this page
+    /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
+    /// Ex. /stock-management/purchase-orders/id=1 to /stock-management/purchase-orders/
     context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
 
-    /// TODO: This does not reset when used the back btn or side menu to navigate back to StockTransfersPage
-    /// tho cubit should be reset to initial but since navigation uses pushNamed, it does not reset
-    /// might have to refactor side menu
-    context.read<PurchaseOrderRemoteCubit>().reset();
+    /// Reset last selected purchase order
     context.read<PurchaseOrderCubit>().reset();
   }
 
@@ -42,20 +43,44 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
   }
 
   void onChangeTab(int index) {
+    final branchId = context.read<PurchaseOrderListFilterCubit>().state.branchId;
+    final size = context.read<PurchaseOrderListFilterCubit>().state.size!;
+
     if (index == 0) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(branchId: branchId, size: size);
+      context.read<PurchaseOrderListFilterCubit>().setStatus(null);
     }
     if (index == 1) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.NEW);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+            status: StockOrderStatus.NEW,
+            branchId: branchId,
+            size: size,
+          );
+      context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.NEW);
     }
     if (index == 2) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.FOR_RECEIVING);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+            status: StockOrderStatus.FOR_RECEIVING,
+            branchId: branchId,
+            size: size,
+          );
+      context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.FOR_RECEIVING);
     }
     if (index == 3) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.COMPLETED);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+            status: StockOrderStatus.COMPLETED,
+            branchId: branchId,
+            size: size,
+          );
+      context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.COMPLETED);
     }
     if (index == 4) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(status: StockOrderStatus.CANCELLED);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+            status: StockOrderStatus.CANCELLED,
+            branchId: branchId,
+            size: size,
+          );
+      context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.CANCELLED);
     }
   }
 
@@ -66,7 +91,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
       children: [
         PageHeader(
           title: 'Purchase Orders',
-          subtitle: Strings.subtitlePlaceholder,
+          subtitle: 'View all purchase order operations to keep track of all items added to your inventory.',
           actions: [
             UIButton.filled(
               'New Purchase Order',
@@ -79,28 +104,39 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
           controller: _tabController,
           onTap: onChangeTab,
           tabs: [
-            const Tab(text: 'All Orders'),
-            Tab(text: StockOrderStatus.NEW.label),
-            Tab(text: StockOrderStatus.FOR_RECEIVING.label),
-            Tab(text: StockOrderStatus.COMPLETED.label),
-            Tab(text: StockOrderStatus.CANCELLED.label),
-          ],
+            'All Orders',
+            StockOrderStatus.NEW.label,
+            StockOrderStatus.FOR_RECEIVING.label,
+            StockOrderStatus.COMPLETED.label,
+            StockOrderStatus.CANCELLED.label,
+          ]
+              .map((status) => Container(
+                    margin: const EdgeInsets.only(right: 12),
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Tab(text: status),
+                  ))
+              .toList(),
           isScrollable: true,
           tabAlignment: TabAlignment.start,
+          labelPadding: const EdgeInsets.only(left: 0, right: 0),
           dividerColor: UIColors.borderMuted,
+          dividerHeight: 0.8,
           labelColor: UIColors.primary,
-          labelStyle: UIStyleText.labelMedium,
+          labelStyle: UIStyleText.labelSemiBold,
           unselectedLabelColor: UIColors.textMuted,
+          unselectedLabelStyle: UIStyleText.labelMedium.copyWith(color: UIColors.textLight),
           indicatorPadding: EdgeInsets.zero,
-          indicatorSize: TabBarIndicatorSize.tab,
-          indicator: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: UIColors.primary, width: 2.0),
+          indicatorSize: TabBarIndicatorSize.label,
+          indicator: const UnderlineTabIndicator(
+            borderSide: BorderSide(
+              width: 2.3,
+              color: UIColors.primary,
             ),
+            insets: EdgeInsets.only(left: 0, right: 26, bottom: 0),
           ),
           overlayColor: WidgetStateColor.resolveWith((state) {
             if (state.contains(WidgetState.pressed)) return UIColors.transparent;
-            if (state.contains(WidgetState.hovered)) return UIColors.whiteBg;
+            if (state.contains(WidgetState.hovered)) return UIColors.transparent;
             return UIColors.transparent;
           }),
         ),
@@ -108,33 +144,34 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
         DataGridToolbar(
           isDownloadable: true,
           filters: [
-            SizedBox(
-              width: 150,
-              child: DatePickerPopup(onSelect: (date) {}),
+            DatePickerPopup(
+              onSelectRange: (dates) {},
+              selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(8),
-            SizedBox(
-              width: 120,
-              child: FilterPopup(onSelect: (date) {}),
+            BranchDropdown.select(
+              onRemoveSelectedItem: () {
+                final size = context.read<PurchaseOrderListFilterCubit>().state.size;
+                final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+
+                context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(size: size!, status: status);
+                context.read<PurchaseOrderListFilterCubit>().setBranch(null);
+              },
+              onSelectItem: (branch) {
+                final size = context.read<PurchaseOrderListFilterCubit>().state.size;
+                final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+
+                context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                      size: size!,
+                      status: status,
+                      branchId: branch.id,
+                    );
+                context.read<PurchaseOrderListFilterCubit>().setBranch(branch.id);
+              },
             ),
           ],
         ),
-        BlocBuilder<PurchaseOrderListRemoteCubit, PurchaseOrderListRemoteState>(
-          builder: (context, state) {
-            if (state is PurchaseOrderListError) {
-              return Text(state.message);
-            }
-            if (state is PurchaseOrderListLoaded) {
-              return Expanded(
-                child: PurchaseOrderDataGrid(state.purchaseOrders),
-              );
-            }
-            return DataGridLoading(
-              columns: DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS, showId: true),
-              source: PurchaseOrderDataSource([]),
-            );
-          },
-        ),
+        const Expanded(child: PurchaseOrderPaginatedDataGrid()),
       ],
     );
   }

@@ -69,7 +69,6 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
           children: [
             PageHeader(
               title: _title,
-              subtitle: Strings.subtitlePlaceholder,
               titleTrailings: [
                 Padding(
                   padding: const EdgeInsets.only(top: 1),

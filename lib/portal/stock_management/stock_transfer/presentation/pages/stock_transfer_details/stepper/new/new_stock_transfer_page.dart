@@ -19,8 +19,10 @@ class _NewStockTransferPageState extends State<NewStockTransferPage> {
   void initState() {
     super.initState();
     context.read<StockTransferRemoteCubit>().reset();
-    context.read<StockTransferCubit>().reset();
     context.read<NewStockTransferCubit>().reset();
+
+    /// TODO: Can be removed if the initState is always triggered when navigating to [StockTransfersPage]
+    context.read<StockTransferCubit>().reset();
   }
 
   @override

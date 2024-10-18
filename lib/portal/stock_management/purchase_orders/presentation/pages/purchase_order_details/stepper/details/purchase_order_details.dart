@@ -9,6 +9,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/p
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_items_received_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_items_to_receive_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class PurchaseOrderDetails extends StatefulWidget {
   const PurchaseOrderDetails({super.key});
@@ -63,21 +64,21 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
                   label: 'Created Date',
                   value: purchaseOrder.createdAt != null
                       ? DateFormat.yMd().format(purchaseOrder.createdAt!)
-                      : Strings.empty,
+                      : Strings.noValue,
                 ),
                 if (purchaseOrder.status == StockOrderStatus.FOR_RECEIVING)
                   LabelValue.text(
                     label: 'Estimated Date of Arrival',
                     value: purchaseOrder.estimatedDateOfArrival != null
                         ? DateFormat.yMd().format(purchaseOrder.estimatedDateOfArrival!)
-                        : Strings.empty,
+                        : Strings.noValue,
                   ),
                 if (purchaseOrder.status == StockOrderStatus.COMPLETED)
                   LabelValue.text(
                     label: 'Received Date',
                     value: purchaseOrder.updatedAt != null
                         ? DateFormat.yMd().format(purchaseOrder.updatedAt!)
-                        : Strings.empty,
+                        : Strings.noValue,
                   ),
                 LabelValue.text(
                   label: 'Supplier',
@@ -91,6 +92,8 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
                   LabelValue.button(
                     label: 'Estimated Date of Arrival',
                     button: DatePickerPopup(
+                      isInput: true,
+                      selectionMode: DateRangePickerSelectionMode.single,
                       selectedDate: purchaseOrder.estimatedDateOfArrival,
                       onSelect: (date) => context.read<PurchaseOrderCubit>().setEstimatedDateOfArrival(date),
                     ),

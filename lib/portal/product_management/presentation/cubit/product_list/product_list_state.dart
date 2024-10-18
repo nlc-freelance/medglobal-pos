@@ -12,11 +12,11 @@ final class ProductListInitial extends ProductListState {}
 final class ProductListLoading extends ProductListState {}
 
 final class ProductListLoaded extends ProductListState {
-  final ProductPaginatedList products;
-  const ProductListLoaded({required this.products});
+  final ProductPaginatedList data;
+  const ProductListLoaded({required this.data});
 
   @override
-  List<Object> get props => [products];
+  List<Object> get props => [data];
 }
 
 final class ProductListNoResultFound extends ProductListState {

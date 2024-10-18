@@ -8,7 +8,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 class DataGridNoData extends StatefulWidget {
   final List<GridColumn> columns;
   final bool showCheckbox;
-  final bool isFromSearch;
+  final bool isCustom;
   final DataGridSource source;
   final String? message;
 
@@ -17,11 +17,11 @@ class DataGridNoData extends StatefulWidget {
     required this.columns,
     required this.source,
     this.showCheckbox = false,
-    this.isFromSearch = false,
+    this.isCustom = false,
     this.message,
   });
 
-  factory DataGridNoData.search({
+  factory DataGridNoData.custom({
     required List<GridColumn> columns,
     bool showCheckbox = false,
     required DataGridSource source,
@@ -32,7 +32,7 @@ class DataGridNoData extends StatefulWidget {
         source: source,
         showCheckbox: showCheckbox,
         message: message,
-        isFromSearch: true,
+        isCustom: true,
       );
 
   @override
@@ -69,7 +69,7 @@ class _DataGridNoDataState extends State<DataGridNoData> {
                   Assets.icons.cube.svg(),
                   const UIVerticalSpace(12),
                   UIText.labelMedium(
-                    widget.isFromSearch
+                    widget.isCustom
                         ? widget.message!
                         : 'No data available, ${widget.message ?? 'please add items to your order'}.',
                     color: UIColors.textMuted,

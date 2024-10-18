@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_details/supplier_details_dialog.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/widgets/supplier_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/supplier_paginated_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class SuppliersPage extends StatefulWidget {
@@ -42,7 +41,7 @@ class _SuppliersPageState extends State<SuppliersPage> {
           children: [
             PageHeader(
               title: 'Suppliers',
-              subtitle: Strings.subtitlePlaceholder,
+              subtitle: 'View all suppliers and their information.',
               actions: [
                 UIButton.filled(
                   'New Supplier',
@@ -51,6 +50,7 @@ class _SuppliersPageState extends State<SuppliersPage> {
                 ),
               ],
             ),
+            const UIVerticalSpace(20),
             DataGridToolbar(
               search: UISearchField(
                 fieldWidth: 500.0,
@@ -61,22 +61,7 @@ class _SuppliersPageState extends State<SuppliersPage> {
                 ),
               ),
             ),
-            BlocBuilder<SupplierListCubit, SupplierListState>(
-              builder: (_, state) {
-                if (state is SupplierListError) {
-                  return Center(child: Text(state.message));
-                }
-                if (state is SupplierListLoaded) {
-                  return Expanded(
-                    child: SupplierDataGrid(state.suppliers),
-                  );
-                }
-                return DataGridLoading(
-                  columns: DataGridUtil.getColumns(DataGridColumn.SUPPLIERS),
-                  source: SupplierDataSource([]),
-                );
-              },
-            ),
+            const Expanded(child: SupplierPaginatedDataGrid())
           ],
         ));
   }

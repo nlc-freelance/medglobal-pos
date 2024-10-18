@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/branch_inventory.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/variant.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
@@ -27,19 +27,32 @@ class VariantFormCubit extends Cubit<VariantFormState> {
 
   void setCost(String value) => emit(VariantFormState(state.variant?.copyWith(cost: double.tryParse(value))));
 
-  void setSuppliers(List<Supplier> value) => emit(VariantFormState(state.variant?.copyWith(suppliers: value)));
+  void setSuppliers(Supplier supplier) {
+    final suppliers = state.variant?.suppliers?.toList() ?? [];
 
-  void addBranchInventory(List<Branch> branches) {
+    if (!suppliers.contains(supplier)) suppliers.add(supplier);
+
+    emit(VariantFormState(state.variant?.copyWith(suppliers: suppliers)));
+  }
+
+  void removeSupplier(int id) {
+    final suppliers = state.variant?.suppliers?.toList() ?? [];
+    suppliers.removeWhere((supplier) => supplier.id == id);
+    emit(VariantFormState(state.variant?.copyWith(suppliers: suppliers)));
+  }
+
+  void addBranchInventory(Branch branch) {
     final branchInventories = state.variant?.branchInventories?.toList() ?? [];
 
-    for (var branch in branches) {
-      if (!branchInventories.map((data) => data.branch).toList().contains(branch) || branchInventories.isEmpty) {
-        final mappedBranchInventory =
-            BranchInventory(id: -(const Uuid().v4().hashCode), branch: branch, price: 0, qtyOnHand: 0);
+    // for (var branch in branches) {
+    if (!branchInventories.any((data) => data.branch?.id == branch.id) || branchInventories.isEmpty) {
+      // if (!branchInventories.map((data) => data.branch).toList().contains(branch) || branchInventories.isEmpty) {
+      final mappedBranchInventory =
+          BranchInventory(id: -(const Uuid().v4().hashCode), branch: branch, price: 0, qtyOnHand: 0);
 
-        branchInventories.add(mappedBranchInventory);
-      }
+      branchInventories.add(mappedBranchInventory);
     }
+    // }
 
     emit(VariantFormState(state.variant?.copyWith(branchInventories: branchInventories)));
   }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
+import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/stock_take_paginated_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/widgets/new_stock_take_dialog.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/widgets/stock_take_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class StockTakesPage extends StatefulWidget {
   const StockTakesPage({super.key});
@@ -23,9 +24,6 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     context.read<StockTakeListRemoteCubit>().getStockTakes();
-
-    /// Reset NewStockTakeCubit
-    context.read<NewStockTakeCubit>().reset();
   }
 
   @override
@@ -35,17 +33,23 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
   }
 
   void onChangeTab(int index) {
+    final size = context.read<StockTakeListFilterCubit>().state.size!;
+
     if (index == 0) {
-      context.read<StockTakeListRemoteCubit>().getStockTakes();
+      context.read<StockTakeListRemoteCubit>().getStockTakes(size: size);
+      context.read<StockTakeListFilterCubit>().setStatus(null);
     }
     if (index == 1) {
-      context.read<StockTakeListRemoteCubit>().getStockTakes(status: StockOrderStatus.IN_PROGRESS);
+      context.read<StockTakeListRemoteCubit>().getStockTakes(status: StockOrderStatus.IN_PROGRESS, size: size);
+      context.read<StockTakeListFilterCubit>().setStatus(StockOrderStatus.IN_PROGRESS);
     }
     if (index == 2) {
-      context.read<StockTakeListRemoteCubit>().getStockTakes(status: StockOrderStatus.COMPLETED);
+      context.read<StockTakeListRemoteCubit>().getStockTakes(status: StockOrderStatus.COMPLETED, size: size);
+      context.read<StockTakeListFilterCubit>().setStatus(StockOrderStatus.COMPLETED);
     }
     if (index == 3) {
-      context.read<StockTakeListRemoteCubit>().getStockTakes(status: StockOrderStatus.CANCELLED);
+      context.read<StockTakeListRemoteCubit>().getStockTakes(status: StockOrderStatus.CANCELLED, size: size);
+      context.read<StockTakeListFilterCubit>().setStatus(StockOrderStatus.CANCELLED);
     }
   }
 
@@ -56,7 +60,7 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
       children: [
         PageHeader(
           title: 'Stock Takes',
-          subtitle: Strings.subtitlePlaceholder,
+          subtitle: 'View all stock take operations to keep track of QoH audits in your inventory.',
           actions: [
             UIButton.filled(
               'New Stock Take',
@@ -73,27 +77,38 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
           controller: _tabController,
           onTap: onChangeTab,
           tabs: [
-            const Tab(text: 'All Takes'),
-            Tab(text: StockOrderStatus.IN_PROGRESS.label),
-            Tab(text: StockOrderStatus.COMPLETED.label),
-            Tab(text: StockOrderStatus.CANCELLED.label),
-          ],
+            'All Takes',
+            StockOrderStatus.IN_PROGRESS.label,
+            StockOrderStatus.COMPLETED.label,
+            StockOrderStatus.CANCELLED.label,
+          ]
+              .map((status) => Container(
+                    margin: const EdgeInsets.only(right: 12),
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Tab(text: status),
+                  ))
+              .toList(),
           isScrollable: true,
           tabAlignment: TabAlignment.start,
+          labelPadding: const EdgeInsets.only(left: 0, right: 0),
           dividerColor: UIColors.borderMuted,
+          dividerHeight: 0.8,
           labelColor: UIColors.primary,
-          labelStyle: UIStyleText.labelMedium,
+          labelStyle: UIStyleText.labelSemiBold,
           unselectedLabelColor: UIColors.textMuted,
+          unselectedLabelStyle: UIStyleText.labelMedium.copyWith(color: UIColors.textLight),
           indicatorPadding: EdgeInsets.zero,
-          indicatorSize: TabBarIndicatorSize.tab,
-          indicator: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: UIColors.primary, width: 2.0),
+          indicatorSize: TabBarIndicatorSize.label,
+          indicator: const UnderlineTabIndicator(
+            borderSide: BorderSide(
+              width: 2.3,
+              color: UIColors.primary,
             ),
+            insets: EdgeInsets.only(left: 0, right: 26, bottom: 0),
           ),
           overlayColor: WidgetStateColor.resolveWith((state) {
             if (state.contains(WidgetState.pressed)) return UIColors.transparent;
-            if (state.contains(WidgetState.hovered)) return UIColors.whiteBg;
+            if (state.contains(WidgetState.hovered)) return UIColors.transparent;
             return UIColors.transparent;
           }),
         ),
@@ -101,37 +116,13 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
         DataGridToolbar(
           isDownloadable: true,
           filters: [
-            UIButton.outlined(
-              'Date',
-              iconAlign: IconAlignment.end,
-              iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
-              onClick: () {},
-            ),
-            const UIHorizontalSpace(8),
-            UIButton.outlined(
-              'Filter',
-              iconAlign: IconAlignment.end,
-              iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
-              onClick: () {},
+            DatePickerPopup(
+              onSelectRange: (dates) {},
+              selectionMode: DateRangePickerSelectionMode.range,
             ),
           ],
         ),
-        BlocBuilder<StockTakeListRemoteCubit, StockTakeListRemoteState>(
-          builder: (context, state) {
-            if (state is StockTakeListError) {
-              return Text(state.message);
-            }
-            if (state is StockTakeListLoaded) {
-              return Expanded(
-                child: StockTakeDataGrid(state.stockTakes),
-              );
-            }
-            return DataGridLoading(
-              columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TAKES),
-              source: StockTakeDataSource([]),
-            );
-          },
-        ),
+        const Expanded(child: StockTakePaginatedDataGrid()),
       ],
     );
   }

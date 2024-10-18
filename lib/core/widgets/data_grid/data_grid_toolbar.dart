@@ -21,7 +21,7 @@ class DataGridToolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: padding ?? const EdgeInsets.only(bottom: 20.0),
+      padding: padding ?? const EdgeInsets.only(bottom: 24),
       child: Row(
         children: [
           if (search != null) ...[
@@ -31,12 +31,12 @@ class DataGridToolbar extends StatelessWidget {
           ],
           ...?filters,
           if (search == null) const Spacer(),
-          if (isImportCSV)
-            UIButton.outlined(
-              'Import from CSV',
-              iconBuilder: (isHover) => Assets.icons.import.setColorOnHover(isHover),
-              onClick: () {},
-            ),
+          // if (isImportCSV)
+          //   UIButton.outlined(
+          //     'Import from CSV',
+          //     iconBuilder: (isHover) => Assets.icons.import.setColorOnHover(isHover),
+          //     onClick: () {},
+          //   ),
           if (isDownloadable) ...[
             const UIHorizontalSpace(8),
             UIButton.outlined(

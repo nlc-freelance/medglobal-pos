@@ -29,8 +29,9 @@ class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
       children: [
         const PageHeader(
           title: 'Supply Needs',
-          subtitle: Strings.subtitlePlaceholder,
+          subtitle: 'Track and manage products that are below or equal to its warning stock level.',
         ),
+        const UIVerticalSpace(20),
         BlocBuilder<SupplyNeedsCubit, SupplyNeedsState>(
           builder: (context, state) {
             if (state is SupplyNeedsError) {

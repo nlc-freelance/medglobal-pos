@@ -8,6 +8,7 @@ import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/a
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/products_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/product_history_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/purchase_order_details_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_orders_page.dart';
@@ -25,8 +26,8 @@ import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_list/returns_page.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_details/sale_transaction_details_page.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transactions_page.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/pages/billing/billing_page.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/pages/register/register_page.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/billing/billing_page.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/register/register_page.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transactions_page.dart';
 
 abstract class AppRouter {
@@ -200,18 +201,6 @@ abstract class AppRouter {
               ),
             ],
           ),
-          // StatefulShellBranch(
-          //   routes: [
-          //     GoRoute(
-          //       name: SideMenuTreeItem.MANAGE_RETURNS.name,
-          //       path: SideMenuTreeItem.MANAGE_RETURNS.path,
-          //       builder: (context, state) => const Text(
-          //         'Returns Management',
-          //         style: TextStyle(fontSize: 24, color: Colors.black),
-          //       ),
-          //     ),
-          //   ],
-          // ),
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -222,10 +211,7 @@ abstract class AppRouter {
                   GoRoute(
                     name: SideMenuTreeItem.PRODUCT_HISTORY.name,
                     path: SideMenuTreeItem.PRODUCT_HISTORY.path,
-                    builder: (context, state) => const Text(
-                      'Product History',
-                      style: TextStyle(fontSize: 24, color: Colors.black),
-                    ),
+                    pageBuilder: (context, state) => const NoTransitionPage(child: ProductHistoryPage()),
                   ),
                   GoRoute(
                     name: SideMenuTreeItem.SALES_REPORT.name,

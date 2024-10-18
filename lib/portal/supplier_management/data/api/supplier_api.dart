@@ -1,14 +1,12 @@
-import 'package:medglobal_admin_portal/core/network/models/api_query_params.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_dto.dart';
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
+import 'package:medglobal_admin_portal/core/network/models/api_query_params.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_dto.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier_list.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier_paginated_list.dart';
 
 abstract class SupplierApi {
-  Future<List<SupplierDto>> getAllSuppliers();
-
-  Future<SupplierPaginatedList> getSuppliers(int page);
+  Future<SupplierPaginatedList> getSuppliers({required int page, required int size});
   Future<SupplierDto> getSupplier(int id);
   Future<void> create(Supplier supplier);
   Future<void> update(int id, Supplier supplier);
@@ -21,39 +19,11 @@ class SupplierApiImpl implements SupplierApi {
   const SupplierApiImpl(this.api);
 
   @override
-  Future<List<SupplierDto>> getAllSuppliers() async {
-    print('supplier fetch');
-    try {
-      int currentPage = 1;
-      List<SupplierDto> suppliers = [];
-      bool hasNextPage = true;
-
-      while (hasNextPage) {
-        final response = await api.collection<SupplierDto>(
-          ApiEndpoint.suppliers(),
-          queryParams: ApiQueryParams(page: currentPage).toJson(),
-          converter: SupplierDto.fromJson,
-        );
-        if (response.items?.isNotEmpty == true) {
-          suppliers.addAll(response.items!.toList());
-          currentPage++;
-        } else {
-          hasNextPage = false;
-        }
-      }
-
-      return suppliers;
-    } catch (_) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<SupplierPaginatedList> getSuppliers(int page) async {
+  Future<SupplierPaginatedList> getSuppliers({required int page, required int size}) async {
     try {
       final response = await api.collection<SupplierDto>(
         ApiEndpoint.suppliers(),
-        queryParams: ApiQueryParams(page: page).toJson(),
+        queryParams: ApiQueryParams(page: page, size: size).toJson(),
         converter: SupplierDto.fromJson,
       );
 

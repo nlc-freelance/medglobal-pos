@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/branch.dart';
+import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -83,7 +83,7 @@ class StockTake extends Equatable {
         ],
       );
 
-  JSON toPayload(StockOrderUpdate type) {
+  JSON toPayload(StockOrderUpdate type, {int? uncountedItemsValue}) {
     String? status;
     if (type == StockOrderUpdate.SAVE) status = 'in progress';
     if (type == StockOrderUpdate.MARK_AS_COMPLETE) status = 'completed';
@@ -91,12 +91,7 @@ class StockTake extends Equatable {
 
     return {
       'status': status,
-      'stockTakeDetails': items
-          ?.map((item) => {
-                'id': item.id,
-                'countedQuantity': item.qtyCounted,
-              })
-          .toList(),
+      if (type == StockOrderUpdate.MARK_AS_COMPLETE) 'uncountedItemValue': uncountedItemsValue,
       'notes': description,
     };
   }

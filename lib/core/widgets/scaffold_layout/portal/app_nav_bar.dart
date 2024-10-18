@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_admin_portal/portal/branches/cubit/branch_lazy_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_lazy_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_lazy_list/supplier_lazy_list_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
@@ -56,7 +59,14 @@ class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
                   menu: ProfileMenu.values,
                   menuAsString: (item) => item.title,
                   onSelect: (menu) {
-                    if (ProfileMenu.LOGOUT == menu) context.read<AuthBloc>().add(const LogoutEvent());
+                    if (ProfileMenu.LOGOUT == menu) {
+                      /// Dropdowns
+                      context.read<BranchLazyListCubit>().reset();
+                      context.read<CategoryLazyListCubit>().reset();
+                      context.read<SupplierLazyListCubit>().reset();
+
+                      context.read<AuthBloc>().add(const LogoutEvent());
+                    }
                   }),
             ],
           )
