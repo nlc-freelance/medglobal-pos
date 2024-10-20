@@ -132,6 +132,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                   destinationBranchId:
                                       context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                   status: context.read<StockTransferListFilterCubit>().state.status,
+                                  startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                  endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                                 );
                           } else {
                             context.read<StockTransferListRemoteCubit>().getStockTransfers(
@@ -141,6 +143,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                   destinationBranchId:
                                       context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                   status: context.read<StockTransferListFilterCubit>().state.status,
+                                  startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                  endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                                 );
                           }
                         },
@@ -169,6 +173,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                 destinationBranchId:
                                     context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                 status: context.read<StockTransferListFilterCubit>().state.status,
+                                startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -187,6 +193,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                 destinationBranchId:
                                     context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                 status: context.read<StockTransferListFilterCubit>().state.status,
+                                startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -205,6 +213,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                 destinationBranchId:
                                     context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                 status: context.read<StockTransferListFilterCubit>().state.status,
+                                startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -225,6 +235,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                 destinationBranchId:
                                     context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                 status: context.read<StockTransferListFilterCubit>().state.status,
+                                startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                               );
                         }
                       },

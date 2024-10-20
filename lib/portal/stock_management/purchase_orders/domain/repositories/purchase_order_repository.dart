@@ -10,6 +10,8 @@ abstract class PurchaseOrderRepository {
     required int size,
     StockOrderStatus? status,
     int? branchId,
+    String? startDate,
+    String? endDate,
   });
   Future<Either<Failure, PurchaseOrder>> getPurchaseOrderById(int id);
   Future<Either<Failure, PurchaseOrder>> create(NewPurchaseOrder payload);

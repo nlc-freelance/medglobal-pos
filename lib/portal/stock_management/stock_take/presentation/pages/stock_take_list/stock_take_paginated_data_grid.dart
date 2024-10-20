@@ -128,12 +128,16 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
                                   page: 1,
                                   size: _rowsPerPage,
                                   status: context.read<StockTakeListFilterCubit>().state.status,
+                                  startDate: context.read<StockTakeListFilterCubit>().state.startDate,
+                                  endDate: context.read<StockTakeListFilterCubit>().state.endDate,
                                 );
                           } else {
                             context.read<StockTakeListRemoteCubit>().getStockTakes(
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
                                   status: context.read<StockTakeListFilterCubit>().state.status,
+                                  startDate: context.read<StockTakeListFilterCubit>().state.startDate,
+                                  endDate: context.read<StockTakeListFilterCubit>().state.endDate,
                                 );
                           }
                         },
@@ -159,6 +163,8 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
                                 page: 1,
                                 size: _rowsPerPage,
                                 status: context.read<StockTakeListFilterCubit>().state.status,
+                                startDate: context.read<StockTakeListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTakeListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -174,6 +180,8 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
                                 status: context.read<StockTakeListFilterCubit>().state.status,
+                                startDate: context.read<StockTakeListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTakeListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -189,6 +197,8 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
                                 status: context.read<StockTakeListFilterCubit>().state.status,
+                                startDate: context.read<StockTakeListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTakeListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -206,6 +216,8 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
                                 status: context.read<StockTakeListFilterCubit>().state.status,
+                                startDate: context.read<StockTakeListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTakeListFilterCubit>().state.endDate,
                               );
                         }
                       },

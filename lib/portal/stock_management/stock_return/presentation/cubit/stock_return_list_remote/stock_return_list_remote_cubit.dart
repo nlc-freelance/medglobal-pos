@@ -16,6 +16,8 @@ class StockReturnListRemoteCubit extends Cubit<StockReturnListRemoteState> {
     int size = 20,
     StockOrderStatus? status,
     int? branchId,
+    String? startDate,
+    String? endDate,
   }) async {
     emit(StockReturnListLoading());
 
@@ -25,6 +27,8 @@ class StockReturnListRemoteCubit extends Cubit<StockReturnListRemoteState> {
         size: size,
         status: status,
         branchId: branchId,
+        startDate: startDate,
+        endDate: endDate,
       ));
       result.fold(
         (error) => emit(StockReturnListError(message: error.message)),

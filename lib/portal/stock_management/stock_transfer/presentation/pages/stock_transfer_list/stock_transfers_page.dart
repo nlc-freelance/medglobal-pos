@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
@@ -43,12 +44,16 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
     final sourceBranchId = context.read<StockTransferListFilterCubit>().state.sourceBranch?.id;
     final destinationBranchId = context.read<StockTransferListFilterCubit>().state.destinationBranch?.id;
     final size = context.read<StockTransferListFilterCubit>().state.size!;
+    final startDate = context.read<StockTransferListFilterCubit>().state.startDate;
+    final endDate = context.read<StockTransferListFilterCubit>().state.endDate;
 
     if (index == 0) {
       context.read<StockTransferListRemoteCubit>().getStockTransfers(
             sourceBranchId: sourceBranchId,
             destinationBranchId: destinationBranchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<StockTransferListFilterCubit>().setStatus(null);
     }
@@ -58,6 +63,8 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
             sourceBranchId: sourceBranchId,
             destinationBranchId: destinationBranchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<StockTransferListFilterCubit>().setStatus(StockOrderStatus.NEW);
     }
@@ -67,6 +74,8 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
             sourceBranchId: sourceBranchId,
             destinationBranchId: destinationBranchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<StockTransferListFilterCubit>().setStatus(StockOrderStatus.SHIPPED);
     }
@@ -76,6 +85,8 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
             sourceBranchId: sourceBranchId,
             destinationBranchId: destinationBranchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<StockTransferListFilterCubit>().setStatus(StockOrderStatus.COMPLETED);
     }
@@ -85,6 +96,8 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
             sourceBranchId: sourceBranchId,
             destinationBranchId: destinationBranchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<StockTransferListFilterCubit>().setStatus(StockOrderStatus.CANCELLED);
     }
@@ -153,7 +166,44 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
           isDownloadable: true,
           filters: [
             DatePickerPopup(
-              onSelectRange: (dates) {},
+              onRemoveSelected: () {
+                final size = context.read<StockTransferListFilterCubit>().state.size;
+                final status = context.read<StockTransferListFilterCubit>().state.status;
+                final sourceBranchId = context.read<StockTransferListFilterCubit>().state.sourceBranch?.id;
+                final destinationBranchId = context.read<StockTransferListFilterCubit>().state.destinationBranch?.id;
+
+                context.read<StockTransferListRemoteCubit>().getStockTransfers(
+                      size: size!,
+                      status: status,
+                      sourceBranchId: sourceBranchId,
+                      destinationBranchId: destinationBranchId,
+                    );
+
+                context.read<StockTransferListFilterCubit>().setStartDate(null);
+                context.read<StockTransferListFilterCubit>().setEndDate(null);
+              },
+              onSelectRange: (dates) {
+                final size = context.read<StockTransferListFilterCubit>().state.size;
+                final status = context.read<StockTransferListFilterCubit>().state.status;
+                final sourceBranchId = context.read<StockTransferListFilterCubit>().state.sourceBranch?.id;
+                final destinationBranchId = context.read<StockTransferListFilterCubit>().state.destinationBranch?.id;
+
+                String? endDate;
+                final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
+                if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
+
+                context.read<StockTransferListRemoteCubit>().getStockTransfers(
+                      size: size!,
+                      status: status,
+                      sourceBranchId: sourceBranchId,
+                      destinationBranchId: destinationBranchId,
+                      startDate: startDate,
+                      endDate: endDate,
+                    );
+
+                context.read<StockTransferListFilterCubit>().setStartDate(startDate);
+                context.read<StockTransferListFilterCubit>().setEndDate(endDate);
+              },
               selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(16),
@@ -164,12 +214,16 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
                 final size = context.read<StockTransferListFilterCubit>().state.size;
                 final status = context.read<StockTransferListFilterCubit>().state.status;
                 final destinationBranchId = context.read<StockTransferListFilterCubit>().state.destinationBranch?.id;
+                final startDate = context.read<StockTransferListFilterCubit>().state.startDate;
+                final endDate = context.read<StockTransferListFilterCubit>().state.endDate;
 
                 context.read<StockTransferListRemoteCubit>().getStockTransfers(
                       size: size!,
                       status: status,
                       sourceBranchId: null,
                       destinationBranchId: destinationBranchId,
+                      startDate: startDate,
+                      endDate: endDate,
                     );
                 context.read<StockTransferListFilterCubit>().setSourceBranch(null);
               },
@@ -177,15 +231,18 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
                 final size = context.read<StockTransferListFilterCubit>().state.size;
                 final status = context.read<StockTransferListFilterCubit>().state.status;
                 final destinationBranchId = context.read<StockTransferListFilterCubit>().state.destinationBranch?.id;
-                {
-                  context.read<StockTransferListRemoteCubit>().getStockTransfers(
-                        size: size!,
-                        status: status,
-                        sourceBranchId: branch.id,
-                        destinationBranchId: destinationBranchId,
-                      );
-                  context.read<StockTransferListFilterCubit>().setSourceBranch(branch);
-                }
+                final startDate = context.read<StockTransferListFilterCubit>().state.startDate;
+                final endDate = context.read<StockTransferListFilterCubit>().state.endDate;
+
+                context.read<StockTransferListRemoteCubit>().getStockTransfers(
+                      size: size!,
+                      status: status,
+                      sourceBranchId: branch.id,
+                      destinationBranchId: destinationBranchId,
+                      startDate: startDate,
+                      endDate: endDate,
+                    );
+                context.read<StockTransferListFilterCubit>().setSourceBranch(branch);
               },
             ),
             const UIHorizontalSpace(16),
@@ -196,12 +253,16 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
                 final size = context.read<StockTransferListFilterCubit>().state.size;
                 final status = context.read<StockTransferListFilterCubit>().state.status;
                 final sourceBranchId = context.read<StockTransferListFilterCubit>().state.sourceBranch?.id;
+                final startDate = context.read<StockTransferListFilterCubit>().state.startDate;
+                final endDate = context.read<StockTransferListFilterCubit>().state.endDate;
 
                 context.read<StockTransferListRemoteCubit>().getStockTransfers(
                       size: size!,
                       status: status,
                       sourceBranchId: sourceBranchId,
                       destinationBranchId: null,
+                      startDate: startDate,
+                      endDate: endDate,
                     );
                 context.read<StockTransferListFilterCubit>().setDestinationBranch(null);
               },
@@ -209,12 +270,16 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
                 final size = context.read<StockTransferListFilterCubit>().state.size;
                 final status = context.read<StockTransferListFilterCubit>().state.status;
                 final sourceBranchId = context.read<StockTransferListFilterCubit>().state.sourceBranch?.id;
+                final startDate = context.read<StockTransferListFilterCubit>().state.startDate;
+                final endDate = context.read<StockTransferListFilterCubit>().state.endDate;
 
                 context.read<StockTransferListRemoteCubit>().getStockTransfers(
                       size: size!,
                       status: status,
                       sourceBranchId: sourceBranchId,
                       destinationBranchId: branch.id,
+                      startDate: startDate,
+                      endDate: endDate,
                     );
                 context.read<StockTransferListFilterCubit>().setDestinationBranch(branch);
               },

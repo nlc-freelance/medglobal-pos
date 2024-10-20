@@ -25,7 +25,7 @@ class ProductApiImpl implements ProductApi {
     try {
       final response = await _apiService.collection<ProductDto>(
         ApiEndpoint.products(),
-        queryParams: {'page': page, 'size': size, 'search': search},
+        queryParams: {'page': page, 'size': size, if (search != null) 'search': search},
         converter: ProductDto.fromJson,
       );
 

@@ -10,6 +10,8 @@ abstract class StockTakeRepository {
     required int page,
     required int size,
     StockOrderStatus? status,
+    String? startDate,
+    String? endDate,
   });
   Future<Either<Failure, StockTake>> getStockTakeById(int id);
   Future<Either<Failure, StockTakeItemsPaginatedList>> getItemsById(

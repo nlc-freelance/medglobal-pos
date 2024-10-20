@@ -28,6 +28,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
     required int size,
     int? branch,
     bool? isAllBranches,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
       final response = await _transactionApi.getTransactions(
@@ -36,6 +38,8 @@ class TransactionRepositoryImpl implements TransactionRepository {
         size: size,
         branch: branch,
         isAllBranches: isAllBranches,
+        startDate: startDate,
+        endDate: endDate,
       );
       return Right(response);
     } on DioException catch (e) {

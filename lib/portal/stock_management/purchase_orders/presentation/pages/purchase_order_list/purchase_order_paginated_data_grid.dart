@@ -130,6 +130,8 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                   size: _rowsPerPage,
                                   branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                                   status: context.read<PurchaseOrderListFilterCubit>().state.status,
+                                  startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
+                                  endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
                                 );
                           } else {
                             context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
@@ -137,6 +139,8 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                   size: _rowsPerPage,
                                   branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                                   status: context.read<PurchaseOrderListFilterCubit>().state.status,
+                                  startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
+                                  endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
                                 );
                           }
                         },
@@ -163,6 +167,8 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                 size: _rowsPerPage,
                                 branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                                 status: context.read<PurchaseOrderListFilterCubit>().state.status,
+                                startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
+                                endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -179,6 +185,8 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                 size: _rowsPerPage,
                                 branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                                 status: context.read<PurchaseOrderListFilterCubit>().state.status,
+                                startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
+                                endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -195,6 +203,8 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                 size: _rowsPerPage,
                                 branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                                 status: context.read<PurchaseOrderListFilterCubit>().state.status,
+                                startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
+                                endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -213,6 +223,8 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
                                 size: _rowsPerPage,
                                 branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
                                 status: context.read<PurchaseOrderListFilterCubit>().state.status,
+                                startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
+                                endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
                               );
                         }
                       },
