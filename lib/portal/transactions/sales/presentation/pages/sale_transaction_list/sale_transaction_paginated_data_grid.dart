@@ -49,7 +49,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
       listener: (context, state) {
         if (state is SaleTransactionListLoaded) {
           sales = state.data.transactions ?? [];
-          _saleTransactionDataSource = SaleTransactionDataSource(sales, _rowsPerPage);
+          _saleTransactionDataSource = SaleTransactionDataSource(sales);
         }
         // if (state is SaleListNoResultFound) {
         //   _saleTransactionDataSource = SaleTransactionDataSource([], _rowsPerPage);
@@ -255,7 +255,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
         }
         return DataGridLoading(
           columns: DataGridUtil.getColumns(DataGridColumn.SALE_TRANSACTIONS),
-          source: _saleTransactionDataSource = SaleTransactionDataSource([], _rowsPerPage),
+          source: _saleTransactionDataSource = SaleTransactionDataSource([]),
         );
       },
     );
@@ -263,42 +263,19 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
 }
 
 class SaleTransactionDataSource extends DataGridSource {
-  SaleTransactionDataSource(List<Transaction> sales, int rowsPerPage) {
-    _rowsPerPage = rowsPerPage;
+  SaleTransactionDataSource(List<Transaction> sales) {
     _sales = sales;
-    _paginatedSales = _sales.getRange(0, sales.length).toList(growable: false);
-    buildDataGridRows(_sales);
+    buildDataGridRows();
   }
 
-  late int _rowsPerPage;
-
   List<Transaction> _sales = [];
-
-  List<Transaction> _paginatedSales = [];
 
   List<DataGridRow> dataGridRows = [];
 
   @override
   List<DataGridRow> get rows => dataGridRows;
 
-  @override
-  Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
-    int startIndex = newPageIndex * _rowsPerPage;
-    int endIndex = startIndex + _rowsPerPage;
-
-    if (startIndex < _sales.length && endIndex <= _sales.length) {
-      _paginatedSales = _sales.getRange(startIndex, endIndex).toList(growable: false);
-      buildDataGridRows(_paginatedSales);
-      notifyListeners();
-    } else {
-      _paginatedSales = [];
-    }
-
-    return true;
-  }
-
-  void buildDataGridRows(List<Transaction> sales) =>
-      dataGridRows = sales.map((transaction) => transaction.toSaleTransactionRow()).toList();
+  void buildDataGridRows() => dataGridRows = _sales.map((transaction) => transaction.toSaleTransactionRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -319,7 +296,10 @@ class SaleTransactionDataSource extends DataGridSource {
     return switch (column) {
       'receipt_id' => HoverBuilder(
           builder: (isHover) => InkWell(
-            onTap: () => AppRouter.router.goNamed('Sale Details', pathParameters: {'id': id.toString()}),
+            onTap: () {
+              // _context.read<TransactionCubit>().getTransactionById(id);
+              AppRouter.router.goNamed('Sale Details', pathParameters: {'id': id.toString()});
+            },
             hoverColor: UIColors.transparent,
             child: UIText.dataGridText(
               cell.value.toString(),

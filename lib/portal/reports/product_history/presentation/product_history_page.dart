@@ -50,7 +50,7 @@ class _ProductHistoryPageState extends State<ProductHistoryPage> {
               UIText.labelMedium('Check'),
               const UIHorizontalSpace(8),
               SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.25,
+                width: MediaQuery.sizeOf(context).width * 0.35,
                 child: ProductTypeAheadSearch(
                   onSelected: (value) {
                     setState(() => _productVariantId = value.id);

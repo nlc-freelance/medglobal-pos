@@ -33,7 +33,7 @@ class ProductHistoryApiImpl implements ProductHistoryApi {
       );
 
       return ProductHistoryPaginatedList(
-        productHistoryItems: response.items?.map((item) => item).toList(),
+        productHistoryItems: response.items?.map((item) => item.toEntity()).toList(),
         currentPage: response.pageInfo?.page,
         totalPages: response.pageInfo?.totalPages,
         totalCount: response.pageInfo?.totalCount,

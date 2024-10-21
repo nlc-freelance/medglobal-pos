@@ -48,7 +48,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
       listener: (context, state) {
         if (state is PurchaseOrderListLoaded) {
           purchaseOrders = state.data.purchaseOrders ?? [];
-          _purchaseOrderDataSource = PurchaseOrderDataSource(purchaseOrders, _rowsPerPage);
+          _purchaseOrderDataSource = PurchaseOrderDataSource(purchaseOrders);
         }
       },
       builder: (context, state) {
@@ -230,7 +230,7 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
         }
         return DataGridLoading(
           columns: DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS, showId: true),
-          source: _purchaseOrderDataSource = PurchaseOrderDataSource([], _rowsPerPage),
+          source: _purchaseOrderDataSource = PurchaseOrderDataSource([]),
         );
       },
     );
@@ -238,42 +238,19 @@ class _PurchaseOrderPaginatedDataGridState extends State<PurchaseOrderPaginatedD
 }
 
 class PurchaseOrderDataSource extends DataGridSource {
-  PurchaseOrderDataSource(List<PurchaseOrder> purchaseOrders, int rowsPerPage) {
-    _rowsPerPage = rowsPerPage;
+  PurchaseOrderDataSource(List<PurchaseOrder> purchaseOrders) {
     _purchaseOrders = purchaseOrders;
-    _paginatedPurchaseOrders = _purchaseOrders.getRange(0, purchaseOrders.length).toList(growable: false);
-    buildDataGridRows(_purchaseOrders);
+    buildDataGridRows();
   }
 
-  late int _rowsPerPage;
-
   List<PurchaseOrder> _purchaseOrders = [];
-
-  List<PurchaseOrder> _paginatedPurchaseOrders = [];
 
   List<DataGridRow> dataGridRows = [];
 
   @override
   List<DataGridRow> get rows => dataGridRows;
 
-  @override
-  Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
-    int startIndex = newPageIndex * _rowsPerPage;
-    int endIndex = startIndex + _rowsPerPage;
-
-    if (startIndex < _purchaseOrders.length && endIndex <= _purchaseOrders.length) {
-      _paginatedPurchaseOrders = _purchaseOrders.getRange(startIndex, endIndex).toList(growable: false);
-      buildDataGridRows(_paginatedPurchaseOrders);
-      notifyListeners();
-    } else {
-      _paginatedPurchaseOrders = [];
-    }
-
-    return true;
-  }
-
-  void buildDataGridRows(List<PurchaseOrder> purchaseOrders) =>
-      dataGridRows = purchaseOrders.map((order) => order.toDataGridRow()).toList();
+  void buildDataGridRows() => dataGridRows = _purchaseOrders.map((order) => order.toDataGridRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
