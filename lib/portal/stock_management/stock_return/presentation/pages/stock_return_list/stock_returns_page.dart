@@ -27,7 +27,7 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
 
     /// TODO: The list does not update when using the back button or side menu to navigate back to this page
     /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
-    context.read<StockReturnListRemoteCubit>().getStockReturns();
+    // context.read<StockReturnListRemoteCubit>().getStockReturns();
 
     /// Reset last selected stock return
     context.read<StockReturnCubit>().reset();

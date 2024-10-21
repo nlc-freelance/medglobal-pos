@@ -1,12 +1,12 @@
-import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/reports/product_history/domain/entities/product_history_item.dart';
 
 part 'product_history_item_dto.g.dart';
 
 @JsonSerializable()
 class ProductHistoryItemDto {
-  final int? id;
+  final int? transactionId;
   final DateTime? dateTime;
   final String? employeeName;
   final String? action;
@@ -15,7 +15,7 @@ class ProductHistoryItemDto {
   final int? difference;
 
   const ProductHistoryItemDto({
-    this.id,
+    this.transactionId,
     this.dateTime,
     this.employeeName,
     this.action,
@@ -24,21 +24,36 @@ class ProductHistoryItemDto {
     this.difference,
   });
 
-  DataGridRow toDataGridRow() => DataGridRow(
-        cells: [
-          DataGridCell<int>(columnName: 'id', value: id),
-          DataGridCell<String>(
-              columnName: 'datetime',
-              value: dateTime != null ? DateFormat('MM/dd/yyyy HH:mm').format(dateTime!.toLocal()) : '-'),
-          DataGridCell<String>(columnName: 'employee_name', value: employeeName),
-          DataGridCell<String>(columnName: 'action', value: action),
-          DataGridCell<int>(columnName: 'qty_before', value: qtyBefore),
-          DataGridCell<int>(columnName: 'change', value: difference),
-          DataGridCell<int>(columnName: 'qty_after', value: qtyAfter),
-        ],
-      );
-
   factory ProductHistoryItemDto.fromJson(Map<String, dynamic> json) => _$ProductHistoryItemDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProductHistoryItemDtoToJson(this);
+
+  ProductHistoryItem toEntity() => ProductHistoryItem(
+        id: transactionId,
+        dateTime: dateTime,
+        employeeName: employeeName,
+        action: _action,
+        qtyBefore: qtyBefore,
+        change: difference,
+        qtyAfter: qtyAfter,
+      );
+
+  ProductHistoryAction? get _action {
+    switch (action) {
+      case 'purchase':
+        return ProductHistoryAction.PURCHASE;
+      case 'return':
+        return ProductHistoryAction.RETURN;
+      case 'take':
+        return ProductHistoryAction.TAKE;
+      case 'transfer':
+        return ProductHistoryAction.TRANSFER;
+      case 'sale':
+        return ProductHistoryAction.SALE;
+      case 'initial':
+        return ProductHistoryAction.INITIAL;
+      default:
+        return null;
+    }
+  }
 }

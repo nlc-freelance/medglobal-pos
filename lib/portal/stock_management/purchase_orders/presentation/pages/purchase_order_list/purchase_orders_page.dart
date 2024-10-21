@@ -30,7 +30,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
     /// TODO: The list does not update when using the back button or side menu to navigate back to this page
     /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
     /// Ex. /stock-management/purchase-orders/id=1 to /stock-management/purchase-orders/
-    context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
+    // context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
 
     /// Reset last selected purchase order
     context.read<PurchaseOrderCubit>().reset();

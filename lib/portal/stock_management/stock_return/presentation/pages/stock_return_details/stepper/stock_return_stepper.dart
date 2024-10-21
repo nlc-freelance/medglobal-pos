@@ -146,7 +146,9 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
               isActive: _currentStep >= 0,
               state: _currentStep > 0 ? StepState.complete : StepState.indexed,
               title: const Text('Create'),
-              content: Theme(data: Theme.of(context), child: const NewStockReturnForm()),
+              content: _currentStep == 0
+                  ? Theme(data: Theme.of(context), child: const NewStockReturnForm())
+                  : const SizedBox(),
             ),
             Step(
               isActive: _currentStep >= 1,

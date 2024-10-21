@@ -37,7 +37,7 @@ class ReturnTransactionDetails extends StatelessWidget {
                     GridView(
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
+                        crossAxisCount: 4,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 16,
                         mainAxisExtent: 60,
@@ -47,6 +47,10 @@ class ReturnTransactionDetails extends StatelessWidget {
                         LabelValue.text(
                           label: 'Receipt ID',
                           value: (transaction.receiptId ?? Strings.empty).toString(),
+                        ),
+                        LabelValue.text(
+                          label: 'Refunded from',
+                          value: (transaction.saleTransactionReceiptId ?? Strings.empty).toString(),
                         ),
                         LabelValue.text(
                           label: 'Date Processed',
