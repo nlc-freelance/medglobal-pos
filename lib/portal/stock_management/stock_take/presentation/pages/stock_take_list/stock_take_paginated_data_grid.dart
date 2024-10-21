@@ -27,6 +27,7 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
   void initState() {
     super.initState();
     _dataGridController = DataGridController();
+    context.read<StockTakeListRemoteCubit>().getStockTakes();
   }
 
   @override
@@ -47,7 +48,7 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
       listener: (context, state) {
         if (state is StockTakeListLoaded) {
           stockTakes = state.data.stockTakes ?? [];
-          _stockReturnDataSource = StockTakeDataSource(stockTakes, _rowsPerPage);
+          _stockReturnDataSource = StockTakeDataSource(stockTakes);
         }
       },
       builder: (context, state) {
@@ -223,7 +224,7 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
         }
         return DataGridLoading(
           columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TAKES),
-          source: _stockReturnDataSource = StockTakeDataSource([], _rowsPerPage),
+          source: _stockReturnDataSource = StockTakeDataSource([]),
         );
       },
     );
@@ -231,42 +232,19 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
 }
 
 class StockTakeDataSource extends DataGridSource {
-  StockTakeDataSource(List<StockTake> stockTakes, int rowsPerPage) {
-    _rowsPerPage = rowsPerPage;
+  StockTakeDataSource(List<StockTake> stockTakes) {
     _stockTakes = stockTakes;
-    _paginatedStockTakes = _stockTakes.getRange(0, stockTakes.length).toList(growable: false);
-    buildDataGridRows(_stockTakes);
+    buildDataGridRows();
   }
 
-  late int _rowsPerPage;
-
   List<StockTake> _stockTakes = [];
-
-  List<StockTake> _paginatedStockTakes = [];
 
   List<DataGridRow> dataGridRows = [];
 
   @override
   List<DataGridRow> get rows => dataGridRows;
 
-  @override
-  Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
-    int startIndex = newPageIndex * _rowsPerPage;
-    int endIndex = startIndex + _rowsPerPage;
-
-    if (startIndex < _stockTakes.length && endIndex <= _stockTakes.length) {
-      _paginatedStockTakes = _stockTakes.getRange(startIndex, endIndex).toList(growable: false);
-      buildDataGridRows(_paginatedStockTakes);
-      notifyListeners();
-    } else {
-      _paginatedStockTakes = [];
-    }
-
-    return true;
-  }
-
-  void buildDataGridRows(List<StockTake> stockTakes) =>
-      dataGridRows = stockTakes.map((take) => take.toDataGridRow()).toList();
+  void buildDataGridRows() => dataGridRows = _stockTakes.map((take) => take.toDataGridRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -286,10 +264,13 @@ class StockTakeDataSource extends DataGridSource {
   Widget _buildCell(String column, DataGridCell cell, int id) => switch (column) {
         'start_time' => HoverBuilder(
             builder: (isHover) => InkWell(
-              onTap: () => AppRouter.router.goNamed(
-                SideMenuTreeItem.STOCK_TAKE_DETAILS.name,
-                pathParameters: {'id': id.toString()},
-              ),
+              onTap: () {
+                // _context.read<StockTakeBloc>().add(GetStockTakeByIdEvent(id));
+                AppRouter.router.goNamed(
+                  SideMenuTreeItem.STOCK_TAKE_DETAILS.name,
+                  pathParameters: {'id': id.toString()},
+                );
+              },
               hoverColor: UIColors.transparent,
               child: UIText.dataGridText(
                 cell.value.toString(),
