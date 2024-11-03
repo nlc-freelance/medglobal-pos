@@ -11,7 +11,7 @@ class GetSuppliersUseCase implements UseCase<SupplierPaginatedList, GetSuppliers
 
   @override
   Future<Either<Failure, SupplierPaginatedList>> call(GetSuppliersParams params) =>
-      repository.getSuppliers(page: params.page, size: params.size);
+      repository.getSuppliers(page: params.page, size: params.size, search: params.search);
 }
 
 class GetSuppliersParams {
