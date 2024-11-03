@@ -11,7 +11,7 @@ class ReturnTransactionListCubit extends Cubit<ReturnTransactionListState> {
 
   ReturnTransactionListCubit(this._getTransactionsUseCase) : super(ReturnTransactionListInitial());
 
-  Future<void> getTransactions({int page = 1, int size = 20, int? branchId}) async {
+  Future<void> getTransactions({int page = 1, int size = 20, int? branchId, String? startDate, String? endDate,}) async {
     emit(ReturnTransactionListLoading());
 
     try {
@@ -21,6 +21,8 @@ class ReturnTransactionListCubit extends Cubit<ReturnTransactionListState> {
         size: size,
         branchId: branchId,
         isAllBranches: branchId == null,
+        startDate: startDate,
+        endDate: endDate,
       ));
       result.fold(
         (error) => emit(ReturnTransactionListError(message: error.message)),

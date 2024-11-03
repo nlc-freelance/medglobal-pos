@@ -10,6 +10,8 @@ abstract class TransactionRepository {
     required int size,
     int? branch,
     bool? isAllBranches,
+    String? startDate,
+    String? endDate,
   });
   Future<Either<Failure, Transaction>> getTransactionById(int id);
 }

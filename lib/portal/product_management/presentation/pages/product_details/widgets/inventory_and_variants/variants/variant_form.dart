@@ -52,7 +52,8 @@ class _VariantFormState extends State<VariantForm> {
             children: [
               const PageSectionTitle(
                 title: 'Variations',
-                subtitle: Strings.subtitlePlaceholder,
+                subtitle:
+                    'Create variants of a product and include details regarding the supplier, stock levels, and inventory for each branch.',
               ),
               Expanded(
                 child: SingleChildScrollView(

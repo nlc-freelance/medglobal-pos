@@ -17,6 +17,8 @@ class StockTransferListRemoteCubit extends Cubit<StockTransferListRemoteState> {
     StockOrderStatus? status,
     int? sourceBranchId,
     int? destinationBranchId,
+    String? startDate,
+    String? endDate,
   }) async {
     emit(StockTransferListLoading());
 
@@ -27,6 +29,8 @@ class StockTransferListRemoteCubit extends Cubit<StockTransferListRemoteState> {
         status: status,
         sourceBranchId: sourceBranchId,
         destinationBranchId: destinationBranchId,
+        startDate: startDate,
+        endDate: endDate,
       ));
       result.fold(
         (error) => emit(StockTransferListError(message: error.message)),

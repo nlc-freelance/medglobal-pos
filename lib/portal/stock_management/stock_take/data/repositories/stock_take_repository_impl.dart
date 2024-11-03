@@ -35,10 +35,21 @@ class StockTakeRepositoryImpl implements StockTakeRepository {
   }
 
   @override
-  Future<Either<Failure, StockTakePaginatedList>> getStockTakes(
-      {required int page, required int size, StockOrderStatus? status}) async {
+  Future<Either<Failure, StockTakePaginatedList>> getStockTakes({
+    required int page,
+    required int size,
+    StockOrderStatus? status,
+    String? startDate,
+    String? endDate,
+  }) async {
     try {
-      final response = await _stockTakeApi.getStockTakes(page: page, size: size, status: status);
+      final response = await _stockTakeApi.getStockTakes(
+        page: page,
+        size: size,
+        status: status,
+        startDate: startDate,
+        endDate: endDate,
+      );
       return Right(response);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));

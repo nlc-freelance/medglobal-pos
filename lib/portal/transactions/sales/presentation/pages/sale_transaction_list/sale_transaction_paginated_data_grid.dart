@@ -148,7 +148,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                   page: 1,
                                   size: _rowsPerPage,
                                   branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
-
+                                  startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
+                                  endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
                                   // search: context.read<TransactionSearchCubit>().state.search,
                                 );
                           } else {
@@ -156,7 +157,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
                                   branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
-
+                                  startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
+                                  endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
                                   // search: context.read<TransactionSearchCubit>().state.search,
                                 );
                           }
@@ -183,7 +185,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                 page: 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
-
+                                startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }
@@ -200,7 +203,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
-
+                                startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }
@@ -217,7 +221,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
-
+                                startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }
@@ -236,7 +241,8 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
                                 branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
-
+                                startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }

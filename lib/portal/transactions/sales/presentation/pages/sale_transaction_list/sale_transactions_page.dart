@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
@@ -40,21 +41,57 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
           ),
           filters: [
             DatePickerPopup(
-              onSelectRange: (dates) {},
+              onRemoveSelected: () {
+                final size = context.read<SaleTransactionListFilterCubit>().state.size;
+                final branchId = context.read<SaleTransactionListFilterCubit>().state.branchId;
+
+                context.read<SaleTransactionListCubit>().getTransactions(size: size!, branchId: branchId);
+
+                context.read<SaleTransactionListFilterCubit>().setStartDate(null);
+                context.read<SaleTransactionListFilterCubit>().setEndDate(null);
+              },
+              onSelectRange: (dates) {
+                final size = context.read<SaleTransactionListFilterCubit>().state.size;
+                final branch = context.read<SaleTransactionListFilterCubit>().state.branchId;
+
+                String? endDate;
+                final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
+                if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
+
+                context
+                    .read<SaleTransactionListCubit>()
+                    .getTransactions(size: size!, branchId: branch, startDate: startDate, endDate: endDate);
+
+                context.read<SaleTransactionListFilterCubit>().setStartDate(startDate);
+                context.read<SaleTransactionListFilterCubit>().setEndDate(endDate);
+              },
               selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(8),
             BranchDropdown.select(
               onRemoveSelectedItem: () {
-                final saleSize = context.read<SaleTransactionListFilterCubit>().state.size;
+                final size = context.read<SaleTransactionListFilterCubit>().state.size;
+                final startDate = context.read<SaleTransactionListFilterCubit>().state.startDate;
+                final endDate = context.read<SaleTransactionListFilterCubit>().state.endDate;
 
-                context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!);
+                context.read<SaleTransactionListCubit>().getTransactions(
+                      size: size!,
+                      startDate: startDate,
+                      endDate: endDate,
+                    );
                 context.read<SaleTransactionListFilterCubit>().setBranch(null);
               },
               onSelectItem: (branch) {
-                final saleSize = context.read<SaleTransactionListFilterCubit>().state.size;
+                final size = context.read<SaleTransactionListFilterCubit>().state.size;
+                final startDate = context.read<SaleTransactionListFilterCubit>().state.startDate;
+                final endDate = context.read<SaleTransactionListFilterCubit>().state.endDate;
 
-                context.read<SaleTransactionListCubit>().getTransactions(size: saleSize!, branchId: branch.id);
+                context.read<SaleTransactionListCubit>().getTransactions(
+                      size: size!,
+                      branchId: branch.id,
+                      startDate: startDate,
+                      endDate: endDate,
+                    );
                 context.read<SaleTransactionListFilterCubit>().setBranch(branch.id);
               },
             ),

@@ -39,6 +39,8 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
     required int size,
     StockOrderStatus? status,
     int? branchId,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
       final response = await _purchaseOrderApi.getPurchaseOrders(
@@ -46,6 +48,8 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
         size: size,
         status: status,
         branchId: branchId,
+        startDate: startDate,
+        endDate: endDate,
       );
       return Right(response);
     } on DioException catch (e) {

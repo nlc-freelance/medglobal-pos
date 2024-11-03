@@ -140,7 +140,8 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                   page: 1,
                                   size: _rowsPerPage,
                                   branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
+                                  startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                  endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
                                   // search: context.read<TransactionSearchCubit>().state.search,
                                 );
                           } else {
@@ -148,7 +149,8 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
                                   branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
+                                  startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                  endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
                                   // search: context.read<TransactionSearchCubit>().state.search,
                                 );
                           }
@@ -175,7 +177,8 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                 page: 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
+                                startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }
@@ -192,7 +195,8 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
+                                startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }
@@ -209,7 +213,8 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
+                                startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }
@@ -228,7 +233,8 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
                                 branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
+                                startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
                                 // search: context.read<TransactionSearchCubit>().state.search,
                               );
                         }

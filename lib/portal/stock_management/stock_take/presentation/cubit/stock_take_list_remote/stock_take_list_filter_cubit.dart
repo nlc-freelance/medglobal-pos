@@ -15,4 +15,14 @@ class StockTakeListFilterCubit extends Cubit<StockTakeListFilterState> {
           nullStatus: value == null,
         ),
       );
+
+  void setStartDate(String? value) => emit(state.copyWith(
+        startDate: value,
+        nullStartDate: value == null,
+      ));
+
+  void setEndDate(String? value) => emit(state.copyWith(
+        endDate: value,
+        nullEndDate: value == null,
+      ));
 }

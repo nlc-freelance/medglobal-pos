@@ -13,6 +13,8 @@ class GetStockTakesUseCase implements UseCase<StockTakePaginatedList, GetStockTa
         page: params.page,
         size: params.size,
         status: params.status,
+        startDate: params.startDate,
+        endDate: params.endDate,
       );
 }
 
@@ -20,6 +22,8 @@ class GetStockTakesParams {
   final int page;
   final int size;
   final StockOrderStatus? status;
+  final String? startDate;
+  final String? endDate;
 
-  GetStockTakesParams({required this.page, required this.size, this.status});
+  GetStockTakesParams({required this.page, required this.size, this.status, this.startDate, this.endDate});
 }

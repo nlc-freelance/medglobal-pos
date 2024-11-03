@@ -40,6 +40,8 @@ class StockTransferRepositoryImpl implements StockTransferRepository {
     StockOrderStatus? status,
     int? sourceBranchId,
     int? destinationBranchId,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
       final response = await _stockTransferApi.getStockTransfers(
@@ -48,6 +50,8 @@ class StockTransferRepositoryImpl implements StockTransferRepository {
         status: status,
         sourceBranchId: sourceBranchId,
         destinationBranchId: destinationBranchId,
+        startDate: startDate,
+        endDate: endDate,
       );
       return Right(response);
     } on DioException catch (e) {
