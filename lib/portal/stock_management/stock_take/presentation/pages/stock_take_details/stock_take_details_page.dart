@@ -138,6 +138,10 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
                                 shrinkWrap: true,
                                 children: [
                                   LabelValue.text(
+                                    label: 'Stock Take ID',
+                                    value: stockTake.id.toString(),
+                                  ),
+                                  LabelValue.text(
                                     label: 'Start Time',
                                     value: stockTake.createdAt != null
                                         ? DateFormat('MM/dd/yyyy HH:mm').format(stockTake.createdAt!.toLocal())

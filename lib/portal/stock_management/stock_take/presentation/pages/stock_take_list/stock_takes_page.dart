@@ -24,7 +24,10 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-    context.read<StockTakeListRemoteCubit>().getStockTakes();
+
+    /// TODO: The list does not update when using the back button or side menu to navigate back to this page
+    /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
+    // context.read<StockTakeListRemoteCubit>().getStockTakes();
   }
 
   @override

@@ -158,7 +158,9 @@ class _StockTransferStepperState extends State<StockTransferStepper> {
               isActive: _currentStep >= 0,
               state: _currentStep > 0 ? StepState.complete : StepState.indexed,
               title: const Text('Create'),
-              content: Theme(data: Theme.of(context), child: const NewStockTransferForm()),
+              content: _currentStep == 0
+                  ? Theme(data: Theme.of(context), child: const NewStockTransferForm())
+                  : const SizedBox(),
             ),
             Step(
               isActive: _currentStep >= 1,

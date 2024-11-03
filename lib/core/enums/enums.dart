@@ -184,3 +184,15 @@ enum DiscountCategory {
   final double value;
   const DiscountCategory(this.label, this.value);
 }
+
+enum ProductHistoryAction {
+  PURCHASE('Purchase'),
+  RETURN('Return'),
+  TAKE('TAKE'),
+  TRANSFER('Transfer'),
+  SALE('Sale'),
+  INITIAL('Initial');
+
+  final String label;
+  const ProductHistoryAction(this.label);
+}

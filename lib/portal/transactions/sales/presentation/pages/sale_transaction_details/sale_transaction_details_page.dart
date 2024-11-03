@@ -60,7 +60,7 @@ class _SaleTransactionDetailsPageState extends State<SaleTransactionDetailsPage>
                         children: [
                           LabelValue.text(
                             label: 'Receipt ID',
-                            value: (state.transaction.id ?? Strings.empty).toString(),
+                            value: (state.transaction.receiptId ?? Strings.empty).toString(),
                           ),
                           LabelValue.text(
                             label: 'Time Ordered',
