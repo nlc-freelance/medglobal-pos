@@ -80,8 +80,8 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
                 if (value is PickerDateRange) {
                   DateTime? rangeStartDate = value.startDate;
                   DateTime? rangeEndDate = value.endDate;
-                  setState(
-                      () => _selectedDateRange = [rangeStartDate, rangeEndDate]..removeWhere((date) => date == null));
+                  setState(() => _selectedDateRange = [rangeStartDate, rangeEndDate ?? rangeStartDate]
+                    ..removeWhere((date) => date == null));
                   if (widget.onSelectRange != null) widget.onSelectRange!(_selectedDateRange);
                 } else if (value is DateTime) {
                   DateTime selectedDate = value;
