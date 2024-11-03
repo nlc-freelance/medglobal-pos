@@ -61,6 +61,7 @@ class _DataGridNoDataState extends State<DataGridNoData> {
           child: SfDataGrid(
             source: _source,
             columns: _columns,
+            headerRowHeight: 38,
             footerHeight: 100,
             footer: Padding(
               padding: const EdgeInsets.all(8.0),

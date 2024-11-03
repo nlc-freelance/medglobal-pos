@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
@@ -17,6 +18,8 @@ class TransactionList extends StatefulWidget {
 class _TransactionListState extends State<TransactionList> {
   late TextEditingController _searchController;
   late ScrollController _scrollController;
+
+  final _debouncer = Debouncer(milliseconds: 500);
 
   @override
   void initState() {
@@ -37,6 +40,7 @@ class _TransactionListState extends State<TransactionList> {
   @override
   void dispose() {
     _searchController.dispose();
+    _debouncer.dispose();
     super.dispose();
   }
 
@@ -85,7 +89,12 @@ class _TransactionListState extends State<TransactionList> {
                     child: Assets.icons.search.svg(),
                   ),
                   controller: _searchController,
-                  onChanged: (_) => {},
+                  onChanged: (value) => _debouncer.run(
+                    (() => context.read<TransactionListByBranchCubit>().getTransactionsByBranch(
+                          search: value,
+                          isInitialSearch: true,
+                        )),
+                  ),
                 ),
                 const UIVerticalSpace(24),
                 if (state.LOADING)

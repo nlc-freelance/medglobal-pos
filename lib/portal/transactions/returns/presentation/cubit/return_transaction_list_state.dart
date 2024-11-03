@@ -18,6 +18,14 @@ final class ReturnTransactionListLoaded extends ReturnTransactionListState {
   List<Object> get props => [data];
 }
 
+final class ReturnTransactionSearchNoResult extends ReturnTransactionListState {
+  final String message;
+  const ReturnTransactionSearchNoResult({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
 final class ReturnTransactionListError extends ReturnTransactionListState {
   final String message;
   const ReturnTransactionListError({required this.message});
