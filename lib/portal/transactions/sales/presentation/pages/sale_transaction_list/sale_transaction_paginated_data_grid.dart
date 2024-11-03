@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
@@ -39,33 +40,26 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SaleTransactionListCubit, SaleTransactionListState>(
-      listenWhen: (previous, current) {
-        if (previous is SaleTransactionListLoading && current is SaleTransactionListLoaded) {
-          return ((current.data.currentPage! <= current.data.totalPages!) == true);
-        }
-        // if (current is SaleListNoResultFound) return true;
-        return false;
-      },
       listener: (context, state) {
         if (state is SaleTransactionListLoaded) {
           sales = state.data.transactions ?? [];
           _saleTransactionDataSource = SaleTransactionDataSource(sales);
         }
-        // if (state is SaleListNoResultFound) {
-        //   _saleTransactionDataSource = SaleTransactionDataSource([], _rowsPerPage);
-        // }
+        if (state is SaleTransactionSearchNoResult) {
+          _saleTransactionDataSource = SaleTransactionDataSource([]);
+        }
       },
       builder: (context, state) {
         if (state is SaleTransactionListError) {
           return Text(state.message);
         }
-        // if (state is SaleListNoResultFound) {
-        //   return DataGridNoData.search(
-        //     message: state.message,
-        //     columns: DataGridUtil.getColumns(DataGridColumn.SALE_TRANSACTIONS),
-        //     source: _saleTransactionDataSource,
-        //   );
-        // }
+        if (state is SaleTransactionSearchNoResult) {
+          return DataGridNoData.custom(
+            message: state.message,
+            columns: DataGridUtil.getColumns(DataGridColumn.SALE_TRANSACTIONS),
+            source: _saleTransactionDataSource,
+          );
+        }
         if (state is SaleTransactionListLoaded) {
           return Column(
             children: [
@@ -150,7 +144,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                   branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
                                   startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
                                   endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
-                                  // search: context.read<TransactionSearchCubit>().state.search,
+                                  search: context.read<SaleTransactionListFilterCubit>().state.search,
                                 );
                           } else {
                             context.read<SaleTransactionListCubit>().getTransactions(
@@ -159,7 +153,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                   branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
                                   startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
                                   endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
-                                  // search: context.read<TransactionSearchCubit>().state.search,
+                                  search: context.read<SaleTransactionListFilterCubit>().state.search,
                                 );
                           }
                         },
@@ -187,7 +181,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                 branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
                                 startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
                                 endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
-                                // search: context.read<TransactionSearchCubit>().state.search,
+                                search: context.read<SaleTransactionListFilterCubit>().state.search,
                               );
                         }
                       },
@@ -205,7 +199,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                 branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
                                 startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
                                 endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
-                                // search: context.read<TransactionSearchCubit>().state.search,
+                                search: context.read<SaleTransactionListFilterCubit>().state.search,
                               );
                         }
                       },
@@ -223,7 +217,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                 branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
                                 startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
                                 endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
-                                // search: context.read<TransactionSearchCubit>().state.search,
+                                search: context.read<SaleTransactionListFilterCubit>().state.search,
                               );
                         }
                       },
@@ -243,7 +237,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                                 branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
                                 startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
                                 endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
-                                // search: context.read<TransactionSearchCubit>().state.search,
+                                search: context.read<SaleTransactionListFilterCubit>().state.search,
                               );
                         }
                       },

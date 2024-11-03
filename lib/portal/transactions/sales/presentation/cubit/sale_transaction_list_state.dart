@@ -18,6 +18,14 @@ final class SaleTransactionListLoaded extends SaleTransactionListState {
   List<Object> get props => [data];
 }
 
+final class SaleTransactionSearchNoResult extends SaleTransactionListState {
+  final String message;
+  const SaleTransactionSearchNoResult({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
 final class SaleTransactionListError extends SaleTransactionListState {
   final String message;
   const SaleTransactionListError({required this.message});

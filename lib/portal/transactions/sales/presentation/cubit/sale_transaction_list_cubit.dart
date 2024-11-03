@@ -14,6 +14,7 @@ class SaleTransactionListCubit extends Cubit<SaleTransactionListState> {
   Future<void> getTransactions({
     int page = 1,
     int size = 20,
+    String? search,
     int? branchId,
     String? startDate,
     String? endDate,
@@ -25,6 +26,7 @@ class SaleTransactionListCubit extends Cubit<SaleTransactionListState> {
         type: TransactionType.SALE,
         page: page,
         size: size,
+        search: search,
         branchId: branchId,
         isAllBranches: branchId == null,
         startDate: startDate,
@@ -33,7 +35,11 @@ class SaleTransactionListCubit extends Cubit<SaleTransactionListState> {
       result.fold(
         (error) => emit(SaleTransactionListError(message: error.message)),
         (data) {
-          emit(SaleTransactionListLoaded(data: data));
+          if (search != null && data.totalCount == 0 && data.transactions?.isEmpty == true) {
+            emit(SaleTransactionSearchNoResult(message: 'No results found for \'$search\''));
+          } else {
+            emit(SaleTransactionListLoaded(data: data));
+          }
         },
       );
     } catch (e) {
