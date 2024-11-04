@@ -28,6 +28,8 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
     /// TODO: The list does not update when using the back button or side menu to navigate back to this page
     /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
     // context.read<StockTakeListRemoteCubit>().getStockTakes();
+
+    context.read<StockTakeListFilterCubit>().reset();
   }
 
   @override
@@ -138,37 +140,47 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
           }),
         ),
         const UIVerticalSpace(20),
-        DataGridToolbar(
-          reportType: ReportType.STOCK_TAKE_CSV,
-          filters: [
-            DatePickerPopup(
-              onRemoveSelected: () {
-                final size = context.read<StockTakeListFilterCubit>().state.size;
-                final status = context.read<StockTakeListFilterCubit>().state.status;
-
-                context.read<StockTakeListRemoteCubit>().getStockTakes(size: size!, status: status);
-
-                context.read<StockTakeListFilterCubit>().setStartDate(null);
-                context.read<StockTakeListFilterCubit>().setEndDate(null);
+        BlocSelector<StockTakeListFilterCubit, StockTakeListFilterState, StockTakeListFilterState>(
+          selector: (state) => state,
+          builder: (context, filters) {
+            return DataGridToolbar(
+              reportType: ReportType.STOCK_TAKE_CSV,
+              reportFilters: {
+                'status': filters.status?.label.toLowerCase(),
+                'startDate': filters.startDate,
+                'endDate': filters.endDate,
               },
-              onSelectRange: (dates) {
-                final size = context.read<StockTakeListFilterCubit>().state.size;
-                final status = context.read<StockTakeListFilterCubit>().state.status;
+              filters: [
+                DatePickerPopup(
+                  onRemoveSelected: () {
+                    final size = context.read<StockTakeListFilterCubit>().state.size;
+                    final status = context.read<StockTakeListFilterCubit>().state.status;
 
-                String? endDate;
-                final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
-                if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
+                    context.read<StockTakeListRemoteCubit>().getStockTakes(size: size!, status: status);
 
-                context
-                    .read<StockTakeListRemoteCubit>()
-                    .getStockTakes(size: size!, status: status, startDate: startDate, endDate: endDate);
+                    context.read<StockTakeListFilterCubit>().setStartDate(null);
+                    context.read<StockTakeListFilterCubit>().setEndDate(null);
+                  },
+                  onSelectRange: (dates) {
+                    final size = context.read<StockTakeListFilterCubit>().state.size;
+                    final status = context.read<StockTakeListFilterCubit>().state.status;
 
-                context.read<StockTakeListFilterCubit>().setStartDate(startDate);
-                context.read<StockTakeListFilterCubit>().setEndDate(endDate);
-              },
-              selectionMode: DateRangePickerSelectionMode.range,
-            ),
-          ],
+                    String? endDate;
+                    final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
+                    if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
+
+                    context
+                        .read<StockTakeListRemoteCubit>()
+                        .getStockTakes(size: size!, status: status, startDate: startDate, endDate: endDate);
+
+                    context.read<StockTakeListFilterCubit>().setStartDate(startDate);
+                    context.read<StockTakeListFilterCubit>().setEndDate(endDate);
+                  },
+                  selectionMode: DateRangePickerSelectionMode.range,
+                ),
+              ],
+            );
+          },
         ),
         const Expanded(child: StockTakePaginatedDataGrid()),
       ],
