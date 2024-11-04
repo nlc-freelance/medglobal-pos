@@ -285,7 +285,7 @@ class ProductHistoryDataSource extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: cell.columnName == 'datetime' && (action != ProductHistoryAction.INITIAL || id != null)
+          child: cell.columnName == 'datetime' && (action != ProductHistoryAction.INITIAL && id != null)
               ? HoverBuilder(
                   builder: (isHover) => InkWell(
                         onTap: () {
