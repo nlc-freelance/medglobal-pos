@@ -196,3 +196,24 @@ enum ProductHistoryAction {
   final String label;
   const ProductHistoryAction(this.label);
 }
+
+enum ReportType {
+  PRODUCT_DATA_CSV('PRODUCT_DATA_CSV'),
+  PURCHASE_ORDER_CSV('PURCHASE_ORDER_CSV'),
+  STOCK_RETURN_CSV('STOCK_RETURN_CSV'),
+  STOCK_TRANSFER_CSV('STOCK_TRANSFER_CSV'),
+  STOCK_TAKE_CSV('STOCK_TAKE_CSV'),
+  SALES_CSV('SALES_CSV'),
+  PRODUCT_HISTORY_CSV('PRODUCT_HISTORY_CSV');
+
+  final String value;
+  const ReportType(this.value);
+}
+
+enum ReportStatus {
+  PENDING('Pending'),
+  COMPLETED('Completed');
+
+  final String label;
+  const ReportStatus(this.label);
+}

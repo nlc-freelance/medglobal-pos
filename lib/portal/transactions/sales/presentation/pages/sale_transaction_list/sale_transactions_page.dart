@@ -38,7 +38,7 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          isDownloadable: true,
+          reportType: ReportType.SALES_CSV,
           search: UISearchField(
             fieldWidth: 500.0,
             hint: 'Search receipt ID',

@@ -139,7 +139,7 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          isDownloadable: true,
+          reportType: ReportType.STOCK_TAKE_CSV,
           filters: [
             DatePickerPopup(
               onRemoveSelected: () {
