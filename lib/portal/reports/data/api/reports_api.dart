@@ -22,8 +22,15 @@ class ReportsApiImpl implements ReportsApi {
         '/reports',
         data: {
           'type': type.value,
+          if ([
+            ReportType.PURCHASE_ORDER_CSV,
+            ReportType.STOCK_RETURN_CSV,
+            ReportType.STOCK_TAKE_CSV,
+            ReportType.STOCK_TRANSFER_CSV,
+          ].contains(type))
+            ...?filters,
           if (type == ReportType.SALES_CSV) ...{
-            'isAllBranches': true,
+            ...?filters,
             'userId': userId,
           },
           if (type == ReportType.PRODUCT_HISTORY_CSV) ...?filters,

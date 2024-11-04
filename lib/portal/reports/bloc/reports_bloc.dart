@@ -32,7 +32,9 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     try {
       final result = await _createReportUseCase.call(
         event.filters != null
-            ? CreateReportParams(type: event.type, filters: event.filters)
+            ? CreateReportParams(
+                type: event.type,
+                filters: (event.filters as Map<String, dynamic>)..removeWhere((key, value) => value == null))
             : CreateReportParams(type: event.type),
       );
       result.fold(
