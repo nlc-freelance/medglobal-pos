@@ -19,9 +19,9 @@ final class ProductListLoaded extends ProductListState {
   List<Object> get props => [data];
 }
 
-final class ProductListNoResultFound extends ProductListState {
+final class ProductSearchNoResult extends ProductListState {
   final String message;
-  const ProductListNoResultFound({required this.message});
+  const ProductSearchNoResult({required this.message});
 
   @override
   List<Object> get props => [message];

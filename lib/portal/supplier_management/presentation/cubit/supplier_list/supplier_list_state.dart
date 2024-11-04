@@ -22,6 +22,14 @@ class SupplierListLoading extends SupplierListState {
   List<Object?> get props => [];
 }
 
+final class SupplierSearchNoResult extends SupplierListState {
+  final String message;
+  const SupplierSearchNoResult({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
 class SupplierListLoaded extends SupplierListState {
   final SupplierPaginatedList data;
   const SupplierListLoaded({required this.data});

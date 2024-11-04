@@ -41,7 +41,11 @@ class TransactionListByBranchCubit extends Cubit<TransactionListByBranchState> {
     }
 
     try {
-      final result = await _getTransactionsUseCase.call(GetTransactionsParams(page: _currentPage, size: 20));
+      final result = await _getTransactionsUseCase.call(GetTransactionsParams(
+        page: _currentPage,
+        size: 20,
+        search: search,
+      ));
       result.fold(
         (error) => emit(state.copyWith(isInitLoading: false, isLoadingMore: false, error: error.message)),
         (data) {

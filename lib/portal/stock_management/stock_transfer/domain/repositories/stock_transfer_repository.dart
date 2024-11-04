@@ -11,6 +11,8 @@ abstract class StockTransferRepository {
     StockOrderStatus? status,
     int? sourceBranchId,
     int? destinationBranchId,
+    String? startDate,
+    String? endDate,
   });
   Future<Either<Failure, StockTransfer>> getStockTransferById(int id);
   Future<Either<Failure, StockTransfer>> create(NewStockTransfer payload);

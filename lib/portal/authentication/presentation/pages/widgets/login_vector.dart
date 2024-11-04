@@ -14,10 +14,22 @@ class LoginVector extends StatelessWidget {
           children: [
             SizedBox(
               width: 480.0,
-              child: Text(
-                Strings.loginPlaceholder,
+              child: Text.rich(
                 textAlign: TextAlign.center,
-                style: UIStyleText.bodyRegular.copyWith(fontSize: 14.0, height: 1.6),
+                TextSpan(
+                  text: 'MedGlobal Pharmacy aims is to provide',
+                  style: UIStyleText.bodyRegular,
+                  children: [
+                    TextSpan(
+                      text: ' accessible, high-quality healthcare solutions ',
+                      style: UIStyleText.bodyRegular.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    TextSpan(
+                      text: 'to Filipinos, with emphasis on patient care at community level.',
+                      style: UIStyleText.bodyRegular,
+                    )
+                  ],
+                ),
               ),
             ),
             Assets.images.loginVector.svg(width: 540.0),

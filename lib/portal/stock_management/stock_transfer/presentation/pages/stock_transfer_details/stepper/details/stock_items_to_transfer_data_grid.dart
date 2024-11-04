@@ -50,7 +50,6 @@ class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataG
       children: [
         const PageSectionTitle(title: 'Items to Transfer'),
         DataGridToolbar(
-          isImportCSV: true,
           search: SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.3,
             child: AutocompleteDropdown(

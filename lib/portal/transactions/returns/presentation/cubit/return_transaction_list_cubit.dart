@@ -11,7 +11,14 @@ class ReturnTransactionListCubit extends Cubit<ReturnTransactionListState> {
 
   ReturnTransactionListCubit(this._getTransactionsUseCase) : super(ReturnTransactionListInitial());
 
-  Future<void> getTransactions({int page = 1, int size = 20, int? branchId}) async {
+  Future<void> getTransactions({
+    int page = 1,
+    int size = 20,
+    String? search,
+    int? branchId,
+    String? startDate,
+    String? endDate,
+  }) async {
     emit(ReturnTransactionListLoading());
 
     try {
@@ -19,13 +26,20 @@ class ReturnTransactionListCubit extends Cubit<ReturnTransactionListState> {
         type: TransactionType.REFUND,
         page: page,
         size: size,
+        search: search,
         branchId: branchId,
         isAllBranches: branchId == null,
+        startDate: startDate,
+        endDate: endDate,
       ));
       result.fold(
         (error) => emit(ReturnTransactionListError(message: error.message)),
         (data) {
-          emit(ReturnTransactionListLoaded(data: data));
+          if (search != null && data.totalCount == 0 && data.transactions?.isEmpty == true) {
+            emit(ReturnTransactionSearchNoResult(message: 'No results found for \'$search\''));
+          } else {
+            emit(ReturnTransactionListLoaded(data: data));
+          }
         },
       );
     } catch (e) {

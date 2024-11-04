@@ -1,12 +1,12 @@
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/core/network/models/api_query_params.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_dto.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier_paginated_list.dart';
 
 abstract class SupplierApi {
-  Future<SupplierPaginatedList> getSuppliers({required int page, required int size});
+  Future<SupplierPaginatedList> getSuppliers({required int page, required int size, String? search});
   Future<SupplierDto> getSupplier(int id);
   Future<void> create(Supplier supplier);
   Future<void> update(int id, Supplier supplier);
@@ -19,11 +19,15 @@ class SupplierApiImpl implements SupplierApi {
   const SupplierApiImpl(this.api);
 
   @override
-  Future<SupplierPaginatedList> getSuppliers({required int page, required int size}) async {
+  Future<SupplierPaginatedList> getSuppliers({required int page, required int size, String? search}) async {
     try {
       final response = await api.collection<SupplierDto>(
         ApiEndpoint.suppliers(),
-        queryParams: ApiQueryParams(page: page, size: size).toJson(),
+        queryParams: {
+          'page': page,
+          'size': size,
+          if (search != null && search != Strings.empty) 'search': search,
+        },
         converter: SupplierDto.fromJson,
       );
 

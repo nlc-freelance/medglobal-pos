@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
@@ -39,33 +40,26 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ReturnTransactionListCubit, ReturnTransactionListState>(
-      listenWhen: (previous, current) {
-        if (previous is ReturnTransactionListLoading && current is ReturnTransactionListLoaded) {
-          return ((current.data.currentPage! <= current.data.totalPages!) == true);
-        }
-        // if (current is ReturnListNoResultFound) return true;
-        return false;
-      },
       listener: (context, state) {
         if (state is ReturnTransactionListLoaded) {
           returns = state.data.transactions ?? [];
-          _returnTransactionDataSource = ReturnTransactionDataSource(returns, _rowsPerPage);
+          _returnTransactionDataSource = ReturnTransactionDataSource(returns);
         }
-        // if (state is TransactionListNoResultFound) {
-        //   _returnTransactionDataSource = ReturnTransactionDataSource([], _rowsPerPage);
-        // }
+        if (state is ReturnTransactionSearchNoResult) {
+          _returnTransactionDataSource = ReturnTransactionDataSource([]);
+        }
       },
       builder: (context, state) {
         if (state is ReturnTransactionListError) {
           return Text(state.message);
         }
-        // if (state is ReturnListNoResultFound) {
-        //   return DataGridNoData.search(
-        //     message: state.message,
-        //     columns: DataGridUtil.getColumns(DataGridColumn.RETURN_TRANSACTIONS),
-        //     source: _returnTransactionDataSource,
-        //   );
-        // }
+        if (state is ReturnTransactionSearchNoResult) {
+          return DataGridNoData.custom(
+            message: state.message,
+            columns: DataGridUtil.getColumns(DataGridColumn.RETURN_TRANSACTIONS),
+            source: _returnTransactionDataSource,
+          );
+        }
         if (state is ReturnTransactionListLoaded) {
           return Column(
             children: [
@@ -140,16 +134,18 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                   page: 1,
                                   size: _rowsPerPage,
                                   branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
-                                  // search: context.read<TransactionSearchCubit>().state.search,
+                                  startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                  endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
+                                  search: context.read<ReturnTransactionListFilterCubit>().state.search,
                                 );
                           } else {
                             context.read<ReturnTransactionListCubit>().getTransactions(
                                   page: state.data.currentPage!,
                                   size: _rowsPerPage,
                                   branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
-                                  // search: context.read<TransactionSearchCubit>().state.search,
+                                  startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                  endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
+                                  search: context.read<ReturnTransactionListFilterCubit>().state.search,
                                 );
                           }
                         },
@@ -175,8 +171,9 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                 page: 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
-                                // search: context.read<TransactionSearchCubit>().state.search,
+                                startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
+                                search: context.read<ReturnTransactionListFilterCubit>().state.search,
                               );
                         }
                       },
@@ -192,8 +189,9 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                 page: state.data.currentPage! - 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
-                                // search: context.read<TransactionSearchCubit>().state.search,
+                                startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
+                                search: context.read<ReturnTransactionListFilterCubit>().state.search,
                               );
                         }
                       },
@@ -209,8 +207,9 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                 page: state.data.currentPage! + 1,
                                 size: _rowsPerPage,
                                 branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
-                                // search: context.read<TransactionSearchCubit>().state.search,
+                                startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
+                                search: context.read<ReturnTransactionListFilterCubit>().state.search,
                               );
                         }
                       },
@@ -228,8 +227,9 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                                 page: state.data.totalPages!,
                                 size: _rowsPerPage,
                                 branchId: context.read<ReturnTransactionListFilterCubit>().state.branchId,
-
-                                // search: context.read<TransactionSearchCubit>().state.search,
+                                startDate: context.read<ReturnTransactionListFilterCubit>().state.startDate,
+                                endDate: context.read<ReturnTransactionListFilterCubit>().state.endDate,
+                                search: context.read<ReturnTransactionListFilterCubit>().state.search,
                               );
                         }
                       },
@@ -247,7 +247,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
         }
         return DataGridLoading(
           columns: DataGridUtil.getColumns(DataGridColumn.RETURN_TRANSACTIONS),
-          source: _returnTransactionDataSource = ReturnTransactionDataSource([], _rowsPerPage),
+          source: _returnTransactionDataSource = ReturnTransactionDataSource([]),
         );
       },
     );
@@ -255,42 +255,20 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
 }
 
 class ReturnTransactionDataSource extends DataGridSource {
-  ReturnTransactionDataSource(List<Transaction> returns, int rowsPerPage) {
-    _rowsPerPage = rowsPerPage;
+  ReturnTransactionDataSource(List<Transaction> returns) {
     _returns = returns;
-    _paginatedReturns = _returns.getRange(0, returns.length).toList(growable: false);
-    buildDataGridRows(_returns);
+    buildDataGridRows();
   }
 
-  late int _rowsPerPage;
-
   List<Transaction> _returns = [];
-
-  List<Transaction> _paginatedReturns = [];
 
   List<DataGridRow> dataGridRows = [];
 
   @override
   List<DataGridRow> get rows => dataGridRows;
 
-  @override
-  Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
-    int startIndex = newPageIndex * _rowsPerPage;
-    int endIndex = startIndex + _rowsPerPage;
-
-    if (startIndex < _returns.length && endIndex <= _returns.length) {
-      _paginatedReturns = _returns.getRange(startIndex, endIndex).toList(growable: false);
-      buildDataGridRows(_paginatedReturns);
-      notifyListeners();
-    } else {
-      _paginatedReturns = [];
-    }
-
-    return true;
-  }
-
-  void buildDataGridRows(List<Transaction> returns) =>
-      dataGridRows = returns.map((transaction) => transaction.toReturnTransactionRow()).toList();
+  void buildDataGridRows() =>
+      dataGridRows = _returns.map((transaction) => transaction.toReturnTransactionRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 

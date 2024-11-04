@@ -26,16 +26,22 @@ class TransactionRepositoryImpl implements TransactionRepository {
     TransactionType? type,
     required int page,
     required int size,
+    String? search,
     int? branch,
     bool? isAllBranches,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
       final response = await _transactionApi.getTransactions(
         type: type,
         page: page,
         size: size,
+        search: search,
         branch: branch,
         isAllBranches: isAllBranches,
+        startDate: startDate,
+        endDate: endDate,
       );
       return Right(response);
     } on DioException catch (e) {

@@ -12,6 +12,8 @@ abstract class StockTransferApi {
     StockOrderStatus? status,
     int? sourceBranchId,
     int? destinationBranchId,
+    String? startDate,
+    String? endDate,
   });
   Future<StockTransferDto> getStockTransferById(int id);
   Future<StockTransferDto> create(NewStockTransfer payload);
@@ -31,6 +33,8 @@ class StockTransferApiImpl implements StockTransferApi {
     StockOrderStatus? status,
     int? sourceBranchId,
     int? destinationBranchId,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
       final response = await _apiService.collection<StockTransferDto>(
@@ -38,9 +42,11 @@ class StockTransferApiImpl implements StockTransferApi {
         queryParams: {
           'page': page,
           'size': size,
-          'status': status?.label.toLowerCase(),
-          'fromBranch': sourceBranchId,
-          'toBranch': destinationBranchId,
+          if (status != null) 'status': status.label.toLowerCase(),
+          if (sourceBranchId != null) 'fromBranch': sourceBranchId,
+          if (destinationBranchId != null) 'toBranch': destinationBranchId,
+          if (startDate != null) 'startDate': startDate,
+          if (endDate != null) 'endDate': endDate,
         },
         converter: StockTransferDto.fromJson,
       );
