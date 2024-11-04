@@ -163,7 +163,7 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
         ),
         const UIVerticalSpace(24),
         DataGridToolbar(
-          isDownloadable: true,
+          reportType: ReportType.STOCK_TRANSFER_CSV,
           filters: [
             DatePickerPopup(
               onRemoveSelected: () {

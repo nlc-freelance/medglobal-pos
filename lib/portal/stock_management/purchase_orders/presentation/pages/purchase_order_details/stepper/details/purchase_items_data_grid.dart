@@ -52,7 +52,6 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
       children: [
         const PageSectionTitle(title: 'Items to Order'),
         DataGridToolbar(
-          isImportCSV: true,
           search: SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.3,
             child: AutocompleteDropdown(

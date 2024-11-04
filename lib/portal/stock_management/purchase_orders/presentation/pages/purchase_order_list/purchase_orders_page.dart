@@ -158,7 +158,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          isDownloadable: true,
+          reportType: ReportType.PURCHASE_ORDER_CSV,
           filters: [
             DatePickerPopup(
               onRemoveSelected: () {

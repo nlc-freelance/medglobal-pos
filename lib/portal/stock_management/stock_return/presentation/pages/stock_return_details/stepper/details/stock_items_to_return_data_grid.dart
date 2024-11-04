@@ -52,7 +52,6 @@ class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid>
       children: [
         const PageSectionTitle(title: 'Items to Return'),
         DataGridToolbar(
-          isImportCSV: true,
           search: SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.3,
             child: AutocompleteDropdown(

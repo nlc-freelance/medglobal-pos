@@ -102,6 +102,18 @@ class _ProductHistoryPageState extends State<ProductHistoryPage> {
                         size: context.read<ProductHistoryListFilterCubit>().state.size!,
                       ),
                 ),
+              if ([_productVariantId, _branchId, _sinceDate].every((param) => param != null) == true)
+              ...[
+                const Spacer(),
+                DownloadReportButton(
+                  ReportType.PRODUCT_HISTORY_CSV,
+                  filters: {
+                    'variantId': _productVariantId,
+                    'startDate': DateFormat('MM-dd-yyyy').format(_sinceDate!),
+                    'branchId': _branchId,
+                  },
+                ),
+              ],
             ],
           ),
           const UIVerticalSpace(20),

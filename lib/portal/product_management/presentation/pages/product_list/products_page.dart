@@ -62,7 +62,7 @@ class _ProductsPageState extends State<ProductsPage> {
           ),
           const UIVerticalSpace(20),
           DataGridToolbar(
-            isDownloadable: true,
+            reportType: ReportType.PRODUCT_DATA_CSV,
             search: UISearchField(
               fieldWidth: 500.0,
               hint: 'Search product name',

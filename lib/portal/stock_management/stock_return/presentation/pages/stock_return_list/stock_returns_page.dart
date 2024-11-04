@@ -133,7 +133,7 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          isDownloadable: true,
+          reportType: ReportType.STOCK_RETURN_CSV,
           filters: [
             DatePickerPopup(
               onRemoveSelected: () {

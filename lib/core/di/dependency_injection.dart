@@ -41,6 +41,12 @@ import 'package:medglobal_admin_portal/portal/product_management/presentation/cu
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/bloc/reports_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/api/reports_api.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/repositories/report_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/reports/domain/repositories/report_repository.dart';
+import 'package:medglobal_admin_portal/portal/reports/domain/usecases/create_report_usecase.dart';
+import 'package:medglobal_admin_portal/portal/reports/domain/usecases/get_report_by_id_usecase.dart';
 import 'package:medglobal_admin_portal/portal/reports/product_history/data/api/product_history_api.dart';
 import 'package:medglobal_admin_portal/portal/reports/product_history/data/repositories/product_history_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/reports/product_history/domain/repositories/product_history_repository.dart';
@@ -203,6 +209,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<TransactionApi>(() => TransactionApiImpl(injector()))
     ..registerLazySingleton<ReturnApi>(() => ReturnApiImpl(injector()))
     ..registerLazySingleton<ProductHistoryApi>(() => ProductHistoryApiImpl(injector()))
+    ..registerLazySingleton<ReportsApi>(() => ReportsApiImpl(injector()))
 
     /// POS
     ..registerLazySingleton<RegisterShiftApi>(() => RegisterShiftApiImpl(injector()))
@@ -226,6 +233,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<TransactionRepository>(() => TransactionRepositoryImpl(injector()))
     ..registerLazySingleton<ReturnRepository>(() => ReturnRepositoryImpl(injector()))
     ..registerLazySingleton<ProductHistoryRepository>(() => ProductHistoryRepositoryImpl(injector()))
+    ..registerLazySingleton<ReportRepository>(() => ReportRepositoryImpl(injector()))
 
     /// POS
     ..registerLazySingleton<RegisterShiftRepository>(() => RegisterShiftRepositoryImpl(injector()))
@@ -305,6 +313,8 @@ void initDependencyInjection() {
 
     /// Reports
     ..registerLazySingleton(() => GetProductHistoryUseCase(injector()))
+    ..registerLazySingleton(() => GetReportByIdUseCase(injector()))
+    ..registerLazySingleton(() => CreateReportUseCase(injector()))
 
     /// POS
     /// Open Close Shift
@@ -379,6 +389,7 @@ void initDependencyInjection() {
     ..registerFactory(() => SupplierLazyListCubit(injector()))
     ..registerFactory(() => ProductHistoryListCubit(injector()))
     ..registerFactory(() => ProductHistoryListFilterCubit())
+    ..registerFactory(() => ReportsBloc(injector(), injector()))
 
     /// POS
     ..registerFactory(() => RegisterLazyListCubit(injector()))
