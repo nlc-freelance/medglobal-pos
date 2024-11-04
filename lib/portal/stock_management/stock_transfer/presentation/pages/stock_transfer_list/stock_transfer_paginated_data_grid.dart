@@ -48,7 +48,7 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
       listener: (context, state) {
         if (state is StockTransferListLoaded) {
           stockTransfers = state.data.stockTransfers ?? [];
-          _stockTransferDataSource = StockTransferDataSource(stockTransfers, _rowsPerPage);
+          _stockTransferDataSource = StockTransferDataSource(stockTransfers);
         }
       },
       builder: (context, state) {
@@ -132,6 +132,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                   destinationBranchId:
                                       context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                   status: context.read<StockTransferListFilterCubit>().state.status,
+                                  startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                  endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                                 );
                           } else {
                             context.read<StockTransferListRemoteCubit>().getStockTransfers(
@@ -141,6 +143,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                   destinationBranchId:
                                       context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                   status: context.read<StockTransferListFilterCubit>().state.status,
+                                  startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                  endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                                 );
                           }
                         },
@@ -169,6 +173,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                 destinationBranchId:
                                     context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                 status: context.read<StockTransferListFilterCubit>().state.status,
+                                startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -187,6 +193,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                 destinationBranchId:
                                     context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                 status: context.read<StockTransferListFilterCubit>().state.status,
+                                startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -205,6 +213,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                 destinationBranchId:
                                     context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                 status: context.read<StockTransferListFilterCubit>().state.status,
+                                startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -225,6 +235,8 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
                                 destinationBranchId:
                                     context.read<StockTransferListFilterCubit>().state.destinationBranch?.id,
                                 status: context.read<StockTransferListFilterCubit>().state.status,
+                                startDate: context.read<StockTransferListFilterCubit>().state.startDate,
+                                endDate: context.read<StockTransferListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -242,7 +254,7 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
         }
         return DataGridLoading(
           columns: DataGridUtil.getColumns(DataGridColumn.STOCK_TRANSFERS, showId: true),
-          source: _stockTransferDataSource = StockTransferDataSource([], _rowsPerPage),
+          source: _stockTransferDataSource = StockTransferDataSource([]),
         );
       },
     );
@@ -250,42 +262,19 @@ class _StockTransferPaginatedDataGridState extends State<StockTransferPaginatedD
 }
 
 class StockTransferDataSource extends DataGridSource {
-  StockTransferDataSource(List<StockTransfer> stockTransfers, int rowsPerPage) {
-    _rowsPerPage = rowsPerPage;
+  StockTransferDataSource(List<StockTransfer> stockTransfers) {
     _stockTransfers = stockTransfers;
-    _paginatedStockTransfers = _stockTransfers.getRange(0, stockTransfers.length).toList(growable: false);
-    buildDataGridRows(_stockTransfers);
+    buildDataGridRows();
   }
 
-  late int _rowsPerPage;
-
   List<StockTransfer> _stockTransfers = [];
-
-  List<StockTransfer> _paginatedStockTransfers = [];
 
   List<DataGridRow> dataGridRows = [];
 
   @override
   List<DataGridRow> get rows => dataGridRows;
 
-  @override
-  Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
-    int startIndex = newPageIndex * _rowsPerPage;
-    int endIndex = startIndex + _rowsPerPage;
-
-    if (startIndex < _stockTransfers.length && endIndex <= _stockTransfers.length) {
-      _paginatedStockTransfers = _stockTransfers.getRange(startIndex, endIndex).toList(growable: false);
-      buildDataGridRows(_paginatedStockTransfers);
-      notifyListeners();
-    } else {
-      _paginatedStockTransfers = [];
-    }
-
-    return true;
-  }
-
-  void buildDataGridRows(List<StockTransfer> stockTransfers) =>
-      dataGridRows = _stockTransfers.map((stock) => stock.toDataGridRow()).toList();
+  void buildDataGridRows() => dataGridRows = _stockTransfers.map((stock) => stock.toDataGridRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -305,10 +294,13 @@ class StockTransferDataSource extends DataGridSource {
   Widget _buildCell(String column, DataGridCell cell, int id) => switch (column) {
         'id' => HoverBuilder(
             builder: (isHover) => InkWell(
-              onTap: () => AppRouter.router.goNamed(
-                'Stock Transfer Details',
-                pathParameters: {'id': id.toString()},
-              ),
+              onTap: () {
+                // _context.read<StockTransferRemoteCubit>().getStockTransferById(id);
+                AppRouter.router.goNamed(
+                  'Stock Transfer Details',
+                  pathParameters: {'id': id.toString()},
+                );
+              },
               hoverColor: UIColors.transparent,
               child: UIText.dataGridText(
                 cell.value.toString(),

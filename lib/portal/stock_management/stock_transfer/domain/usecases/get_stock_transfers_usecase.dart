@@ -16,6 +16,8 @@ class GetStockTransfersUseCase implements UseCase<StockTransferPaginatedList, Ge
         status: params.status,
         sourceBranchId: params.sourceBranchId,
         destinationBranchId: params.destinationBranchId,
+        startDate: params.startDate,
+        endDate: params.endDate,
       );
 }
 
@@ -25,6 +27,8 @@ class GetStockTransfersParams {
   final int? sourceBranchId;
   final int? destinationBranchId;
   final StockOrderStatus? status;
+  final String? startDate;
+  final String? endDate;
 
   GetStockTransfersParams({
     required this.page,
@@ -32,5 +36,7 @@ class GetStockTransfersParams {
     this.status,
     this.sourceBranchId,
     this.destinationBranchId,
+    this.startDate,
+    this.endDate,
   });
 }

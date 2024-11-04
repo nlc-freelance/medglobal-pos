@@ -162,7 +162,9 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
               isActive: _currentStep >= 0,
               state: _currentStep > 0 ? StepState.complete : StepState.indexed,
               title: const Text('Create'),
-              content: Theme(data: Theme.of(context), child: const NewPurchaseOrderForm()),
+              content: _currentStep == 0
+                  ? Theme(data: Theme.of(context), child: const NewPurchaseOrderForm())
+                  : const SizedBox(),
             ),
             Step(
               isActive: _currentStep >= 1,

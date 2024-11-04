@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_filter_cubit.dart';
@@ -23,7 +24,10 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-    context.read<StockTakeListRemoteCubit>().getStockTakes();
+
+    /// TODO: The list does not update when using the back button or side menu to navigate back to this page
+    /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
+    // context.read<StockTakeListRemoteCubit>().getStockTakes();
   }
 
   @override
@@ -34,21 +38,42 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
 
   void onChangeTab(int index) {
     final size = context.read<StockTakeListFilterCubit>().state.size!;
+    final startDate = context.read<StockTakeListFilterCubit>().state.startDate;
+    final endDate = context.read<StockTakeListFilterCubit>().state.endDate;
 
     if (index == 0) {
-      context.read<StockTakeListRemoteCubit>().getStockTakes(size: size);
+      context.read<StockTakeListRemoteCubit>().getStockTakes(
+            size: size,
+            startDate: startDate,
+            endDate: endDate,
+          );
       context.read<StockTakeListFilterCubit>().setStatus(null);
     }
     if (index == 1) {
-      context.read<StockTakeListRemoteCubit>().getStockTakes(status: StockOrderStatus.IN_PROGRESS, size: size);
+      context.read<StockTakeListRemoteCubit>().getStockTakes(
+            status: StockOrderStatus.IN_PROGRESS,
+            size: size,
+            startDate: startDate,
+            endDate: endDate,
+          );
       context.read<StockTakeListFilterCubit>().setStatus(StockOrderStatus.IN_PROGRESS);
     }
     if (index == 2) {
-      context.read<StockTakeListRemoteCubit>().getStockTakes(status: StockOrderStatus.COMPLETED, size: size);
+      context.read<StockTakeListRemoteCubit>().getStockTakes(
+            status: StockOrderStatus.COMPLETED,
+            size: size,
+            startDate: startDate,
+            endDate: endDate,
+          );
       context.read<StockTakeListFilterCubit>().setStatus(StockOrderStatus.COMPLETED);
     }
     if (index == 3) {
-      context.read<StockTakeListRemoteCubit>().getStockTakes(status: StockOrderStatus.CANCELLED, size: size);
+      context.read<StockTakeListRemoteCubit>().getStockTakes(
+            status: StockOrderStatus.CANCELLED,
+            size: size,
+            startDate: startDate,
+            endDate: endDate,
+          );
       context.read<StockTakeListFilterCubit>().setStatus(StockOrderStatus.CANCELLED);
     }
   }
@@ -114,10 +139,33 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          isDownloadable: true,
+          reportType: ReportType.STOCK_TAKE_CSV,
           filters: [
             DatePickerPopup(
-              onSelectRange: (dates) {},
+              onRemoveSelected: () {
+                final size = context.read<StockTakeListFilterCubit>().state.size;
+                final status = context.read<StockTakeListFilterCubit>().state.status;
+
+                context.read<StockTakeListRemoteCubit>().getStockTakes(size: size!, status: status);
+
+                context.read<StockTakeListFilterCubit>().setStartDate(null);
+                context.read<StockTakeListFilterCubit>().setEndDate(null);
+              },
+              onSelectRange: (dates) {
+                final size = context.read<StockTakeListFilterCubit>().state.size;
+                final status = context.read<StockTakeListFilterCubit>().state.status;
+
+                String? endDate;
+                final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
+                if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
+
+                context
+                    .read<StockTakeListRemoteCubit>()
+                    .getStockTakes(size: size!, status: status, startDate: startDate, endDate: endDate);
+
+                context.read<StockTakeListFilterCubit>().setStartDate(startDate);
+                context.read<StockTakeListFilterCubit>().setEndDate(endDate);
+              },
               selectionMode: DateRangePickerSelectionMode.range,
             ),
           ],

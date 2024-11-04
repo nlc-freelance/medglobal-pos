@@ -15,6 +15,8 @@ class GetPurchaseOrdersUseCase implements UseCase<PurchaseOrderPaginatedList, Ge
         size: params.size,
         status: params.status,
         branchId: params.branchId,
+        startDate: params.startDate,
+        endDate: params.endDate,
       );
 }
 
@@ -23,6 +25,9 @@ class GetPurchaseOrdersParams {
   final int size;
   final StockOrderStatus? status;
   final int? branchId;
+  final String? startDate;
+  final String? endDate;
 
-  GetPurchaseOrdersParams({required this.page, required this.size, this.status, this.branchId});
+  GetPurchaseOrdersParams(
+      {required this.page, required this.size, this.status, this.branchId, this.startDate, this.endDate});
 }

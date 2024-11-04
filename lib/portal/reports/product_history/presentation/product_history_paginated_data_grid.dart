@@ -3,9 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
-import 'package:medglobal_admin_portal/portal/reports/product_history/data/dto/product_history_item_dto.dart';
+import 'package:medglobal_admin_portal/portal/reports/product_history/domain/entities/product_history_item.dart';
 import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/cubit/product_history_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/cubit/product_history_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_remote/stock_transfer_remote_cubit.dart';
+import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -21,7 +26,7 @@ class _ProductHistoryPaginatedDataGridState extends State<ProductHistoryPaginate
   late DataGridController _dataGridController;
   late ProductHistoryDataSource _productHistoryDataSource;
 
-  List<ProductHistoryItemDto> productHistoryItems = [];
+  List<ProductHistoryItem> productHistoryItems = [];
   int _rowsPerPage = 20;
 
   @override
@@ -49,7 +54,7 @@ class _ProductHistoryPaginatedDataGridState extends State<ProductHistoryPaginate
       listener: (context, state) {
         if (state is ProductHistoryListLoaded) {
           productHistoryItems = state.data.productHistoryItems ?? [];
-          _productHistoryDataSource = ProductHistoryDataSource(productHistoryItems);
+          _productHistoryDataSource = ProductHistoryDataSource(productHistoryItems, context);
         }
       },
       builder: (context, state) {
@@ -237,13 +242,13 @@ class _ProductHistoryPaginatedDataGridState extends State<ProductHistoryPaginate
         if (state is ProductHistoryListLoading) {
           return DataGridLoading(
             columns: DataGridUtil.getColumns(DataGridColumn.PRODUCT_HISTORY),
-            source: _productHistoryDataSource = ProductHistoryDataSource([]),
+            source: _productHistoryDataSource = ProductHistoryDataSource([], context),
           );
         }
         return DataGridNoData.custom(
           message: 'To see history, start by selecting a product, branch and start date',
           columns: DataGridUtil.getColumns(DataGridColumn.PRODUCT_HISTORY),
-          source: _productHistoryDataSource = ProductHistoryDataSource([]),
+          source: _productHistoryDataSource = ProductHistoryDataSource([], context),
         );
       },
     );
@@ -251,12 +256,15 @@ class _ProductHistoryPaginatedDataGridState extends State<ProductHistoryPaginate
 }
 
 class ProductHistoryDataSource extends DataGridSource {
-  ProductHistoryDataSource(List<ProductHistoryItemDto> productHistoryItems) {
+  ProductHistoryDataSource(List<ProductHistoryItem> productHistoryItems, BuildContext context) {
     _productHistoryItems = productHistoryItems;
+    _context = context;
     buildDataGridRows();
   }
 
-  List<ProductHistoryItemDto> _productHistoryItems = [];
+  late BuildContext _context;
+
+  List<ProductHistoryItem> _productHistoryItems = [];
 
   List<DataGridRow> dataGridRows = [];
 
@@ -271,11 +279,61 @@ class ProductHistoryDataSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
+        final action = row.getCells().singleWhere((e) => e.columnName == 'action').value as ProductHistoryAction;
+        final id = row.getCells().first.value;
+
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: UIText.bodyRegular(
-              cell.columnName == 'action' ? cell.value.toString().toUpperCase() : cell.value.toString()),
+          child: cell.columnName == 'datetime' && (action != ProductHistoryAction.INITIAL || id != null)
+              ? HoverBuilder(
+                  builder: (isHover) => InkWell(
+                        onTap: () {
+                          /// TODO: initState on the destination page is not being triggered for every goNamed call
+                          /// that's why we are fetching the resource by id again here before navigating
+                          switch (action) {
+                            case ProductHistoryAction.PURCHASE:
+                              _context.read<PurchaseOrderRemoteCubit>().getPurchaseOrderById(id);
+                              AppRouter.router.goNamed(
+                                'Purchase Order Details',
+                                pathParameters: {'id': row.getCells().first.value.toString()},
+                              );
+                            case ProductHistoryAction.RETURN:
+                              _context.read<StockReturnRemoteCubit>().getStockReturnById(id);
+                              AppRouter.router.goNamed(
+                                'Stock Return Details',
+                                pathParameters: {'id': row.getCells().first.value.toString()},
+                              );
+                            case ProductHistoryAction.TAKE:
+                              _context.read<StockTakeBloc>().add(GetStockTakeByIdEvent(id));
+                              AppRouter.router.goNamed(
+                                'Stock Take Details',
+                                pathParameters: {'id': row.getCells().first.value.toString()},
+                              );
+                            case ProductHistoryAction.TRANSFER:
+                              _context.read<StockTransferRemoteCubit>().getStockTransferById(id);
+                              AppRouter.router.goNamed(
+                                'Stock Transfer Details',
+                                pathParameters: {'id': row.getCells().first.value.toString()},
+                              );
+                            case ProductHistoryAction.SALE:
+                              _context.read<TransactionCubit>().getTransactionById(id);
+                              AppRouter.router.goNamed(
+                                'Sale Details',
+                                pathParameters: {'id': row.getCells().first.value.toString()},
+                              );
+                            case ProductHistoryAction.INITIAL:
+                              return;
+                          }
+                        },
+                        hoverColor: UIColors.transparent,
+                        child: UIText.dataGridText(
+                          cell.value.toString(),
+                          color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
+                          textDecoration: TextDecoration.underline,
+                        ),
+                      ))
+              : UIText.dataGridText(cell.columnName == 'action' ? action.label : cell.value.toString()),
         );
       }).toList(),
     );

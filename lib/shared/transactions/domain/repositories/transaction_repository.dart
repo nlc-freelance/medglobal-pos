@@ -8,8 +8,11 @@ abstract class TransactionRepository {
     TransactionType? type,
     required int page,
     required int size,
+    String? search,
     int? branch,
     bool? isAllBranches,
+    String? startDate,
+    String? endDate,
   });
   Future<Either<Failure, Transaction>> getTransactionById(int id);
 }

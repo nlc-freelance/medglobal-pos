@@ -11,11 +11,23 @@ class StockTakeListRemoteCubit extends Cubit<StockTakeListRemoteState> {
 
   StockTakeListRemoteCubit(this._getStockTakesUseCase) : super(StockTakeListInitial());
 
-  Future<void> getStockTakes({int page = 1, int size = 20, StockOrderStatus? status}) async {
+  Future<void> getStockTakes({
+    int page = 1,
+    int size = 20,
+    StockOrderStatus? status,
+    String? startDate,
+    String? endDate,
+  }) async {
     emit(StockTakeListLoading());
 
     try {
-      final result = await _getStockTakesUseCase.call(GetStockTakesParams(page: page, size: size, status: status));
+      final result = await _getStockTakesUseCase.call(GetStockTakesParams(
+        page: page,
+        size: size,
+        status: status,
+        startDate: startDate,
+        endDate: endDate,
+      ));
       result.fold(
         (error) => emit(StockTakeListError(message: error.message)),
         (data) => emit(StockTakeListLoaded(data: data)),

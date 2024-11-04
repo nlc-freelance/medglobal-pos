@@ -39,10 +39,18 @@ class StockReturnRepositoryImpl implements StockReturnRepository {
     required int size,
     StockOrderStatus? status,
     int? branchId,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
-      final response =
-          await _stockReturnApi.getStockReturns(page: page, size: size, status: status, branchId: branchId);
+      final response = await _stockReturnApi.getStockReturns(
+        page: page,
+        size: size,
+        status: status,
+        branchId: branchId,
+        startDate: startDate,
+        endDate: endDate,
+      );
       return Right(response);
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));

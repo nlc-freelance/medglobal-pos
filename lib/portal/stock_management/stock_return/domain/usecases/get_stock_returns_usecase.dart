@@ -14,6 +14,8 @@ class GetStockReturnsUseCase implements UseCase<StockReturnPaginatedList, GetSto
         size: params.size,
         status: params.status,
         branchId: params.branchId,
+        startDate: params.startDate,
+        endDate: params.endDate,
       );
 }
 
@@ -22,6 +24,9 @@ class GetStockReturnsParams {
   final int size;
   final StockOrderStatus? status;
   final int? branchId;
+  final String? startDate;
+  final String? endDate;
 
-  GetStockReturnsParams({required this.page, required this.size, this.status, this.branchId});
+  GetStockReturnsParams(
+      {required this.page, required this.size, this.status, this.branchId, this.startDate, this.endDate});
 }

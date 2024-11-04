@@ -7,4 +7,5 @@ class SupplierListFilterCubit extends Cubit<SupplierListFilterState> {
   SupplierListFilterCubit() : super(const SupplierListFilterState());
 
   void setSize(int value) => emit(state.copyWith(size: value));
+  void setSearch(String? value) => emit(state.copyWith(search: value));
 }

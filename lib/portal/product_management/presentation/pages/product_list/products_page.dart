@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_search_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/product_paginated_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/selected_products_toolbar.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -62,17 +62,17 @@ class _ProductsPageState extends State<ProductsPage> {
           ),
           const UIVerticalSpace(20),
           DataGridToolbar(
-            isDownloadable: true,
+            reportType: ReportType.PRODUCT_DATA_CSV,
             search: UISearchField(
               fieldWidth: 500.0,
               hint: 'Search product name',
               controller: _searchController,
               onChanged: (value) => _debouncer.run(
                 (() {
-                  context.read<ProductListSearchCubit>().setSearchKey(value);
+                  context.read<ProductListFilterCubit>().setSearchKey(value);
                   context.read<ProductListCubit>().getProducts(
                         search: value,
-                        size: context.read<ProductListSearchCubit>().state.size ?? 20,
+                        size: context.read<ProductListFilterCubit>().state.size ?? 20,
                       );
                 }),
               ),

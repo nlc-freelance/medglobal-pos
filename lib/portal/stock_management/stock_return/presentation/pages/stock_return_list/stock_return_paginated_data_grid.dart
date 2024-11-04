@@ -46,7 +46,7 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
     }, listener: (context, state) {
       if (state is StockReturnListLoaded) {
         stockReturns = state.data.stockReturns ?? [];
-        _stockReturnDataSource = StockReturnDataSource(stockReturns, _rowsPerPage);
+        _stockReturnDataSource = StockReturnDataSource(stockReturns);
       }
     }, builder: (context, state) {
       if (state is StockReturnListError) {
@@ -127,6 +127,8 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                                 size: _rowsPerPage,
                                 branchId: context.read<StockReturnListFilterCubit>().state.branchId,
                                 status: context.read<StockReturnListFilterCubit>().state.status,
+                                startDate: context.read<StockReturnListFilterCubit>().state.startDate,
+                                endDate: context.read<StockReturnListFilterCubit>().state.endDate,
                               );
                         } else {
                           context.read<StockReturnListRemoteCubit>().getStockReturns(
@@ -134,6 +136,8 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                                 size: _rowsPerPage,
                                 branchId: context.read<StockReturnListFilterCubit>().state.branchId,
                                 status: context.read<StockReturnListFilterCubit>().state.status,
+                                startDate: context.read<StockReturnListFilterCubit>().state.startDate,
+                                endDate: context.read<StockReturnListFilterCubit>().state.endDate,
                               );
                         }
                       },
@@ -160,6 +164,8 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                               size: _rowsPerPage,
                               branchId: context.read<StockReturnListFilterCubit>().state.branchId,
                               status: context.read<StockReturnListFilterCubit>().state.status,
+                              startDate: context.read<StockReturnListFilterCubit>().state.startDate,
+                              endDate: context.read<StockReturnListFilterCubit>().state.endDate,
                             );
                       }
                     },
@@ -176,6 +182,8 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                               size: _rowsPerPage,
                               branchId: context.read<StockReturnListFilterCubit>().state.branchId,
                               status: context.read<StockReturnListFilterCubit>().state.status,
+                              startDate: context.read<StockReturnListFilterCubit>().state.startDate,
+                              endDate: context.read<StockReturnListFilterCubit>().state.endDate,
                             );
                       }
                     },
@@ -192,6 +200,8 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                               size: _rowsPerPage,
                               branchId: context.read<StockReturnListFilterCubit>().state.branchId,
                               status: context.read<StockReturnListFilterCubit>().state.status,
+                              startDate: context.read<StockReturnListFilterCubit>().state.startDate,
+                              endDate: context.read<StockReturnListFilterCubit>().state.endDate,
                             );
                       }
                     },
@@ -209,6 +219,8 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
                               size: _rowsPerPage,
                               branchId: context.read<StockReturnListFilterCubit>().state.branchId,
                               status: context.read<StockReturnListFilterCubit>().state.status,
+                              startDate: context.read<StockReturnListFilterCubit>().state.startDate,
+                              endDate: context.read<StockReturnListFilterCubit>().state.endDate,
                             );
                       }
                     },
@@ -225,49 +237,26 @@ class _StockReturnPaginatedDataGridState extends State<StockReturnPaginatedDataG
       }
       return DataGridLoading(
         columns: DataGridUtil.getColumns(DataGridColumn.STOCK_RETURNS, showId: true),
-        source: _stockReturnDataSource = StockReturnDataSource([], _rowsPerPage),
+        source: _stockReturnDataSource = StockReturnDataSource([]),
       );
     });
   }
 }
 
 class StockReturnDataSource extends DataGridSource {
-  StockReturnDataSource(List<StockReturn> stockReturns, int rowsPerPage) {
-    _rowsPerPage = rowsPerPage;
+  StockReturnDataSource(List<StockReturn> stockReturns) {
     _stockReturns = stockReturns;
-    _paginatedStockReturns = _stockReturns.getRange(0, stockReturns.length).toList(growable: false);
-    buildDataGridRows(_stockReturns);
+    buildDataGridRows();
   }
 
-  late int _rowsPerPage;
-
   List<StockReturn> _stockReturns = [];
-
-  List<StockReturn> _paginatedStockReturns = [];
 
   List<DataGridRow> dataGridRows = [];
 
   @override
   List<DataGridRow> get rows => dataGridRows;
 
-  @override
-  Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
-    int startIndex = newPageIndex * _rowsPerPage;
-    int endIndex = startIndex + _rowsPerPage;
-
-    if (startIndex < _stockReturns.length && endIndex <= _stockReturns.length) {
-      _paginatedStockReturns = _stockReturns.getRange(startIndex, endIndex).toList(growable: false);
-      buildDataGridRows(_paginatedStockReturns);
-      notifyListeners();
-    } else {
-      _paginatedStockReturns = [];
-    }
-
-    return true;
-  }
-
-  void buildDataGridRows(List<StockReturn> stockReturns) =>
-      dataGridRows = stockReturns.map((order) => order.toDataGridRow()).toList();
+  void buildDataGridRows() => dataGridRows = _stockReturns.map((order) => order.toDataGridRow()).toList();
 
   void updateDataGridSource() => notifyListeners();
 
@@ -287,10 +276,13 @@ class StockReturnDataSource extends DataGridSource {
   Widget _buildCell(String column, DataGridCell cell, int id) => switch (column) {
         'id' => HoverBuilder(
             builder: (isHover) => InkWell(
-              onTap: () => AppRouter.router.goNamed(
-                'Stock Return Details',
-                pathParameters: {'id': id.toString()},
-              ),
+              onTap: () {
+                // _context.read<StockReturnRemoteCubit>().getStockReturnById(id);
+                AppRouter.router.goNamed(
+                  'Stock Return Details',
+                  pathParameters: {'id': id.toString()},
+                );
+              },
               hoverColor: UIColors.transparent,
               child: UIText.dataGridText(
                 cell.value.toString(),

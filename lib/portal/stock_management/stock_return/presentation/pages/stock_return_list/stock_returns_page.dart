@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
@@ -27,7 +28,7 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
 
     /// TODO: The list does not update when using the back button or side menu to navigate back to this page
     /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
-    context.read<StockReturnListRemoteCubit>().getStockReturns();
+    // context.read<StockReturnListRemoteCubit>().getStockReturns();
 
     /// Reset last selected stock return
     context.read<StockReturnCubit>().reset();
@@ -42,9 +43,16 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
   void onChangeTab(int index) {
     final branchId = context.read<StockReturnListFilterCubit>().state.branchId;
     final size = context.read<StockReturnListFilterCubit>().state.size!;
+    final startDate = context.read<StockReturnListFilterCubit>().state.startDate;
+    final endDate = context.read<StockReturnListFilterCubit>().state.endDate;
 
     if (index == 0) {
-      context.read<StockReturnListRemoteCubit>().getStockReturns(branchId: branchId, size: size);
+      context.read<StockReturnListRemoteCubit>().getStockReturns(
+            branchId: branchId,
+            size: size,
+            startDate: startDate,
+            endDate: endDate,
+          );
       context.read<StockReturnListFilterCubit>().setStatus(null);
     }
     if (index == 1) {
@@ -52,6 +60,8 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
             status: StockOrderStatus.NEW,
             branchId: branchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<StockReturnListFilterCubit>().setStatus(StockOrderStatus.NEW);
     }
@@ -60,6 +70,8 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
             status: StockOrderStatus.COMPLETED,
             branchId: branchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<StockReturnListFilterCubit>().setStatus(StockOrderStatus.COMPLETED);
     }
@@ -121,10 +133,36 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          isDownloadable: true,
+          reportType: ReportType.STOCK_RETURN_CSV,
           filters: [
             DatePickerPopup(
-              onSelectRange: (dates) {},
+              onRemoveSelected: () {
+                final size = context.read<StockReturnListFilterCubit>().state.size;
+                final status = context.read<StockReturnListFilterCubit>().state.status;
+                final branchId = context.read<StockReturnListFilterCubit>().state.branchId;
+
+                context
+                    .read<StockReturnListRemoteCubit>()
+                    .getStockReturns(size: size!, status: status, branchId: branchId);
+
+                context.read<StockReturnListFilterCubit>().setStartDate(null);
+                context.read<StockReturnListFilterCubit>().setEndDate(null);
+              },
+              onSelectRange: (dates) {
+                final size = context.read<StockReturnListFilterCubit>().state.size;
+                final status = context.read<StockReturnListFilterCubit>().state.status;
+                final branch = context.read<StockReturnListFilterCubit>().state.branchId;
+
+                String? endDate;
+                final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
+                if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
+
+                context.read<StockReturnListRemoteCubit>().getStockReturns(
+                    size: size!, status: status, branchId: branch, startDate: startDate, endDate: endDate);
+
+                context.read<StockReturnListFilterCubit>().setStartDate(startDate);
+                context.read<StockReturnListFilterCubit>().setEndDate(endDate);
+              },
               selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(8),
@@ -132,18 +170,29 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
               onRemoveSelectedItem: () {
                 final size = context.read<StockReturnListFilterCubit>().state.size;
                 final status = context.read<StockReturnListFilterCubit>().state.status;
+                final startDate = context.read<StockReturnListFilterCubit>().state.startDate;
+                final endDate = context.read<StockReturnListFilterCubit>().state.endDate;
 
-                context.read<StockReturnListRemoteCubit>().getStockReturns(size: size!, status: status);
+                context.read<StockReturnListRemoteCubit>().getStockReturns(
+                      size: size!,
+                      status: status,
+                      startDate: startDate,
+                      endDate: endDate,
+                    );
                 context.read<StockReturnListFilterCubit>().setBranch(null);
               },
               onSelectItem: (branch) {
                 final size = context.read<StockReturnListFilterCubit>().state.size;
                 final status = context.read<StockReturnListFilterCubit>().state.status;
+                final startDate = context.read<StockReturnListFilterCubit>().state.startDate;
+                final endDate = context.read<StockReturnListFilterCubit>().state.endDate;
 
                 context.read<StockReturnListRemoteCubit>().getStockReturns(
                       size: size!,
                       status: status,
                       branchId: branch.id,
+                      startDate: startDate,
+                      endDate: endDate,
                     );
                 context.read<StockReturnListFilterCubit>().setBranch(branch.id);
               },

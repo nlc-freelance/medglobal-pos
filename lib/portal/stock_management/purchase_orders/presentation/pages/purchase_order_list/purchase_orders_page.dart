@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
@@ -30,7 +31,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
     /// TODO: The list does not update when using the back button or side menu to navigate back to this page
     /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
     /// Ex. /stock-management/purchase-orders/id=1 to /stock-management/purchase-orders/
-    context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
+    // context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
 
     /// Reset last selected purchase order
     context.read<PurchaseOrderCubit>().reset();
@@ -45,9 +46,16 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
   void onChangeTab(int index) {
     final branchId = context.read<PurchaseOrderListFilterCubit>().state.branchId;
     final size = context.read<PurchaseOrderListFilterCubit>().state.size!;
+    final startDate = context.read<PurchaseOrderListFilterCubit>().state.startDate;
+    final endDate = context.read<PurchaseOrderListFilterCubit>().state.endDate;
 
     if (index == 0) {
-      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(branchId: branchId, size: size);
+      context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+            branchId: branchId,
+            size: size,
+            startDate: startDate,
+            endDate: endDate,
+          );
       context.read<PurchaseOrderListFilterCubit>().setStatus(null);
     }
     if (index == 1) {
@@ -55,6 +63,8 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
             status: StockOrderStatus.NEW,
             branchId: branchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.NEW);
     }
@@ -63,6 +73,8 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
             status: StockOrderStatus.FOR_RECEIVING,
             branchId: branchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.FOR_RECEIVING);
     }
@@ -71,6 +83,8 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
             status: StockOrderStatus.COMPLETED,
             branchId: branchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.COMPLETED);
     }
@@ -79,6 +93,8 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
             status: StockOrderStatus.CANCELLED,
             branchId: branchId,
             size: size,
+            startDate: startDate,
+            endDate: endDate,
           );
       context.read<PurchaseOrderListFilterCubit>().setStatus(StockOrderStatus.CANCELLED);
     }
@@ -142,10 +158,36 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
         ),
         const UIVerticalSpace(20),
         DataGridToolbar(
-          isDownloadable: true,
+          reportType: ReportType.PURCHASE_ORDER_CSV,
           filters: [
             DatePickerPopup(
-              onSelectRange: (dates) {},
+              onRemoveSelected: () {
+                final size = context.read<PurchaseOrderListFilterCubit>().state.size;
+                final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+                final branchId = context.read<PurchaseOrderListFilterCubit>().state.branchId;
+
+                context
+                    .read<PurchaseOrderListRemoteCubit>()
+                    .getPurchaseOrders(size: size!, status: status, branchId: branchId);
+
+                context.read<PurchaseOrderListFilterCubit>().setStartDate(null);
+                context.read<PurchaseOrderListFilterCubit>().setEndDate(null);
+              },
+              onSelectRange: (dates) {
+                final size = context.read<PurchaseOrderListFilterCubit>().state.size;
+                final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+                final branch = context.read<PurchaseOrderListFilterCubit>().state.branchId;
+
+                String? endDate;
+                final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
+                if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
+
+                context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                    size: size!, status: status, branchId: branch, startDate: startDate, endDate: endDate);
+
+                context.read<PurchaseOrderListFilterCubit>().setStartDate(startDate);
+                context.read<PurchaseOrderListFilterCubit>().setEndDate(endDate);
+              },
               selectionMode: DateRangePickerSelectionMode.range,
             ),
             const UIHorizontalSpace(8),
@@ -153,18 +195,29 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
               onRemoveSelectedItem: () {
                 final size = context.read<PurchaseOrderListFilterCubit>().state.size;
                 final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+                final startDate = context.read<PurchaseOrderListFilterCubit>().state.startDate;
+                final endDate = context.read<PurchaseOrderListFilterCubit>().state.endDate;
 
-                context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(size: size!, status: status);
+                context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                      size: size!,
+                      status: status,
+                      startDate: startDate,
+                      endDate: endDate,
+                    );
                 context.read<PurchaseOrderListFilterCubit>().setBranch(null);
               },
               onSelectItem: (branch) {
                 final size = context.read<PurchaseOrderListFilterCubit>().state.size;
                 final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+                final startDate = context.read<PurchaseOrderListFilterCubit>().state.startDate;
+                final endDate = context.read<PurchaseOrderListFilterCubit>().state.endDate;
 
                 context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
                       size: size!,
                       status: status,
                       branchId: branch.id,
+                      startDate: startDate,
+                      endDate: endDate,
                     );
                 context.read<PurchaseOrderListFilterCubit>().setBranch(branch.id);
               },

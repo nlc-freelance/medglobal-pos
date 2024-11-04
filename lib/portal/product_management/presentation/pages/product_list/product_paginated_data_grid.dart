@@ -6,7 +6,7 @@ import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_search_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -36,19 +36,12 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProductListCubit, ProductListState>(
-      listenWhen: (previous, current) {
-        if (previous is ProductListLoading && current is ProductListLoaded) {
-          return ((current.data.currentPage! <= current.data.totalPages!) == true);
-        }
-        if (current is ProductListNoResultFound) return true;
-        return false;
-      },
       listener: (context, state) {
         if (state is ProductListLoaded) {
           _products = state.data.products ?? [];
           _productDataGridSource = ProductDataGridSource(_products, _rowsPerPage);
         }
-        if (state is ProductListNoResultFound) {
+        if (state is ProductSearchNoResult) {
           _productDataGridSource = ProductDataGridSource([], _rowsPerPage);
         }
       },
@@ -56,11 +49,12 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
         if (state is ProductListError) {
           return Text(state.message);
         }
-        if (state is ProductListNoResultFound) {
+        if (state is ProductSearchNoResult) {
           return DataGridNoData.custom(
             message: state.message,
             columns: DataGridUtil.getColumns(DataGridColumn.PRODUCTS),
             source: _productDataGridSource,
+            showCheckbox: true,
           );
         }
         if (state is ProductListLoaded) {
@@ -119,7 +113,7 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                     iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
                     onSelect: (value) {
                       setState(() => _rowsPerPage = value);
-                      context.read<ProductListSearchCubit>().setSize(value);
+                      context.read<ProductListFilterCubit>().setSize(value);
 
                       /// Go back to page 1 when:
                       ///  - total count is greater than the requested rows per page
@@ -136,13 +130,13 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                         context.read<ProductListCubit>().getProducts(
                               page: 1,
                               size: _rowsPerPage,
-                              search: context.read<ProductListSearchCubit>().state.search,
+                              search: context.read<ProductListFilterCubit>().state.search,
                             );
                       } else {
                         context.read<ProductListCubit>().getProducts(
                               page: state.data.currentPage!,
                               size: _rowsPerPage,
-                              search: context.read<ProductListSearchCubit>().state.search,
+                              search: context.read<ProductListFilterCubit>().state.search,
                             );
                       }
                     },
@@ -166,7 +160,7 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                         context.read<ProductListCubit>().getProducts(
                               page: 1,
                               size: _rowsPerPage,
-                              search: context.read<ProductListSearchCubit>().state.search,
+                              search: context.read<ProductListFilterCubit>().state.search,
                             );
                       }
                     },
@@ -181,7 +175,7 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                         context.read<ProductListCubit>().getProducts(
                               page: state.data.currentPage! - 1,
                               size: _rowsPerPage,
-                              search: context.read<ProductListSearchCubit>().state.search,
+                              search: context.read<ProductListFilterCubit>().state.search,
                             );
                       }
                     },
@@ -196,7 +190,7 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                         context.read<ProductListCubit>().getProducts(
                               page: state.data.currentPage! + 1,
                               size: _rowsPerPage,
-                              search: context.read<ProductListSearchCubit>().state.search,
+                              search: context.read<ProductListFilterCubit>().state.search,
                             );
                       }
                     },
@@ -212,7 +206,7 @@ class ProductPaginatedDataGridState extends State<ProductPaginatedDataGrid> {
                         context.read<ProductListCubit>().getProducts(
                               page: state.data.totalPages!,
                               size: _rowsPerPage,
-                              search: context.read<ProductListSearchCubit>().state.search,
+                              search: context.read<ProductListFilterCubit>().state.search,
                             );
                       }
                     },

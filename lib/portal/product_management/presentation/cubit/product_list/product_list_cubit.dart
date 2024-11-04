@@ -19,7 +19,7 @@ class ProductListCubit extends Cubit<ProductListState> {
         (error) => emit(ProductListError(message: error.message)),
         (data) {
           if (search != null && data.totalCount == 0 && data.products?.isEmpty == true) {
-            emit(ProductListNoResultFound(message: 'No results found for \'$search\''));
+            emit(ProductSearchNoResult(message: 'No results found for \'$search\''));
           } else {
             emit(ProductListLoaded(data: data));
           }

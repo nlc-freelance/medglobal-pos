@@ -11,6 +11,8 @@ abstract class StockReturnApi {
     required int size,
     StockOrderStatus? status,
     int? branchId,
+    String? startDate,
+    String? endDate,
   });
   Future<StockReturnDto> getStockReturnById(int id);
   Future<StockReturnDto> create(NewStockReturn payload);
@@ -28,6 +30,8 @@ class StockReturnApiImpl implements StockReturnApi {
     required int size,
     StockOrderStatus? status,
     int? branchId,
+    String? startDate,
+    String? endDate,
   }) async {
     try {
       final response = await _apiService.collection<StockReturnDto>(
@@ -35,8 +39,10 @@ class StockReturnApiImpl implements StockReturnApi {
         queryParams: {
           'page': page,
           'size': size,
-          'status': status?.label.toLowerCase(),
-          'branch': branchId,
+          if (status != null) 'status': status.label.toLowerCase(),
+          if (branchId != null) 'branch': branchId,
+          if (startDate != null) 'startDate': startDate,
+          if (endDate != null) 'endDate': endDate,
         },
         converter: StockReturnDto.fromJson,
       );
