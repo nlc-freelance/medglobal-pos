@@ -22,6 +22,12 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
   final _debouncer = Debouncer(milliseconds: 500);
 
   @override
+  void initState() {
+    super.initState();
+    context.read<SaleTransactionListFilterCubit>().reset();
+  }
+
+  @override
   void dispose() {
     _debouncer.dispose();
     super.dispose();
@@ -37,99 +43,112 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
           subtitle: 'View all sale transactions to analyze sales performance.',
         ),
         const UIVerticalSpace(20),
-        DataGridToolbar(
-          reportType: ReportType.SALES_CSV,
-          search: UISearchField(
-            fieldWidth: 500.0,
-            hint: 'Search receipt ID',
-            icon: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Assets.icons.search.svg(),
-            ),
-            onChanged: (value) => _debouncer.run(
-              (() {
-                context.read<SaleTransactionListFilterCubit>().setSearch(value);
-                context.read<SaleTransactionListCubit>().getTransactions(
-                      search: value,
-                      size: context.read<SaleTransactionListFilterCubit>().state.size ?? 20,
-                      startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
-                      endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
-                      branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
-                    );
-              }),
-            ),
-          ),
-          filters: [
-            DatePickerPopup(
-              onRemoveSelected: () {
-                final size = context.read<SaleTransactionListFilterCubit>().state.size;
-                final branchId = context.read<SaleTransactionListFilterCubit>().state.branchId;
-                final search = context.read<SaleTransactionListFilterCubit>().state.search;
-
-                context.read<SaleTransactionListCubit>().getTransactions(
-                      size: size!,
-                      search: search,
-                      branchId: branchId,
-                    );
-
-                context.read<SaleTransactionListFilterCubit>().setStartDate(null);
-                context.read<SaleTransactionListFilterCubit>().setEndDate(null);
+        BlocSelector<SaleTransactionListFilterCubit, SaleTransactionListFilterState, SaleTransactionListFilterState>(
+          selector: (state) => state,
+          builder: (context, filters) {
+            return DataGridToolbar(
+              reportType: ReportType.SALES_CSV,
+              reportFilters: {
+                'transactionType': TransactionType.SALE.name.toLowerCase(),
+                'isAllBranches': filters.branchId == null,
+                'search': filters.search,
+                'branch': filters.branchId,
+                'startDate': filters.startDate,
+                'endDate': filters.endDate,
               },
-              onSelectRange: (dates) {
-                final size = context.read<SaleTransactionListFilterCubit>().state.size;
-                final search = context.read<SaleTransactionListFilterCubit>().state.search;
-                final branch = context.read<SaleTransactionListFilterCubit>().state.branchId;
+              search: UISearchField(
+                fieldWidth: 500.0,
+                hint: 'Search receipt ID',
+                icon: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Assets.icons.search.svg(),
+                ),
+                onChanged: (value) => _debouncer.run(
+                  (() {
+                    context.read<SaleTransactionListFilterCubit>().setSearch(value);
+                    context.read<SaleTransactionListCubit>().getTransactions(
+                          search: value,
+                          size: context.read<SaleTransactionListFilterCubit>().state.size ?? 20,
+                          startDate: context.read<SaleTransactionListFilterCubit>().state.startDate,
+                          endDate: context.read<SaleTransactionListFilterCubit>().state.endDate,
+                          branchId: context.read<SaleTransactionListFilterCubit>().state.branchId,
+                        );
+                  }),
+                ),
+              ),
+              filters: [
+                DatePickerPopup(
+                  onRemoveSelected: () {
+                    final size = context.read<SaleTransactionListFilterCubit>().state.size;
+                    final branchId = context.read<SaleTransactionListFilterCubit>().state.branchId;
+                    final search = context.read<SaleTransactionListFilterCubit>().state.search;
 
-                String? endDate;
-                final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
-                if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
+                    context.read<SaleTransactionListCubit>().getTransactions(
+                          size: size!,
+                          search: search,
+                          branchId: branchId,
+                        );
 
-                context.read<SaleTransactionListCubit>().getTransactions(
-                      size: size!,
-                      search: search,
-                      branchId: branch,
-                      startDate: startDate,
-                      endDate: endDate,
-                    );
+                    context.read<SaleTransactionListFilterCubit>().setStartDate(null);
+                    context.read<SaleTransactionListFilterCubit>().setEndDate(null);
+                  },
+                  onSelectRange: (dates) {
+                    final size = context.read<SaleTransactionListFilterCubit>().state.size;
+                    final search = context.read<SaleTransactionListFilterCubit>().state.search;
+                    final branch = context.read<SaleTransactionListFilterCubit>().state.branchId;
 
-                context.read<SaleTransactionListFilterCubit>().setStartDate(startDate);
-                context.read<SaleTransactionListFilterCubit>().setEndDate(endDate);
-              },
-              selectionMode: DateRangePickerSelectionMode.range,
-            ),
-            const UIHorizontalSpace(8),
-            BranchDropdown.select(
-              onRemoveSelectedItem: () {
-                final size = context.read<SaleTransactionListFilterCubit>().state.size;
-                final startDate = context.read<SaleTransactionListFilterCubit>().state.startDate;
-                final endDate = context.read<SaleTransactionListFilterCubit>().state.endDate;
-                final search = context.read<SaleTransactionListFilterCubit>().state.search;
+                    String? endDate;
+                    final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
+                    if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
 
-                context.read<SaleTransactionListCubit>().getTransactions(
-                      size: size!,
-                      startDate: startDate,
-                      endDate: endDate,
-                      search: search,
-                    );
-                context.read<SaleTransactionListFilterCubit>().setBranch(null);
-              },
-              onSelectItem: (branch) {
-                final size = context.read<SaleTransactionListFilterCubit>().state.size;
-                final startDate = context.read<SaleTransactionListFilterCubit>().state.startDate;
-                final endDate = context.read<SaleTransactionListFilterCubit>().state.endDate;
-                final search = context.read<SaleTransactionListFilterCubit>().state.search;
+                    context.read<SaleTransactionListCubit>().getTransactions(
+                          size: size!,
+                          search: search,
+                          branchId: branch,
+                          startDate: startDate,
+                          endDate: endDate,
+                        );
 
-                context.read<SaleTransactionListCubit>().getTransactions(
-                      size: size!,
-                      branchId: branch.id,
-                      startDate: startDate,
-                      endDate: endDate,
-                      search: search,
-                    );
-                context.read<SaleTransactionListFilterCubit>().setBranch(branch.id);
-              },
-            ),
-          ],
+                    context.read<SaleTransactionListFilterCubit>().setStartDate(startDate);
+                    context.read<SaleTransactionListFilterCubit>().setEndDate(endDate);
+                  },
+                  selectionMode: DateRangePickerSelectionMode.range,
+                ),
+                const UIHorizontalSpace(8),
+                BranchDropdown.select(
+                  onRemoveSelectedItem: () {
+                    final size = context.read<SaleTransactionListFilterCubit>().state.size;
+                    final startDate = context.read<SaleTransactionListFilterCubit>().state.startDate;
+                    final endDate = context.read<SaleTransactionListFilterCubit>().state.endDate;
+                    final search = context.read<SaleTransactionListFilterCubit>().state.search;
+
+                    context.read<SaleTransactionListCubit>().getTransactions(
+                          size: size!,
+                          startDate: startDate,
+                          endDate: endDate,
+                          search: search,
+                        );
+                    context.read<SaleTransactionListFilterCubit>().setBranch(null);
+                  },
+                  onSelectItem: (branch) {
+                    final size = context.read<SaleTransactionListFilterCubit>().state.size;
+                    final startDate = context.read<SaleTransactionListFilterCubit>().state.startDate;
+                    final endDate = context.read<SaleTransactionListFilterCubit>().state.endDate;
+                    final search = context.read<SaleTransactionListFilterCubit>().state.search;
+
+                    context.read<SaleTransactionListCubit>().getTransactions(
+                          size: size!,
+                          branchId: branch.id,
+                          startDate: startDate,
+                          endDate: endDate,
+                          search: search,
+                        );
+                    context.read<SaleTransactionListFilterCubit>().setBranch(branch.id);
+                  },
+                ),
+              ],
+            );
+          },
         ),
         const Expanded(child: SaleTransactionPaginatedDataGrid()),
       ],

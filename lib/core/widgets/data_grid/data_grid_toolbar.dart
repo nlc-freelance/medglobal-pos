@@ -11,6 +11,7 @@ class DataGridToolbar extends StatelessWidget {
     this.search,
     this.padding,
     this.reportType,
+    this.reportFilters,
     super.key,
   });
 
@@ -18,6 +19,7 @@ class DataGridToolbar extends StatelessWidget {
   final Widget? search;
   final EdgeInsets? padding;
   final ReportType? reportType;
+  final Map<String, dynamic>? reportFilters;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class DataGridToolbar extends StatelessWidget {
           if (search == null) const Spacer(),
           if (reportType != null) ...[
             const UIHorizontalSpace(8),
-            DownloadReportButton(reportType!),
+            DownloadReportButton(reportType!, filters: reportFilters),
           ],
         ],
       ),

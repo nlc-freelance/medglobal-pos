@@ -22,6 +22,12 @@ class _ReturnTransactionsPageState extends State<ReturnTransactionsPage> {
   final _debouncer = Debouncer(milliseconds: 500);
 
   @override
+  void initState() {
+    super.initState();
+    context.read<ReturnTransactionListFilterCubit>().reset();
+  }
+
+  @override
   void dispose() {
     _debouncer.dispose();
     super.dispose();

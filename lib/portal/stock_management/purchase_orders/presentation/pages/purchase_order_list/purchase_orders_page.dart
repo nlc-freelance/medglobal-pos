@@ -35,6 +35,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
 
     /// Reset last selected purchase order
     context.read<PurchaseOrderCubit>().reset();
+    context.read<PurchaseOrderListFilterCubit>().reset();
   }
 
   @override
@@ -157,72 +158,83 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
           }),
         ),
         const UIVerticalSpace(20),
-        DataGridToolbar(
-          reportType: ReportType.PURCHASE_ORDER_CSV,
-          filters: [
-            DatePickerPopup(
-              onRemoveSelected: () {
-                final size = context.read<PurchaseOrderListFilterCubit>().state.size;
-                final status = context.read<PurchaseOrderListFilterCubit>().state.status;
-                final branchId = context.read<PurchaseOrderListFilterCubit>().state.branchId;
-
-                context
-                    .read<PurchaseOrderListRemoteCubit>()
-                    .getPurchaseOrders(size: size!, status: status, branchId: branchId);
-
-                context.read<PurchaseOrderListFilterCubit>().setStartDate(null);
-                context.read<PurchaseOrderListFilterCubit>().setEndDate(null);
+        BlocSelector<PurchaseOrderListFilterCubit, PurchaseOrderListFilterState, PurchaseOrderListFilterState>(
+          selector: (state) => state,
+          builder: (context, filters) {
+            return DataGridToolbar(
+              reportType: ReportType.PURCHASE_ORDER_CSV,
+              reportFilters: {
+                'status': filters.status?.label.toLowerCase(),
+                'branch': filters.branchId,
+                'startDate': filters.startDate,
+                'endDate': filters.endDate,
               },
-              onSelectRange: (dates) {
-                final size = context.read<PurchaseOrderListFilterCubit>().state.size;
-                final status = context.read<PurchaseOrderListFilterCubit>().state.status;
-                final branch = context.read<PurchaseOrderListFilterCubit>().state.branchId;
+              filters: [
+                DatePickerPopup(
+                  onRemoveSelected: () {
+                    final size = context.read<PurchaseOrderListFilterCubit>().state.size;
+                    final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+                    final branchId = context.read<PurchaseOrderListFilterCubit>().state.branchId;
 
-                String? endDate;
-                final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
-                if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
+                    context
+                        .read<PurchaseOrderListRemoteCubit>()
+                        .getPurchaseOrders(size: size!, status: status, branchId: branchId);
 
-                context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
-                    size: size!, status: status, branchId: branch, startDate: startDate, endDate: endDate);
+                    context.read<PurchaseOrderListFilterCubit>().setStartDate(null);
+                    context.read<PurchaseOrderListFilterCubit>().setEndDate(null);
+                  },
+                  onSelectRange: (dates) {
+                    final size = context.read<PurchaseOrderListFilterCubit>().state.size;
+                    final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+                    final branch = context.read<PurchaseOrderListFilterCubit>().state.branchId;
 
-                context.read<PurchaseOrderListFilterCubit>().setStartDate(startDate);
-                context.read<PurchaseOrderListFilterCubit>().setEndDate(endDate);
-              },
-              selectionMode: DateRangePickerSelectionMode.range,
-            ),
-            const UIHorizontalSpace(8),
-            BranchDropdown.select(
-              onRemoveSelectedItem: () {
-                final size = context.read<PurchaseOrderListFilterCubit>().state.size;
-                final status = context.read<PurchaseOrderListFilterCubit>().state.status;
-                final startDate = context.read<PurchaseOrderListFilterCubit>().state.startDate;
-                final endDate = context.read<PurchaseOrderListFilterCubit>().state.endDate;
+                    String? endDate;
+                    final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
+                    if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
 
-                context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
-                      size: size!,
-                      status: status,
-                      startDate: startDate,
-                      endDate: endDate,
-                    );
-                context.read<PurchaseOrderListFilterCubit>().setBranch(null);
-              },
-              onSelectItem: (branch) {
-                final size = context.read<PurchaseOrderListFilterCubit>().state.size;
-                final status = context.read<PurchaseOrderListFilterCubit>().state.status;
-                final startDate = context.read<PurchaseOrderListFilterCubit>().state.startDate;
-                final endDate = context.read<PurchaseOrderListFilterCubit>().state.endDate;
+                    context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                        size: size!, status: status, branchId: branch, startDate: startDate, endDate: endDate);
 
-                context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
-                      size: size!,
-                      status: status,
-                      branchId: branch.id,
-                      startDate: startDate,
-                      endDate: endDate,
-                    );
-                context.read<PurchaseOrderListFilterCubit>().setBranch(branch.id);
-              },
-            ),
-          ],
+                    context.read<PurchaseOrderListFilterCubit>().setStartDate(startDate);
+                    context.read<PurchaseOrderListFilterCubit>().setEndDate(endDate);
+                  },
+                  selectionMode: DateRangePickerSelectionMode.range,
+                ),
+                const UIHorizontalSpace(8),
+                BranchDropdown.select(
+                  onRemoveSelectedItem: () {
+                    final size = context.read<PurchaseOrderListFilterCubit>().state.size;
+                    final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+                    final startDate = context.read<PurchaseOrderListFilterCubit>().state.startDate;
+                    final endDate = context.read<PurchaseOrderListFilterCubit>().state.endDate;
+
+                    context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                          size: size!,
+                          status: status,
+                          startDate: startDate,
+                          endDate: endDate,
+                        );
+                    context.read<PurchaseOrderListFilterCubit>().setBranch(null);
+                  },
+                  onSelectItem: (branch) {
+                    final size = context.read<PurchaseOrderListFilterCubit>().state.size;
+                    final status = context.read<PurchaseOrderListFilterCubit>().state.status;
+                    final startDate = context.read<PurchaseOrderListFilterCubit>().state.startDate;
+                    final endDate = context.read<PurchaseOrderListFilterCubit>().state.endDate;
+
+                    context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
+                          size: size!,
+                          status: status,
+                          branchId: branch.id,
+                          startDate: startDate,
+                          endDate: endDate,
+                        );
+                    context.read<PurchaseOrderListFilterCubit>().setBranch(branch.id);
+                  },
+                ),
+              ],
+            );
+          },
         ),
         const Expanded(child: PurchaseOrderPaginatedDataGrid()),
       ],
