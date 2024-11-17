@@ -13,6 +13,8 @@ abstract class ProductApi {
   Future<void> create(Product product);
   Future<void> update(int id, Product product);
   Future<void> delete(int id);
+
+  Future<List<ProductDto>> searchProducts({String? search});
 }
 
 class ProductApiImpl implements ProductApi {
@@ -107,6 +109,21 @@ class ProductApiImpl implements ProductApi {
   Future<void> delete(int id) async {
     try {
       await _apiService.delete<ProductDto>(ApiEndpoint.products(id));
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<ProductDto>> searchProducts({String? search}) async {
+    try {
+      final response = await _apiService.collection<ProductDto>(
+        ApiEndpoint.products(),
+        queryParams: {'size': 10, 'search': search},
+        converter: ProductDto.fromJson,
+      );
+
+      return response.items ?? [];
     } catch (_) {
       rethrow;
     }

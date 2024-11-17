@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/widgets/typeahead_search/typeahead_search.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/variants/autocomplete_dropdown.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -54,7 +54,7 @@ class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid>
         DataGridToolbar(
           search: SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.3,
-            child: AutocompleteDropdown(
+            child: TypeAheadSearch(
               supplierId: context.read<StockReturnCubit>().state.stockReturn.supplier?.id,
               branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
               onSelected: (value) {
@@ -112,7 +112,7 @@ class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid>
                             children: [
                               SizedBox(
                                 width: MediaQuery.sizeOf(context).width * 0.3,
-                                child: AutocompleteDropdown(
+                                child: TypeAheadSearch(
                                   supplierId: context.read<StockReturnCubit>().state.stockReturn.supplier?.id,
                                   branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
                                   onSelected: (value) {

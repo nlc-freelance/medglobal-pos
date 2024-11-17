@@ -6,17 +6,17 @@ import 'package:medglobal_admin_portal/portal/stock_management/variants/product_
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class ProductTypeAheadSearch extends StatefulWidget {
-  const ProductTypeAheadSearch({super.key, required this.onSelected, required this.onClear});
+class VariantTypeAheadSearch extends StatefulWidget {
+  const VariantTypeAheadSearch({super.key, required this.onSelected, required this.onClear});
 
   final void Function(ProductVariantDto value) onSelected;
   final VoidCallback onClear;
 
   @override
-  State<ProductTypeAheadSearch> createState() => _ProductTypeAheadSearchState();
+  State<VariantTypeAheadSearch> createState() => _VariantTypeAheadSearchState();
 }
 
-class _ProductTypeAheadSearchState extends State<ProductTypeAheadSearch> {
+class _VariantTypeAheadSearchState extends State<VariantTypeAheadSearch> {
   late TextEditingController _controller;
 
   @override

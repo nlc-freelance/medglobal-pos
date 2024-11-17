@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
+
 import '../core.dart';
+import '../utils/typedefs.dart';
 import 'dio_service.dart';
 import 'models/api_response.dart';
-import '../utils/typedefs.dart';
 
 class ApiService {
   late final DioService _dioService;
@@ -34,8 +35,8 @@ class ApiService {
     }
   }
 
-  /// 'data' in json response is List of objects instead of just an object
-  Future<ApiResponse<T>> data<T>(
+  /// For GET requests that returns 'data' in json response as List of objects instead of just an object
+  Future<ApiResponse<T>> getData<T>(
     String endpoint, {
     JSON? queryParams,
     required T Function(JSON responseBody) converter,
@@ -44,6 +45,28 @@ class ApiService {
       final response = await _dioService.get(endpoint, queryParams: queryParams);
       List<Object?> data = response.data;
       final items = data.map((item) => converter(item as JSON)).toList();
+
+      return ApiResponse(
+        message: response.message,
+        items: items,
+      );
+    } on DioException catch (e) {
+      throw _handleDioException(e);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// For POST requests that returns 'data' in json response as list of objects instead of just an object
+  Future<ApiResponse<T>> postData<T>(
+    String endpoint, {
+    required JSON data,
+    required T Function(JSON responseBody) converter,
+  }) async {
+    try {
+      final response = await _dioService.post(endpoint, data: data);
+      List<Object?> data0 = response.data;
+      final items = data0.map((item) => converter(item as JSON)).toList();
 
       return ApiResponse(
         message: response.message,

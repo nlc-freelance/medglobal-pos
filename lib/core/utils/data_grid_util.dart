@@ -27,11 +27,10 @@ class DataGridUtil {
               alignment: Alignment.centerLeft,
               child: Text(
                 column.label,
-                style: UIStyleText.labelRegular.copyWith(
+                style: UIStyleText.inter.copyWith(
                   color: UIColors.textMuted,
-                  fontSize: 11.5,
+                  fontSize: 10.85,
                   fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.none,
                 ),
               ),
             ),

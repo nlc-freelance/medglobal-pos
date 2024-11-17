@@ -40,8 +40,8 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
         builder: (context, state) {
           return Dialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+            backgroundColor: UIColors.background,
             child: Container(
-              color: UIColors.background,
               width: MediaQuery.sizeOf(context).width * 0.35,
               padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
               child: Column(

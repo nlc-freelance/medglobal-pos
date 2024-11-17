@@ -45,7 +45,7 @@ class BranchDropdown extends StatelessWidget {
 
   factory BranchDropdown.select({
     required Function(Branch value)? onSelectItem,
-    required VoidCallback? onRemoveSelectedItem,
+    VoidCallback? onRemoveSelectedItem,
     String? hint,
     bool isInlineHint = false,
     bool isSelectInputType = false,
@@ -276,75 +276,78 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
         borderRadius: const BorderRadius.all(Radius.circular(12.0)),
         onTap: () => setState(() => _isVisible = true),
         child: widget.isSelectType
-            ? HoverBuilder(builder: (isHover) {
-                final highlight = _selectedItem != null && _selectedItem?.id != -1;
-                return Container(
-                  constraints: const BoxConstraints(minWidth: 150),
-                  padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: highlight && widget.isSelectInputType == false
-                        ? UIColors.secondary
-                        : isHover
-                            ? UIColors.whiteBg
-                            : UIColors.background,
-                    border: Border.all(
+            ? HoverBuilder(
+                builder: (isHover) {
+                  final highlight = _selectedItem != null && _selectedItem?.id != -1;
+                  return Container(
+                    constraints: const BoxConstraints(minWidth: 180),
+                    padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: highlight && widget.isSelectInputType == false
+                          ? UIColors.secondary
+                          : isHover
+                              ? UIColors.whiteBg
+                              : UIColors.background,
+                      border: Border.all(
                         color: highlight && widget.isSelectInputType == false
                             ? UIColors.primary.withOpacity(0.2)
-                            : UIColors.borderRegular),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      widget.isInlineHint == true
-                          ? Text.rich(
-                              TextSpan(
-                                text: widget.hint!,
-                                style: UIStyleText.labelMedium.copyWith(color: UIColors.textMuted),
-                                children: [
-                                  TextSpan(
-                                    text: '  ${_selectedItem != null ? _selectedItem!.name : 'All Branches'}',
-                                    style: UIStyleText.labelMedium.copyWith(
-                                      color: _selectedItem != null ? UIColors.primary : UIColors.textLight,
+                            : UIColors.borderRegular,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        widget.isInlineHint == true
+                            ? Text.rich(
+                                TextSpan(
+                                  text: widget.hint!,
+                                  style: UIStyleText.labelMedium.copyWith(color: UIColors.textMuted),
+                                  children: [
+                                    TextSpan(
+                                      text: '  ${_selectedItem != null ? _selectedItem!.name : 'All Branches'}',
+                                      style: UIStyleText.labelMedium.copyWith(
+                                        color: _selectedItem != null ? UIColors.primary : UIColors.textLight,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : widget.isSelectInputType == true
-
-                              /// Select type for input
-                              ? Text(
-                                  _selectedItem != null ? _selectedItem!.name : 'Select branch',
-                                  style: UIStyleText.hint.copyWith(
-                                    color: _selectedItem != null ? UIColors.textRegular : UIColors.textMuted,
-                                    fontWeight: _selectedItem != null ? FontWeight.w500 : FontWeight.w400,
-                                  ),
-                                )
-
-                              /// Select type for selecting e.g., filter
-                              : UIText.labelMedium(
-                                  _selectedItem != null ? _selectedItem!.name : 'All Branches',
-                                  color: _selectedItem != null ? UIColors.primary : UIColors.textLight,
+                                  ],
                                 ),
-                      const UIHorizontalSpace(10),
-                      _selectedItem != null
-                          ? SizedBox(
-                              height: 18,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(50),
-                                onTap: () {
-                                  setState(() => _selectedItem = null);
-                                  widget.onRemoveSelectedItem!();
-                                },
-                                child: Assets.icons.close.svg(height: 22),
-                              ),
-                            )
-                          : Assets.icons.arrowDown.svg(height: 10)
-                    ],
-                  ),
-                );
-              })
+                              )
+                            : widget.isSelectInputType == true
+
+                                /// Select type for input
+                                ? Text(
+                                    _selectedItem != null ? _selectedItem!.name : 'Select branch',
+                                    style: UIStyleText.hint.copyWith(
+                                      color: _selectedItem != null ? UIColors.textRegular : UIColors.textMuted,
+                                      fontWeight: _selectedItem != null ? FontWeight.w500 : FontWeight.w400,
+                                    ),
+                                  )
+
+                                /// Select type for selecting e.g., filter
+                                : UIText.labelMedium(
+                                    _selectedItem != null ? _selectedItem!.name : 'All Branches',
+                                    color: _selectedItem != null ? UIColors.primary : UIColors.textLight,
+                                  ),
+                        const UIHorizontalSpace(10),
+                        _selectedItem != null && widget.onRemoveSelectedItem != null
+                            ? SizedBox(
+                                height: 18,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(50),
+                                  onTap: () {
+                                    setState(() => _selectedItem = null);
+                                    widget.onRemoveSelectedItem!();
+                                  },
+                                  child: Assets.icons.close.svg(height: 22),
+                                ),
+                              )
+                            : Assets.icons.arrowDown.svg(height: 10)
+                      ],
+                    ),
+                  );
+                },
+              )
             : TextFormField(
                 readOnly: true,
                 enabled: false,

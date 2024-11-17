@@ -13,7 +13,7 @@ class SupplyNeedsApiImpl implements SupplyNeedsApi {
   @override
   Future<List<SupplyNeedDto>> getSupplyNeeds({int? branchId}) async {
     try {
-      final response = await _apiService.data<SupplyNeedDto>(
+      final response = await _apiService.getData<SupplyNeedDto>(
         '/products/supply-needs',
         queryParams: {'branch': branchId},
         converter: SupplyNeedDto.fromJson,
