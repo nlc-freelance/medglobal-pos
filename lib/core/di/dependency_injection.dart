@@ -61,6 +61,16 @@ import 'package:medglobal_admin_portal/portal/reports/sales_per_category/present
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/cubit/sales_category_group_by/sales_category_groupby_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/cubit/sales_category_period/sales_category_period_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/cubit/sales_per_category/sales_per_category_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/data/api/sales_per_shift_api.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/data/repositories/sales_per_shift_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/domain/repositories/sales_per_shift_repository.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/domain/usecases/get_sales_per_shift_by_id_usecase.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/domain/usecases/get_sales_per_shift_usecase.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/sales_per_shift/sales_per_shift_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/sales_per_shift_filter/sales_per_shift_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/sales_per_shift_list/sales_per_shift_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transaction_page_size_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transactions_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/api/purchase_order_api.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/repositories/purchase_order_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
@@ -219,6 +229,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<ProductHistoryApi>(() => ProductHistoryApiImpl(injector()))
     ..registerLazySingleton<ReportsApi>(() => ReportsApiImpl(injector()))
     ..registerLazySingleton<SalesPerCategoryApi>(() => SalesPerCategoryApiImpl(injector()))
+    ..registerLazySingleton<SalesPerShiftApi>(() => SalesPerShiftApiImpl(injector()))
 
     /// POS
     ..registerLazySingleton<RegisterShiftApi>(() => RegisterShiftApiImpl(injector()))
@@ -244,6 +255,7 @@ void initDependencyInjection() {
     ..registerLazySingleton<ProductHistoryRepository>(() => ProductHistoryRepositoryImpl(injector()))
     ..registerLazySingleton<ReportRepository>(() => ReportRepositoryImpl(injector()))
     ..registerLazySingleton<SalesPerCategoryRepository>(() => SalesPerCategoryRepositoryImpl(injector()))
+    ..registerLazySingleton<SalesPerShiftRepository>(() => SalesPerShiftRepositoryImpl(injector()))
 
     /// POS
     ..registerLazySingleton<RegisterShiftRepository>(() => RegisterShiftRepositoryImpl(injector()))
@@ -326,6 +338,8 @@ void initDependencyInjection() {
     ..registerLazySingleton(() => GetReportByIdUseCase(injector()))
     ..registerLazySingleton(() => CreateReportUseCase(injector()))
     ..registerLazySingleton(() => GetSalesPerCategoryUseCase(injector()))
+    ..registerLazySingleton(() => GetSalesPerShiftUseCase(injector()))
+    ..registerLazySingleton(() => GetSalesPerShiftByIdUseCase(injector()))
 
     /// POS
     /// Open Close Shift
@@ -405,6 +419,11 @@ void initDependencyInjection() {
     ..registerFactory(() => SalesCategoryGroupByCubit())
     ..registerFactory(() => SalesCategoryPeriodCubit())
     ..registerFactory(() => SalesPerCategoryCubit(injector()))
+    ..registerFactory(() => SalesPerShiftListCubit(injector()))
+    ..registerFactory(() => SalesPerShiftListFilterCubit())
+    ..registerFactory(() => SalesPerShiftCubit(injector()))
+    ..registerFactory(() => ShiftTransactionsCubit(injector()))
+    ..registerFactory(() => ShiftTransactionPageSizeCubit())
 
     /// POS
     ..registerFactory(() => RegisterLazyListCubit(injector()))

@@ -32,12 +32,9 @@ enum SideMenuTree {
     'Transactions',
     ['Sales', 'Sale Details', 'Returns', 'Return Details'],
   ),
-  // RETURNS('Returns Management', [
-  //   'Returns Management',
-  // ]),
   REPORTS(
     'Reports',
-    ['Product History', 'Sales Report', 'Sales Per Category', 'Sales Per Shift'],
+    ['Product History', 'Sales Report', 'Sales Per Category', 'Sales Per Shift', 'Sales Per Shift Details'],
   );
 
   final String title;
@@ -83,8 +80,9 @@ enum SideMenuTreeItem {
   REPORTS('Reports', '/reports', '/reports'),
   PRODUCT_HISTORY('Product History', 'product-history', '/reports/product-history'),
   SALES_REPORT('Sales Report', 'sales', '/reports/sales'),
-  SALES_PER_CATEGORY('Sales Per Category', 'sales-per-category', '/reports/sales/sales-per-category'),
-  SALES_PER_SHIFT('Sales Per Shift', 'sales-per-shift', '/reports/sales/sales-per-shift');
+  SALES_PER_CATEGORY('Sales Per Category', 'sales-per-category', '/reports/sales-per-category'),
+  SALES_PER_SHIFT('Sales Per Shift', 'sales-per-shift', '/reports/sales-per-shift'),
+  SALES_PER_SHIFT_DETAILS('Sales Per Shift Details', 'id=:id', '/reports/sales-per-shift/:id');
 
   final String name;
   final String path;
@@ -204,7 +202,8 @@ enum ReportType {
   STOCK_TAKE_CSV('STOCK_TAKE_CSV'),
   SALES_CSV('SALES_CSV'),
   PRODUCT_HISTORY_CSV('PRODUCT_HISTORY_CSV'),
-  SALES_PER_CATEGORY('SALES_PER_CATEGORY');
+  SALES_PER_CATEGORY('SALES_PER_CATEGORY'),
+  SALES_PER_SHIFT('SALES_PER_SHIFT');
 
   final String value;
   const ReportType(this.value);

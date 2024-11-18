@@ -25,7 +25,6 @@ class _SideNavBarState extends State<SideNavBar> {
           ..addAll([
             IndexedTreeNode(key: 'Suppliers'),
             IndexedTreeNode(key: 'Products'),
-            // IndexedTreeNode(key: 'Add Product'),
           ]),
         IndexedTreeNode(key: SideMenuTree.STOCKS.title)
           ..addAll([
@@ -40,7 +39,6 @@ class _SideNavBarState extends State<SideNavBar> {
             IndexedTreeNode(key: 'Sales'),
             IndexedTreeNode(key: 'Returns'),
           ]),
-        // IndexedTreeNode(key: SideMenuTree.RETURNS.title),
         IndexedTreeNode(key: SideMenuTree.REPORTS.title)
           ..addAll(
             [

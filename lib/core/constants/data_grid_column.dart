@@ -250,6 +250,36 @@ class DataGridColumn {
     ColumnData('item_net_sales', 'Item Net Sales'),
   ];
 
+  static List<ColumnData> SALES_PER_SHIFT = [
+    ColumnData('id', 'ID'),
+    ColumnData('open_time', 'Open Time'),
+    ColumnData('close_time', 'Close Time'),
+    ColumnData('branch', 'Branch'),
+    ColumnData('register', 'Register'),
+    ColumnData('total_sale_transactions', 'Total Sale Transactions'),
+    ColumnData('total_sales_amt', 'Total Sales Amount'),
+  ];
+  static List<ColumnData> SALES_SUMMARY = [
+    ColumnData('type', 'Type'),
+    ColumnData('transactions', 'Transactions'),
+    ColumnData('amount', 'Amount (PHP)'),
+  ];
+  static List<ColumnData> CASH_DRAWER_SUMMARY = [
+    ColumnData('type', 'Type'),
+    ColumnData('amount', 'Amount (PHP)'),
+  ];
+
+  static List<ColumnData> SHIFT_TRANSACTIONS = [
+    ColumnData('id', 'ID'),
+    ColumnData('date', 'Date', minWidth: 180),
+    ColumnData('employee', 'Employee', minWidth: 180),
+    ColumnData('type', 'Type'),
+    ColumnData('subtotal', 'Subtotal (PHP)'),
+    ColumnData('total_discount', 'Discount (PHP)'),
+    ColumnData('tax', 'Tax (PHP)'),
+    ColumnData('total', 'Total (PHP)'),
+  ];
+
   /// POS
   ///
   static List<ColumnData> REGISTER_ITEMS = [
