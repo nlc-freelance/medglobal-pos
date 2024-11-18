@@ -215,7 +215,7 @@ class _GroupByState extends State<GroupBy> {
                 ? null
                 : {
                     'branch': _selectedGroupBy.contains(SalesPerCategoryGroupBy.BRANCH),
-                    if (_selectedTimeVariance != null) 'timeVariable': _selectedTimeVariance?.name,
+                    if (_selectedTimeVariance != null) 'timeVariance': _selectedTimeVariance?.name,
                   },
           ),
         );

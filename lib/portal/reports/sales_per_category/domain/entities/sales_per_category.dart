@@ -14,7 +14,7 @@ class SalesPerCategory {
   final double? totalDiscountAmount;
   final double? itemNetSales;
   final String? branch;
-  final String? timeVariable;
+  final String? timeVariance;
 
   const SalesPerCategory({
     this.productCategory,
@@ -26,13 +26,13 @@ class SalesPerCategory {
     this.totalDiscountAmount,
     this.itemNetSales,
     this.branch,
-    this.timeVariable,
+    this.timeVariance,
   });
 
   String? get groupByDataGridValue {
-    if (branch != null && timeVariable != null) return '$branch, $timeVariable';
+    if (branch != null && timeVariance != null) return '$branch, $timeVariance';
     if (branch != null) return '$branch';
-    if (timeVariable != null) return '$timeVariable';
+    if (timeVariance != null) return '$timeVariance';
     return null;
   }
 
@@ -56,6 +56,6 @@ class SalesPerCategory {
 
   @override
   String toString() {
-    return 'SalesPerCategory{productCategory: $productCategory, totalItemsSold: $totalItemsSold, totalItemsReturned: $totalItemsReturned, itemNetCount: $itemNetCount, totalSalesAmount: $totalSalesAmount, totalReturnedAmount: $totalReturnedAmount, totalDiscountAmount: $totalDiscountAmount, itemNetSales: $itemNetSales, branch: $branch, timeVariable: $timeVariable}';
+    return 'SalesPerCategory{productCategory: $productCategory, totalItemsSold: $totalItemsSold, totalItemsReturned: $totalItemsReturned, itemNetCount: $itemNetCount, totalSalesAmount: $totalSalesAmount, totalReturnedAmount: $totalReturnedAmount, totalDiscountAmount: $totalDiscountAmount, itemNetSales: $itemNetSales, branch: $branch, timeVariance: $timeVariance}';
   }
 }

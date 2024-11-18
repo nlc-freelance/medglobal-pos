@@ -32,7 +32,7 @@ class SalesPerCategoryPayload {
     return {
       'startDate': startDate,
       'endDate': endDate,
-      if ([branch, supplier, productCategory, productName].every((filter) => filter?.isNotEmpty == true))
+      if ([branch, supplier, productCategory, productName].any((filter) => filter?.isNotEmpty == true))
         '$filterOperator': {
           if (branch?.isNotEmpty == true) 'branch': branch?.toPayload,
           if (supplier?.isNotEmpty == true) 'supplier': supplier?.toPayload,
@@ -41,5 +41,10 @@ class SalesPerCategoryPayload {
         },
       'groupedBy': groupedBy,
     }..removeWhere((_, value) => value == null);
+  }
+
+  @override
+  String toString() {
+    return 'SalesPerCategoryPayload{startDate: $startDate, endDate: $endDate, branch: $branch, supplier: $supplier, productCategory: $productCategory, productName: $productName, filterOperator: $filterOperator, groupedBy: $groupedBy}';
   }
 }

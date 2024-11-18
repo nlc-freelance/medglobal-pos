@@ -9,7 +9,7 @@ import 'package:medglobal_admin_portal/portal/reports/sales_per_category/present
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/cubit/sales_category_period/sales_category_period_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/cubit/sales_per_category/sales_per_category_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/sales_per_category_data_grid.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/widgets/advanced_filter.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/widgets/advanced_filters.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/widgets/group_by.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -34,8 +34,7 @@ class SalesPerCategoryPage extends StatelessWidget {
               selectedDateRange: context.read<SalesCategoryPeriodCubit>().state.startDate == null &&
                       context.read<SalesCategoryPeriodCubit>().state.endDate == null
                   ? [
-                      // TODO: SALES_PER_CATEGORY subtract 6 days to display current week by default
-                      DateTime.now().subtract(const Duration(days: 90)),
+                      DateTime.now().subtract(const Duration(days: 6)),
                       DateTime.now(),
                     ]
                   : [
@@ -67,7 +66,7 @@ class SalesPerCategoryPage extends StatelessWidget {
               },
             ),
             const UIHorizontalSpace(8),
-            const AdvancedFilter(),
+            const AdvancedFilters(),
             const UIHorizontalSpace(8),
             const GroupBy(),
             const UIHorizontalSpace(8),

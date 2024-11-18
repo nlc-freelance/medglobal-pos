@@ -25,8 +25,7 @@ class _SalesPerCategoryDataGridState extends State<SalesPerCategoryDataGrid> {
   @override
   void initState() {
     super.initState();
-    // TODO: SALES_PER_CATEGORY subtract 6 days to display current week by default
-    final defaultStartDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(const Duration(days: 90)));
+    final defaultStartDate = DateFormat('yyyy-MM-dd').format(DateTime.now().subtract(const Duration(days: 6)));
     final defaultEndDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     context.read<SalesPerCategoryCubit>().getSalesPerCategory(

@@ -11,14 +11,14 @@ import 'package:medglobal_admin_portal/portal/reports/sales_per_category/present
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/widgets/advance_filter_row.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class AdvancedFilter extends StatefulWidget {
-  const AdvancedFilter({super.key});
+class AdvancedFilters extends StatefulWidget {
+  const AdvancedFilters({super.key});
 
   @override
-  State<AdvancedFilter> createState() => _SalesCategoryFilterState();
+  State<AdvancedFilters> createState() => _SalesCategoryFilterState();
 }
 
-class _SalesCategoryFilterState extends State<AdvancedFilter> {
+class _SalesCategoryFilterState extends State<AdvancedFilters> {
   List<Filter> _filters = [];
 
   @override
@@ -108,35 +108,35 @@ class _SalesCategoryFilterState extends State<AdvancedFilter> {
                                 onClick: () => context.read<SalesCategoryFilterCubit>().addFilter(),
                               ),
                               const Spacer(),
-                              if (state.hasFilters || _filters.isNotEmpty) ...[
-                                UIButton.outlined(
-                                  'Clear All',
-                                  onClick: () {
-                                    if (_filters.isNotEmpty) _getSalesPerCategory();
-                                    context.read<SalesCategoryFilterCubit>().clearAll();
+                              // if (state.hasFilters || _filters.isNotEmpty) ...[
+                              UIButton.outlined(
+                                'Clear All',
+                                onClick: () {
+                                  if (_filters.isNotEmpty) _getSalesPerCategory();
+                                  context.read<SalesCategoryFilterCubit>().clearAll();
 
-                                    ///  Reset _filters to empty list
-                                    Navigator.pop(context, true);
-                                  },
-                                ),
-                                const UIHorizontalSpace(8),
-                                if (state.hasFiltersChanged(_filters) || _filters.isEmpty)
-                                  UIButton.filled(
-                                    'Apply filters',
-                                    onClick: () {
-                                      final filters = state.filters
-                                              ?.where((filter) => filter.type != null && filter.value != null)
-                                              .toList() ??
-                                          <Filter>[];
+                                  ///  Reset _filters to empty list
+                                  Navigator.pop(context, true);
+                                },
+                              ),
+                              const UIHorizontalSpace(8),
+                              // if (state.hasFiltersChanged(_filters) || _filters.isEmpty)
+                              UIButton.filled(
+                                'Apply filters',
+                                onClick: () {
+                                  final filters = state.filters
+                                          ?.where((filter) => filter.type != null && filter.value != null)
+                                          .toList() ??
+                                      <Filter>[];
 
-                                      _getSalesPerCategory(state);
+                                  _getSalesPerCategory(state);
 
-                                      ///  Close and pass the filters to update the filter label
-                                      Navigator.pop(context, filters);
-                                    },
-                                  ),
-                              ],
+                                  ///  Close and pass the filters to update the filter label
+                                  Navigator.pop(context, filters);
+                                },
+                              ),
                             ],
+                            // ],
                           );
                         },
                       ),

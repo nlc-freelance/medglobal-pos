@@ -22,7 +22,7 @@ class SalesCategoryFilterState extends Equatable {
     );
   }
 
-  /// Getters
+  /// Get all filters by type
   List<Filter>? get(FilterType type) {
     if (filters?.isNotEmpty == true) {
       return filters!.where((filter) => filter.type == type).toSet().toList();
@@ -30,6 +30,8 @@ class SalesCategoryFilterState extends Equatable {
       return null;
     }
   }
+
+  bool get hasInvalidFilters => filters?.any((filter) => filter.type == null || filter.value == null) == true;
 
   bool get hasFilters => filters?.any((filter) => filter.type != null && filter.value != null) == true;
 

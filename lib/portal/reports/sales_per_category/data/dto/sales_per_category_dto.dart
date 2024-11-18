@@ -16,7 +16,7 @@ class SalesPerCategoryDto {
   final double? totalDiscountAmount;
   final double? itemNetSales;
   final String? branch;
-  final String? timeVariable;
+  final String? timeVariance;
 
   const SalesPerCategoryDto({
     this.productCategory,
@@ -28,7 +28,7 @@ class SalesPerCategoryDto {
     this.totalDiscountAmount,
     this.itemNetSales,
     this.branch,
-    this.timeVariable,
+    this.timeVariance,
   });
 
   SalesPerCategory toEntity() => SalesPerCategory(
@@ -41,7 +41,7 @@ class SalesPerCategoryDto {
         totalDiscountAmount: totalDiscountAmount,
         itemNetSales: itemNetSales,
         branch: branch,
-        timeVariable: timeVariable,
+        timeVariance: timeVariance,
       );
 
   factory SalesPerCategoryDto.fromJson(Map<String, dynamic> json) => _$SalesPerCategoryDtoFromJson(json);
