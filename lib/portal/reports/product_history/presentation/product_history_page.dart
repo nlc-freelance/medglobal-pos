@@ -4,10 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
+import 'package:medglobal_admin_portal/core/widgets/typeahead_search/variant_typeahead_search.dart';
 import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/cubit/product_history_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/cubit/product_history_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/product_history_paginated_data_grid.dart';
-import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/widgets/product_typeahead_search.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -51,7 +51,7 @@ class _ProductHistoryPageState extends State<ProductHistoryPage> {
               const UIHorizontalSpace(8),
               SizedBox(
                 width: MediaQuery.sizeOf(context).width * 0.35,
-                child: ProductTypeAheadSearch(
+                child: VariantTypeAheadSearch(
                   onSelected: (value) {
                     setState(() => _productVariantId = value.id);
                     context.read<ProductHistoryListFilterCubit>().setVariantId(value.id!);
@@ -102,8 +102,7 @@ class _ProductHistoryPageState extends State<ProductHistoryPage> {
                         size: context.read<ProductHistoryListFilterCubit>().state.size!,
                       ),
                 ),
-              if ([_productVariantId, _branchId, _sinceDate].every((param) => param != null) == true)
-              ...[
+              if ([_productVariantId, _branchId, _sinceDate].every((param) => param != null) == true) ...[
                 const Spacer(),
                 DownloadReportButton(
                   ReportType.PRODUCT_HISTORY_CSV,

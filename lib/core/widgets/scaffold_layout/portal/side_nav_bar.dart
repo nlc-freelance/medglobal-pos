@@ -49,7 +49,6 @@ class _SideNavBarState extends State<SideNavBar> {
                 ..addAll([
                   IndexedTreeNode(key: SideMenuTree.REPORTS.items[2]),
                   IndexedTreeNode(key: SideMenuTree.REPORTS.items[3]),
-                  IndexedTreeNode(key: SideMenuTree.REPORTS.items[4]),
                 ]),
             ],
           ),

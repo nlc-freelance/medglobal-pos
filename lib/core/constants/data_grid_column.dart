@@ -238,6 +238,18 @@ class DataGridColumn {
     ColumnData('qty_after', 'Qty After'),
   ];
 
+  static List<ColumnData> SALES_PER_CATEGORY = [
+    ColumnData('group_by', 'Group By'),
+    ColumnData('product_category', 'Product Category', minWidth: 205),
+    ColumnData('total_items_sold', 'Total Items Sold'),
+    ColumnData('total_items_returned', 'Total Items Returned'),
+    ColumnData('item_net_count', 'Item Net Count'),
+    ColumnData('total_sales_amt', 'Total Sales Amount'),
+    ColumnData('total_returned_amt', 'Total Returned Amount'),
+    ColumnData('total_discount_amt', 'Total Discount Amount'),
+    ColumnData('item_net_sales', 'Item Net Sales'),
+  ];
+
   /// POS
   ///
   static List<ColumnData> REGISTER_ITEMS = [

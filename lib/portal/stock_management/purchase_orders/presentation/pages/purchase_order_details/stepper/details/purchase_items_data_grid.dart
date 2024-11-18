@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/widgets/typeahead_search/typeahead_search.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/variants/autocomplete_dropdown.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -54,7 +54,7 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
         DataGridToolbar(
           search: SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.3,
-            child: AutocompleteDropdown(
+            child: TypeAheadSearch(
               supplierId: context.read<PurchaseOrderCubit>().state.purchaseOrder.supplier?.id,
               branchId: context.read<PurchaseOrderCubit>().state.purchaseOrder.branch?.id,
               onSelected: (value) {
@@ -113,7 +113,7 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
                             children: [
                               SizedBox(
                                 width: MediaQuery.sizeOf(context).width * 0.3,
-                                child: AutocompleteDropdown(
+                                child: TypeAheadSearch(
                                   supplierId: context.read<PurchaseOrderCubit>().state.purchaseOrder.supplier?.id,
                                   branchId: context.read<PurchaseOrderCubit>().state.purchaseOrder.branch?.id,
                                   onSelected: (value) {
