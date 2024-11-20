@@ -23,29 +23,22 @@ class _SalesPerShiftPageState extends State<SalesPerShiftPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        PageHeader(
+        const PageHeader(
           title: 'Sales per Shift',
           subtitle:
               'View open and closing details, transactions, and funds generated within a shift to help analyze sales performance during different timeframes of the day.',
-          actions: [
-            UIButton.filled(
-              'New Purchase Order',
-              icon: Assets.icons.add.setSize(12.0),
-              onClick: () => AppRouter.router.goNamed(SideMenuTreeItem.NEW_PURCHASE_ORDER.name),
-            ),
-          ],
         ),
         const UIVerticalSpace(20),
         BlocSelector<SalesPerShiftListFilterCubit, SalesPerShiftListFilterState, SalesPerShiftListFilterState>(
           selector: (state) => state,
           builder: (context, filters) {
             return DataGridToolbar(
-              reportType: ReportType.SALES_PER_SHIFT,
-              reportFilters: {
-                'branch': filters.branchId,
-                'startDate': filters.startDate,
-                'endDate': filters.endDate,
-              },
+              // reportType: ReportType.SALES_PER_SHIFT,
+              // reportFilters: {
+              //   'branch': filters.branchId,
+              //   'startDate': filters.startDate,
+              //   'endDate': filters.endDate,
+              // },
               filters: [
                 DatePickerPopup(
                   onRemoveSelected: () {

@@ -16,11 +16,11 @@ class SalesPerShiftDetailsDto extends Equatable {
   final Register? register;
   final String? openedBy;
   final String? closedBy;
-  @JsonKey(name: 'totalSales')
+  @JsonKey(name: 'totalSalesCount')
   final int? totalSaleTransactions;
-  @JsonKey(name: 'totalReturns')
+  @JsonKey(name: 'totalReturnsCount')
   final int? totalReturnTransactions;
-  @JsonKey(name: 'totalDiscounted')
+  @JsonKey(name: 'totalDiscountedTransactionsCount')
   final int? totalDiscountedTransactions;
   final double? totalSalesAmount;
   final double? totalReturnsAmount;
