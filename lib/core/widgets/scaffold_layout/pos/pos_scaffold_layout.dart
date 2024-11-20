@@ -278,7 +278,7 @@ void _showClosingDialog(
                     const Divider(color: UIColors.borderMuted),
                     const UIVerticalSpace(24),
                     Text(
-                      'Open since ${DateFormat('EEEE, d MMMM yyyy h:mm a').format(datetime.toLocal())}',
+                      'Open since ${DateFormat('EEEE, d MMMM yyyy h:mm a').format(datetime)}',
                       style: UIStyleText.bodyRegular.copyWith(fontWeight: FontWeight.w400, fontSize: 15),
                     ),
                     const UIVerticalSpace(30),

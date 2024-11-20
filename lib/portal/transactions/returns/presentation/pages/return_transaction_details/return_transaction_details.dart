@@ -55,7 +55,7 @@ class ReturnTransactionDetails extends StatelessWidget {
                         LabelValue.text(
                           label: 'Date Processed',
                           value: transaction.createdAt != null
-                              ? DateFormat('MM/dd/yyyy HH:mm').format(transaction.createdAt!.toLocal())
+                              ? DateFormat('MM/dd/yyyy HH:mm').format(transaction.createdAt!)
                               : Strings.empty,
                         ),
                         LabelValue.returnStatus(

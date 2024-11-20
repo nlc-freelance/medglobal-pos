@@ -29,8 +29,7 @@ class ProductHistoryItem {
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(
-              columnName: 'datetime',
-              value: dateTime != null ? DateFormat('MM/dd/yyyy HH:mm').format(dateTime!.toLocal()) : '-'),
+              columnName: 'datetime', value: dateTime != null ? DateFormat('MM/dd/yyyy HH:mm').format(dateTime!) : '-'),
           DataGridCell<String>(columnName: 'employee_name', value: employeeName),
           DataGridCell<ProductHistoryAction>(columnName: 'action', value: action),
           DataGridCell<int>(columnName: 'qty_before', value: qtyBefore),

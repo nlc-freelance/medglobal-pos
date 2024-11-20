@@ -127,7 +127,7 @@ class TransactionDetailsHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   UIText.heading6('Date'),
-                  UIText.bodyRegular(DateFormat('MM/dd/yyyy h:mm a').format(transaction.createdAt!.toLocal())),
+                  UIText.bodyRegular(DateFormat('MM/dd/yyyy h:mm a').format(transaction.createdAt!)),
                 ],
               ),
               const Spacer(),
