@@ -14,18 +14,20 @@ class SupplierDropdown extends StatelessWidget {
     this.hint,
     this.label,
     this.required = false,
+    this.isSelectInputType = false,
     this.isMultiSelect = false,
     this.showSelectedItems = false,
     this.onSelectItem,
     this.selectedItem,
     this.selectedItems,
     this.onDeleteItem,
+    this.onRemoveSelectedItem,
   });
 
   final SupplierDropdownType type;
   final String? label;
   final String? hint;
-
+  final bool isSelectInputType;
   final bool required;
   final bool isMultiSelect;
   final bool showSelectedItems;
@@ -33,17 +35,22 @@ class SupplierDropdown extends StatelessWidget {
   final Supplier? selectedItem;
   final List<Supplier>? selectedItems;
   final Function(int value)? onDeleteItem;
+  final VoidCallback? onRemoveSelectedItem;
 
   factory SupplierDropdown.select({
     required Function(Supplier value)? onSelectItem,
+    VoidCallback? onRemoveSelectedItem,
     Supplier? selectedItem,
+    bool isSelectInputType = false,
     Key? key,
   }) =>
       SupplierDropdown._(
         key: key,
         type: SupplierDropdownType.select,
+        isSelectInputType: isSelectInputType,
         onSelectItem: onSelectItem,
         selectedItem: selectedItem,
+        onRemoveSelectedItem: onRemoveSelectedItem,
       );
 
   factory SupplierDropdown.input_top({
@@ -113,9 +120,11 @@ class SupplierDropdown extends StatelessWidget {
       case SupplierDropdownType.select:
         return _SupplierDropdownOverlay(
           isSelectType: true,
+          isSelectInputType: isSelectInputType,
           hint: hint,
           onSelectItem: onSelectItem,
           selectedItem: selectedItem,
+          onRemoveSelectedItem: onRemoveSelectedItem,
         );
       case SupplierDropdownType.input_top:
         return Column(
@@ -192,20 +201,24 @@ class _SupplierDropdownOverlay extends StatefulWidget {
   const _SupplierDropdownOverlay({
     this.hint,
     this.isSelectType = false,
+    this.isSelectInputType = false,
     this.isMultiSelect = false,
     this.onSelectItem,
     this.selectedItem,
     this.selectedItems,
     this.onDeleteItem,
+    this.onRemoveSelectedItem,
   });
 
   final bool isSelectType;
+  final bool isSelectInputType;
   final bool isMultiSelect;
   final String? hint;
   final Function(Supplier value)? onSelectItem;
   final List<Supplier>? selectedItems;
   final Supplier? selectedItem;
   final Function(int value)? onDeleteItem;
+  final VoidCallback? onRemoveSelectedItem;
 
   @override
   State<_SupplierDropdownOverlay> createState() => _SupplierDropdownOverlayState();
@@ -251,25 +264,61 @@ class _SupplierDropdownOverlayState extends State<_SupplierDropdownOverlay> {
         onTap: () => setState(() => _isVisible = true),
         child: widget.isSelectType
             ? HoverBuilder(
-                builder: (isHover) => Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6.5, horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: UIColors.background,
-                    border: Border.all(color: isHover ? UIColors.buttonPrimaryHover : UIColors.borderRegular),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      UIText.labelMedium(
-                        _selectedItem != null ? _selectedItem!.name : 'All Suppliers',
-                        color: isHover ? UIColors.primary : UIColors.textRegular,
+                builder: (isHover) {
+                  final highlight = _selectedItem != null && _selectedItem?.id != -1;
+                  return Container(
+                    constraints: const BoxConstraints(minWidth: 180),
+                    padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: highlight && widget.isSelectInputType == false
+                          ? UIColors.secondary
+                          : isHover
+                              ? UIColors.whiteBg
+                              : UIColors.background,
+                      border: Border.all(
+                        color: highlight && widget.isSelectInputType == false
+                            ? UIColors.primary.withOpacity(0.2)
+                            : UIColors.borderRegular,
                       ),
-                      const UIHorizontalSpace(30),
-                      Assets.icons.arrowDown.setColorOnHover(isHover)
-                    ],
-                  ),
-                ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        widget.isSelectInputType == true
+
+                            /// Select type for input
+                            ? Text(
+                                _selectedItem != null ? _selectedItem!.name : 'Select supplier',
+                                style: UIStyleText.hint.copyWith(
+                                  color: _selectedItem != null ? UIColors.textRegular : UIColors.textMuted,
+                                  fontWeight: _selectedItem != null ? FontWeight.w500 : FontWeight.w400,
+                                ),
+                              )
+
+                            /// Select type for selecting e.g., filter
+                            : UIText.labelMedium(
+                                _selectedItem != null ? _selectedItem!.name : 'All Suppliers',
+                                color: _selectedItem != null ? UIColors.primary : UIColors.textRegular,
+                              ),
+                        const UIHorizontalSpace(10),
+                        _selectedItem != null && widget.onRemoveSelectedItem != null
+                            ? SizedBox(
+                                height: 18,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(50),
+                                  onTap: () {
+                                    setState(() => _selectedItem = null);
+                                    widget.onRemoveSelectedItem!();
+                                  },
+                                  child: Assets.icons.close.svg(height: 22),
+                                ),
+                              )
+                            : Assets.icons.arrowDown.svg(height: 10)
+                      ],
+                    ),
+                  );
+                },
               )
             : TextFormField(
                 readOnly: true,

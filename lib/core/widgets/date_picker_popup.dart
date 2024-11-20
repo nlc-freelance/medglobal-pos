@@ -8,15 +8,19 @@ class DatePickerPopup extends StatefulWidget {
   const DatePickerPopup({
     super.key,
     this.selectedDate,
+    this.selectedDateRange,
     this.isInput = false,
     required this.selectionMode,
     this.onSelect,
     this.onSelectRange,
     this.onRemoveSelected,
+    this.showEndIcon = true,
   });
 
   final bool isInput;
+  final bool showEndIcon;
   final DateTime? selectedDate;
+  final List<DateTime?>? selectedDateRange;
   final void Function(DateTime)? onSelect;
   final void Function(List<DateTime?>)? onSelectRange;
   final DateRangePickerSelectionMode selectionMode;
@@ -34,6 +38,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
   void initState() {
     super.initState();
     if (widget.selectedDate != null) _selectedDate = widget.selectedDate;
+    if (widget.selectedDateRange != null) _selectedDateRange = widget.selectedDateRange!;
   }
 
   bool get highlight => !widget.isInput && (_selectedDate != null || _selectedDateRange.isNotEmpty);
@@ -46,6 +51,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
         context: context,
         barrierDismissible: false,
         builder: (context) => Dialog(
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
           backgroundColor: UIColors.background,
           child: Container(
             padding: const EdgeInsets.all(16),
@@ -61,6 +67,10 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
                   color: UIColors.textRegular,
                 ),
               ),
+              initialSelectedDate: _selectedDate,
+              initialSelectedRange: _selectedDateRange.isNotEmpty
+                  ? PickerDateRange(_selectedDateRange.first, _selectedDateRange.last)
+                  : null,
               view: DateRangePickerView.month,
               selectionMode: widget.selectionMode,
               enableMultiView: widget.selectionMode == DateRangePickerSelectionMode.range,
@@ -131,21 +141,22 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
                       ),
                     ),
               const UIHorizontalSpace(10),
-              _selectedDate != null || _selectedDateRange.isNotEmpty
-                  ? SizedBox(
-                      height: 18,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(50),
-                        onTap: () {
-                          setState(() => widget.selectionMode == DateRangePickerSelectionMode.single
-                              ? _selectedDate = null
-                              : _selectedDateRange = []);
-                          if (widget.onRemoveSelected != null) widget.onRemoveSelected!();
-                        },
-                        child: Assets.icons.close.svg(height: 22),
-                      ),
-                    )
-                  : Assets.icons.arrowDown.svg(height: 10),
+              if (widget.showEndIcon)
+                (_selectedDate != null || _selectedDateRange.isNotEmpty) && widget.onRemoveSelected != null
+                    ? SizedBox(
+                        height: 18,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () {
+                            setState(() => widget.selectionMode == DateRangePickerSelectionMode.single
+                                ? _selectedDate = null
+                                : _selectedDateRange = []);
+                            widget.onRemoveSelected!();
+                          },
+                          child: Assets.icons.close.svg(height: 22),
+                        ),
+                      )
+                    : Assets.icons.arrowDown.svg(height: 10),
             ],
           ),
         ),
