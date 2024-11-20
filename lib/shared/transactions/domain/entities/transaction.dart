@@ -132,6 +132,7 @@ class Transaction extends Equatable {
   DataGridRow toShiftTransactionRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'receipt_id', value: (receiptId ?? Strings.empty).toString()),
           DataGridCell<String>(
             columnName: 'date',
             value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
