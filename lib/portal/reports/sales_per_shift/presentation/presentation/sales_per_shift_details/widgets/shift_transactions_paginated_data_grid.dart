@@ -5,6 +5,7 @@ import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transaction_page_size_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transactions_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -38,7 +39,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
       listener: (context, state) {
         if (state is ShiftTransactionsLoaded) {
           transactions = state.data.transactions ?? [];
-          _shiftTransactions = ShiftTransactionsDataSource(transactions);
+          _shiftTransactions = ShiftTransactionsDataSource(transactions, context);
         }
       },
       builder: (context, state) {
@@ -210,7 +211,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
         }
         return DataGridLoading(
           columns: DataGridUtil.getColumns(DataGridColumn.SHIFT_TRANSACTIONS),
-          source: _shiftTransactions = ShiftTransactionsDataSource([]),
+          source: _shiftTransactions = ShiftTransactionsDataSource([], context),
         );
       },
     );
@@ -218,11 +219,13 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
 }
 
 class ShiftTransactionsDataSource extends DataGridSource {
-  ShiftTransactionsDataSource(List<Transaction> transactions) {
+  ShiftTransactionsDataSource(List<Transaction> transactions, BuildContext context) {
     _transactions = transactions;
+    _context = context;
     buildDataGridRows();
   }
 
+  late BuildContext _context;
   List<Transaction> _transactions = [];
 
   List<DataGridRow> dataGridRows = [];
@@ -242,7 +245,7 @@ class ShiftTransactionsDataSource extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: _buildCell(cell.columnName, cell, row.getCells().first.value, row.getCells()[4].value),
+          child: _buildCell(cell.columnName, cell, row.getCells().first.value, row.getCells()[3].value),
         );
       }).toList(),
     );
@@ -250,12 +253,16 @@ class ShiftTransactionsDataSource extends DataGridSource {
 
   Widget _buildCell(String column, DataGridCell cell, int id, String type) {
     return switch (column) {
-      'date' => HoverBuilder(
+      'receipt_id' => HoverBuilder(
           builder: (isHover) => InkWell(
-            onTap: () => AppRouter.router.goNamed(
-              type == TransactionType.SALE.label ? 'Sale Details' : 'Return Details',
-              pathParameters: {'id': id.toString()},
-            ),
+            onTap: () {
+              _context.read<TransactionCubit>().getTransactionById(id);
+
+              AppRouter.router.goNamed(
+                type.toLowerCase() == 'sale' ? 'Sale Details' : 'Return Details',
+                pathParameters: {'id': id.toString()},
+              );
+            },
             hoverColor: UIColors.transparent,
             child: UIText.dataGridText(
               cell.value.toString(),

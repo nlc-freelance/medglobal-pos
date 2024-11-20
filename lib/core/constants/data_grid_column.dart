@@ -271,6 +271,7 @@ class DataGridColumn {
 
   static List<ColumnData> SHIFT_TRANSACTIONS = [
     ColumnData('id', 'ID'),
+    ColumnData('receipt_id', 'Receipt ID', minWidth: 220),
     ColumnData('date', 'Date', minWidth: 180),
     ColumnData('employee', 'Employee', minWidth: 180),
     ColumnData('type', 'Type'),
