@@ -99,7 +99,7 @@ class Transaction extends Equatable {
           DataGridCell<String>(columnName: 'receipt_id', value: (receiptId ?? Strings.empty).toString()),
           DataGridCell<String>(
             columnName: 'date',
-            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
+            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!) : Strings.empty,
           ),
           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'register_id', value: (register?.id ?? Strings.empty).toString()),
@@ -118,7 +118,7 @@ class Transaction extends Equatable {
           DataGridCell<String>(columnName: 'receipt_id', value: (receiptId ?? Strings.empty).toString()),
           DataGridCell<String>(
             columnName: 'date',
-            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
+            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!) : Strings.empty,
           ),
           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
@@ -135,7 +135,7 @@ class Transaction extends Equatable {
           DataGridCell<String>(columnName: 'receipt_id', value: (receiptId ?? Strings.empty).toString()),
           DataGridCell<String>(
             columnName: 'date',
-            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
+            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!) : Strings.empty,
           ),
           DataGridCell<String>(columnName: 'employee', value: branch?.name ?? Strings.empty),
           DataGridCell<String>(columnName: 'type', value: type?.label ?? Strings.empty),

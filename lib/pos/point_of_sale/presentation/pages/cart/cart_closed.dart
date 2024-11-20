@@ -142,7 +142,7 @@ void _showOpeningClosingDialog(
                     const UIVerticalSpace(24),
                     if (datetime != null) ...[
                       Text(
-                        'Closed since ${DateFormat('EEEE, d MMMM yyyy h:mm a').format(datetime.toLocal())}',
+                        'Closed since ${DateFormat('EEEE, d MMMM yyyy h:mm a').format(datetime)}',
                         style: UIStyleText.bodyRegular.copyWith(fontWeight: FontWeight.w400, fontSize: 15),
                       ),
                       const UIVerticalSpace(30),
