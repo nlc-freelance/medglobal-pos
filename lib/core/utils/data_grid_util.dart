@@ -25,14 +25,7 @@ class DataGridUtil {
             label: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               alignment: Alignment.centerLeft,
-              child: Text(
-                column.label,
-                style: UIStyleText.inter.copyWith(
-                  color: UIColors.textMuted,
-                  fontSize: 10.85,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              child: UIText.dataGridHeader(column.label),
             ),
           ))
       .toList();

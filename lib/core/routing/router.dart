@@ -10,6 +10,8 @@ import 'package:medglobal_admin_portal/portal/product_management/presentation/pa
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/products_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/product_history_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/sales_per_category_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_details/sales_per_shift_details_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_list/sales_per_shift_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/purchase_order_details_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_orders_page.dart';
@@ -227,10 +229,15 @@ abstract class AppRouter {
                       GoRoute(
                         name: SideMenuTreeItem.SALES_PER_SHIFT.name,
                         path: SideMenuTreeItem.SALES_PER_SHIFT.path,
-                        builder: (context, state) => const Text(
-                          'Sales Per Day',
-                          style: TextStyle(fontSize: 24, color: Colors.black),
-                        ),
+                        pageBuilder: (context, state) => const NoTransitionPage(child: SalesPerShiftPage()),
+                        routes: [
+                          GoRoute(
+                            name: SideMenuTreeItem.SALES_PER_SHIFT_DETAILS.name,
+                            path: SideMenuTreeItem.SALES_PER_SHIFT_DETAILS.path,
+                            pageBuilder: (context, state) =>
+                                NoTransitionPage(child: SalesPerShiftDetailsPage(id: state.pathParameters['id']!)),
+                          ),
+                        ],
                       ),
                     ],
                   ),

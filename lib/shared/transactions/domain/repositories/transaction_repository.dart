@@ -9,6 +9,7 @@ abstract class TransactionRepository {
     required int page,
     required int size,
     String? search,
+    int? shift,
     int? branch,
     bool? isAllBranches,
     String? startDate,

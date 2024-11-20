@@ -137,7 +137,7 @@ class _SalesPerCategoryDataGridState extends State<SalesPerCategoryDataGrid> {
           color: UIColors.whiteBg.withOpacity(0.4),
           position: GridTableSummaryRowPosition.bottom,
           showSummaryInRow: false,
-          title: 'TOTAL',
+          title: 'Total',
           columns: [
             const GridSummaryColumn(
               name: '',
@@ -239,7 +239,7 @@ class SalesPerCategoryDataSource extends DataGridSource {
                 ? '₱${summaryValue.toPesoString()}'
                 : summaryValue,
         textAlign: summaryColumn?.columnName == 'product_category' ? TextAlign.end : TextAlign.start,
-        style: UIStyleText.labelSemiBold.copyWith(fontWeight: FontWeight.w700),
+        style: UIStyleText.labelSemiBold,
       ),
     );
   }

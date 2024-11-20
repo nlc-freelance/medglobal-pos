@@ -71,7 +71,34 @@ class SalesPerCategoryPage extends StatelessWidget {
             const GroupBy(),
             const UIHorizontalSpace(8),
             const Spacer(),
-            const DownloadReportButton(ReportType.SALES_PER_CATEGORY),
+            BlocSelector<SalesCategoryPeriodCubit, SalesCategoryPeriodState, SalesCategoryPeriodState>(
+              selector: (state) => state,
+              builder: (context, period) {
+                return BlocSelector<SalesCategoryGroupByCubit, SalesCategoryGroupByState, SalesCategoryGroupByState>(
+                  selector: (state) => state,
+                  builder: (context, groupBy) {
+                    return BlocSelector<SalesCategoryFilterCubit, SalesCategoryFilterState, SalesCategoryFilterState>(
+                      selector: (state) => state,
+                      builder: (context, filters) {
+                        return DownloadReportButton(
+                          ReportType.SALES_PER_CATEGORY,
+                          filters: SalesPerCategoryPayload(
+                            startDate: period.startDate,
+                            endDate: period.endDate,
+                            branch: filters.get(FilterType.BRANCH),
+                            supplier: filters.get(FilterType.SUPPLIER),
+                            productCategory: filters.get(FilterType.PRODUCT_CATEGORY),
+                            productName: filters.get(FilterType.PRODUCT_NAME),
+                            filterOperator: filters.operator?.label,
+                            groupedBy: groupBy.isGrouped ? groupBy.groupedBy : null,
+                          ).toJson(),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
           ],
         ),
         const UIVerticalSpace(20),
