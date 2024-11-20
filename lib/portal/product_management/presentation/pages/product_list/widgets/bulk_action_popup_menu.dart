@@ -127,9 +127,9 @@ class _BulkActionPopupMenuState extends State<BulkActionPopupMenu> {
           builder: (context, state) => Portal(
             child: Dialog(
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+              backgroundColor: UIColors.background,
               child: Container(
                 width: MediaQuery.sizeOf(context).width * 0.35,
-                color: UIColors.background,
                 padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

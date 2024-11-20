@@ -48,14 +48,22 @@ class _EditItemState extends State<EditItem> {
             Row(
               children: [
                 Expanded(
-                  child: UITextField.topLabel(
-                    height: 38,
-                    label: 'Quantity',
-                    controller: _qtyController,
-                    onChanged: (value) => context.read<OrderCubit>().setQtyPerItem(
-                          id: item.id!,
-                          qty: int.tryParse(_qtyController.text),
-                        ),
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      inputDecorationTheme: UIStyleInput.input.copyWith(
+                        isDense: false,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 8.5, horizontal: 10.0),
+                      ),
+                    ),
+                    child: UITextField.topLabel(
+                      height: 33,
+                      label: 'Quantity',
+                      controller: _qtyController,
+                      onChanged: (value) => context.read<OrderCubit>().setQtyPerItem(
+                            id: item.id!,
+                            qty: int.tryParse(_qtyController.text),
+                          ),
+                    ),
                   ),
                 ),
                 const UIHorizontalSpace(10),

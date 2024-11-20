@@ -128,6 +128,23 @@ class Transaction extends Equatable {
         ],
       );
 
+  /// Shift Transaction List DataGrid
+  DataGridRow toShiftTransactionRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(
+            columnName: 'date',
+            value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!.toLocal()) : Strings.empty,
+          ),
+          DataGridCell<String>(columnName: 'employee', value: branch?.name ?? Strings.empty),
+          DataGridCell<String>(columnName: 'type', value: type?.label ?? Strings.empty),
+          DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          DataGridCell<double>(columnName: 'total_discount', value: totalDiscountInPeso ?? 0),
+          DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
+        ],
+      );
+
   /// Issue Refund Payload
   JSON toRefundPayload() {
     return {

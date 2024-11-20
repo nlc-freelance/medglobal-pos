@@ -6,18 +6,18 @@ import 'package:medglobal_admin_portal/portal/stock_management/variants/product_
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class AutocompleteDropdown extends StatefulWidget {
-  const AutocompleteDropdown({super.key, required this.onSelected, this.supplierId, this.branchId});
+class TypeAheadSearch extends StatefulWidget {
+  const TypeAheadSearch({super.key, required this.onSelected, this.supplierId, this.branchId});
 
   final void Function(ProductVariantDto value) onSelected;
   final int? supplierId;
   final int? branchId;
 
   @override
-  State<AutocompleteDropdown> createState() => _AutocompleteDropdownState();
+  State<TypeAheadSearch> createState() => _TypeAheadSearchState();
 }
 
-class _AutocompleteDropdownState extends State<AutocompleteDropdown> {
+class _TypeAheadSearchState extends State<TypeAheadSearch> {
   final TextEditingController _controller = TextEditingController();
 
   @override

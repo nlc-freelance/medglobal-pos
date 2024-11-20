@@ -32,12 +32,9 @@ enum SideMenuTree {
     'Transactions',
     ['Sales', 'Sale Details', 'Returns', 'Return Details'],
   ),
-  // RETURNS('Returns Management', [
-  //   'Returns Management',
-  // ]),
   REPORTS(
     'Reports',
-    ['Product History', 'Sales Report', 'Sales Per Category', 'Sales Per Branch', 'Sales Per Day'],
+    ['Product History', 'Sales Report', 'Sales Per Category', 'Sales Per Shift', 'Sales Per Shift Details'],
   );
 
   final String title;
@@ -83,9 +80,9 @@ enum SideMenuTreeItem {
   REPORTS('Reports', '/reports', '/reports'),
   PRODUCT_HISTORY('Product History', 'product-history', '/reports/product-history'),
   SALES_REPORT('Sales Report', 'sales', '/reports/sales'),
-  SALES_PER_CATEGORY('Sales Per Category', 'sales-per-category', '/reports/sales/sales-per-category'),
-  SALES_PER_BRANCH('Sales Per Branch', 'sales-per-branch', '/reports/sales/sales-per-branch'),
-  SALES_PER_DAY('Sales Per Day', 'sales-per-day', '/reports/sales/sales-per-day');
+  SALES_PER_CATEGORY('Sales Per Category', 'sales-per-category', '/reports/sales-per-category'),
+  SALES_PER_SHIFT('Sales Per Shift', 'sales-per-shift', '/reports/sales-per-shift'),
+  SALES_PER_SHIFT_DETAILS('Sales Per Shift Details', 'id=:id', '/reports/sales-per-shift/:id');
 
   final String name;
   final String path;
@@ -204,7 +201,9 @@ enum ReportType {
   STOCK_TRANSFER_CSV('STOCK_TRANSFER_CSV'),
   STOCK_TAKE_CSV('STOCK_TAKE_CSV'),
   SALES_CSV('SALES_CSV'),
-  PRODUCT_HISTORY_CSV('PRODUCT_HISTORY_CSV');
+  PRODUCT_HISTORY_CSV('PRODUCT_HISTORY_CSV'),
+  SALES_PER_CATEGORY('SALES_PER_CATEGORY'),
+  SALES_PER_SHIFT('SALES_PER_SHIFT');
 
   final String value;
   const ReportType(this.value);
@@ -216,4 +215,49 @@ enum ReportStatus {
 
   final String label;
   const ReportStatus(this.label);
+}
+
+enum SalesPerCategoryGroupBy {
+  BRANCH('Branch'),
+  TIME_VARIANCE('Time Variance');
+
+  final String label;
+  const SalesPerCategoryGroupBy(this.label);
+}
+
+enum TimeVariance {
+  DAILY('Daily'),
+  WEEKLY('Weekly'),
+  MONTHLY('Monthly'),
+  HOUR_OF_DAY('Hour of Day'),
+  DAY_OF_WEEK('Day of Week');
+
+  final String label;
+  const TimeVariance(this.label);
+}
+
+enum FilterType {
+  BRANCH('Branch'),
+  SUPPLIER('Supplier'),
+  PRODUCT_CATEGORY('Product Category'),
+  PRODUCT_NAME('Product Name');
+
+  final String label;
+  const FilterType(this.label);
+}
+
+enum FilterRule {
+  IS('is'),
+  NOT('is not');
+
+  final String label;
+  const FilterRule(this.label);
+}
+
+enum LogicalOperator {
+  AND('and'),
+  OR('or');
+
+  final String label;
+  const LogicalOperator(this.label);
 }
