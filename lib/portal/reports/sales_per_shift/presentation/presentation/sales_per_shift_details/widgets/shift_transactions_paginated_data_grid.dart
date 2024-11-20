@@ -245,7 +245,7 @@ class ShiftTransactionsDataSource extends DataGridSource {
         return Container(
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: _buildCell(cell.columnName, cell, row.getCells().first.value, row.getCells()[3].value),
+          child: _buildCell(cell.columnName, cell, row.getCells().first.value, row.getCells()[4].value),
         );
       }).toList(),
     );
