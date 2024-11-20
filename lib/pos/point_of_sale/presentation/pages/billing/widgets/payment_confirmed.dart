@@ -82,7 +82,7 @@ class PaymentConfirmed extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   UIText.labelMedium('Transaction Date', color: UIColors.textMuted),
-                  UIText.labelSemiBold(DateFormat('MM-dd-yyyy HH:mm').format(transaction.createdAt!.toLocal())),
+                  UIText.labelSemiBold(DateFormat('MM-dd-yyyy HH:mm').format(transaction.createdAt!)),
                 ],
               ),
             ],

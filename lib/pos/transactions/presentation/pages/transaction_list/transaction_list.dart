@@ -48,8 +48,7 @@ class _TransactionListState extends State<TransactionList> {
     Map<DateTime, List<Transaction>> groupedItems = {};
 
     for (var item in transactions) {
-      DateTime date =
-          DateTime(item.createdAt!.toLocal().year, item.createdAt!.toLocal().month, item.createdAt!.toLocal().day);
+      DateTime date = DateTime(item.createdAt!.year, item.createdAt!.month, item.createdAt!.day);
       if (groupedItems[date] == null) {
         groupedItems[date] = [];
       }
@@ -204,7 +203,7 @@ class _TransactionListState extends State<TransactionList> {
                                                   child: Row(
                                                     children: [
                                                       Text(
-                                                        DateFormat('h:mm a').format(item.createdAt!.toLocal()),
+                                                        DateFormat('h:mm a').format(item.createdAt!),
                                                         style: UIStyleText.hint.copyWith(color: UIColors.textMuted),
                                                       ),
                                                       const Spacer(),

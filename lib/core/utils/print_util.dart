@@ -315,7 +315,7 @@ class PrintUtil {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('PO Date', style: theme.tableHeader),
-                          Text(DateFormat.yMd().format(order.createdAt!.toLocal()), style: theme.header4),
+                          Text(DateFormat.yMd().format(order.createdAt!), style: theme.header4),
                         ],
                       ),
                       Column(
@@ -324,7 +324,7 @@ class PrintUtil {
                           Text('Estimated Date of Arrival', style: theme.tableHeader),
                           Text(
                             order.estimatedDateOfArrival != null
-                                ? DateFormat.yMd().format(order.estimatedDateOfArrival!.toLocal())
+                                ? DateFormat.yMd().format(order.estimatedDateOfArrival!)
                                 : Strings.noValue,
                             style: theme.header4,
                           ),
