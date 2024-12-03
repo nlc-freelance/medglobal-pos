@@ -14,6 +14,7 @@ class PurchaseOrderItem extends Equatable {
   final int? qtyToOrder;
   final int? qtyReceived;
   final double? supplierPrice;
+  final double? sellingPrice;
   final double? total;
 
   const PurchaseOrderItem({
@@ -25,11 +26,13 @@ class PurchaseOrderItem extends Equatable {
     this.qtyToOrder,
     this.qtyReceived,
     this.supplierPrice,
+    this.sellingPrice,
     this.total,
   });
 
   @override
-  List<Object?> get props => [id, variantId, name, sku, qtyOnHand, qtyToOrder, supplierPrice, qtyReceived, total];
+  List<Object?> get props =>
+      [id, variantId, name, sku, qtyOnHand, qtyToOrder, supplierPrice, sellingPrice, qtyReceived, total];
 
   factory PurchaseOrderItem.fromJson(Map<String, dynamic> json) => _$PurchaseOrderItemFromJson(json);
 
@@ -38,6 +41,7 @@ class PurchaseOrderItem extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'variant_name', value: name),
           DataGridCell<String>(columnName: 'sku', value: sku),
+          DataGridCell<double>(columnName: 'selling_price', value: sellingPrice ?? 0),
           DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand),
           DataGridCell<int>(columnName: 'qty_to_order', value: qtyToOrder),
           DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice),

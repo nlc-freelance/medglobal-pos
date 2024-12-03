@@ -39,6 +39,14 @@ class _GroupByState extends State<GroupBy> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (context.read<SalesCategoryGroupByCubit>().state.isGrouped) {
+      context.read<SalesCategoryGroupByCubit>().reset();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return UIPopupMenuOverlay(
       menu: InkWell(
