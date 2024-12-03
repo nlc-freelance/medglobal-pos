@@ -26,6 +26,8 @@ class _SalesCategoryFilterState extends State<AdvancedFilters> {
     super.initState();
     if (context.read<SalesCategoryFilterCubit>().state.filters == null) {
       context.read<SalesCategoryFilterCubit>().addFilter();
+    } else {
+      context.read<SalesCategoryFilterCubit>().clearAll();
     }
   }
 

@@ -33,12 +33,12 @@ class _SalesPerShiftPageState extends State<SalesPerShiftPage> {
           selector: (state) => state,
           builder: (context, filters) {
             return DataGridToolbar(
-              // reportType: ReportType.SALES_PER_SHIFT,
-              // reportFilters: {
-              //   'branch': filters.branchId,
-              //   'startDate': filters.startDate,
-              //   'endDate': filters.endDate,
-              // },
+              reportType: ReportType.SHIFT_REPORT_CSV,
+              reportFilters: {
+                'branch': filters.branchId,
+                'startDate': filters.startDate,
+                'endDate': filters.endDate,
+              },
               filters: [
                 DatePickerPopup(
                   onRemoveSelected: () {

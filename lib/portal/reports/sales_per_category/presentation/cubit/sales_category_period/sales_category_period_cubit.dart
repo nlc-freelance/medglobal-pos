@@ -9,4 +9,6 @@ class SalesCategoryPeriodCubit extends Cubit<SalesCategoryPeriodState> {
   void setStartDate(String value) => emit(state.copyWith(startDate: value));
 
   void setEndDate(String value) => emit(state.copyWith(endDate: value));
+
+  void reset() => emit(const SalesCategoryPeriodState());
 }
