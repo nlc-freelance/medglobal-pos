@@ -25,7 +25,7 @@ class SalesCategoryFilterState extends Equatable {
   /// Get all filters by type
   List<Filter>? get(FilterType type) {
     if (filters?.isNotEmpty == true) {
-      return filters!.where((filter) => filter.type == type).toSet().toList();
+      return filters!.where((filter) => filter.type == type && filter.value != null).toSet().toList();
     } else {
       return null;
     }

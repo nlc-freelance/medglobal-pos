@@ -14,6 +14,7 @@ class PurchaseOrderItemDto extends Equatable {
   @JsonKey(name: 'actualQuantity')
   final int? qtyReceived;
   final double? supplierPrice;
+  final double? sellingPrice;
 
   const PurchaseOrderItemDto({
     this.id,
@@ -21,10 +22,11 @@ class PurchaseOrderItemDto extends Equatable {
     this.qtyToOrder,
     this.qtyReceived,
     this.supplierPrice,
+    this.sellingPrice,
   });
 
   @override
-  List<Object?> get props => [id, variant, qtyToOrder, qtyReceived, supplierPrice];
+  List<Object?> get props => [id, variant, qtyToOrder, qtyReceived, supplierPrice, sellingPrice];
 
   factory PurchaseOrderItemDto.fromJson(Map<String, dynamic> json) => _$PurchaseOrderItemDtoFromJson(json);
 
@@ -37,6 +39,7 @@ class PurchaseOrderItemDto extends Equatable {
         qtyToOrder: qtyToOrder,
         qtyReceived: qtyReceived,
         supplierPrice: supplierPrice,
+        sellingPrice: sellingPrice ?? 0,
         total: (qtyToOrder ?? 0) * (supplierPrice ?? 0),
       );
 }
