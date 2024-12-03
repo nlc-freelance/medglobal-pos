@@ -41,7 +41,7 @@ class PurchaseOrderItem extends Equatable {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'variant_name', value: name),
           DataGridCell<String>(columnName: 'sku', value: sku),
-          DataGridCell<double>(columnName: 'selling_price', value: sellingPrice ?? 0),
+          DataGridCell<double>(columnName: 'selling_price', value: sellingPrice),
           DataGridCell<int>(columnName: 'qty_on_hand', value: qtyOnHand),
           DataGridCell<int>(columnName: 'qty_to_order', value: qtyToOrder),
           DataGridCell<double>(columnName: 'supplier_price', value: supplierPrice),

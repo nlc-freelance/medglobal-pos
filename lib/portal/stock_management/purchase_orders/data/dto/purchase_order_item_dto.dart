@@ -14,6 +14,7 @@ class PurchaseOrderItemDto extends Equatable {
   @JsonKey(name: 'actualQuantity')
   final int? qtyReceived;
   final double? supplierPrice;
+  @JsonKey(name: 'price')
   final double? sellingPrice;
 
   const PurchaseOrderItemDto({

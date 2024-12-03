@@ -36,6 +36,7 @@ class ReportsApiImpl implements ReportsApi {
           if (type == ReportType.PRODUCT_HISTORY_CSV) ...?filters,
           if (type == ReportType.SALES_PER_CATEGORY) ...?filters,
           if (type == ReportType.SHIFT_REPORT_CSV) ...?filters,
+          if (type == ReportType.SUPPLY_NEEDS_CSV) ...?filters,
         },
         converter: ReportDto.fromJson,
       );
