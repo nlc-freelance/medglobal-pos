@@ -57,7 +57,8 @@ class DataGridColumn {
   static List<ColumnData> PO_ITEMS = [
     ColumnData('id', 'ID'),
     ColumnData('variant_name', 'Variant Name', minWidth: 300),
-    ColumnData('sku', 'SKU'),
+    ColumnData('sku', 'SKU', minWidth: 200),
+    ColumnData('selling_price', 'Selling Price (PHP)'),
     ColumnData('qty_on_hand', 'Qty on Hand'),
     ColumnData('qty_to_order', 'Qty to Order'),
     ColumnData('supplier_price', 'Supplier Price (PHP)'),

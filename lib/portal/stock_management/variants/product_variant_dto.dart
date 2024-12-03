@@ -54,6 +54,7 @@ class ProductVariantDto extends Equatable {
         variantId: id,
         name: displayName,
         sku: sku,
+        sellingPrice: price,
         supplierPrice: cost,
         qtyOnHand: qtyOnHand,
       );
