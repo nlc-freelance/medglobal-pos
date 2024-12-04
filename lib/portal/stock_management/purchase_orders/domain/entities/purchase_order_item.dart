@@ -73,6 +73,7 @@ class PurchaseOrderItem extends Equatable {
     int? qtyOnHand,
     int? qtyToOrder,
     int? qtyReceived,
+    double? sellingPrice,
     double? supplierPrice,
     double? total,
     bool? nullQtyToOrder = false,
@@ -84,6 +85,7 @@ class PurchaseOrderItem extends Equatable {
       variantId: variantId ?? this.variantId,
       name: name ?? this.name,
       sku: sku ?? this.sku,
+      sellingPrice: sellingPrice ?? this.sellingPrice,
       qtyOnHand: qtyOnHand ?? this.qtyOnHand,
       qtyToOrder: nullQtyToOrder == true ? null : qtyToOrder ?? this.qtyToOrder,
       qtyReceived: nullQtyReceived == true ? null : qtyReceived ?? this.qtyReceived,
@@ -94,6 +96,6 @@ class PurchaseOrderItem extends Equatable {
 
   @override
   String toString() {
-    return 'PurchaseOrderItem{id: $id, variantId: $variantId, name: $name, sku: $sku, qtyOnHand: $qtyOnHand, qtyToOrder: $qtyToOrder, qtyReceived: $qtyReceived, supplierPrice: $supplierPrice, total: $total}';
+    return 'PurchaseOrderItem{id: $id, variantId: $variantId, name: $name, sku: $sku, sellingPrice: $sellingPrice, qtyOnHand: $qtyOnHand, qtyToOrder: $qtyToOrder, qtyReceived: $qtyReceived, supplierPrice: $supplierPrice, total: $total}';
   }
 }
