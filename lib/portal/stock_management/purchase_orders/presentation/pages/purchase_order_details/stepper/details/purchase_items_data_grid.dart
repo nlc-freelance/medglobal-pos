@@ -325,14 +325,14 @@ class PurchaseItemsDataSource extends DataGridSource {
 
     if (column.columnName == 'qty_to_order') {
       final newQtyToOrder = int.tryParse(newCellValue.toString());
-      double? supplierPrice = dataGridRows[dataRowIndex].getCells()[5].value;
+      double? supplierPrice = dataGridRows[dataRowIndex].getCells()[6].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<int>(columnName: 'qty_to_order', value: newQtyToOrder);
 
       /// Compute new total per item and update the value in the DataGridRows
       double newTotalPerItem = (newQtyToOrder ?? 0) * (supplierPrice ?? 0);
-      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
+      dataGridRows[dataRowIndex].getCells()[7] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<PurchaseOrderCubit>().setQuantityToOrderPerItem(
             id: _itemsToOrder[dataRowIndex].id!,
@@ -342,14 +342,14 @@ class PurchaseItemsDataSource extends DataGridSource {
     }
     if (column.columnName == 'supplier_price') {
       final newSupplierPrice = double.tryParse(newCellValue.toString());
-      double? qtyToOrder = dataGridRows[dataRowIndex].getCells()[4].value;
+      double? qtyToOrder = dataGridRows[dataRowIndex].getCells()[5].value;
 
       dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
           DataGridCell<double>(columnName: 'supplier_price', value: newSupplierPrice);
 
       /// Compute new total per item and update the value in the DataGridRows
       double newTotalPerItem = (newSupplierPrice ?? 0) * (qtyToOrder ?? 0);
-      dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
+      dataGridRows[dataRowIndex].getCells()[7] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
       _context.read<PurchaseOrderCubit>().setSupplierPricePerItem(
             id: _itemsToOrder[dataRowIndex].id!,
