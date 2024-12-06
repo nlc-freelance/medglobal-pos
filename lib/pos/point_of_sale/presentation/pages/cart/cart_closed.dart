@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/shared/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -30,10 +29,6 @@ class _CartClosedState extends State<CartClosed> {
     super.dispose();
   }
 
-  bool isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -43,64 +38,39 @@ class _CartClosedState extends State<CartClosed> {
         const UIVerticalSpace(8),
         Text('CLOSED', style: UIStyleText.headline.copyWith(fontSize: 48)),
         const UIVerticalSpace(30),
-        BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
-          builder: (context, state) {
-            return FutureBuilder(
-                future: SharedPreferencesService.hasReachedMaxShift(),
-                builder: (context, snapshot) => Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (snapshot.data == true) ...[
-                          Text('Opening shift can only be done once a day',
-                              style: UIStyleText.bodyRegular.copyWith(fontSize: 14)),
-                          const UIVerticalSpace(4),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40),
-                            child: Text(
-                              'This register is now closed as you might have already opened and closed a shift today.',
-                              style: UIStyleText.hint.copyWith(fontSize: 12.8),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ] else ...[
-                          Text('Open register shift', style: UIStyleText.bodyRegular.copyWith(fontSize: 14)),
-                          const UIVerticalSpace(4),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 60),
-                            child: Text(
-                              'To start making transactions, open shift and input the initial register cash.',
-                              style: UIStyleText.hint.copyWith(fontSize: 12.8),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          const UIVerticalSpace(24),
-                          BlocListener<RegisterShiftBloc, RegisterShiftState>(
-                            listener: (context, state) {
-                              if (state is ShowOpeningShiftDialog) {
-                                _showOpeningClosingDialog(
-                                  context,
-                                  formKey: _formKey,
-                                  datetime: state.closedSince,
-                                  amountController: _amountController,
-                                  onAction: () => context.read<RegisterShiftBloc>().add(
-                                        OpenRegisterShiftEvent(
-                                          /// We made sure that there is a register set after logging in POS
-                                          registerId: context.read<RegisterCubit>().state.register!.id!,
-                                          openingAmount: double.tryParse(_amountController.text) ?? 0,
-                                        ),
-                                      ),
-                                );
-                              }
-                            },
-                            child: UIButton.filled(
-                              'Open Shift',
-                              onClick: () => context.read<RegisterShiftBloc>().add(ShowOpeningShiftDialogEvent()),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ));
+        Text('Open register shift', style: UIStyleText.bodyRegular.copyWith(fontSize: 14)),
+        const UIVerticalSpace(4),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 60),
+          child: Text(
+            'To start making transactions, open shift and input the initial register cash.',
+            style: UIStyleText.hint.copyWith(fontSize: 12.8),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const UIVerticalSpace(24),
+        BlocListener<RegisterShiftBloc, RegisterShiftState>(
+          listener: (context, state) {
+            if (state is ShowOpeningShiftDialog) {
+              _showOpeningClosingDialog(
+                context,
+                formKey: _formKey,
+                datetime: state.lastClosedAt,
+                amountController: _amountController,
+                onAction: () => context.read<RegisterShiftBloc>().add(
+                      OpenRegisterShiftEvent(
+                        /// We made sure that there is a register set after logging in POS
+                        registerId: context.read<RegisterCubit>().state.register!.id!,
+                        openingAmount: double.tryParse(_amountController.text) ?? 0,
+                      ),
+                    ),
+              );
+            }
           },
+          child: UIButton.filled(
+            'Open Shift',
+            onClick: () => context.read<RegisterShiftBloc>().add(ShowOpeningShiftDialogEvent()),
+          ),
         ),
       ],
     );
