@@ -43,54 +43,38 @@ class SharedPreferencesService {
     await prefs.remove('shift_status');
   }
 
-  /// Shift opened since
+  /// Shift last opened at
   /// Register.shiftDetail [createdAt]
-  static Future<void> setShiftOpenSince(String value) async {
+  static Future<void> setShiftLastOpenedAt(String value) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('shift_open_since', value);
+    await prefs.setString('shift_last_opened_at', value);
   }
 
-  static Future<String> getShiftOpenSince() async {
+  static Future<String> getShiftLastOpenedAt() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('shift_open_since') ?? '';
+    return prefs.getString('shift_last_opened_at') ?? '';
   }
 
-  static Future<void> clearShiftOpenSince() async {
+  static Future<void> clearShiftOpenedAt() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('shift_open_since');
+    await prefs.remove('shift_last_opened_at');
   }
 
-  /// Shift closed since
+  /// Shift last closed at
   /// Register.shiftDetail [updatedAt]
-  static Future<void> setShiftClosedSince(String value) async {
+  static Future<void> setShiftLastClosedAt(String value) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('shift_closed_since', value);
+    await prefs.setString('shift_last_closed_at', value);
   }
 
-  static Future<String> getShiftClosedSince() async {
+  static Future<String> getShiftLastClosedAt() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('shift_closed_since') ?? '';
+    return prefs.getString('shift_last_closed_at') ?? '';
   }
 
-  static Future<void> clearShiftClosedSince() async {
+  static Future<void> clearShiftLastClosedAt() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('shift_closed_since');
-  }
-
-  /// Maximum shift opening in one day
-  static Future<void> setHasReachedMaxShift(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('has_max_shift', value);
-  }
-
-  static Future<bool> hasReachedMaxShift() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('has_max_shift') ?? false;
-  }
-
-  static Future<void> clearMaxShift() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('has_max_shift');
+    await prefs.remove('shift_last_closed_at');
   }
 
   ///
