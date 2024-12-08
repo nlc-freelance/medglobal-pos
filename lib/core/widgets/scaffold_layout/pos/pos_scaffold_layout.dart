@@ -108,7 +108,7 @@ class _POSScaffoldLayoutState extends State<POSScaffoldLayout> {
           _showClosingDialog(
             context,
             formKey: _formKey,
-            datetime: state.openSince,
+            datetime: state.lastOpenedAt,
             amountController: _amountController,
             onAction: () => context.read<RegisterShiftBloc>().add(
                   CloseRegisterShiftEvent(

@@ -14,7 +14,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Shortcuts(
       shortcuts: <LogicalKeySet, Intent>{
-        LogicalKeySet(LogicalKeyboardKey.controlLeft, LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.digit0):
+        LogicalKeySet(LogicalKeyboardKey.shiftLeft, LogicalKeyboardKey.altLeft, LogicalKeyboardKey.digit0):
             const ActivateIntent(),
       },
       child: Actions(
