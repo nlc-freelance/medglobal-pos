@@ -6,6 +6,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/p
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_order_details.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_form.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/undelivered_items_dialog.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 /// Pass currentStep as 1 when calling this widget on DetailsPage to display correct title
@@ -141,11 +142,20 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                                 iconAlign: IconAlignment.end,
                                 isLoading: state is PurchaseOrderSaveAndReceivedLoading,
                                 onClick: () {
-                                  context.read<PurchaseOrderRemoteCubit>().update(
-                                        StockOrderUpdate.SAVE_AND_RECEIVED,
-                                        id: localState.purchaseOrder.id!,
-                                        purchaseOrder: localState.purchaseOrder,
-                                      );
+                                  final poItems = localState.purchaseOrder.items ?? [];
+                                  if (poItems.every((item) => item.qtyReceived != null)) {
+                                    context.read<PurchaseOrderRemoteCubit>().update(
+                                          StockOrderUpdate.SAVE_AND_RECEIVED,
+                                          id: localState.purchaseOrder.id!,
+                                          purchaseOrder: localState.purchaseOrder,
+                                        );
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) => const UndeliveredItemsDialog(),
+                                    );
+                                  }
                                 },
                               ),
                           ],
