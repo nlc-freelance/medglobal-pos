@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/core.dart' hide FilterType;
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -18,6 +18,7 @@ class PurchaseItemsToReceiveDataGrid extends StatefulWidget {
 class _PurchaseItemsToReceiveDataGridState extends State<PurchaseItemsToReceiveDataGrid> {
   List<PurchaseOrderItem> _itemsToReceive = <PurchaseOrderItem>[];
 
+  final _searchController = TextEditingController();
   late DataGridController _dataGridController;
   late PurchaseItemsToReceiveDataSource _purchaseItemsToReceiveDataSource;
   late CustomSelectionManager customSelectionManager;
@@ -48,6 +49,29 @@ class _PurchaseItemsToReceiveDataGridState extends State<PurchaseItemsToReceiveD
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageSectionTitle(title: 'Items Received'),
+        UISearchField(
+          fieldWidth: 500,
+          icon: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Assets.icons.search.svg(),
+          ),
+          hint: 'Search variant name',
+          controller: _searchController,
+          onChanged: (value) {
+            _purchaseItemsToReceiveDataSource.clearFilters(columnName: 'variant_name');
+            if (value.isNotEmpty) {
+              _purchaseItemsToReceiveDataSource.addFilter(
+                'variant_name',
+                FilterCondition(
+                  value: value,
+                  filterBehavior: FilterBehavior.stringDataType,
+                  type: FilterType.contains,
+                ),
+              );
+            }
+            _purchaseItemsToReceiveDataSource.updateDataGridSource();
+          },
+        ),
         BlocBuilder<PurchaseOrderCubit, PurchaseOrderState>(
           builder: (context, state) {
             return ClipRect(
