@@ -7,16 +7,16 @@ part 'register_shift_dto.g.dart';
 
 @JsonSerializable()
 class RegisterShiftDto extends Equatable {
-  final String? status;
+  final String status;
   @DateTimeConverter()
-  final DateTime? createdAt;
+  final DateTime createdAt;
   @DateTimeConverter()
-  final DateTime? updatedAt;
+  final DateTime updatedAt;
 
   const RegisterShiftDto({
-    this.status,
-    this.createdAt,
-    this.updatedAt,
+    required this.status,
+    required this.createdAt,
+    required this.updatedAt,
   });
   @override
   List<Object?> get props => [status, createdAt, updatedAt];

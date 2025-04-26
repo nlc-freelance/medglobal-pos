@@ -1,8 +1,10 @@
+import 'package:medglobal_admin_portal/core/enums/register_shift.dart';
+import 'package:medglobal_admin_portal/shared/register/domain/entities/register.dart';
+import 'package:medglobal_admin_portal/shared/register/domain/entities/register_shift.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesService {
   /// Current logged in user
-
   static Future<void> setUserId(int value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('user_id', value);
@@ -13,71 +15,65 @@ class SharedPreferencesService {
     return prefs.getInt('user_id');
   }
 
-  /// Branch where the selected register is assigned
-  static Future<void> setRegisterBranchId(int value) async {
+  /// Saves selected register and its shift details
+  ///
+  /// If the register's [shiftDetail] is null, the register is new.
+  /// Therefore no need to persist the shift details as there is no recent record of a shift yet
+  static Future<void> saveRegisterDetails(Register register) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('register_branch_id', value);
+
+    /// Branch where the selected register is assigned
+    await prefs.setInt('register_branch_id', register.branch!.id!);
+
+    await prefs.setInt('register_id', register.id!);
+    await prefs.setString('register_name', register.name!);
+    await prefs.setString(
+      'register_status',
+      register.shiftDetail?.status == 'open' ? RegisterShiftStatus.open.name : RegisterShiftStatus.close.name,
+    );
+
+    if (register.shiftDetail != null) {
+      final shiftDetail = register.shiftDetail!;
+
+      await prefs.setString('register_opened_at', shiftDetail.createdAt.toIso8601String());
+      await prefs.setString('register_closed_at', shiftDetail.updatedAt.toIso8601String());
+    }
+  }
+
+  static Future<void> updateRegisterShift(RegisterShift shift) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('register_status', shift.status);
+    await prefs.setString('register_opened_at', shift.createdAt.toIso8601String());
+    await prefs.setString('register_closed_at', shift.updatedAt.toIso8601String());
+  }
+
+  static Future<Map<String, dynamic>> getRegisterDetails() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final id = prefs.getInt('register_id');
+    final name = prefs.getString('register_name');
+    final status = prefs.getString('register_status');
+    final openedAt = prefs.getString('register_opened_at');
+    final closedAt = prefs.getString('register_closed_at');
+
+    return {
+      'id': id,
+      'name': name,
+      'status': status,
+      'openedAt': openedAt != null ? DateTime.parse(openedAt) : null,
+      'closedAt': closedAt != null ? DateTime.parse(closedAt) : null,
+    };
+  }
+
+  static Future<int?> getRegisterId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('register_id');
   }
 
   static Future<int?> getRegisterBranchId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getInt('register_branch_id');
   }
-
-  ///
-
-  /// Shift status
-  /// Register.shiftDetail [status]
-  static Future<void> setShiftStatus(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('shift_status', value);
-  }
-
-  static Future<bool> isShiftOpen() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('shift_status') ?? false;
-  }
-
-  static Future<void> clearShiftStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('shift_status');
-  }
-
-  /// Shift last opened at
-  /// Register.shiftDetail [createdAt]
-  static Future<void> setShiftLastOpenedAt(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('shift_last_opened_at', value);
-  }
-
-  static Future<String> getShiftLastOpenedAt() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('shift_last_opened_at') ?? '';
-  }
-
-  static Future<void> clearShiftOpenedAt() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('shift_last_opened_at');
-  }
-
-  /// Shift last closed at
-  /// Register.shiftDetail [updatedAt]
-  static Future<void> setShiftLastClosedAt(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('shift_last_closed_at', value);
-  }
-
-  static Future<String> getShiftLastClosedAt() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('shift_last_closed_at') ?? '';
-  }
-
-  static Future<void> clearShiftLastClosedAt() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('shift_last_closed_at');
-  }
-
-  ///
 
   static Future<bool> clearPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -69,11 +69,12 @@ class _DataGridNoDataState extends State<DataGridNoData> {
                 children: [
                   Assets.icons.cube.svg(),
                   const UIVerticalSpace(12),
-                  UIText.labelMedium(
+                  Text(
                     widget.isCustom
                         ? widget.message!
                         : 'No data available, ${widget.message ?? 'please add items to your order'}.',
-                    color: UIColors.textMuted,
+                    style: UIStyleText.hint.copyWith(fontSize: 12.8),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),

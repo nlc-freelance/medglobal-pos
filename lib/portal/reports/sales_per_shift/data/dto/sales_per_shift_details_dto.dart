@@ -22,6 +22,7 @@ class SalesPerShiftDetailsDto extends Equatable {
   final int? totalReturnTransactions;
   @JsonKey(name: 'totalDiscountedTransactionsCount')
   final int? totalDiscountedTransactions;
+  final double? totalGrossSalesAmount;
   final double? totalSalesAmount;
   final double? totalReturnsAmount;
   final double? totalDiscountedAmount;
@@ -42,6 +43,7 @@ class SalesPerShiftDetailsDto extends Equatable {
     this.totalSaleTransactions,
     this.totalReturnTransactions,
     this.totalDiscountedTransactions,
+    this.totalGrossSalesAmount,
     this.totalSalesAmount,
     this.totalReturnsAmount,
     this.totalDiscountedAmount,
@@ -64,6 +66,7 @@ class SalesPerShiftDetailsDto extends Equatable {
         totalSaleTransactions,
         totalReturnTransactions,
         totalDiscountedTransactions,
+        totalGrossSalesAmount,
         totalSalesAmount,
         totalReturnsAmount,
         totalDiscountedAmount,
@@ -85,6 +88,7 @@ class SalesPerShiftDetailsDto extends Equatable {
         totalSaleTransactions: totalSaleTransactions,
         totalReturnTransactions: totalReturnTransactions,
         totalDiscountedTransactions: totalDiscountedTransactions,
+        totalGrossSalesAmount: totalGrossSalesAmount,
         totalSalesAmount: totalSalesAmount,
         totalReturnsAmount: totalReturnsAmount,
         totalDiscountedAmount: totalDiscountedAmount,

@@ -187,8 +187,6 @@ import 'package:medglobal_admin_portal/shared/register/data/repositories/registe
 import 'package:medglobal_admin_portal/shared/register/domain/repositories/register_repository.dart';
 import 'package:medglobal_admin_portal/shared/register/domain/repositories/register_shift_repository.dart';
 import 'package:medglobal_admin_portal/shared/register/domain/usecases/get_registers_usecase.dart';
-import 'package:medglobal_admin_portal/shared/register/domain/usecases/register_shift/close_shift_usecase.dart';
-import 'package:medglobal_admin_portal/shared/register/domain/usecases/register_shift/open_shift_usecase.dart';
 import 'package:medglobal_admin_portal/shared/register/presentation/bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register_lazy_list/register_lazy_list_cubit.dart';
@@ -343,8 +341,8 @@ void initDependencyInjection() {
 
     /// POS
     /// Open Close Shift
-    ..registerLazySingleton(() => OpenShiftUseCase(injector()))
-    ..registerLazySingleton(() => CloseShiftUseCase(injector()))
+    // ..registerLazySingleton(() => OpenShiftUseCase(injector()))
+    // ..registerLazySingleton(() => CloseShiftUseCase(injector()))
 
     ///
     /// Register
@@ -427,7 +425,7 @@ void initDependencyInjection() {
 
     /// POS
     ..registerFactory(() => RegisterLazyListCubit(injector()))
-    ..registerFactory(() => RegisterShiftBloc(injector(), injector()))
+    ..registerFactory(() => RegisterShiftBloc(injector()))
     ..registerFactory(() => RegisterCubit())
     ..registerFactory(() => POSProductListRemoteCubit(injector()))
     ..registerFactory(() => ProductSearchCubit())
