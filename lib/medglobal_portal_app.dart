@@ -86,8 +86,8 @@ class MedGlobaPortalApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => GetIt.I<AuthBloc>()..add(const AppInitEvent())),
-        BlocProvider(create: (_) => GetIt.I<SidebarCubit>()),
+        BlocProvider(create: (_) => GetIt.I<AuthBloc>()..add(const AppInitEvent())), //
+        BlocProvider(create: (_) => GetIt.I<SidebarCubit>()), //
         BlocProvider(create: (_) => GetIt.I<SupplierListCubit>()),
         BlocProvider(create: (_) => GetIt.I<SupplierListFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<SupplierCubit>()),
@@ -128,7 +128,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<StockTakeCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewStockTakeCubit>()),
         BlocProvider(create: (_) => GetIt.I<UncountedItemsDraftCubit>()),
-        BlocProvider(create: (_) => GetIt.I<RegisterCubit>()),
+        BlocProvider(create: (_) => GetIt.I<RegisterCubit>()), //
         BlocProvider(create: (_) => GetIt.I<RegisterShiftBloc>()),
         BlocProvider(create: (_) => GetIt.I<POSProductListRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductSearchCubit>()),
@@ -163,7 +163,12 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<ShiftTransactionPageSizeCubit>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) => AppRouter.router.refresh(),
+        listener: (context, state) {
+          if (state is AuthenticatedState && state.user.type == UserType.CASHIER) {
+            context.read<RegisterCubit>().loadRegister();
+          }
+          AppRouter.router.refresh();
+        },
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
           title: 'MedGlobal Admin Portal',

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/sale_remote/sale_remote_cubit.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class ChargePayment extends StatefulWidget {
@@ -15,7 +14,6 @@ class ChargePayment extends StatefulWidget {
 
 class _ChargePaymentState extends State<ChargePayment> {
   late TextEditingController _amountReceivedController;
-  double _change = 0;
 
   @override
   void initState() {
@@ -31,8 +29,6 @@ class _ChargePaymentState extends State<ChargePayment> {
 
   @override
   Widget build(BuildContext context) {
-    final registerId = context.read<RegisterCubit>().state.register!.id;
-
     return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) {
         final order = state.order;
@@ -62,10 +58,6 @@ class _ChargePaymentState extends State<ChargePayment> {
                   label: 'CASH RECEIVED',
                   formatter: [CurrencyInputFormatter()],
                   controller: _amountReceivedController,
-                  onChanged: (value) {
-                    final amountReceived = double.tryParse(value.replaceAll(',', ''));
-                    setState(() => _change = amountReceived == null ? 0 : amountReceived - (order.total ?? 0));
-                  },
                 ),
               ),
               const UIVerticalSpace(30),
@@ -87,7 +79,6 @@ class _ChargePaymentState extends State<ChargePayment> {
                           InkWell(
                             onTap: () {
                               _amountReceivedController.text = (order.total ?? 0).toPesoString();
-                              setState(() => _change = 0);
                             },
                             borderRadius: const BorderRadius.all(Radius.circular(10)),
                             hoverColor: UIColors.buttonSecondaryHover.withOpacity(0.08),
@@ -107,8 +98,6 @@ class _ChargePaymentState extends State<ChargePayment> {
                           ...quickBills.map((bill) => InkWell(
                                 onTap: () {
                                   _amountReceivedController.text = bill.toStringAsFixed(2);
-                                  setState(() => _change =
-                                      (double.tryParse(_amountReceivedController.text) ?? 0) - (order.total ?? 0));
                                 },
                                 borderRadius: const BorderRadius.all(Radius.circular(10)),
                                 hoverColor: UIColors.buttonSecondaryHover.withOpacity(0.08),
@@ -151,7 +140,6 @@ class _ChargePaymentState extends State<ChargePayment> {
                       'CHARGE',
                       onClick: () {
                         context.read<SaleRemoteCubit>().createSale(
-                              registerId: registerId!,
                               order: order,
                               receivedAmount: double.tryParse(_amountReceivedController.text),
                             );

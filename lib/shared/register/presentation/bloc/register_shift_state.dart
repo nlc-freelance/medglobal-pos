@@ -11,30 +11,18 @@ final class RegisterShiftInitial extends RegisterShiftState {}
 
 final class RegisterShiftLoading extends RegisterShiftState {}
 
-final class RegisterShiftOpen extends RegisterShiftState {}
+final class RegisterShiftSuccess extends RegisterShiftState {
+  final RegisterShift shift;
 
-final class RegisterShiftClose extends RegisterShiftState {}
-
-final class ShowClosingShiftDialog extends RegisterShiftState {
-  final DateTime lastOpenedAt;
-  const ShowClosingShiftDialog({required this.lastOpenedAt});
-
+  const RegisterShiftSuccess({required this.shift});
   @override
-  List<Object> get props => [lastOpenedAt];
-}
-
-final class ShowOpeningShiftDialog extends RegisterShiftState {
-  final DateTime? lastClosedAt;
-  const ShowOpeningShiftDialog({this.lastClosedAt});
-
-  @override
-  List<Object?> get props => [lastClosedAt];
+  List<Object?> get props => [shift];
 }
 
 final class RegisterShiftError extends RegisterShiftState {
   final String message;
-  const RegisterShiftError({required this.message});
 
+  const RegisterShiftError({required this.message});
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }

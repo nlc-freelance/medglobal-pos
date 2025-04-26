@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/usecases/create_sale_usecase.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 
@@ -10,7 +11,7 @@ class SaleRemoteCubit extends HydratedCubit<SaleRemoteState> {
 
   SaleRemoteCubit(this._createSaleUseCase) : super(SaleInitial());
 
-  Future<void> createSale({required int registerId, required Transaction order, double? receivedAmount}) async {
+  Future<void> createSale({required Transaction order, double? receivedAmount}) async {
     if (receivedAmount == null || receivedAmount == 0) {
       emit(const SaleError(message: 'Please enter the cash received to proceed with the transaction.'));
     } else if (receivedAmount < order.total!) {
@@ -19,9 +20,10 @@ class SaleRemoteCubit extends HydratedCubit<SaleRemoteState> {
       emit(SaleLoading());
 
       try {
+        final id = await SharedPreferencesService.getRegisterId();
         final result = await _createSaleUseCase.call(
           CreateSaleParams(
-            registerId,
+            id!,
             order.copyWith(amountPaid: receivedAmount),
           ),
         );

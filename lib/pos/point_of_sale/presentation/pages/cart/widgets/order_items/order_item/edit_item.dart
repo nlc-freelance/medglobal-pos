@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/order/order_cubit.dart';
@@ -59,6 +60,7 @@ class _EditItemState extends State<EditItem> {
                       height: 33,
                       label: 'Quantity',
                       controller: _qtyController,
+                      formatter: [FilteringTextInputFormatter.digitsOnly],
                       onChanged: (value) => context.read<OrderCubit>().setQtyPerItem(
                             id: item.id!,
                             qty: int.tryParse(_qtyController.text),
