@@ -79,8 +79,8 @@ class SalesPerShiftDetails extends Equatable {
 
   List<ShiftDetailSummary> get salesSummary => [
         ShiftDetailSummary(type: 'Cash Gross Sales', count: totalSaleTransactions, amount: totalGrossSalesAmount!),
-        ShiftDetailSummary(type: 'Cash Net Sales', count: totalSaleTransactions, amount: totalSalesAmount!),
         ShiftDetailSummary(type: 'Cash Discounts', count: totalDiscountedTransactions, amount: totalDiscountedAmount!),
+        ShiftDetailSummary(type: 'Cash Net Sales', count: totalSaleTransactions, amount: totalSalesAmount!),
         ShiftDetailSummary(type: 'Cash Refunds', count: totalReturnTransactions, amount: totalReturnsAmount!),
 
         /// Total -> netSales

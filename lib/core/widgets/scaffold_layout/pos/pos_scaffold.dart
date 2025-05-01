@@ -37,6 +37,7 @@ class _PosScaffoldState extends State<PosScaffold> {
             onConfirm: (register) {
               context.read<RegisterCubit>().saveRegister(register);
               if (register.shiftDetail?.status == 'open') context.read<POSProductListRemoteCubit>().getPOSProducts();
+              Navigator.pop(context);
             },
           ),
         );

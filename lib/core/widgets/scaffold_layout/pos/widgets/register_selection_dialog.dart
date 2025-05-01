@@ -14,6 +14,7 @@ class RegisterSelectionDialog extends StatefulWidget {
 }
 
 class _RegisterSelectionDialogState extends State<RegisterSelectionDialog> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Register? _register;
 
   @override
@@ -25,29 +26,30 @@ class _RegisterSelectionDialogState extends State<RegisterSelectionDialog> {
         child: Container(
           width: MediaQuery.sizeOf(context).width * 0.35,
           padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              UIText.heading5('POS Register'),
-              const Divider(color: UIColors.borderMuted),
-              const UIVerticalSpace(16),
-              Text('Please choose the register you need to use', style: UIStyleText.bodyRegular),
-              const UIVerticalSpace(30),
-              RegisterDropdown(onChanged: (register) => setState(() => _register = register)),
-              const UIVerticalSpace(30),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: UIButton.filled(
-                  'Confirm',
-                  disabled: _register == null,
-                  onClick: () {
-                    Navigator.of(context).pop();
-                    widget.onConfirm(_register!);
-                  },
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                UIText.heading5('POS Register'),
+                const Divider(color: UIColors.borderMuted),
+                const UIVerticalSpace(16),
+                Text('Please choose the register you need to use', style: UIStyleText.bodyRegular),
+                const UIVerticalSpace(30),
+                RegisterDropdown(onChanged: (register) => setState(() => _register = register)),
+                const UIVerticalSpace(30),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: UIButton.filled(
+                    'Confirm',
+                    onClick: () {
+                      if (_formKey.currentState?.validate() == true) widget.onConfirm(_register!);
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

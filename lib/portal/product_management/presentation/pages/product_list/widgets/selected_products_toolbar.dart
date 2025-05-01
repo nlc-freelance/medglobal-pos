@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/bulk_action_popup_menu.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class SelectedProductsToolbar extends StatelessWidget with DialogMixin {
+class SelectedProductsToolbar extends StatelessWidget {
   const SelectedProductsToolbar({super.key});
 
   @override

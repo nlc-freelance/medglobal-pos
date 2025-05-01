@@ -78,17 +78,13 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
                     ),
                     const UIVerticalSpace(30),
                   ],
-                  UIText.labelMedium(shiftAction.input),
-                  const UIVerticalSpace(8),
-                  UITextFormField.noLabel(
+                  UITextFormField.vertical(
+                    label: shiftAction.inputLabel,
                     hint: 'PHP 0',
-                    width: 200,
+                    isRequired: true,
                     formatter: [FilteringTextInputFormatter.digitsOnly],
                     controller: _amountCtrl,
-                    validator: (value) {
-                      if (value?.isEmpty == true) return shiftAction.validation;
-                      return null;
-                    },
+                    validation: shiftAction.validationText,
                   ),
                   const UIVerticalSpace(30),
                   if (state is RegisterShiftError) ...[

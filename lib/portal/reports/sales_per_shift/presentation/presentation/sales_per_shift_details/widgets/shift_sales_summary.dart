@@ -47,26 +47,6 @@ class _ShiftSalesSummaryState extends State<ShiftSalesSummary> {
           highlightRowOnHover: false,
           headerRowHeight: 20,
           rowHeight: 36,
-          tableSummaryRows: [
-            GridTableSummaryRow(
-              color: UIColors.background,
-              showSummaryInRow: false,
-              title: 'Total',
-              columns: [
-                const GridSummaryColumn(
-                  name: '',
-                  columnName: 'transactions',
-                  summaryType: GridSummaryType.sum,
-                ),
-                const GridSummaryColumn(
-                  name: '',
-                  columnName: 'amount',
-                  summaryType: GridSummaryType.sum,
-                )
-              ],
-              position: GridTableSummaryRowPosition.bottom,
-            )
-          ],
         ),
       ),
     );

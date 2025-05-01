@@ -62,10 +62,10 @@ class _VariantFormState extends State<VariantForm> {
                     children: [
                       const UIVerticalSpace(16),
                       PageSectionTitle.subsection(title: 'Variant'),
-                      UITextFormField.topLabel(
+                      UITextFormField.vertical(
                         label: 'Variant Name',
                         hint: 'Enter variant name',
-                        showRequired: true,
+                        isRequired: true,
                         controller: widget.nameController,
                         validator: (value) {
                           if (value?.isEmpty == true || value == 'default') {
@@ -73,6 +73,8 @@ class _VariantFormState extends State<VariantForm> {
                           }
                           return null;
                         },
+                        // TODO: Refactor product form state management
+                        onChanged: (_) {},
                       ),
                       const UIVerticalSpace(40),
                       StockKeepingUnitDetails(

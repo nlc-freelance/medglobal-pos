@@ -57,6 +57,11 @@ class RegisterDropdownState extends State<RegisterDropdown> {
             suffixIcon: Assets.icons.arrowDown.svg(),
             suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
           ),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (_) {
+            if (_selectedItem == null) return 'Please select a register.';
+            return null;
+          },
         ),
       ),
       body: BlocBuilder<RegisterLazyListCubit, RegisterLazyListState>(
