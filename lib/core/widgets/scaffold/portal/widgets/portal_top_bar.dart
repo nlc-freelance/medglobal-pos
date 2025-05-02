@@ -7,10 +7,10 @@ import 'package:medglobal_admin_portal/portal/product_management/presentation/cu
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_lazy_list/supplier_lazy_list_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class AppNavBar extends StatelessWidget implements PreferredSizeWidget {
+class PortalTopbar extends StatelessWidget implements PreferredSizeWidget {
   final String path;
 
-  const AppNavBar({required this.path, super.key});
+  const PortalTopbar({required this.path, super.key});
 
   @override
   Widget build(BuildContext context) {

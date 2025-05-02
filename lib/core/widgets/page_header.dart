@@ -20,30 +20,35 @@ class PageHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const UIVerticalSpace(12.0),
-              Row(
-                children: [
-                  UIText.heading4(title),
-                  if (titleTrailings != null) ...[
-                    const UIHorizontalSpace(16),
-                    ...?titleTrailings,
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    UIText.heading4(title),
+                    if (titleTrailings != null) ...[
+                      const UIHorizontalSpace(16),
+                      ...?titleTrailings,
+                    ],
                   ],
+                ),
+                if (subtitle != null) ...[
+                  const UIVerticalSpace(4),
+                  Text(subtitle!, style: UIStyleText.hint.copyWith(color: UIColors.textGray)),
                 ],
-              ),
-              if (subtitle != null) ...[
-                const UIVerticalSpace(2),
-                Text(subtitle!, style: UIStyleText.hint.copyWith(color: UIColors.textGray)),
               ],
-            ],
+            ),
           ),
-          Row(
-            children: [...?actions],
-          ),
+          if (actions?.isNotEmpty == true)
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [...?actions],
+              ),
+            ),
         ],
       ),
     );

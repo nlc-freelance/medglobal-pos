@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/route_guard.dart';
-import 'package:medglobal_admin_portal/core/widgets/scaffold_layout/pos/pos_scaffold.dart';
+import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/pos_scaffold.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
@@ -12,6 +12,11 @@ import 'package:medglobal_admin_portal/portal/reports/product_history/presentati
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/sales_per_category_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_details/sales_per_shift_details_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_list/sales_per_shift_page.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/branch_form/branch_form_page.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/branch_list/branch_list_page.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/pos_register/presentation/pos_register_list/pos_register_list_page.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/presentation/tax_list/tax_list_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/purchase_order_details_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_orders_page.dart';
@@ -44,7 +49,7 @@ abstract class AppRouter {
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => RouteGuard(
           allowedTypes: const [UserType.ADMIN, UserType.STORE_MANAGER],
-          child: ScaffoldLayout(
+          child: PortalScaffold(
             routerState: state,
             navigationShell: navigationShell,
           ),
@@ -238,6 +243,45 @@ abstract class AppRouter {
                                 NoTransitionPage(child: SalesPerShiftDetailsPage(id: state.pathParameters['id']!)),
                           ),
                         ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: SideMenuTreeItem.settings.name,
+                path: SideMenuTreeItem.settings.path,
+                builder: (context, state) => const SizedBox(),
+                routes: [
+                  GoRoute(
+                    name: SideMenuTreeItem.tax.name,
+                    path: SideMenuTreeItem.tax.path,
+                    pageBuilder: (context, state) => const NoTransitionPage(child: TaxListPage()),
+                  ),
+                  GoRoute(
+                    name: SideMenuTreeItem.posRegister.name,
+                    path: SideMenuTreeItem.posRegister.path,
+                    pageBuilder: (context, state) => const NoTransitionPage(child: PosRegisterListPage()),
+                  ),
+                  GoRoute(
+                    name: SideMenuTreeItem.branch.name,
+                    path: SideMenuTreeItem.branch.path,
+                    pageBuilder: (context, state) => const NoTransitionPage(child: BranchListPage()),
+                    routes: [
+                      GoRoute(
+                        name: SideMenuTreeItem.newBranch.name,
+                        path: SideMenuTreeItem.newBranch.path,
+                        pageBuilder: (context, state) => const NoTransitionPage(child: BranchFormPage()),
+                      ),
+                      GoRoute(
+                        name: SideMenuTreeItem.branchDetails.name,
+                        path: SideMenuTreeItem.branchDetails.path,
+                        pageBuilder: (context, state) =>
+                            NoTransitionPage(child: BranchFormPage(id: state.pathParameters['id']!)),
                       ),
                     ],
                   ),

@@ -5,16 +5,16 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class SideNavBar extends StatefulWidget {
+class PortalSidebar extends StatefulWidget {
   final String currentMenu;
 
-  const SideNavBar({required this.currentMenu, super.key});
+  const PortalSidebar({required this.currentMenu, super.key});
 
   @override
-  State<SideNavBar> createState() => _SideNavBarState();
+  State<PortalSidebar> createState() => _SideNavBarState();
 }
 
-class _SideNavBarState extends State<SideNavBar> {
+class _SideNavBarState extends State<PortalSidebar> {
   late TreeViewController _controller;
   late ITreeNode _selectedParentNode;
 
@@ -50,6 +50,12 @@ class _SideNavBarState extends State<SideNavBar> {
                 ]),
             ],
           ),
+        IndexedTreeNode(key: SideMenuTree.settings.title)
+          ..addAll([
+            IndexedTreeNode(key: SideMenuTree.settings.items[0]),
+            IndexedTreeNode(key: SideMenuTree.settings.items[1]),
+            IndexedTreeNode(key: SideMenuTree.settings.items[2]),
+          ]),
       ],
     );
 
@@ -185,6 +191,7 @@ class _SideNavBarState extends State<SideNavBar> {
         'Transactions' => Assets.icons.arrowSwapHorizontal,
         'Returns Management' => Assets.icons.undo,
         'Reports' => Assets.icons.presentionChart,
+        'Settings' => Assets.icons.settings,
         _ => null,
       };
 
