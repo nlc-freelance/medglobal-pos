@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/shared/register/domain/entities/register.dart';
-import 'package:medglobal_admin_portal/shared/register/domain/entities/register_shift.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/bloc/register_shift_bloc.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register/register_cubit.dart';
 import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register_lazy_list/register_lazy_list_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class RegisterDropdown extends StatefulWidget {
-  const RegisterDropdown({super.key});
+  final void Function(Register) onChanged;
+
+  const RegisterDropdown({super.key, required this.onChanged});
 
   @override
   State<RegisterDropdown> createState() => RegisterDropdownState();
@@ -58,6 +57,11 @@ class RegisterDropdownState extends State<RegisterDropdown> {
             suffixIcon: Assets.icons.arrowDown.svg(),
             suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
           ),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (_) {
+            if (_selectedItem == null) return 'Please select a register.';
+            return null;
+          },
         ),
       ),
       body: BlocBuilder<RegisterLazyListCubit, RegisterLazyListState>(
@@ -106,24 +110,7 @@ class RegisterDropdownState extends State<RegisterDropdown> {
                               /// Single select
                               setState(() => _selectedItem = register);
 
-                              context.read<RegisterCubit>().setRegister(register);
-
-                              RegisterShift? shiftDetail = register.shiftDetail;
-
-                              if (shiftDetail != null) {
-                                if (shiftDetail.status == 'open') {
-                                  context
-                                      .read<RegisterShiftBloc>()
-                                      .add(SetShiftAsOpenOnLoginEvent(shiftDetail: shiftDetail));
-                                }
-                                if (shiftDetail.status == 'close') {
-                                  context
-                                      .read<RegisterShiftBloc>()
-                                      .add(SetShiftAsClosedOnLoginEvent(shiftDetail: shiftDetail));
-                                }
-                              } else {
-                                context.read<RegisterShiftBloc>().add(SetShiftAsClosedOnFirstTimeEvent());
-                              }
+                              widget.onChanged(register);
 
                               setState(() => _isVisible = false);
                             },

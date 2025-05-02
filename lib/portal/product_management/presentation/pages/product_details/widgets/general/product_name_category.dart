@@ -18,15 +18,14 @@ class ProductNameCategory extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: UITextFormField.topLabel(
+                child: UITextFormField.vertical(
                   label: 'Name',
                   hint: 'Enter product name',
                   controller: controller,
-                  showRequired: true,
-                  validator: (value) {
-                    if (value?.isEmpty == true) return 'Please enter a product name.';
-                    return null;
-                  },
+                  isRequired: true,
+                  validation: 'Please enter a product name.',
+                  // TODO: Refactor product form state management
+                  onChanged: (_) {},
                 ),
               ),
               const UIHorizontalSpace(16),

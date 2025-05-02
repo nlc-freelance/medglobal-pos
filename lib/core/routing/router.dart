@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/route_guard.dart';
-import 'package:medglobal_admin_portal/core/widgets/scaffold_layout/pos/pos_scaffold_layout.dart';
+import 'package:medglobal_admin_portal/core/widgets/scaffold_layout/pos/pos_scaffold.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
@@ -250,7 +250,7 @@ abstract class AppRouter {
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => RouteGuard(
           allowedTypes: const [UserType.CASHIER],
-          child: POSScaffoldLayout(
+          child: PosScaffold(
             routerState: state,
             navigationShell: navigationShell,
           ),

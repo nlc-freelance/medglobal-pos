@@ -17,6 +17,7 @@ class SalesPerShiftDetails extends Equatable {
   final int? totalSaleTransactions;
   final int? totalReturnTransactions;
   final int? totalDiscountedTransactions;
+  final double? totalGrossSalesAmount;
   final double? totalSalesAmount;
   final double? totalReturnsAmount;
   final double? totalDiscountedAmount;
@@ -37,6 +38,7 @@ class SalesPerShiftDetails extends Equatable {
     this.totalSaleTransactions,
     this.totalReturnTransactions,
     this.totalDiscountedTransactions,
+    this.totalGrossSalesAmount,
     this.totalSalesAmount,
     this.totalReturnsAmount,
     this.totalDiscountedAmount,
@@ -59,6 +61,7 @@ class SalesPerShiftDetails extends Equatable {
         totalSaleTransactions,
         totalReturnTransactions,
         totalDiscountedTransactions,
+        totalGrossSalesAmount,
         totalSalesAmount,
         totalReturnsAmount,
         totalDiscountedAmount,
@@ -75,9 +78,10 @@ class SalesPerShiftDetails extends Equatable {
   Map<String, dynamic> toJson() => _$SalesPerShiftDetailsToJson(this);
 
   List<ShiftDetailSummary> get salesSummary => [
-        ShiftDetailSummary(type: 'Cash Sales', count: totalSaleTransactions, amount: totalSalesAmount!),
-        ShiftDetailSummary(type: 'Cash Refunds', count: totalReturnTransactions, amount: totalReturnsAmount!),
+        ShiftDetailSummary(type: 'Cash Gross Sales', count: totalSaleTransactions, amount: totalGrossSalesAmount!),
         ShiftDetailSummary(type: 'Cash Discounts', count: totalDiscountedTransactions, amount: totalDiscountedAmount!),
+        ShiftDetailSummary(type: 'Cash Net Sales', count: totalSaleTransactions, amount: totalSalesAmount!),
+        ShiftDetailSummary(type: 'Cash Refunds', count: totalReturnTransactions, amount: totalReturnsAmount!),
 
         /// Total -> netSales
       ];

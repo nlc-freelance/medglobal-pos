@@ -33,33 +33,36 @@ class StockKeepingUnitDetails extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: UITextFormField.topLabel(
+                    child: UITextFormField.vertical(
                       label: 'SKU',
                       hint: 'Enter SKU',
                       controller: skuController,
-                      showRequired: true,
-                      validator: (value) {
-                        if (value?.trim().isEmpty == true) return 'Please enter a unique SKU.';
-                        return null;
-                      },
+                      isRequired: true,
+                      validation: 'Please enter a unique SKU.',
+                      // TODO: Refactor product form state management
+                      onChanged: (_) {},
                     ),
                   ),
                   const UIHorizontalSpace(16),
                   Expanded(
-                    child: UITextFormField.topLabel(
+                    child: UITextFormField.vertical(
                       label: 'Warning Stock Level',
                       hint: 'Enter warning stock',
                       controller: warningStockController,
                       formatter: [FilteringTextInputFormatter.digitsOnly],
+                      // TODO: Refactor product form state management
+                      onChanged: (_) {},
                     ),
                   ),
                   const UIHorizontalSpace(16),
                   Expanded(
-                    child: UITextFormField.topLabel(
+                    child: UITextFormField.vertical(
                       label: 'Ideal Stock level',
                       hint: 'Enter ideal stock level',
                       controller: idealStockController,
                       formatter: [FilteringTextInputFormatter.digitsOnly],
+                      // TODO: Refactor product form state management
+                      onChanged: (_) {},
                     ),
                   ),
                 ],
@@ -87,10 +90,10 @@ class StockKeepingUnitDetails extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
-                      child: UITextFormField.topLabel(
+                      child: UITextFormField.vertical(
                         label: 'Cost (PHP)',
                         hint: 'Enter cost',
-                        showRequired: true,
+                        isRequired: true,
                         controller: costController,
                         formatter: [CurrencyInputFormatter()],
                         validator: (value) {
@@ -100,6 +103,8 @@ class StockKeepingUnitDetails extends StatelessWidget {
                           }
                           return null;
                         },
+                        // TODO: Refactor product form state management
+                        onChanged: (_) {},
                       ),
                     ),
                   ),
