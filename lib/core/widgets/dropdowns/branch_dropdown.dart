@@ -69,7 +69,7 @@ class BranchDropdown extends StatelessWidget {
     bool required = false,
     bool isMultiSelect = false,
     bool showSelectedItems = false,
-    Function(Branch value)? onSelectItem,
+    required Function(Branch value) onSelectItem,
     List<Branch>? selectedItems,
     Branch? selectedItem,
     Function(int value)? onDeleteItem,
@@ -358,7 +358,9 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                 // TODO: Auto validation on user interaction, currently it only shows validation upon clicking 'Save'
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (_) {
-                  if (widget.selectedItems?.isEmpty == true) return 'Please select at least one supplier.';
+                  if (widget.selectedItems?.isEmpty == true) {
+                    return 'Please select branches to add product price and QOH.';
+                  }
                   return null;
                 },
                 decoration: InputDecoration(

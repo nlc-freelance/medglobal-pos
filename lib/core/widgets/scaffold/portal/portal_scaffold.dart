@@ -4,8 +4,8 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 
-class ScaffoldLayout extends StatelessWidget {
-  const ScaffoldLayout({
+class PortalScaffold extends StatelessWidget {
+  const PortalScaffold({
     required this.navigationShell,
     required this.routerState,
     super.key,
@@ -23,13 +23,13 @@ class ScaffoldLayout extends StatelessWidget {
             BlocBuilder<SidebarCubit, bool>(
               builder: (context, state) => Visibility(
                 visible: state,
-                child: SideNavBar(currentMenu: routerState.topRoute!.name!),
+                child: PortalSidebar(currentMenu: routerState.topRoute!.name!),
               ),
             ),
             Expanded(
               child: Column(
                 children: [
-                  AppNavBar(path: routerState.fullPath!.transformPathToText),
+                  PortalTopbar(path: routerState.fullPath!.transformPathToText),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 16.0),
