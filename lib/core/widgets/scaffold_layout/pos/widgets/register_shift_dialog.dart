@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/enums/register_shift.dart';
 import 'package:medglobal_admin_portal/core/widgets/cancel_action_button.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
@@ -82,7 +83,7 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
                     label: shiftAction.inputLabel,
                     hint: 'PHP 0',
                     isRequired: true,
-                    formatter: [FilteringTextInputFormatter.digitsOnly],
+                    formatter: [CurrencyInputFormatter()],
                     controller: _amountCtrl,
                     validation: shiftAction.validationText,
                   ),
