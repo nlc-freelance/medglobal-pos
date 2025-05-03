@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/empty_grid_widget.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax/tax_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/presentation/cubit/tax_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/presentation/tax_form/tax_form_dialog.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -19,7 +20,10 @@ class TaxDataGridEmpty extends StatelessWidget {
           onClick: () => showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (_) => TaxFormDialog(cubit: context.read<TaxFormCubit>()),
+            builder: (_) => TaxFormDialog(
+              cubit: context.read<TaxFormCubit>(),
+              bloc: context.read<TaxBloc>(),
+            ),
           ),
         ),
       );

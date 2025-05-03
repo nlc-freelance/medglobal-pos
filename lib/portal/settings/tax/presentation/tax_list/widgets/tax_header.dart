@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax/tax_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/presentation/cubit/tax_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/presentation/tax_form/tax_form_dialog.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -19,7 +20,13 @@ class TaxHeader extends StatelessWidget with DialogMixin {
           UIButton.filled(
             Strings.taxCreate,
             icon: Assets.icons.add.setSize(12.0),
-            onClick: () => showCustomDialog(context, dialog: TaxFormDialog(cubit: context.read<TaxFormCubit>())),
+            onClick: () => showCustomDialog(
+              context,
+              dialog: TaxFormDialog(
+                cubit: context.read<TaxFormCubit>(),
+                bloc: context.read<TaxBloc>(),
+              ),
+            ),
           )
         ],
       ),

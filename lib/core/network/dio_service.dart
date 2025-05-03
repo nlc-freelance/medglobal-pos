@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/network/interceptors/error_interceptor.dart';
-import 'package:medglobal_admin_portal/core/network/interceptors/request_interceptor.dart';
+import 'package:medglobal_admin_portal/core/network/new/dio/interceptors/error_interceptor.dart';
+import 'package:medglobal_admin_portal/core/network/new/dio/interceptors/request_interceptor.dart';
 import 'package:medglobal_admin_portal/core/network/models/api_response.dart';
 
 class DioService {

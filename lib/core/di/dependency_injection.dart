@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/blocs/sidebar_cubit.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/core/network/dio_service.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/authentication/data/api/auth_api.dart';
 import 'package:medglobal_admin_portal/portal/authentication/data/api/auth_service.dart';
 import 'package:medglobal_admin_portal/portal/authentication/data/repositories/auth_repository_impl.dart';
@@ -71,6 +72,11 @@ import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentati
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/sales_per_shift_list/sales_per_shift_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transaction_page_size_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transactions_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/data/api/tax_api.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/data/repository/tax_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/domain/repository/tax_repository.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax/tax_bloc.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax_list_bloc/tax_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/api/purchase_order_api.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/repositories/purchase_order_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
@@ -197,242 +203,263 @@ import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/tr
 
 /// lazySingleton are only initialized when needed while factory are always initialized
 
-GetIt injector = GetIt.instance;
+GetIt inject = GetIt.instance;
 
 void initDependencyInjection() {
-  injector
+  initCoreDependencies();
+  initAll();
+  initTaxDependencies();
+}
+
+void initCoreDependencies() {
+  inject
+    ..registerSingleton(DioServiceNew())
+    ..registerSingleton(BaseApiService(inject()));
+}
+
+void initTaxDependencies() {
+  inject
+    ..registerLazySingleton<TaxApi>(() => TaxApi(inject<BaseApiService>()))
+    ..registerLazySingleton<TaxRepository>(() => TaxRepositoryImpl(inject<TaxApi>()))
+    ..registerFactory<TaxListBloc>(() => TaxListBloc(inject<TaxRepository>()))
+    ..registerFactory<TaxBloc>(() => TaxBloc(inject<TaxRepository>()));
+}
+
+// TODO: Break down into smaller init methods
+void initAll() {
+  inject
 
     /// Dio
     ..registerSingleton<DioService>(DioService())
 
     /// API Service
-    ..registerSingleton<ApiService>(ApiService(injector()))
+    ..registerSingleton<ApiService>(ApiService(inject()))
     ..registerSingleton<AuthService>(AuthService())
 
     /// API
     /// Portal
-    ..registerLazySingleton<AuthApi>(() => AuthApiImpl(injector()))
-    ..registerLazySingleton<SupplierApi>(() => SupplierApiImpl(injector()))
-    ..registerLazySingleton<CategoryApi>(() => CategoryApiImpl(injector()))
-    ..registerLazySingleton<ProductApi>(() => ProductApiImpl(injector()))
-    ..registerLazySingleton<BranchApi>(() => BranchApiImpl(injector()))
-    ..registerLazySingleton<ProductVariantApi>(() => ProductVariantApiImpl(injector()))
-    ..registerLazySingleton<SupplyNeedsApi>(() => SupplyNeedsApiImpl(injector()))
-    ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(injector()))
-    ..registerLazySingleton<StockReturnApi>(() => StockReturnApiImpl(injector()))
-    ..registerLazySingleton<StockTransferApi>(() => StockTransferApiImpl(injector()))
-    ..registerLazySingleton<StockTakeApi>(() => StockTakeApiImpl(injector()))
-    ..registerLazySingleton<TransactionApi>(() => TransactionApiImpl(injector()))
-    ..registerLazySingleton<ReturnApi>(() => ReturnApiImpl(injector()))
-    ..registerLazySingleton<ProductHistoryApi>(() => ProductHistoryApiImpl(injector()))
-    ..registerLazySingleton<ReportsApi>(() => ReportsApiImpl(injector()))
-    ..registerLazySingleton<SalesPerCategoryApi>(() => SalesPerCategoryApiImpl(injector()))
-    ..registerLazySingleton<SalesPerShiftApi>(() => SalesPerShiftApiImpl(injector()))
+    ..registerLazySingleton<AuthApi>(() => AuthApiImpl(inject()))
+    ..registerLazySingleton<SupplierApi>(() => SupplierApiImpl(inject()))
+    ..registerLazySingleton<CategoryApi>(() => CategoryApiImpl(inject()))
+    ..registerLazySingleton<ProductApi>(() => ProductApiImpl(inject()))
+    ..registerLazySingleton<BranchApi>(() => BranchApiImpl(inject()))
+    ..registerLazySingleton<ProductVariantApi>(() => ProductVariantApiImpl(inject()))
+    ..registerLazySingleton<SupplyNeedsApi>(() => SupplyNeedsApiImpl(inject()))
+    ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(inject()))
+    ..registerLazySingleton<StockReturnApi>(() => StockReturnApiImpl(inject()))
+    ..registerLazySingleton<StockTransferApi>(() => StockTransferApiImpl(inject()))
+    ..registerLazySingleton<StockTakeApi>(() => StockTakeApiImpl(inject()))
+    ..registerLazySingleton<TransactionApi>(() => TransactionApiImpl(inject()))
+    ..registerLazySingleton<ReturnApi>(() => ReturnApiImpl(inject()))
+    ..registerLazySingleton<ProductHistoryApi>(() => ProductHistoryApiImpl(inject()))
+    ..registerLazySingleton<ReportsApi>(() => ReportsApiImpl(inject()))
+    ..registerLazySingleton<SalesPerCategoryApi>(() => SalesPerCategoryApiImpl(inject()))
+    ..registerLazySingleton<SalesPerShiftApi>(() => SalesPerShiftApiImpl(inject()))
 
     /// POS
-    ..registerLazySingleton<RegisterShiftApi>(() => RegisterShiftApiImpl(injector()))
-    ..registerLazySingleton<RegisterApi>(() => RegisterApiImpl(injector()))
-    ..registerLazySingleton<POSProductApi>(() => POSProductApiImpl(injector()))
-    ..registerLazySingleton<SaleApi>(() => SaleApiImpl(injector()))
-    ..registerLazySingleton<RefundApi>(() => RefundApiImpl(injector()))
+    ..registerLazySingleton<RegisterShiftApi>(() => RegisterShiftApiImpl(inject()))
+    ..registerLazySingleton<RegisterApi>(() => RegisterApiImpl(inject()))
+    ..registerLazySingleton<POSProductApi>(() => POSProductApiImpl(inject()))
+    ..registerLazySingleton<SaleApi>(() => SaleApiImpl(inject()))
+    ..registerLazySingleton<RefundApi>(() => RefundApiImpl(inject()))
 
     /// Repository
     /// Portal
-    ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(injector()))
-    ..registerLazySingleton<SupplierRepository>(() => SupplierRepositoryImpl(injector()))
-    ..registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(injector()))
-    ..registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(injector()))
-    ..registerLazySingleton<BranchRepository>(() => BranchRepositoryImpl(injector()))
-    ..registerLazySingleton<SupplyNeedsRepository>(() => SupplyNeedsRepositoryImpl(injector()))
-    ..registerLazySingleton<PurchaseOrderRepository>(() => PurchaseOrderRepositoryImpl(injector()))
-    ..registerLazySingleton<StockReturnRepository>(() => StockReturnRepositoryImpl(injector()))
-    ..registerLazySingleton<StockTransferRepository>(() => StockTransferRepositoryImpl(injector()))
-    ..registerLazySingleton<StockTakeRepository>(() => StockTakeRepositoryImpl(injector()))
-    ..registerLazySingleton<TransactionRepository>(() => TransactionRepositoryImpl(injector()))
-    ..registerLazySingleton<ReturnRepository>(() => ReturnRepositoryImpl(injector()))
-    ..registerLazySingleton<ProductHistoryRepository>(() => ProductHistoryRepositoryImpl(injector()))
-    ..registerLazySingleton<ReportRepository>(() => ReportRepositoryImpl(injector()))
-    ..registerLazySingleton<SalesPerCategoryRepository>(() => SalesPerCategoryRepositoryImpl(injector()))
-    ..registerLazySingleton<SalesPerShiftRepository>(() => SalesPerShiftRepositoryImpl(injector()))
+    ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(inject()))
+    ..registerLazySingleton<SupplierRepository>(() => SupplierRepositoryImpl(inject()))
+    ..registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(inject()))
+    ..registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(inject()))
+    ..registerLazySingleton<BranchRepository>(() => BranchRepositoryImpl(inject()))
+    ..registerLazySingleton<SupplyNeedsRepository>(() => SupplyNeedsRepositoryImpl(inject()))
+    ..registerLazySingleton<PurchaseOrderRepository>(() => PurchaseOrderRepositoryImpl(inject()))
+    ..registerLazySingleton<StockReturnRepository>(() => StockReturnRepositoryImpl(inject()))
+    ..registerLazySingleton<StockTransferRepository>(() => StockTransferRepositoryImpl(inject()))
+    ..registerLazySingleton<StockTakeRepository>(() => StockTakeRepositoryImpl(inject()))
+    ..registerLazySingleton<TransactionRepository>(() => TransactionRepositoryImpl(inject()))
+    ..registerLazySingleton<ReturnRepository>(() => ReturnRepositoryImpl(inject()))
+    ..registerLazySingleton<ProductHistoryRepository>(() => ProductHistoryRepositoryImpl(inject()))
+    ..registerLazySingleton<ReportRepository>(() => ReportRepositoryImpl(inject()))
+    ..registerLazySingleton<SalesPerCategoryRepository>(() => SalesPerCategoryRepositoryImpl(inject()))
+    ..registerLazySingleton<SalesPerShiftRepository>(() => SalesPerShiftRepositoryImpl(inject()))
 
     /// POS
-    ..registerLazySingleton<RegisterShiftRepository>(() => RegisterShiftRepositoryImpl(injector()))
-    ..registerLazySingleton<RegisterRepository>(() => RegisterRepositoryImpl(injector()))
-    ..registerLazySingleton<POSProductRepository>(() => POSProductRepositoryImpl(injector()))
-    ..registerLazySingleton<SaleRepository>(() => SaleRepositoryImpl(injector()))
-    ..registerLazySingleton<RefundRepository>(() => RefundRepositoryImpl(injector()))
+    ..registerLazySingleton<RegisterShiftRepository>(() => RegisterShiftRepositoryImpl(inject()))
+    ..registerLazySingleton<RegisterRepository>(() => RegisterRepositoryImpl(inject()))
+    ..registerLazySingleton<POSProductRepository>(() => POSProductRepositoryImpl(inject()))
+    ..registerLazySingleton<SaleRepository>(() => SaleRepositoryImpl(inject()))
+    ..registerLazySingleton<RefundRepository>(() => RefundRepositoryImpl(inject()))
 
     /// Usecases
     ///
     /// Portal
     /// Authentication UseCase
-    ..registerLazySingleton(() => Login(injector()))
-    ..registerLazySingleton(() => ConfirmFirstTimeLogin(injector()))
-    ..registerLazySingleton(() => GetAuthSession(injector()))
-    ..registerLazySingleton(() => Logout(injector()))
+    ..registerLazySingleton(() => Login(inject()))
+    ..registerLazySingleton(() => ConfirmFirstTimeLogin(inject()))
+    ..registerLazySingleton(() => GetAuthSession(inject()))
+    ..registerLazySingleton(() => Logout(inject()))
 
     /// Supplier UseCase
-    ..registerLazySingleton(() => GetSuppliersUseCase(injector()))
-    ..registerLazySingleton(() => GetSupplierByIdUseCase(injector()))
-    ..registerLazySingleton(() => CreateSupplierUseCase(injector()))
-    ..registerLazySingleton(() => UpdateSupplierUseCase(injector()))
-    ..registerLazySingleton(() => DeleteSupplierUseCase(injector()))
+    ..registerLazySingleton(() => GetSuppliersUseCase(inject()))
+    ..registerLazySingleton(() => GetSupplierByIdUseCase(inject()))
+    ..registerLazySingleton(() => CreateSupplierUseCase(inject()))
+    ..registerLazySingleton(() => UpdateSupplierUseCase(inject()))
+    ..registerLazySingleton(() => DeleteSupplierUseCase(inject()))
 
     /// Branch UseCase
-    ..registerLazySingleton(() => GetBranchesUseCase(injector()))
+    ..registerLazySingleton(() => GetBranchesUseCase(inject()))
 
     /// Category UseCase
-    ..registerLazySingleton(() => AddCategoryUseCase(injector()))
-    ..registerLazySingleton(() => GetCategoriesUseCase(injector()))
+    ..registerLazySingleton(() => AddCategoryUseCase(inject()))
+    ..registerLazySingleton(() => GetCategoriesUseCase(inject()))
 
     /// Product UseCase
-    ..registerLazySingleton(() => GetProductsUseCase(injector()))
-    ..registerLazySingleton(() => BulkUpdateProductsUseCase(injector()))
-    ..registerLazySingleton(() => BulkDeleteProductsUseCase(injector()))
-    ..registerLazySingleton(() => GetProductByIdUseCase(injector()))
-    ..registerLazySingleton(() => CreateProductUseCase(injector()))
-    ..registerLazySingleton(() => UpdateProductUseCase(injector()))
-    ..registerLazySingleton(() => DeleteProductUseCase(injector()))
+    ..registerLazySingleton(() => GetProductsUseCase(inject()))
+    ..registerLazySingleton(() => BulkUpdateProductsUseCase(inject()))
+    ..registerLazySingleton(() => BulkDeleteProductsUseCase(inject()))
+    ..registerLazySingleton(() => GetProductByIdUseCase(inject()))
+    ..registerLazySingleton(() => CreateProductUseCase(inject()))
+    ..registerLazySingleton(() => UpdateProductUseCase(inject()))
+    ..registerLazySingleton(() => DeleteProductUseCase(inject()))
 
     /// Stock Management
     /// Supply Needs
-    ..registerLazySingleton(() => GetSupplyNeedsUseCase(injector()))
+    ..registerLazySingleton(() => GetSupplyNeedsUseCase(inject()))
 
     /// Purchase Order
-    ..registerLazySingleton(() => GetPurchaseOrdersUseCase(injector()))
-    ..registerLazySingleton(() => GetPurchaseOrderByIdUseCase(injector()))
-    ..registerLazySingleton(() => CreatePurchaseOrderUseCase(injector()))
-    ..registerLazySingleton(() => UpdatePurchaseOrderUseCase(injector()))
-    ..registerLazySingleton(() => DeletePurchaseOrderUseCase(injector()))
+    ..registerLazySingleton(() => GetPurchaseOrdersUseCase(inject()))
+    ..registerLazySingleton(() => GetPurchaseOrderByIdUseCase(inject()))
+    ..registerLazySingleton(() => CreatePurchaseOrderUseCase(inject()))
+    ..registerLazySingleton(() => UpdatePurchaseOrderUseCase(inject()))
+    ..registerLazySingleton(() => DeletePurchaseOrderUseCase(inject()))
 
     /// Stock Return
-    ..registerLazySingleton(() => GetStockReturnsUseCase(injector()))
-    ..registerLazySingleton(() => GetStockReturnByIdUseCase(injector()))
-    ..registerLazySingleton(() => CreateStockReturnUseCase(injector()))
-    ..registerLazySingleton(() => UpdateStockReturnUseCase(injector()))
+    ..registerLazySingleton(() => GetStockReturnsUseCase(inject()))
+    ..registerLazySingleton(() => GetStockReturnByIdUseCase(inject()))
+    ..registerLazySingleton(() => CreateStockReturnUseCase(inject()))
+    ..registerLazySingleton(() => UpdateStockReturnUseCase(inject()))
 
     /// Stock Transfer
-    ..registerLazySingleton(() => GetStockTransfersUseCase(injector()))
-    ..registerLazySingleton(() => GetStockTransferByIdUseCase(injector()))
-    ..registerLazySingleton(() => CreateStockTransferUseCase(injector()))
-    ..registerLazySingleton(() => UpdateStockTransferUseCase(injector()))
-    ..registerLazySingleton(() => DeleteStockTransferUseCase(injector()))
+    ..registerLazySingleton(() => GetStockTransfersUseCase(inject()))
+    ..registerLazySingleton(() => GetStockTransferByIdUseCase(inject()))
+    ..registerLazySingleton(() => CreateStockTransferUseCase(inject()))
+    ..registerLazySingleton(() => UpdateStockTransferUseCase(inject()))
+    ..registerLazySingleton(() => DeleteStockTransferUseCase(inject()))
 
     /// Stock Take
-    ..registerLazySingleton(() => GetStockTakesUseCase(injector()))
-    ..registerLazySingleton(() => GetStockTakeByIdUseCase(injector()))
-    ..registerLazySingleton(() => GetStockTakeItemsByIdUseCase(injector()))
-    ..registerLazySingleton(() => CreateStockTakeUseCase(injector()))
-    ..registerLazySingleton(() => UpdateStockTakeUseCase(injector()))
-    ..registerLazySingleton(() => UpdateStockTakeItemsByIdUseCase(injector()))
+    ..registerLazySingleton(() => GetStockTakesUseCase(inject()))
+    ..registerLazySingleton(() => GetStockTakeByIdUseCase(inject()))
+    ..registerLazySingleton(() => GetStockTakeItemsByIdUseCase(inject()))
+    ..registerLazySingleton(() => CreateStockTakeUseCase(inject()))
+    ..registerLazySingleton(() => UpdateStockTakeUseCase(inject()))
+    ..registerLazySingleton(() => UpdateStockTakeItemsByIdUseCase(inject()))
 
     /// Transactions
-    ..registerLazySingleton(() => GetTransactionsUseCase(injector()))
-    ..registerLazySingleton(() => GetTransactionByIdUseCase(injector()))
-    ..registerLazySingleton(() => UpdateReturnTransactionUseCase(injector()))
+    ..registerLazySingleton(() => GetTransactionsUseCase(inject()))
+    ..registerLazySingleton(() => GetTransactionByIdUseCase(inject()))
+    ..registerLazySingleton(() => UpdateReturnTransactionUseCase(inject()))
 
     /// Reports
-    ..registerLazySingleton(() => GetProductHistoryUseCase(injector()))
-    ..registerLazySingleton(() => GetReportByIdUseCase(injector()))
-    ..registerLazySingleton(() => CreateReportUseCase(injector()))
-    ..registerLazySingleton(() => GetSalesPerCategoryUseCase(injector()))
-    ..registerLazySingleton(() => GetSalesPerShiftUseCase(injector()))
-    ..registerLazySingleton(() => GetSalesPerShiftByIdUseCase(injector()))
+    ..registerLazySingleton(() => GetProductHistoryUseCase(inject()))
+    ..registerLazySingleton(() => GetReportByIdUseCase(inject()))
+    ..registerLazySingleton(() => CreateReportUseCase(inject()))
+    ..registerLazySingleton(() => GetSalesPerCategoryUseCase(inject()))
+    ..registerLazySingleton(() => GetSalesPerShiftUseCase(inject()))
+    ..registerLazySingleton(() => GetSalesPerShiftByIdUseCase(inject()))
 
     /// POS
     /// Open Close Shift
-    // ..registerLazySingleton(() => OpenShiftUseCase(injector()))
-    // ..registerLazySingleton(() => CloseShiftUseCase(injector()))
+    // ..registerLazySingleton(() => OpenShiftUseCase(inject()))
+    // ..registerLazySingleton(() => CloseShiftUseCase(inject()))
 
     ///
     /// Register
-    ..registerLazySingleton(() => GetRegistersUseCase(injector()))
+    ..registerLazySingleton(() => GetRegistersUseCase(inject()))
 
     ///
     /// Register Items
-    ..registerLazySingleton(() => GetPOSProductsUseCase(injector()))
-    ..registerLazySingleton(() => CreateSaleUseCase(injector()))
+    ..registerLazySingleton(() => GetPOSProductsUseCase(inject()))
+    ..registerLazySingleton(() => CreateSaleUseCase(inject()))
 
     ///
     /// Issue Refund
-    ..registerLazySingleton(() => CreateRefundTransactionUseCase(injector()))
+    ..registerLazySingleton(() => CreateRefundTransactionUseCase(inject()))
 
     /// Bloc
-    ..registerFactory(() => AuthBloc(injector(), injector(), injector(), injector()))
+    ..registerFactory(() => AuthBloc(inject(), inject(), inject(), inject()))
     ..registerFactory(() => SidebarCubit())
-    ..registerFactory(() => SupplierListCubit(injector()))
+    ..registerFactory(() => SupplierListCubit(inject()))
     ..registerFactory(() => SupplierListFilterCubit())
-    ..registerFactory(() => SupplierCubit(injector(), injector(), injector(), injector()))
-    ..registerFactory(() => CategoryCubit(injector()))
+    ..registerFactory(() => SupplierCubit(inject(), inject(), inject(), inject()))
+    ..registerFactory(() => CategoryCubit(inject()))
     ..registerFactory(() => ProductSelectionCubit())
-    ..registerFactory(() => ProductBulkActionCubit(injector(), injector()))
-    ..registerFactory(() => ProductListCubit(injector()))
+    ..registerFactory(() => ProductBulkActionCubit(inject(), inject()))
+    ..registerFactory(() => ProductListCubit(inject()))
     ..registerFactory(() => ProductListFilterCubit())
-    ..registerFactory(() => ProductCubit(injector(), injector(), injector(), injector()))
+    ..registerFactory(() => ProductCubit(inject(), inject(), inject(), inject()))
     ..registerFactory(() => ProductFormCubit())
     ..registerFactory(() => VariantFormCubit())
     ..registerFactory(() => VariantFormUiCubit())
-    ..registerFactory(() => SupplyNeedsCubit(injector()))
+    ..registerFactory(() => SupplyNeedsCubit(inject()))
     ..registerFactory(() => SupplyNeedCubit())
-    ..registerFactory(() => PurchaseOrderListRemoteCubit(injector()))
+    ..registerFactory(() => PurchaseOrderListRemoteCubit(inject()))
     ..registerFactory(() => PurchaseOrderListFilterCubit())
-    ..registerFactory(() => PurchaseOrderRemoteCubit(injector(), injector(), injector(), injector()))
+    ..registerFactory(() => PurchaseOrderRemoteCubit(inject(), inject(), inject(), inject()))
     ..registerFactory(() => PurchaseOrderCubit())
     ..registerFactory(() => NewPurchaseOrderCubit())
-    ..registerFactory(() => StockReturnListRemoteCubit(injector()))
+    ..registerFactory(() => StockReturnListRemoteCubit(inject()))
     ..registerFactory(() => StockReturnListFilterCubit())
-    ..registerFactory(() => StockReturnRemoteCubit(injector(), injector(), injector()))
+    ..registerFactory(() => StockReturnRemoteCubit(inject(), inject(), inject()))
     ..registerFactory(() => StockReturnCubit())
     ..registerFactory(() => NewStockReturnCubit())
-    ..registerFactory(() => StockTransferListRemoteCubit(injector()))
+    ..registerFactory(() => StockTransferListRemoteCubit(inject()))
     ..registerFactory(() => StockTransferListFilterCubit())
-    ..registerFactory(() => StockTransferRemoteCubit(injector(), injector(), injector(), injector()))
+    ..registerFactory(() => StockTransferRemoteCubit(inject(), inject(), inject(), inject()))
     ..registerFactory(() => StockTransferCubit())
     ..registerFactory(() => NewStockTransferCubit())
-    ..registerFactory(() => StockTakeListRemoteCubit(injector()))
+    ..registerFactory(() => StockTakeListRemoteCubit(inject()))
     ..registerFactory(() => StockTakeListFilterCubit())
-    ..registerFactory(() => StockTakeBloc(injector(), injector(), injector()))
-    ..registerFactory(() => UncountedItemsListCubit(injector()))
+    ..registerFactory(() => StockTakeBloc(inject(), inject(), inject()))
+    ..registerFactory(() => UncountedItemsListCubit(inject()))
     ..registerFactory(() => UncountedItemsListFilterCubit())
-    ..registerFactory(() => CountedItemsListCubit(injector()))
+    ..registerFactory(() => CountedItemsListCubit(inject()))
     ..registerFactory(() => CountedItemsListFilterCubit())
     ..registerFactory(() => StockTakeCubit())
-    ..registerFactory(() => StockTakeItemsCubit(injector()))
+    ..registerFactory(() => StockTakeItemsCubit(inject()))
     ..registerFactory(() => NewStockTakeCubit())
     ..registerFactory(() => UncountedItemsDraftCubit())
-    ..registerFactory(() => SaleTransactionListCubit(injector()))
-    ..registerFactory(() => TransactionCubit(injector()))
-    ..registerFactory(() => ReturnTransactionListCubit(injector()))
+    ..registerFactory(() => SaleTransactionListCubit(inject()))
+    ..registerFactory(() => TransactionCubit(inject()))
+    ..registerFactory(() => ReturnTransactionListCubit(inject()))
     ..registerFactory(() => ReturnCubit())
-    ..registerFactory(() => ReturnRemoteCubit(injector()))
+    ..registerFactory(() => ReturnRemoteCubit(inject()))
     ..registerFactory(() => SaleTransactionListFilterCubit())
     ..registerFactory(() => ReturnTransactionListFilterCubit())
-    ..registerFactory(() => CategoryLazyListCubit(injector()))
-    ..registerFactory(() => BranchLazyListCubit(injector()))
-    ..registerFactory(() => SupplierLazyListCubit(injector()))
-    ..registerFactory(() => ProductHistoryListCubit(injector()))
+    ..registerFactory(() => CategoryLazyListCubit(inject()))
+    ..registerFactory(() => BranchLazyListCubit(inject()))
+    ..registerFactory(() => SupplierLazyListCubit(inject()))
+    ..registerFactory(() => ProductHistoryListCubit(inject()))
     ..registerFactory(() => ProductHistoryListFilterCubit())
-    ..registerFactory(() => ReportsBloc(injector(), injector()))
+    ..registerFactory(() => ReportsBloc(inject(), inject()))
     ..registerFactory(() => SalesCategoryFilterCubit())
     ..registerFactory(() => SalesCategoryGroupByCubit())
     ..registerFactory(() => SalesCategoryPeriodCubit())
-    ..registerFactory(() => SalesPerCategoryCubit(injector()))
-    ..registerFactory(() => SalesPerShiftListCubit(injector()))
+    ..registerFactory(() => SalesPerCategoryCubit(inject()))
+    ..registerFactory(() => SalesPerShiftListCubit(inject()))
     ..registerFactory(() => SalesPerShiftListFilterCubit())
-    ..registerFactory(() => SalesPerShiftCubit(injector()))
-    ..registerFactory(() => ShiftTransactionsCubit(injector()))
+    ..registerFactory(() => SalesPerShiftCubit(inject()))
+    ..registerFactory(() => ShiftTransactionsCubit(inject()))
     ..registerFactory(() => ShiftTransactionPageSizeCubit())
 
     /// POS
-    ..registerFactory(() => RegisterLazyListCubit(injector()))
-    ..registerFactory(() => RegisterShiftBloc(injector()))
+    ..registerFactory(() => RegisterLazyListCubit(inject()))
+    ..registerFactory(() => RegisterShiftBloc(inject()))
     ..registerFactory(() => RegisterCubit())
-    ..registerFactory(() => POSProductListRemoteCubit(injector()))
+    ..registerFactory(() => POSProductListRemoteCubit(inject()))
     ..registerFactory(() => ProductSearchCubit())
     ..registerFactory(() => OrderCubit())
-    ..registerFactory(() => SaleRemoteCubit(injector()))
-    ..registerFactory(() => TransactionListByBranchCubit(injector()))
+    ..registerFactory(() => SaleRemoteCubit(inject()))
+    ..registerFactory(() => TransactionListByBranchCubit(inject()))
     ..registerFactory(() => RefundCubit())
-    ..registerFactory(() => RefundRemoteCubit(injector()))
+    ..registerFactory(() => RefundRemoteCubit(inject()))
     ..registerFactory(() => PrintReceiptCubit());
 }

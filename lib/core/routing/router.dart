@@ -14,7 +14,6 @@ import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentati
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_list/sales_per_shift_page.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/branch_form/branch_form_page.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/branch_list/branch_list_page.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/pos_register/presentation/pos_register_list/pos_register_list_page.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/presentation/tax_list/tax_list_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/purchase_order_details_page.dart';
