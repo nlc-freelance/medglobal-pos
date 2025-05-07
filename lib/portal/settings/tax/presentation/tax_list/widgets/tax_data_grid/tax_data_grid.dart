@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/domain/entities/tax.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax/tax_bloc.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax_bloc/tax_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax_list_bloc/tax_list_bloc.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/presentation/cubit/tax_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/cubit/tax_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/presentation/tax_form/tax_form_dialog.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/presentation/tax_list/widgets/tax_data_grid/data_grid_pagination.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_pagination.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/presentation/tax_list/widgets/tax_data_grid/tax_data_grid_empty.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -24,9 +24,6 @@ class _TaxDataGridState extends State<TaxDataGrid> {
   late DataGridController _dataGridController;
   late TaxDataGridSource _taxDataGridSource;
 
-  List<Tax> taxCodes = [];
-  int _rowsPerPage = 20;
-
   @override
   void initState() {
     super.initState();
@@ -39,7 +36,7 @@ class _TaxDataGridState extends State<TaxDataGrid> {
       listener: (context, state) {
         state.maybeWhen(
           success: (data) {
-            taxCodes = data.items;
+            final taxCodes = data.items;
             _taxDataGridSource = TaxDataGridSource(context, taxCodes: taxCodes);
           },
           orElse: () {},
@@ -137,10 +134,19 @@ class TaxDataGridSource extends DataGridSource with DialogMixin {
             builder: (isHover) => InkWell(
               onTap: () => _onEditTax(tax),
               hoverColor: UIColors.transparent,
-              child: UIText.dataGridText(
-                cell.value.toString(),
-                color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
-                textDecoration: TextDecoration.underline,
+              child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  UIText.dataGridText(
+                    cell.value.toString(),
+                    color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
+                    textDecoration: TextDecoration.underline,
+                  ),
+                  if (tax.isDefault) ...[
+                    const UIHorizontalSpace(8),
+                    UIText.dataGridHeader('(DEFAULT)'),
+                  ],
+                ],
               ),
             ),
           ),

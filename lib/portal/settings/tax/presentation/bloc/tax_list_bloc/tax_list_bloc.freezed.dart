@@ -36,17 +36,17 @@ mixin _$TaxListEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetAllTaxCodes value) getTaxCodes,
+    required TResult Function(_GetTaxCodes value) getTaxCodes,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetAllTaxCodes value)? getTaxCodes,
+    TResult? Function(_GetTaxCodes value)? getTaxCodes,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetAllTaxCodes value)? getTaxCodes,
+    TResult Function(_GetTaxCodes value)? getTaxCodes,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -95,22 +95,22 @@ class _$TaxListEventCopyWithImpl<$Res, $Val extends TaxListEvent>
 }
 
 /// @nodoc
-abstract class _$$GetAllTaxCodesImplCopyWith<$Res>
+abstract class _$$GetTaxCodesImplCopyWith<$Res>
     implements $TaxListEventCopyWith<$Res> {
-  factory _$$GetAllTaxCodesImplCopyWith(_$GetAllTaxCodesImpl value,
-          $Res Function(_$GetAllTaxCodesImpl) then) =
-      __$$GetAllTaxCodesImplCopyWithImpl<$Res>;
+  factory _$$GetTaxCodesImplCopyWith(
+          _$GetTaxCodesImpl value, $Res Function(_$GetTaxCodesImpl) then) =
+      __$$GetTaxCodesImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int? page, int? size});
 }
 
 /// @nodoc
-class __$$GetAllTaxCodesImplCopyWithImpl<$Res>
-    extends _$TaxListEventCopyWithImpl<$Res, _$GetAllTaxCodesImpl>
-    implements _$$GetAllTaxCodesImplCopyWith<$Res> {
-  __$$GetAllTaxCodesImplCopyWithImpl(
-      _$GetAllTaxCodesImpl _value, $Res Function(_$GetAllTaxCodesImpl) _then)
+class __$$GetTaxCodesImplCopyWithImpl<$Res>
+    extends _$TaxListEventCopyWithImpl<$Res, _$GetTaxCodesImpl>
+    implements _$$GetTaxCodesImplCopyWith<$Res> {
+  __$$GetTaxCodesImplCopyWithImpl(
+      _$GetTaxCodesImpl _value, $Res Function(_$GetTaxCodesImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -119,7 +119,7 @@ class __$$GetAllTaxCodesImplCopyWithImpl<$Res>
     Object? page = freezed,
     Object? size = freezed,
   }) {
-    return _then(_$GetAllTaxCodesImpl(
+    return _then(_$GetTaxCodesImpl(
       page: freezed == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
@@ -134,8 +134,8 @@ class __$$GetAllTaxCodesImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$GetAllTaxCodesImpl implements _GetAllTaxCodes {
-  const _$GetAllTaxCodesImpl({this.page, this.size});
+class _$GetTaxCodesImpl implements _GetTaxCodes {
+  const _$GetTaxCodesImpl({this.page, this.size});
 
   @override
   final int? page;
@@ -151,7 +151,7 @@ class _$GetAllTaxCodesImpl implements _GetAllTaxCodes {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$GetAllTaxCodesImpl &&
+            other is _$GetTaxCodesImpl &&
             (identical(other.page, page) || other.page == page) &&
             (identical(other.size, size) || other.size == size));
   }
@@ -162,9 +162,8 @@ class _$GetAllTaxCodesImpl implements _GetAllTaxCodes {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$GetAllTaxCodesImplCopyWith<_$GetAllTaxCodesImpl> get copyWith =>
-      __$$GetAllTaxCodesImplCopyWithImpl<_$GetAllTaxCodesImpl>(
-          this, _$identity);
+  _$$GetTaxCodesImplCopyWith<_$GetTaxCodesImpl> get copyWith =>
+      __$$GetTaxCodesImplCopyWithImpl<_$GetTaxCodesImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -197,7 +196,7 @@ class _$GetAllTaxCodesImpl implements _GetAllTaxCodes {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetAllTaxCodes value) getTaxCodes,
+    required TResult Function(_GetTaxCodes value) getTaxCodes,
   }) {
     return getTaxCodes(this);
   }
@@ -205,7 +204,7 @@ class _$GetAllTaxCodesImpl implements _GetAllTaxCodes {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetAllTaxCodes value)? getTaxCodes,
+    TResult? Function(_GetTaxCodes value)? getTaxCodes,
   }) {
     return getTaxCodes?.call(this);
   }
@@ -213,7 +212,7 @@ class _$GetAllTaxCodesImpl implements _GetAllTaxCodes {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetAllTaxCodes value)? getTaxCodes,
+    TResult Function(_GetTaxCodes value)? getTaxCodes,
     required TResult orElse(),
   }) {
     if (getTaxCodes != null) {
@@ -223,9 +222,9 @@ class _$GetAllTaxCodesImpl implements _GetAllTaxCodes {
   }
 }
 
-abstract class _GetAllTaxCodes implements TaxListEvent {
-  const factory _GetAllTaxCodes({final int? page, final int? size}) =
-      _$GetAllTaxCodesImpl;
+abstract class _GetTaxCodes implements TaxListEvent {
+  const factory _GetTaxCodes({final int? page, final int? size}) =
+      _$GetTaxCodesImpl;
 
   @override
   int? get page;
@@ -233,7 +232,7 @@ abstract class _GetAllTaxCodes implements TaxListEvent {
   int? get size;
   @override
   @JsonKey(ignore: true)
-  _$$GetAllTaxCodesImplCopyWith<_$GetAllTaxCodesImpl> get copyWith =>
+  _$$GetTaxCodesImplCopyWith<_$GetTaxCodesImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

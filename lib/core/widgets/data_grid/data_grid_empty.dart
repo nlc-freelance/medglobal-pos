@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class EmptyGridWidget extends StatelessWidget {
-  const EmptyGridWidget({
+/// A simple widget as laceholder for empty data grid state
+/// With button for getting started
+///
+/// Used inside the data grid footer when rows are empty
+
+class DataGridEmpty extends StatelessWidget {
+  const DataGridEmpty({
     super.key,
     required this.title,
     required this.subtitle,

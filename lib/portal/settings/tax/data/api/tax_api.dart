@@ -1,3 +1,4 @@
+import 'package:medglobal_admin_portal/core/constants/constants.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/request/create_tax_dto.dart';
@@ -14,7 +15,7 @@ class TaxApi {
       ApiEndpoints.tax,
       queryParams: {
         if (page != null) 'page': page,
-        'size': size ?? 20,
+        'size': size ?? Sizes.defaultPageSize,
       },
       fromJson: TaxDto.fromJson,
     );

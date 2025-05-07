@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/domain/entities/tax.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/repository/tax_repository.dart';
 
 part 'tax_list_event.dart';
@@ -12,10 +12,10 @@ class TaxListBloc extends Bloc<TaxListEvent, TaxListState> {
   final TaxRepository _repository;
 
   TaxListBloc(this._repository) : super(const TaxListState.initial()) {
-    on<_GetAllTaxCodes>(_onGetAllTaxCodes);
+    on<_GetTaxCodes>(_onGetTaxCodes);
   }
 
-  Future<void> _onGetAllTaxCodes(event, emit) async {
+  Future<void> _onGetTaxCodes(event, emit) async {
     emit(const TaxListState.loading());
 
     try {

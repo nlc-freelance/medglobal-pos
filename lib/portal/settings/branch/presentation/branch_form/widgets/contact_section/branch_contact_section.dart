@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/presentation/branch_form/widgets/contact_section/branch_address_subsection.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_form_cubit.dart';
+import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/cubit/branch_form_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class BranchContactSection extends StatefulWidget {
@@ -38,8 +38,9 @@ class _BranchContactSectionState extends State<BranchContactSection> {
               child: UITextFormField.vertical(
                 label: 'Phone',
                 hint: 'Enter contact number',
-                isRequired: true,
                 controller: _phoneController,
+                isRequired: true,
+                validator: FormValidators.required('Please enter a contact number.'),
                 onChanged: (value) => _formCubit.setPhone(value),
               ),
             ),
@@ -55,7 +56,7 @@ class _BranchContactSectionState extends State<BranchContactSection> {
           ],
         ),
         const UIVerticalSpace(30),
-        const BranchAddressSubsection(),
+        // const BranchAddressSubsection(),
       ],
     );
   }

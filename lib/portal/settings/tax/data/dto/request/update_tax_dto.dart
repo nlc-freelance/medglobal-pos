@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/domain/entities/tax.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
 
 part 'update_tax_dto.g.dart';
 

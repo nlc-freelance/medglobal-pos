@@ -72,10 +72,15 @@ import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentati
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/sales_per_shift_list/sales_per_shift_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transaction_page_size_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transactions_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch1_api.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/repository/branch1_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/repository/branch1_repository.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/branch_bloc/branch_bloc.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/branch_list_bloc/branch_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/api/tax_api.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/repository/tax_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/repository/tax_repository.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax/tax_bloc.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax_bloc/tax_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax_list_bloc/tax_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/api/purchase_order_api.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/repositories/purchase_order_repository_impl.dart';
@@ -209,6 +214,7 @@ void initDependencyInjection() {
   initCoreDependencies();
   initAll();
   initTaxDependencies();
+  initBranchDependencies();
 }
 
 void initCoreDependencies() {
@@ -223,6 +229,14 @@ void initTaxDependencies() {
     ..registerLazySingleton<TaxRepository>(() => TaxRepositoryImpl(inject<TaxApi>()))
     ..registerFactory<TaxListBloc>(() => TaxListBloc(inject<TaxRepository>()))
     ..registerFactory<TaxBloc>(() => TaxBloc(inject<TaxRepository>()));
+}
+
+void initBranchDependencies() {
+  inject
+    ..registerLazySingleton<Branch1Api>(() => Branch1Api(inject<BaseApiService>()))
+    ..registerLazySingleton<Branch1Repository>(() => Branch1RepositoryImpl(inject<Branch1Api>()))
+    ..registerFactory<BranchListBloc>(() => BranchListBloc(inject<Branch1Repository>()))
+    ..registerFactory<BranchBloc>(() => BranchBloc(inject<Branch1Repository>()));
 }
 
 // TODO: Break down into smaller init methods

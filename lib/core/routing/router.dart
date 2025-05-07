@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/route_guard.dart';
@@ -12,6 +13,8 @@ import 'package:medglobal_admin_portal/portal/reports/product_history/presentati
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/sales_per_category_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_details/sales_per_shift_details_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_list/sales_per_shift_page.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/repository/branch1_repository.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/branch_bloc/branch_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/branch_form/branch_form_page.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/branch_list/branch_list_page.dart';
 import 'package:medglobal_admin_portal/portal/settings/pos_register/presentation/pos_register_list/pos_register_list_page.dart';
@@ -266,24 +269,53 @@ abstract class AppRouter {
                     path: SideMenuTreeItem.posRegister.path,
                     pageBuilder: (context, state) => const NoTransitionPage(child: PosRegisterListPage()),
                   ),
-                  GoRoute(
-                    name: SideMenuTreeItem.branch.name,
-                    path: SideMenuTreeItem.branch.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: BranchListPage()),
+                  // TODO: Check if this works then refactor everything later to follow the structure
+                  ShellRoute(
+                    pageBuilder: (context, state, child) => NoTransitionPage(
+                      child: BlocProvider(
+                        create: (context) => BranchBloc(GetIt.I<Branch1Repository>()),
+                        child: child,
+                      ),
+                    ),
                     routes: [
                       GoRoute(
-                        name: SideMenuTreeItem.newBranch.name,
-                        path: SideMenuTreeItem.newBranch.path,
-                        pageBuilder: (context, state) => const NoTransitionPage(child: BranchFormPage()),
-                      ),
-                      GoRoute(
-                        name: SideMenuTreeItem.branchDetails.name,
-                        path: SideMenuTreeItem.branchDetails.path,
-                        pageBuilder: (context, state) =>
-                            NoTransitionPage(child: BranchFormPage(id: state.pathParameters['id']!)),
+                        name: SideMenuTreeItem.branch.name,
+                        path: SideMenuTreeItem.branch.path,
+                        pageBuilder: (context, state) => const NoTransitionPage(child: BranchListPage()),
+                        routes: [
+                          GoRoute(
+                            name: SideMenuTreeItem.newBranch.name,
+                            path: SideMenuTreeItem.newBranch.path,
+                            pageBuilder: (context, state) => const NoTransitionPage(child: BranchFormPage()),
+                          ),
+                          GoRoute(
+                            name: SideMenuTreeItem.branchDetails.name,
+                            path: SideMenuTreeItem.branchDetails.path,
+                            pageBuilder: (context, state) =>
+                                NoTransitionPage(child: BranchFormPage(id: state.pathParameters['id']!)),
+                          ),
+                        ],
                       ),
                     ],
                   ),
+                  // GoRoute(
+                  //   name: SideMenuTreeItem.branch.name,
+                  //   path: SideMenuTreeItem.branch.path,
+                  //   pageBuilder: (context, state) => const NoTransitionPage(child: BranchListPage()),
+                  //   routes: [
+                  //     GoRoute(
+                  //       name: SideMenuTreeItem.newBranch.name,
+                  //       path: SideMenuTreeItem.newBranch.path,
+                  //       pageBuilder: (context, state) => const NoTransitionPage(child: BranchFormPage()),
+                  //     ),
+                  //     GoRoute(
+                  //       name: SideMenuTreeItem.branchDetails.name,
+                  //       path: SideMenuTreeItem.branchDetails.path,
+                  //       pageBuilder: (context, state) =>
+                  //           NoTransitionPage(child: BranchFormPage(id: state.pathParameters['id']!)),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ],

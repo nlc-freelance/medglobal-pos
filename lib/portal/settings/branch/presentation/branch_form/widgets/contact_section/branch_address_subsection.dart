@@ -1,7 +1,10 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl_phone_field/countries.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_form_cubit.dart';
+import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/cubit/branch_form_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class BranchAddressSubsection extends StatefulWidget {
@@ -12,11 +15,13 @@ class BranchAddressSubsection extends StatefulWidget {
 }
 
 class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
-  late TextEditingController _streetController;
-  late TextEditingController _barangayController;
+  late TextEditingController _street1Controller;
+  late TextEditingController _street2Controller;
   late TextEditingController _cityController;
-  late TextEditingController _provinceController;
+  late TextEditingController _stateController;
   late TextEditingController _postalCodeController;
+  late TextEditingController _countryController;
+
   late BranchFormCubit _formCubit;
 
   @override
@@ -25,11 +30,12 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
 
     _formCubit = context.read<BranchFormCubit>();
 
-    _streetController = TextEditingController(text: _formCubit.state.street);
-    _barangayController = TextEditingController(text: _formCubit.state.barangay);
+    _street1Controller = TextEditingController(text: _formCubit.state.street1);
+    _street2Controller = TextEditingController(text: _formCubit.state.street2);
     _cityController = TextEditingController(text: _formCubit.state.city);
-    _provinceController = TextEditingController(text: _formCubit.state.province);
+    _stateController = TextEditingController(text: _formCubit.state.state);
     _postalCodeController = TextEditingController(text: _formCubit.state.postalCode);
+    _countryController = TextEditingController(text: _formCubit.state.country);
   }
 
   @override
@@ -41,21 +47,23 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
           children: [
             Expanded(
               child: UITextFormField.vertical(
-                label: 'Street',
-                hint: 'Enter street address',
+                label: 'Street Addess 1',
+                hint: 'Enter street address 1',
+                controller: _street1Controller,
                 isRequired: true,
-                controller: _streetController,
-                onChanged: (value) => _formCubit.setStreet(value),
+                validator: FormValidators.required(''),
+                onChanged: (value) => _formCubit.setStreet1(value),
               ),
             ),
             const UIHorizontalSpace(16),
             Expanded(
               child: UITextFormField.vertical(
-                label: 'Barangay',
-                hint: 'Enter barangay',
+                label: 'Street Address 2',
+                hint: 'Enter street address 2',
+                controller: _street2Controller,
                 isRequired: true,
-                controller: _barangayController,
-                onChanged: (value) => _formCubit.setBarangay(value),
+                validator: FormValidators.required(''),
+                onChanged: (value) => _formCubit.setStreet2(value),
               ),
             ),
           ],
@@ -67,8 +75,9 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
               child: UITextFormField.vertical(
                 label: 'City',
                 hint: 'Enter city',
-                isRequired: true,
                 controller: _cityController,
+                isRequired: true,
+                validator: FormValidators.required(''),
                 onChanged: (value) => _formCubit.setCity(value),
               ),
             ),
@@ -77,9 +86,10 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
               child: UITextFormField.vertical(
                 label: 'Province',
                 hint: 'Enter province',
+                controller: _stateController,
                 isRequired: true,
-                controller: _provinceController,
-                onChanged: (value) => _formCubit.setProvince(value),
+                validator: FormValidators.required(''),
+                onChanged: (value) => _formCubit.setState(value),
               ),
             ),
           ],
@@ -91,19 +101,33 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
               child: UITextFormField.vertical(
                 label: 'Postal Code',
                 hint: 'Enter postal code',
-                isRequired: true,
                 controller: _postalCodeController,
+                isRequired: true,
+                validator: FormValidators.required(''),
                 onChanged: (value) => _formCubit.setPostalCode(value),
               ),
             ),
             const UIHorizontalSpace(16),
-            Expanded(
-              child: UITextFormField.vertical(
+            CountryCodePicker(
+              countryList: countries
+                  .map((c) => {
+                        "name": c.name,
+                        "code": c.code,
+                        "dial_code": c.dialCode,
+                      })
+                  .toList(),
+              onChanged: (c) => _formCubit.setCountry(c.name!),
+              dialogSize: const Size(500, 500),
+              favorite: const ['PH'],
+              showCountryOnly: true,
+              dialogTextStyle: UIStyleText.heading6,
+              builder: (_) => UIDropdownButton.topLabelReadOnly(
+                controller: _countryController,
+                suffixIcon: Assets.icons.arrowDown.setSize(12),
                 label: 'Country',
-                hint: '',
-                controller: TextEditingController(),
+                hint: 'Select Country',
               ),
-            ),
+            )
           ],
         ),
         const UIVerticalSpace(30),
@@ -113,10 +137,10 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
 
   @override
   void dispose() {
-    _streetController.dispose();
-    _barangayController.dispose();
+    _street1Controller.dispose();
+    _street2Controller.dispose();
     _cityController.dispose();
-    _provinceController.dispose();
+    _stateController.dispose();
     _postalCodeController.dispose();
     super.dispose();
   }

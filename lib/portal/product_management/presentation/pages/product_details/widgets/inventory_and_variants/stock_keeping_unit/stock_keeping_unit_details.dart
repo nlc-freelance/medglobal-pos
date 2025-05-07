@@ -39,7 +39,7 @@ class StockKeepingUnitDetails extends StatelessWidget {
                       hint: 'Enter SKU',
                       controller: skuController,
                       isRequired: true,
-                      validation: 'Please enter a unique SKU.',
+                      validator: FormValidators.required('Please enter a unique SKU.'),
                       // TODO: Refactor product form state management
                       onChanged: (_) {},
                     ),

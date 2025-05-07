@@ -20,10 +20,10 @@ mixin _$BranchFormState {
   String? get name => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
-  String? get street => throw _privateConstructorUsedError;
-  String? get barangay => throw _privateConstructorUsedError;
+  String? get street1 => throw _privateConstructorUsedError;
+  String? get street2 => throw _privateConstructorUsedError;
   String? get city => throw _privateConstructorUsedError;
-  String? get province => throw _privateConstructorUsedError;
+  String? get state => throw _privateConstructorUsedError;
   String? get postalCode => throw _privateConstructorUsedError;
   String? get country => throw _privateConstructorUsedError;
   String? get businessRegistrationNumber => throw _privateConstructorUsedError;
@@ -45,10 +45,10 @@ abstract class $BranchFormStateCopyWith<$Res> {
       String? name,
       String? phone,
       String? email,
-      String? street,
-      String? barangay,
+      String? street1,
+      String? street2,
       String? city,
-      String? province,
+      String? state,
       String? postalCode,
       String? country,
       String? businessRegistrationNumber,
@@ -72,10 +72,10 @@ class _$BranchFormStateCopyWithImpl<$Res, $Val extends BranchFormState>
     Object? name = freezed,
     Object? phone = freezed,
     Object? email = freezed,
-    Object? street = freezed,
-    Object? barangay = freezed,
+    Object? street1 = freezed,
+    Object? street2 = freezed,
     Object? city = freezed,
-    Object? province = freezed,
+    Object? state = freezed,
     Object? postalCode = freezed,
     Object? country = freezed,
     Object? businessRegistrationNumber = freezed,
@@ -98,21 +98,21 @@ class _$BranchFormStateCopyWithImpl<$Res, $Val extends BranchFormState>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      street: freezed == street
-          ? _value.street
-          : street // ignore: cast_nullable_to_non_nullable
+      street1: freezed == street1
+          ? _value.street1
+          : street1 // ignore: cast_nullable_to_non_nullable
               as String?,
-      barangay: freezed == barangay
-          ? _value.barangay
-          : barangay // ignore: cast_nullable_to_non_nullable
+      street2: freezed == street2
+          ? _value.street2
+          : street2 // ignore: cast_nullable_to_non_nullable
               as String?,
       city: freezed == city
           ? _value.city
           : city // ignore: cast_nullable_to_non_nullable
               as String?,
-      province: freezed == province
-          ? _value.province
-          : province // ignore: cast_nullable_to_non_nullable
+      state: freezed == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
               as String?,
       postalCode: freezed == postalCode
           ? _value.postalCode
@@ -147,10 +147,10 @@ abstract class _$$BranchFormStateImplCopyWith<$Res>
       String? name,
       String? phone,
       String? email,
-      String? street,
-      String? barangay,
+      String? street1,
+      String? street2,
       String? city,
-      String? province,
+      String? state,
       String? postalCode,
       String? country,
       String? businessRegistrationNumber,
@@ -172,10 +172,10 @@ class __$$BranchFormStateImplCopyWithImpl<$Res>
     Object? name = freezed,
     Object? phone = freezed,
     Object? email = freezed,
-    Object? street = freezed,
-    Object? barangay = freezed,
+    Object? street1 = freezed,
+    Object? street2 = freezed,
     Object? city = freezed,
-    Object? province = freezed,
+    Object? state = freezed,
     Object? postalCode = freezed,
     Object? country = freezed,
     Object? businessRegistrationNumber = freezed,
@@ -198,21 +198,21 @@ class __$$BranchFormStateImplCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      street: freezed == street
-          ? _value.street
-          : street // ignore: cast_nullable_to_non_nullable
+      street1: freezed == street1
+          ? _value.street1
+          : street1 // ignore: cast_nullable_to_non_nullable
               as String?,
-      barangay: freezed == barangay
-          ? _value.barangay
-          : barangay // ignore: cast_nullable_to_non_nullable
+      street2: freezed == street2
+          ? _value.street2
+          : street2 // ignore: cast_nullable_to_non_nullable
               as String?,
       city: freezed == city
           ? _value.city
           : city // ignore: cast_nullable_to_non_nullable
               as String?,
-      province: freezed == province
-          ? _value.province
-          : province // ignore: cast_nullable_to_non_nullable
+      state: freezed == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
               as String?,
       postalCode: freezed == postalCode
           ? _value.postalCode
@@ -242,10 +242,10 @@ class _$BranchFormStateImpl implements _BranchFormState {
       this.name,
       this.phone,
       this.email,
-      this.street,
-      this.barangay,
+      this.street1,
+      this.street2,
       this.city,
-      this.province,
+      this.state,
       this.postalCode,
       this.country,
       this.businessRegistrationNumber,
@@ -260,13 +260,13 @@ class _$BranchFormStateImpl implements _BranchFormState {
   @override
   final String? email;
   @override
-  final String? street;
+  final String? street1;
   @override
-  final String? barangay;
+  final String? street2;
   @override
   final String? city;
   @override
-  final String? province;
+  final String? state;
   @override
   final String? postalCode;
   @override
@@ -278,7 +278,7 @@ class _$BranchFormStateImpl implements _BranchFormState {
 
   @override
   String toString() {
-    return 'BranchFormState(id: $id, name: $name, phone: $phone, email: $email, street: $street, barangay: $barangay, city: $city, province: $province, postalCode: $postalCode, country: $country, businessRegistrationNumber: $businessRegistrationNumber, vatIdNumber: $vatIdNumber)';
+    return 'BranchFormState(id: $id, name: $name, phone: $phone, email: $email, street1: $street1, street2: $street2, city: $city, state: $state, postalCode: $postalCode, country: $country, businessRegistrationNumber: $businessRegistrationNumber, vatIdNumber: $vatIdNumber)';
   }
 
   @override
@@ -290,12 +290,10 @@ class _$BranchFormStateImpl implements _BranchFormState {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.street, street) || other.street == street) &&
-            (identical(other.barangay, barangay) ||
-                other.barangay == barangay) &&
+            (identical(other.street1, street1) || other.street1 == street1) &&
+            (identical(other.street2, street2) || other.street2 == street2) &&
             (identical(other.city, city) || other.city == city) &&
-            (identical(other.province, province) ||
-                other.province == province) &&
+            (identical(other.state, state) || other.state == state) &&
             (identical(other.postalCode, postalCode) ||
                 other.postalCode == postalCode) &&
             (identical(other.country, country) || other.country == country) &&
@@ -314,10 +312,10 @@ class _$BranchFormStateImpl implements _BranchFormState {
       name,
       phone,
       email,
-      street,
-      barangay,
+      street1,
+      street2,
       city,
-      province,
+      state,
       postalCode,
       country,
       businessRegistrationNumber,
@@ -337,10 +335,10 @@ abstract class _BranchFormState implements BranchFormState {
       final String? name,
       final String? phone,
       final String? email,
-      final String? street,
-      final String? barangay,
+      final String? street1,
+      final String? street2,
       final String? city,
-      final String? province,
+      final String? state,
       final String? postalCode,
       final String? country,
       final String? businessRegistrationNumber,
@@ -355,13 +353,13 @@ abstract class _BranchFormState implements BranchFormState {
   @override
   String? get email;
   @override
-  String? get street;
+  String? get street1;
   @override
-  String? get barangay;
+  String? get street2;
   @override
   String? get city;
   @override
-  String? get province;
+  String? get state;
   @override
   String? get postalCode;
   @override

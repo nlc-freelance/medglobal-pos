@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
 
-class FullLoader {
-  FullLoader._();
+class PageLoader {
+  PageLoader._();
 
   static OverlayEntry? _overlayEntry;
 
@@ -28,9 +29,12 @@ class _FullScreenLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.black.withOpacity(0.4),
+      color: Colors.black.withOpacity(0.2),
       child: const Center(
-        child: CircularProgressIndicator(strokeWidth: 2),
+        child: CircularProgressIndicator(
+          color: UIColors.primary,
+          strokeWidth: 2,
+        ),
       ),
     );
   }

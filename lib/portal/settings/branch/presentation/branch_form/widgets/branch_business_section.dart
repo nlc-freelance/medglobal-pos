@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_form_cubit.dart';
+import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/cubit/branch_form_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class BranchBusinessSection extends StatefulWidget {
@@ -37,8 +38,9 @@ class _BranchBusinessSectionState extends State<BranchBusinessSection> {
               child: UITextFormField.vertical(
                 label: 'Business Registration Number (BRN)',
                 hint: 'Enter business registration number',
-                isRequired: true,
                 controller: _brnController,
+                isRequired: true,
+                validator: FormValidators.required('Please enter the BRN.'),
                 onChanged: (value) => _formCubit.setBusinessRegistrationNumber(value),
               ),
             ),

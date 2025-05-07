@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form/product_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/widgets/category_dropdown.dart';
@@ -23,7 +24,7 @@ class ProductNameCategory extends StatelessWidget {
                   hint: 'Enter product name',
                   controller: controller,
                   isRequired: true,
-                  validation: 'Please enter a product name.',
+                  validator: FormValidators.required('Please enter a product name.'),
                   // TODO: Refactor product form state management
                   onChanged: (_) {},
                 ),

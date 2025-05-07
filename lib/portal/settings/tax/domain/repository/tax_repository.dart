@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/domain/entities/tax.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
 
 abstract class TaxRepository {
   /// Retrieves a list of all tax codes

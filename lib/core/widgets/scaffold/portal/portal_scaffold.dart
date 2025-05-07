@@ -11,7 +11,8 @@ class PortalScaffold extends StatelessWidget {
     super.key,
   });
 
-  final StatefulNavigationShell navigationShell;
+  // final StatefulNavigationShell navigationShell;
+  final Widget navigationShell;
   final GoRouterState routerState;
 
   @override

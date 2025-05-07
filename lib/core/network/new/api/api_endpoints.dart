@@ -47,6 +47,7 @@ class ApiEndpoints {
 
   // Branch
   static const String branches = '/stores';
+  static String branchById(int id) => '$branches/$id';
 
   // Reports
   static const String reports = '/reports';

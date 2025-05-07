@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 class PaginatedList<T> extends Equatable {
   final List<T> items;
@@ -49,10 +48,14 @@ class PaginatedList<T> extends Equatable {
   String get pageInfo => 'Page $currentPage of $totalPages';
 
   int get firstPage => 1;
+
   int get previousPage => currentPage - 1;
+
   int get nextPage => currentPage + 1;
+
   int get lastPage => totalPages;
 
   bool get isNotOnFirstPage => !isOnFirstPage;
+
   bool get isNotOnLastPage => !isOnLastPage;
 }

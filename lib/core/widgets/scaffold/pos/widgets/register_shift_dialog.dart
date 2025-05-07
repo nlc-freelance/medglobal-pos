@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/enums/register_shift.dart';
+import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
 import 'package:medglobal_admin_portal/core/widgets/cancel_action_button.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/shared/register/presentation/bloc/register_shift_bloc.dart';
@@ -85,7 +86,7 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
                     isRequired: true,
                     formatter: [CurrencyInputFormatter()],
                     controller: _amountCtrl,
-                    validation: shiftAction.validationText,
+                    validator: FormValidators.required(shiftAction.validationText),
                   ),
                   const UIVerticalSpace(30),
                   if (state is RegisterShiftError) ...[

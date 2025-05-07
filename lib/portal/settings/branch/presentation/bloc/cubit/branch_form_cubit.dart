@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/branch1.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch1.dart';
 
 part 'branch_form_state.dart';
 part 'branch_form_cubit.freezed.dart';
@@ -14,15 +14,15 @@ class BranchFormCubit extends Cubit<BranchFormState> {
 
   void setPhone(String value) => emit(state.copyWith(phone: value));
 
-  void setEmail(String value) => emit(state.copyWith(email: value));
+  void setEmail(String? value) => emit(state.copyWith(email: value));
 
-  void setStreet(String value) => emit(state.copyWith(street: value));
+  void setStreet1(String value) => emit(state.copyWith(street1: value));
 
-  void setBarangay(String value) => emit(state.copyWith(barangay: value));
+  void setStreet2(String value) => emit(state.copyWith(street2: value));
 
   void setCity(String value) => emit(state.copyWith(city: value));
 
-  void setProvince(String value) => emit(state.copyWith(province: value));
+  void setState(String value) => emit(state.copyWith(state: value));
 
   void setPostalCode(String value) => emit(state.copyWith(postalCode: value));
 
@@ -30,7 +30,7 @@ class BranchFormCubit extends Cubit<BranchFormState> {
 
   void setBusinessRegistrationNumber(String value) => emit(state.copyWith(businessRegistrationNumber: value));
 
-  void setVatIdNumber(String value) => emit(state.copyWith(vatIdNumber: value));
+  void setVatIdNumber(String? value) => emit(state.copyWith(vatIdNumber: value));
 
   // void setReceiptTemplate(String value) => emit(state.copyWith(receiptTemplate: value));
 

@@ -20,10 +20,10 @@ mixin _$Branch1 {
   String get name => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
-  String get street => throw _privateConstructorUsedError;
-  String get barangay => throw _privateConstructorUsedError;
+  String get street1 => throw _privateConstructorUsedError;
+  String get street2 => throw _privateConstructorUsedError;
   String get city => throw _privateConstructorUsedError;
-  String get province => throw _privateConstructorUsedError;
+  String get state => throw _privateConstructorUsedError;
   String get postalCode => throw _privateConstructorUsedError;
   String get country => throw _privateConstructorUsedError;
   String get businessRegistrationNumber => throw _privateConstructorUsedError;
@@ -43,10 +43,10 @@ abstract class $Branch1CopyWith<$Res> {
       String name,
       String phone,
       String? email,
-      String street,
-      String barangay,
+      String street1,
+      String street2,
       String city,
-      String province,
+      String state,
       String postalCode,
       String country,
       String businessRegistrationNumber,
@@ -70,10 +70,10 @@ class _$Branch1CopyWithImpl<$Res, $Val extends Branch1>
     Object? name = null,
     Object? phone = null,
     Object? email = freezed,
-    Object? street = null,
-    Object? barangay = null,
+    Object? street1 = null,
+    Object? street2 = null,
     Object? city = null,
-    Object? province = null,
+    Object? state = null,
     Object? postalCode = null,
     Object? country = null,
     Object? businessRegistrationNumber = null,
@@ -96,21 +96,21 @@ class _$Branch1CopyWithImpl<$Res, $Val extends Branch1>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      street: null == street
-          ? _value.street
-          : street // ignore: cast_nullable_to_non_nullable
+      street1: null == street1
+          ? _value.street1
+          : street1 // ignore: cast_nullable_to_non_nullable
               as String,
-      barangay: null == barangay
-          ? _value.barangay
-          : barangay // ignore: cast_nullable_to_non_nullable
+      street2: null == street2
+          ? _value.street2
+          : street2 // ignore: cast_nullable_to_non_nullable
               as String,
       city: null == city
           ? _value.city
           : city // ignore: cast_nullable_to_non_nullable
               as String,
-      province: null == province
-          ? _value.province
-          : province // ignore: cast_nullable_to_non_nullable
+      state: null == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
               as String,
       postalCode: null == postalCode
           ? _value.postalCode
@@ -144,10 +144,10 @@ abstract class _$$Branch1ImplCopyWith<$Res> implements $Branch1CopyWith<$Res> {
       String name,
       String phone,
       String? email,
-      String street,
-      String barangay,
+      String street1,
+      String street2,
       String city,
-      String province,
+      String state,
       String postalCode,
       String country,
       String businessRegistrationNumber,
@@ -169,10 +169,10 @@ class __$$Branch1ImplCopyWithImpl<$Res>
     Object? name = null,
     Object? phone = null,
     Object? email = freezed,
-    Object? street = null,
-    Object? barangay = null,
+    Object? street1 = null,
+    Object? street2 = null,
     Object? city = null,
-    Object? province = null,
+    Object? state = null,
     Object? postalCode = null,
     Object? country = null,
     Object? businessRegistrationNumber = null,
@@ -195,21 +195,21 @@ class __$$Branch1ImplCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      street: null == street
-          ? _value.street
-          : street // ignore: cast_nullable_to_non_nullable
+      street1: null == street1
+          ? _value.street1
+          : street1 // ignore: cast_nullable_to_non_nullable
               as String,
-      barangay: null == barangay
-          ? _value.barangay
-          : barangay // ignore: cast_nullable_to_non_nullable
+      street2: null == street2
+          ? _value.street2
+          : street2 // ignore: cast_nullable_to_non_nullable
               as String,
       city: null == city
           ? _value.city
           : city // ignore: cast_nullable_to_non_nullable
               as String,
-      province: null == province
-          ? _value.province
-          : province // ignore: cast_nullable_to_non_nullable
+      state: null == state
+          ? _value.state
+          : state // ignore: cast_nullable_to_non_nullable
               as String,
       postalCode: null == postalCode
           ? _value.postalCode
@@ -239,10 +239,10 @@ class _$Branch1Impl extends _Branch1 {
       required this.name,
       required this.phone,
       this.email,
-      required this.street,
-      required this.barangay,
+      required this.street1,
+      required this.street2,
       required this.city,
-      required this.province,
+      required this.state,
       required this.postalCode,
       required this.country,
       required this.businessRegistrationNumber,
@@ -258,13 +258,13 @@ class _$Branch1Impl extends _Branch1 {
   @override
   final String? email;
   @override
-  final String street;
+  final String street1;
   @override
-  final String barangay;
+  final String street2;
   @override
   final String city;
   @override
-  final String province;
+  final String state;
   @override
   final String postalCode;
   @override
@@ -276,7 +276,7 @@ class _$Branch1Impl extends _Branch1 {
 
   @override
   String toString() {
-    return 'Branch1(id: $id, name: $name, phone: $phone, email: $email, street: $street, barangay: $barangay, city: $city, province: $province, postalCode: $postalCode, country: $country, businessRegistrationNumber: $businessRegistrationNumber, vatIdNumber: $vatIdNumber)';
+    return 'Branch1(id: $id, name: $name, phone: $phone, email: $email, street1: $street1, street2: $street2, city: $city, state: $state, postalCode: $postalCode, country: $country, businessRegistrationNumber: $businessRegistrationNumber, vatIdNumber: $vatIdNumber)';
   }
 
   @override
@@ -288,12 +288,10 @@ class _$Branch1Impl extends _Branch1 {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.street, street) || other.street == street) &&
-            (identical(other.barangay, barangay) ||
-                other.barangay == barangay) &&
+            (identical(other.street1, street1) || other.street1 == street1) &&
+            (identical(other.street2, street2) || other.street2 == street2) &&
             (identical(other.city, city) || other.city == city) &&
-            (identical(other.province, province) ||
-                other.province == province) &&
+            (identical(other.state, state) || other.state == state) &&
             (identical(other.postalCode, postalCode) ||
                 other.postalCode == postalCode) &&
             (identical(other.country, country) || other.country == country) &&
@@ -312,10 +310,10 @@ class _$Branch1Impl extends _Branch1 {
       name,
       phone,
       email,
-      street,
-      barangay,
+      street1,
+      street2,
       city,
-      province,
+      state,
       postalCode,
       country,
       businessRegistrationNumber,
@@ -334,10 +332,10 @@ abstract class _Branch1 extends Branch1 {
       required final String name,
       required final String phone,
       final String? email,
-      required final String street,
-      required final String barangay,
+      required final String street1,
+      required final String street2,
       required final String city,
-      required final String province,
+      required final String state,
       required final String postalCode,
       required final String country,
       required final String businessRegistrationNumber,
@@ -353,13 +351,13 @@ abstract class _Branch1 extends Branch1 {
   @override
   String? get email;
   @override
-  String get street;
+  String get street1;
   @override
-  String get barangay;
+  String get street2;
   @override
   String get city;
   @override
-  String get province;
+  String get state;
   @override
   String get postalCode;
   @override

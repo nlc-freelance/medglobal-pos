@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/portal/settings/pos_register/presentation/cubit/pos_register_form_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -84,7 +85,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   hint: 'Enter POS register name',
                   controller: _nameController,
                   isRequired: true,
-                  validation: 'Please enter a tax code name.',
+                  validator: FormValidators.required('Please enter a tax code name.'),
                   onChanged: (value) => _formCubit.setName(value),
                 ),
                 const UIVerticalSpace(16),

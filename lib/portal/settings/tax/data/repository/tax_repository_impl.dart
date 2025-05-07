@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/portal/settings/tax/data/api/tax_api.dart
 import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/request/create_tax_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/request/update_tax_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/response/tax_dto.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/domain/entities/tax.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/repository/tax_repository.dart';
 
 class TaxRepositoryImpl implements TaxRepository {

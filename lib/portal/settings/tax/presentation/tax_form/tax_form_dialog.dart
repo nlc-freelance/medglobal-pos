@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax/tax_bloc.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/presentation/cubit/tax_form_cubit.dart';
+import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax_bloc/tax_bloc.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/cubit/tax_form_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class TaxFormDialog extends StatelessWidget {
@@ -82,21 +83,21 @@ class _TaxFormState extends State<TaxForm> {
                 const UIVerticalSpace(16),
                 UITextFormField.vertical(
                   label: 'Tax Code Name',
-                  isRequired: true,
-                  controller: _codeController,
                   hint: 'Enter tax code name',
+                  controller: _codeController,
+                  isRequired: true,
+                  validator: FormValidators.required('Please enter a tax code name.'),
                   onChanged: (value) => _formCubit.setCode(value),
-                  validation: 'Please enter a tax code name.',
                 ),
                 const UIVerticalSpace(16),
                 UITextFormField.vertical(
                   label: 'Tax Rate (%)',
-                  isRequired: true,
-                  controller: _rateController,
-                  formatter: [FilteringTextInputFormatter.digitsOnly],
                   hint: 'Enter tax rate',
+                  controller: _rateController,
+                  isRequired: true,
+                  validator: FormValidators.required('Please enter the tax rate.'),
+                  formatter: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (value) => _formCubit.setRate(double.parse(value)),
-                  validation: 'Please enter the tax rate.',
                 ),
                 const UIVerticalSpace(16),
                 BlocBuilder<TaxFormCubit, TaxFormState>(

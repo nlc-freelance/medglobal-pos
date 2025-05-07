@@ -5,6 +5,11 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+/// A full blown DataGrid widget with columns for empty state
+///
+/// Used outside the actual DataGrid, might be deprecated and use DataGridEmpty instead which is inside the footer
+/// Being used for MVP, for refactor based on observation with DataGridEmpty
+
 class DataGridNoData extends StatefulWidget {
   final List<GridColumn> columns;
   final bool showCheckbox;

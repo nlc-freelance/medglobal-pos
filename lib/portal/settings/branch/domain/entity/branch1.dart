@@ -10,10 +10,10 @@ class Branch1 with _$Branch1 {
     required String name,
     required String phone,
     String? email,
-    required String street,
-    required String barangay,
+    required String street1,
+    required String street2,
     required String city,
-    required String province,
+    required String state,
     required String postalCode,
     required String country,
     required String businessRegistrationNumber,
@@ -32,5 +32,5 @@ class Branch1 with _$Branch1 {
         ],
       );
 
-  String get address => '$street $barangay, $city, $province $postalCode, $country';
+  String get address => '$street1 $street2, $city, $state $postalCode, $country';
 }
