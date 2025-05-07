@@ -142,10 +142,19 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
             backgroundColor: UIColors.background,
             content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                UIText.labelMedium('Confirm $label', color: UIColors.textLight),
-                const UIVerticalSpace(12),
+                UIText.labelSemiBold('Confirm $label', align: TextAlign.center),
+                const UIVerticalSpace(8),
+                UIText.dataGridText(
+                  'You are about to set the ${label.toLowerCase()}.\nAre you sure you want to proceed?',
+                  align: TextAlign.center,
+                  color: UIColors.textRegular,
+                ),
+                const UIVerticalSpace(16),
+                UIText.subtitle(label),
+                const UIVerticalSpace(2),
                 UIText.heading4(amount.toCurrencyString()),
               ],
             ),
