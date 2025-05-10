@@ -18,3 +18,35 @@ class CurrencyInputFormatter extends TextInputFormatter {
     return oldValue;
   }
 }
+
+class NewCurrencyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String newText = newValue.text;
+
+    // Allow empty input
+    if (newText.isEmpty) {
+      return newValue;
+    }
+
+    // If only a period is typed, clear the input
+    if (newText == '.') {
+      return const TextEditingValue(
+        text: '',
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    }
+
+    // Allow digits + optional single decimal with up to 2 digits after
+    final regex = RegExp(r'^(\d+)?(\.\d{0,' + 2.toString() + r'})?$');
+
+    if (regex.hasMatch(newText)) {
+      return newValue;
+    }
+
+    return oldValue;
+  }
+}
