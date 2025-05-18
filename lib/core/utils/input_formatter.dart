@@ -19,7 +19,11 @@ class CurrencyInputFormatter extends TextInputFormatter {
   }
 }
 
-class NewCurrencyInputFormatter extends TextInputFormatter {
+/// A formatter allowing both integers and floating-point numbers, but only for positive values.
+/// It allows a maximum of two decimal places.
+///
+/// Used for input fields for currency, percentage rates etc.
+class NumberInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,

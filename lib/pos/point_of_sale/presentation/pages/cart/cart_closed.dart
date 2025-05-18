@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/enums/register_shift.dart';
-import 'package:medglobal_admin_portal/core/widgets/scaffold_layout/pos/widgets/register_shift_dialog.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/bloc/register_shift_bloc.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register/register_cubit.dart';
+import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/register_shift_dialog.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class CartClosed extends StatelessWidget {
@@ -37,10 +37,10 @@ class CartClosed extends StatelessWidget {
               barrierDismissible: false,
               builder: (context) => RegisterShiftDialog(
                     action: RegisterShiftAction.open,
-                    dateTime: context.read<RegisterCubit>().state.closedAt,
+                    dateTime: context.read<ActiveRegisterCubit>().state.closedAt,
                     onConfirm: (amount) => context
                         .read<RegisterShiftBloc>()
-                        .add(RegisterShiftOpened(id: context.read<RegisterCubit>().state.id!, amount: amount)),
+                        .add(RegisterShiftOpened(id: context.read<ActiveRegisterCubit>().state.id!, amount: amount)),
                   )),
         ),
       ],

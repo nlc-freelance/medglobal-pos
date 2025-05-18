@@ -13,16 +13,16 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    // Logs the [change] for the [bloc] to the console.
+    // Logs the [change] for the [bloc] and [cubit] to the console.
     printDebug(change, title: '${bloc.runtimeType} onChange');
   }
 
-  @override
-  void onTransition(Bloc bloc, Transition transition) {
-    super.onTransition(bloc, transition);
-    // Logs the [transition] for the [bloc] to the console.
-    printDebug(transition, title: '${bloc.runtimeType} onTransition');
-  }
+  // @override
+  // void onTransition(Bloc bloc, Transition transition) {
+  //   super.onTransition(bloc, transition);
+  //   // Logs the [transition] for the [bloc] to the console.
+  //   printDebug(transition, title: '${bloc.runtimeType} onTransition');
+  // }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {

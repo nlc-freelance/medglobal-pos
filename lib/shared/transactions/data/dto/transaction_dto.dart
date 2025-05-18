@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/branches/data/dto/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
 import 'package:medglobal_admin_portal/shared/employee/dto/employee_dto.dart';
-import 'package:medglobal_admin_portal/shared/register/data/dto/register_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/response/register_dto.dart';
 import 'package:medglobal_admin_portal/shared/transactions/data/dto/transaction_item_dto.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 
@@ -96,8 +96,8 @@ class TransactionDto extends Equatable {
         saleTransactionReceiptId: saleTransactionReceiptId,
         status: status == 'completed' ? ReturnStatus.COMPLETED : ReturnStatus.AWAITING_ACTION,
         type: type == 'sale' ? TransactionType.SALE : TransactionType.REFUND,
-        register: register?.toEntity(),
-        branch: branch?.toEntity(),
+        register: register?.toDomain(),
+        branch: branch?.toDomain(),
         employee: employee?.toEntity(),
         items: items?.map((item) => item.toEntity()).toList() ?? [],
         subtotal: subtotal,

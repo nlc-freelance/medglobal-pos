@@ -35,6 +35,19 @@ enum SideMenuTree {
   REPORTS(
     'Reports',
     ['Product History', 'Sales Report', 'Sales Per Category', 'Sales Per Shift', 'Sales Per Shift Details'],
+  ),
+  settings(
+    'Settings',
+    [
+      'Tax',
+      'POS Register',
+      'Branch',
+      'New Branch',
+      'Branch Details',
+      'Receipt Template',
+      'New Receipt Template',
+      'Receipt Template Details'
+    ],
   );
 
   final String title;
@@ -82,7 +95,17 @@ enum SideMenuTreeItem {
   SALES_REPORT('Sales Report', 'sales', '/reports/sales'),
   SALES_PER_CATEGORY('Sales Per Category', 'sales-per-category', '/reports/sales-per-category'),
   SALES_PER_SHIFT('Sales Per Shift', 'sales-per-shift', '/reports/sales-per-shift'),
-  SALES_PER_SHIFT_DETAILS('Sales Per Shift Details', 'id=:id', '/reports/sales-per-shift/:id');
+  SALES_PER_SHIFT_DETAILS('Sales Per Shift Details', 'id=:id', '/reports/sales-per-shift/:id'),
+
+  settings('Settings', '/settings', '/settings'),
+  tax('Tax', 'tax-codes', '/settings/tax'),
+  posRegister('POS Register', 'pos-registers', '/settings/pos-registers'),
+  branch('Branch', 'branches', 'settings/branches'),
+  newBranch('New Branch', 'new', '/settings/branches/new'),
+  branchDetails('Branch Details', 'id=:id', 'settings/branches/:id'),
+  receiptTemplate('Receipt Template', 'receipt-templates', 'settings/receipt-templates'),
+  newReceiptTemplate('New Receipt Template', 'new', '/settings/receipt-templates/new'),
+  receiptTemplateDetails('Receipt Template Details', 'id=:id', 'settings/receipt-templates/:id');
 
   final String name;
   final String path;

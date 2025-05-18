@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/supplier_dropdown.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/variant.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
@@ -38,7 +39,7 @@ class StockKeepingUnitDetails extends StatelessWidget {
                       hint: 'Enter SKU',
                       controller: skuController,
                       isRequired: true,
-                      validation: 'Please enter a unique SKU.',
+                      validator: FormValidators.required('Please enter a unique SKU.'),
                       // TODO: Refactor product form state management
                       onChanged: (_) {},
                     ),
@@ -96,13 +97,10 @@ class StockKeepingUnitDetails extends StatelessWidget {
                         isRequired: true,
                         controller: costController,
                         formatter: [CurrencyInputFormatter()],
-                        validator: (value) {
-                          if (value?.trim().isEmpty == true) return 'Please enter cost.';
-                          if (value?.trim().isNotEmpty == true && double.tryParse(value!).toPesoString() == '0.00') {
-                            return 'Cost cannot be 0.';
-                          }
-                          return null;
-                        },
+                        validator: (value) => FormValidators.run(value, [
+                          FormValidators.required('Please enter a cost.'),
+                          FormValidators.number('Cost cannot be 0.'),
+                        ]),
                         // TODO: Refactor product form state management
                         onChanged: (_) {},
                       ),

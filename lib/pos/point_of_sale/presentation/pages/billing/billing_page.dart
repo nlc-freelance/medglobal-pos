@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/order/order_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/sale_remote/sale_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/billing/widgets/charge_payment.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/billing/widgets/order_summary.dart';
@@ -26,7 +26,7 @@ class _BillingPageState extends State<BillingPage> {
         if (state is SaleSuccess) {
           context.read<OrderCubit>().reset();
           context.read<TransactionListByBranchCubit>().addNewTransactionToList(state.transaction);
-          context.read<POSProductListRemoteCubit>().getPOSProducts(isInitialSearch: true);
+          context.read<PosProductListCubit>().getPOSProducts(isInitialSearch: true);
         }
       },
       builder: (context, state) {

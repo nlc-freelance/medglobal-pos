@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/shared/register/domain/entities/register.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register_lazy_list/register_lazy_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/register_lazy_list_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class RegisterDropdown extends StatefulWidget {
@@ -116,7 +116,7 @@ class RegisterDropdownState extends State<RegisterDropdown> {
                             },
                             dense: true,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            title: UIText.labelMedium(state.registers[index].name!),
+                            title: UIText.labelMedium(state.registers[index].name),
                           ),
                         );
                       },
