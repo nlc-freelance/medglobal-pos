@@ -19,7 +19,7 @@ class TaxDto with _$TaxDto {
   factory TaxDto.fromJson(Map<String, dynamic> json) => _$TaxDtoFromJson(json);
 }
 
-extension TaxDtoX on TaxDto {
+extension TaxDtoExt on TaxDto {
   /// Mapping to domain entity
   Tax toDomain() => Tax(
         id: id,

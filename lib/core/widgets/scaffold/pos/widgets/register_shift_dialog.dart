@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/enums/register_shift.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/bloc/register_shift_bloc.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register/register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class RegisterShiftDialog extends StatefulWidget {
@@ -70,8 +70,8 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
           if (state is RegisterShiftSuccess) {
             Navigator.pop(context);
 
-            context.read<RegisterCubit>().updateRegisterShift(state.shift);
-            if (state.shift.status == 'open') context.read<POSProductListRemoteCubit>().getPOSProducts();
+            context.read<ActiveRegisterCubit>().updateRegisterShift(state.shift);
+            if (state.shift.status == 'open') context.read<PosProductListCubit>().getPOSProducts();
           }
         },
         builder: (context, state) {
@@ -100,7 +100,7 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
                   TextFormField(
                     focusNode: _focusNode,
                     controller: _amountCtrl,
-                    inputFormatters: [NewCurrencyInputFormatter()],
+                    inputFormatters: [NumberInputFormatter()],
                     decoration: InputDecoration(
                       hintText: 'PHP 0.00',
                       hintStyle: UIStyleText.bodyRegular.copyWith(color: UIColors.textMuted),

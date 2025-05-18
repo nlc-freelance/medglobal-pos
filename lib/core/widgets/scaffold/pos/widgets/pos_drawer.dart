@@ -6,11 +6,11 @@ import 'package:medglobal_admin_portal/core/routing/router.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/register_shift_dialog.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/order/order_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/bloc/register_shift_bloc.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register/register_cubit.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register_lazy_list/register_lazy_list_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/register_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -80,7 +80,7 @@ class PosDrawer extends StatelessWidget {
               onTap: () => AppRouter.router.goNamed('POS Transactions'),
             ),
           ),
-          BlocBuilder<RegisterCubit, RegisterState>(
+          BlocBuilder<ActiveRegisterCubit, ActiveRegisterState>(
             builder: (context, state) {
               return Visibility(
                   visible: state.isOpen,
@@ -118,7 +118,7 @@ class PosDrawer extends StatelessWidget {
               title: UIText.bodyRegular('Logout'),
               onTap: () {
                 // context.read<RegisterShiftBloc>().add(ResetRegisterShiftOnLogoutEvent());
-                context.read<POSProductListRemoteCubit>().reset();
+                context.read<PosProductListCubit>().reset();
                 context.read<TransactionListByBranchCubit>().reset();
                 context.read<TransactionCubit>().reset();
                 context.read<OrderCubit>().reset();
@@ -126,7 +126,7 @@ class PosDrawer extends StatelessWidget {
                 // /// Dropdown
                 context.read<RegisterLazyListCubit>().reset();
 
-                context.read<RegisterCubit>().reset();
+                context.read<ActiveRegisterCubit>().reset();
                 context.read<AuthBloc>().add(const LogoutEvent());
               },
             ),

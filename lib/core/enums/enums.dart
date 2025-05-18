@@ -38,7 +38,16 @@ enum SideMenuTree {
   ),
   settings(
     'Settings',
-    ['Tax', 'POS Register', 'Branch', 'New Branch', 'Branch Details'],
+    [
+      'Tax',
+      'POS Register',
+      'Branch',
+      'New Branch',
+      'Branch Details',
+      'Receipt Template',
+      'New Receipt Template',
+      'Receipt Template Details'
+    ],
   );
 
   final String title;
@@ -93,7 +102,10 @@ enum SideMenuTreeItem {
   posRegister('POS Register', 'pos-registers', '/settings/pos-registers'),
   branch('Branch', 'branches', 'settings/branches'),
   newBranch('New Branch', 'new', '/settings/branches/new'),
-  branchDetails('Branch Details', 'id=:id', 'settings/branches/:id');
+  branchDetails('Branch Details', 'id=:id', 'settings/branches/:id'),
+  receiptTemplate('Receipt Template', 'receipt-templates', 'settings/receipt-templates'),
+  newReceiptTemplate('New Receipt Template', 'new', '/settings/receipt-templates/new'),
+  receiptTemplateDetails('Receipt Template Details', 'id=:id', 'settings/receipt-templates/:id');
 
   final String name;
   final String path;

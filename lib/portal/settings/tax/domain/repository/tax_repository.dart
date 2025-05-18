@@ -7,6 +7,9 @@ abstract class TaxRepository {
   /// Retrieves a list of all tax codes
   Future<Either<Failure, PaginatedList<Tax>>> getTaxCodes({int? page, int? size});
 
+  /// Check if there's a set default tax code
+  Future<Either<Failure, Tax?>> getDefaultTaxCode();
+
   /// Retrieves a tax by id
   Future<Either<Failure, Tax>> getTaxCode(int id);
 

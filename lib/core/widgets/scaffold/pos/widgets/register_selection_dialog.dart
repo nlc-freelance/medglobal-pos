@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/register_dropdown.dart';
-import 'package:medglobal_admin_portal/shared/register/domain/entities/register.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class RegisterSelectionDialog extends StatefulWidget {

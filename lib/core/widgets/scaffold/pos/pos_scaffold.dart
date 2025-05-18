@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/pos_header.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/pos_drawer.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/register_selection_dialog.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register_item_list_remote/register_item_list_remote_cubit.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register/register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PosScaffold extends StatefulWidget {
@@ -29,21 +29,21 @@ class _PosScaffoldState extends State<PosScaffold> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (context.read<RegisterCubit>().state.id == null) {
+      if (context.read<ActiveRegisterCubit>().state.id == null) {
         showDialog(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext context) => RegisterSelectionDialog(
             onConfirm: (register) {
-              context.read<RegisterCubit>().saveRegister(register);
-              if (register.shiftDetail?.status == 'open') context.read<POSProductListRemoteCubit>().getPOSProducts();
+              context.read<ActiveRegisterCubit>().saveRegister(register);
+              if (register.shiftDetail?.status == 'open') context.read<PosProductListCubit>().getPOSProducts();
               Navigator.pop(context);
             },
           ),
         );
       }
 
-      if (context.read<RegisterCubit>().state.isOpen) context.read<POSProductListRemoteCubit>().getPOSProducts();
+      if (context.read<ActiveRegisterCubit>().state.isOpen) context.read<PosProductListCubit>().getPOSProducts();
     });
   }
 

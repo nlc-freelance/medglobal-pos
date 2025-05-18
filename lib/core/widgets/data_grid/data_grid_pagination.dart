@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/extensions/extensions.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/gen/assets.gen.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax_list_bloc/tax_list_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class DataGridPagination<T> extends StatelessWidget {
-  const DataGridPagination(this.data, {super.key});
+  const DataGridPagination(this.data, {super.key, required this.onPageChanged});
 
   final PaginatedList<T> data;
+  final void Function({int? page, int? size}) onPageChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class DataGridPagination<T> extends StatelessWidget {
           title: '${data.currentSize} rows',
           iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
           onSelect: (value) => _onChangedRowsPerPage(context, value),
-          menu: const [2, 4, 6, 8, 10, 12, 14, 20, 25],
+          menu: const [20, 50, 100],
           menuAsString: (menu) => menu.toString(),
         ),
         const UIHorizontalSpace(16),
@@ -47,10 +46,6 @@ class DataGridPagination<T> extends StatelessWidget {
     );
   }
 
-  void _onGetTaxCodes(BuildContext context, {int? page, int? size}) {
-    context.read<TaxListBloc>().add(TaxListEvent.getTaxCodes(page: page, size: size));
-  }
-
   void _onChangedRowsPerPage(BuildContext context, int newSize) {
     /// Go back to page 1 when:
     ///  - total count is greater than the requested rows per page
@@ -63,26 +58,26 @@ class DataGridPagination<T> extends StatelessWidget {
     ///  if the page to pass in the request will be greater than the [totalPage] of our data.
     /// If it is greater than the actual total page, then reset it to 1.
     if (data.totalCount <= newSize || data.totalPages + 1 > ((data.totalCount + (newSize - 1)) / newSize)) {
-      _onGetTaxCodes(context, page: 1, size: newSize);
+      onPageChanged(page: 1, size: newSize);
     } else {
-      _onGetTaxCodes(context, page: data.currentPage, size: newSize);
+      onPageChanged(page: data.currentPage, size: newSize);
     }
   }
 
   void _onGoToFirstPage(BuildContext context) {
-    if (data.isNotOnFirstPage) _onGetTaxCodes(context, page: data.firstPage, size: data.currentSize);
+    if (data.isNotOnFirstPage) onPageChanged(page: data.firstPage, size: data.currentSize);
   }
 
   void _onGoToPrevious(BuildContext context) {
-    if (data.isNotOnFirstPage) _onGetTaxCodes(context, page: data.previousPage, size: data.currentSize);
+    if (data.isNotOnFirstPage) onPageChanged(page: data.previousPage, size: data.currentSize);
   }
 
   void _onGoToNext(BuildContext context) {
-    if (data.isNotOnLastPage) _onGetTaxCodes(context, page: data.nextPage, size: data.currentSize);
+    if (data.isNotOnLastPage) onPageChanged(page: data.nextPage, size: data.currentSize);
   }
 
   void _onGoToLastPage(BuildContext context) {
-    if (data.isNotOnLastPage) _onGetTaxCodes(context, page: data.lastPage, size: data.currentSize);
+    if (data.isNotOnLastPage) onPageChanged(page: data.lastPage, size: data.currentSize);
   }
 
   ColorFilter _pageIconColor(bool isMuted) => (isMuted ? UIColors.textMuted : UIColors.textRegular).toColorFilter;

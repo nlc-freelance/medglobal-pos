@@ -85,6 +85,7 @@ class ApiEndpoints {
 
   // Registers
   static const String registers = '/registers';
+  static String registerById(int id) => '$registers/$id';
 
   // Register shift
   static const String registerShift = '/shifts';

@@ -18,35 +18,35 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$TaxEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int id) getTaxCodeById,
+    required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
     required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(int id) deleteTaxCode,
+    required TResult Function(Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int id)? getTaxCodeById,
+    TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
     TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(int id)? deleteTaxCode,
+    TResult? Function(Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int id)? getTaxCodeById,
+    TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
     TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(int id)? deleteTaxCode,
+    TResult Function(Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetTaxCodeById value) getTaxCodeById,
+    required TResult Function(_GetDefaultTaxCode value) getDefaultTaxCode,
     required TResult Function(_CreateTaxCode value) createTaxCode,
     required TResult Function(_UpdateTaxCode value) updateTaxCode,
     required TResult Function(_DeleteTaxCode value) deleteTaxCode,
@@ -55,7 +55,7 @@ mixin _$TaxEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult? Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult? Function(_CreateTaxCode value)? createTaxCode,
     TResult? Function(_UpdateTaxCode value)? updateTaxCode,
     TResult? Function(_DeleteTaxCode value)? deleteTaxCode,
@@ -64,7 +64,7 @@ mixin _$TaxEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult Function(_CreateTaxCode value)? createTaxCode,
     TResult Function(_UpdateTaxCode value)? updateTaxCode,
     TResult Function(_DeleteTaxCode value)? deleteTaxCode,
@@ -92,103 +92,76 @@ class _$TaxEventCopyWithImpl<$Res, $Val extends TaxEvent>
 }
 
 /// @nodoc
-abstract class _$$GetTaxCodeByIdImplCopyWith<$Res> {
-  factory _$$GetTaxCodeByIdImplCopyWith(_$GetTaxCodeByIdImpl value,
-          $Res Function(_$GetTaxCodeByIdImpl) then) =
-      __$$GetTaxCodeByIdImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({int id});
+abstract class _$$GetDefaultTaxCodeImplCopyWith<$Res> {
+  factory _$$GetDefaultTaxCodeImplCopyWith(_$GetDefaultTaxCodeImpl value,
+          $Res Function(_$GetDefaultTaxCodeImpl) then) =
+      __$$GetDefaultTaxCodeImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$GetTaxCodeByIdImplCopyWithImpl<$Res>
-    extends _$TaxEventCopyWithImpl<$Res, _$GetTaxCodeByIdImpl>
-    implements _$$GetTaxCodeByIdImplCopyWith<$Res> {
-  __$$GetTaxCodeByIdImplCopyWithImpl(
-      _$GetTaxCodeByIdImpl _value, $Res Function(_$GetTaxCodeByIdImpl) _then)
+class __$$GetDefaultTaxCodeImplCopyWithImpl<$Res>
+    extends _$TaxEventCopyWithImpl<$Res, _$GetDefaultTaxCodeImpl>
+    implements _$$GetDefaultTaxCodeImplCopyWith<$Res> {
+  __$$GetDefaultTaxCodeImplCopyWithImpl(_$GetDefaultTaxCodeImpl _value,
+      $Res Function(_$GetDefaultTaxCodeImpl) _then)
       : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-  }) {
-    return _then(_$GetTaxCodeByIdImpl(
-      null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
 }
 
 /// @nodoc
 
-class _$GetTaxCodeByIdImpl implements _GetTaxCodeById {
-  const _$GetTaxCodeByIdImpl(this.id);
-
-  @override
-  final int id;
+class _$GetDefaultTaxCodeImpl implements _GetDefaultTaxCode {
+  const _$GetDefaultTaxCodeImpl();
 
   @override
   String toString() {
-    return 'TaxEvent.getTaxCodeById(id: $id)';
+    return 'TaxEvent.getDefaultTaxCode()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$GetTaxCodeByIdImpl &&
-            (identical(other.id, id) || other.id == id));
+        (other.runtimeType == runtimeType && other is _$GetDefaultTaxCodeImpl);
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$GetTaxCodeByIdImplCopyWith<_$GetTaxCodeByIdImpl> get copyWith =>
-      __$$GetTaxCodeByIdImplCopyWithImpl<_$GetTaxCodeByIdImpl>(
-          this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int id) getTaxCodeById,
+    required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
     required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(int id) deleteTaxCode,
+    required TResult Function(Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) {
-    return getTaxCodeById(id);
+    return getDefaultTaxCode();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int id)? getTaxCodeById,
+    TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
     TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(int id)? deleteTaxCode,
+    TResult? Function(Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) {
-    return getTaxCodeById?.call(id);
+    return getDefaultTaxCode?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int id)? getTaxCodeById,
+    TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
     TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(int id)? deleteTaxCode,
+    TResult Function(Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
-    if (getTaxCodeById != null) {
-      return getTaxCodeById(id);
+    if (getDefaultTaxCode != null) {
+      return getDefaultTaxCode();
     }
     return orElse();
   }
@@ -196,51 +169,46 @@ class _$GetTaxCodeByIdImpl implements _GetTaxCodeById {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetTaxCodeById value) getTaxCodeById,
+    required TResult Function(_GetDefaultTaxCode value) getDefaultTaxCode,
     required TResult Function(_CreateTaxCode value) createTaxCode,
     required TResult Function(_UpdateTaxCode value) updateTaxCode,
     required TResult Function(_DeleteTaxCode value) deleteTaxCode,
     required TResult Function(_Reset value) reset,
   }) {
-    return getTaxCodeById(this);
+    return getDefaultTaxCode(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult? Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult? Function(_CreateTaxCode value)? createTaxCode,
     TResult? Function(_UpdateTaxCode value)? updateTaxCode,
     TResult? Function(_DeleteTaxCode value)? deleteTaxCode,
     TResult? Function(_Reset value)? reset,
   }) {
-    return getTaxCodeById?.call(this);
+    return getDefaultTaxCode?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult Function(_CreateTaxCode value)? createTaxCode,
     TResult Function(_UpdateTaxCode value)? updateTaxCode,
     TResult Function(_DeleteTaxCode value)? deleteTaxCode,
     TResult Function(_Reset value)? reset,
     required TResult orElse(),
   }) {
-    if (getTaxCodeById != null) {
-      return getTaxCodeById(this);
+    if (getDefaultTaxCode != null) {
+      return getDefaultTaxCode(this);
     }
     return orElse();
   }
 }
 
-abstract class _GetTaxCodeById implements TaxEvent {
-  const factory _GetTaxCodeById(final int id) = _$GetTaxCodeByIdImpl;
-
-  int get id;
-  @JsonKey(ignore: true)
-  _$$GetTaxCodeByIdImplCopyWith<_$GetTaxCodeByIdImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+abstract class _GetDefaultTaxCode implements TaxEvent {
+  const factory _GetDefaultTaxCode() = _$GetDefaultTaxCodeImpl;
 }
 
 /// @nodoc
@@ -317,10 +285,10 @@ class _$CreateTaxCodeImpl implements _CreateTaxCode {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int id) getTaxCodeById,
+    required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
     required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(int id) deleteTaxCode,
+    required TResult Function(Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) {
     return createTaxCode(tax);
@@ -329,10 +297,10 @@ class _$CreateTaxCodeImpl implements _CreateTaxCode {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int id)? getTaxCodeById,
+    TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
     TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(int id)? deleteTaxCode,
+    TResult? Function(Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) {
     return createTaxCode?.call(tax);
@@ -341,10 +309,10 @@ class _$CreateTaxCodeImpl implements _CreateTaxCode {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int id)? getTaxCodeById,
+    TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
     TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(int id)? deleteTaxCode,
+    TResult Function(Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
@@ -357,7 +325,7 @@ class _$CreateTaxCodeImpl implements _CreateTaxCode {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetTaxCodeById value) getTaxCodeById,
+    required TResult Function(_GetDefaultTaxCode value) getDefaultTaxCode,
     required TResult Function(_CreateTaxCode value) createTaxCode,
     required TResult Function(_UpdateTaxCode value) updateTaxCode,
     required TResult Function(_DeleteTaxCode value) deleteTaxCode,
@@ -369,7 +337,7 @@ class _$CreateTaxCodeImpl implements _CreateTaxCode {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult? Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult? Function(_CreateTaxCode value)? createTaxCode,
     TResult? Function(_UpdateTaxCode value)? updateTaxCode,
     TResult? Function(_DeleteTaxCode value)? deleteTaxCode,
@@ -381,7 +349,7 @@ class _$CreateTaxCodeImpl implements _CreateTaxCode {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult Function(_CreateTaxCode value)? createTaxCode,
     TResult Function(_UpdateTaxCode value)? updateTaxCode,
     TResult Function(_DeleteTaxCode value)? deleteTaxCode,
@@ -478,10 +446,10 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int id) getTaxCodeById,
+    required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
     required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(int id) deleteTaxCode,
+    required TResult Function(Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) {
     return updateTaxCode(tax);
@@ -490,10 +458,10 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int id)? getTaxCodeById,
+    TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
     TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(int id)? deleteTaxCode,
+    TResult? Function(Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) {
     return updateTaxCode?.call(tax);
@@ -502,10 +470,10 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int id)? getTaxCodeById,
+    TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
     TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(int id)? deleteTaxCode,
+    TResult Function(Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
@@ -518,7 +486,7 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetTaxCodeById value) getTaxCodeById,
+    required TResult Function(_GetDefaultTaxCode value) getDefaultTaxCode,
     required TResult Function(_CreateTaxCode value) createTaxCode,
     required TResult Function(_UpdateTaxCode value) updateTaxCode,
     required TResult Function(_DeleteTaxCode value) deleteTaxCode,
@@ -530,7 +498,7 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult? Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult? Function(_CreateTaxCode value)? createTaxCode,
     TResult? Function(_UpdateTaxCode value)? updateTaxCode,
     TResult? Function(_DeleteTaxCode value)? deleteTaxCode,
@@ -542,7 +510,7 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult Function(_CreateTaxCode value)? createTaxCode,
     TResult Function(_UpdateTaxCode value)? updateTaxCode,
     TResult Function(_DeleteTaxCode value)? deleteTaxCode,
@@ -571,7 +539,9 @@ abstract class _$$DeleteTaxCodeImplCopyWith<$Res> {
           _$DeleteTaxCodeImpl value, $Res Function(_$DeleteTaxCodeImpl) then) =
       __$$DeleteTaxCodeImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({int id});
+  $Res call({Tax tax});
+
+  $TaxCopyWith<$Res> get tax;
 }
 
 /// @nodoc
@@ -585,28 +555,36 @@ class __$$DeleteTaxCodeImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? tax = null,
   }) {
     return _then(_$DeleteTaxCodeImpl(
-      null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
+      null == tax
+          ? _value.tax
+          : tax // ignore: cast_nullable_to_non_nullable
+              as Tax,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $TaxCopyWith<$Res> get tax {
+    return $TaxCopyWith<$Res>(_value.tax, (value) {
+      return _then(_value.copyWith(tax: value));
+    });
   }
 }
 
 /// @nodoc
 
 class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
-  const _$DeleteTaxCodeImpl(this.id);
+  const _$DeleteTaxCodeImpl(this.tax);
 
   @override
-  final int id;
+  final Tax tax;
 
   @override
   String toString() {
-    return 'TaxEvent.deleteTaxCode(id: $id)';
+    return 'TaxEvent.deleteTaxCode(tax: $tax)';
   }
 
   @override
@@ -614,11 +592,11 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DeleteTaxCodeImpl &&
-            (identical(other.id, id) || other.id == id));
+            (identical(other.tax, tax) || other.tax == tax));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id);
+  int get hashCode => Object.hash(runtimeType, tax);
 
   @JsonKey(ignore: true)
   @override
@@ -629,39 +607,39 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int id) getTaxCodeById,
+    required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
     required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(int id) deleteTaxCode,
+    required TResult Function(Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) {
-    return deleteTaxCode(id);
+    return deleteTaxCode(tax);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int id)? getTaxCodeById,
+    TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
     TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(int id)? deleteTaxCode,
+    TResult? Function(Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) {
-    return deleteTaxCode?.call(id);
+    return deleteTaxCode?.call(tax);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int id)? getTaxCodeById,
+    TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
     TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(int id)? deleteTaxCode,
+    TResult Function(Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
     if (deleteTaxCode != null) {
-      return deleteTaxCode(id);
+      return deleteTaxCode(tax);
     }
     return orElse();
   }
@@ -669,7 +647,7 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetTaxCodeById value) getTaxCodeById,
+    required TResult Function(_GetDefaultTaxCode value) getDefaultTaxCode,
     required TResult Function(_CreateTaxCode value) createTaxCode,
     required TResult Function(_UpdateTaxCode value) updateTaxCode,
     required TResult Function(_DeleteTaxCode value) deleteTaxCode,
@@ -681,7 +659,7 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult? Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult? Function(_CreateTaxCode value)? createTaxCode,
     TResult? Function(_UpdateTaxCode value)? updateTaxCode,
     TResult? Function(_DeleteTaxCode value)? deleteTaxCode,
@@ -693,7 +671,7 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult Function(_CreateTaxCode value)? createTaxCode,
     TResult Function(_UpdateTaxCode value)? updateTaxCode,
     TResult Function(_DeleteTaxCode value)? deleteTaxCode,
@@ -708,9 +686,9 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
 }
 
 abstract class _DeleteTaxCode implements TaxEvent {
-  const factory _DeleteTaxCode(final int id) = _$DeleteTaxCodeImpl;
+  const factory _DeleteTaxCode(final Tax tax) = _$DeleteTaxCodeImpl;
 
-  int get id;
+  Tax get tax;
   @JsonKey(ignore: true)
   _$$DeleteTaxCodeImplCopyWith<_$DeleteTaxCodeImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -754,10 +732,10 @@ class _$ResetImpl implements _Reset {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int id) getTaxCodeById,
+    required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
     required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(int id) deleteTaxCode,
+    required TResult Function(Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) {
     return reset();
@@ -766,10 +744,10 @@ class _$ResetImpl implements _Reset {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int id)? getTaxCodeById,
+    TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
     TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(int id)? deleteTaxCode,
+    TResult? Function(Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) {
     return reset?.call();
@@ -778,10 +756,10 @@ class _$ResetImpl implements _Reset {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int id)? getTaxCodeById,
+    TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
     TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(int id)? deleteTaxCode,
+    TResult Function(Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
@@ -794,7 +772,7 @@ class _$ResetImpl implements _Reset {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetTaxCodeById value) getTaxCodeById,
+    required TResult Function(_GetDefaultTaxCode value) getDefaultTaxCode,
     required TResult Function(_CreateTaxCode value) createTaxCode,
     required TResult Function(_UpdateTaxCode value) updateTaxCode,
     required TResult Function(_DeleteTaxCode value) deleteTaxCode,
@@ -806,7 +784,7 @@ class _$ResetImpl implements _Reset {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult? Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult? Function(_CreateTaxCode value)? createTaxCode,
     TResult? Function(_UpdateTaxCode value)? updateTaxCode,
     TResult? Function(_DeleteTaxCode value)? deleteTaxCode,
@@ -818,7 +796,7 @@ class _$ResetImpl implements _Reset {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetTaxCodeById value)? getTaxCodeById,
+    TResult Function(_GetDefaultTaxCode value)? getDefaultTaxCode,
     TResult Function(_CreateTaxCode value)? createTaxCode,
     TResult Function(_UpdateTaxCode value)? updateTaxCode,
     TResult Function(_DeleteTaxCode value)? deleteTaxCode,
@@ -841,27 +819,27 @@ mixin _$TaxState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(Tax tax, String message) success,
-    required TResult Function(String message) deleted,
+    required TResult Function() submitting,
+    required TResult Function(String message) success,
+    required TResult Function(Tax? defaultTax) hasExistingDefault,
     required TResult Function(String message) failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(Tax tax, String message)? success,
-    TResult? Function(String message)? deleted,
+    TResult? Function()? submitting,
+    TResult? Function(String message)? success,
+    TResult? Function(Tax? defaultTax)? hasExistingDefault,
     TResult? Function(String message)? failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(Tax tax, String message)? success,
-    TResult Function(String message)? deleted,
+    TResult Function()? submitting,
+    TResult Function(String message)? success,
+    TResult Function(Tax? defaultTax)? hasExistingDefault,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) =>
@@ -869,27 +847,27 @@ mixin _$TaxState {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loading value) submitting,
     required TResult Function(_Success value) success,
-    required TResult Function(_Deleted value) deleted,
+    required TResult Function(_HasExistingDefault value) hasExistingDefault,
     required TResult Function(_Failure value) failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loading value)? submitting,
     TResult? Function(_Success value)? success,
-    TResult? Function(_Deleted value)? deleted,
+    TResult? Function(_HasExistingDefault value)? hasExistingDefault,
     TResult? Function(_Failure value)? failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_Loading value)? submitting,
     TResult Function(_Success value)? success,
-    TResult Function(_Deleted value)? deleted,
+    TResult Function(_HasExistingDefault value)? hasExistingDefault,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) =>
@@ -952,9 +930,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(Tax tax, String message) success,
-    required TResult Function(String message) deleted,
+    required TResult Function() submitting,
+    required TResult Function(String message) success,
+    required TResult Function(Tax? defaultTax) hasExistingDefault,
     required TResult Function(String message) failure,
   }) {
     return initial();
@@ -964,9 +942,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(Tax tax, String message)? success,
-    TResult? Function(String message)? deleted,
+    TResult? Function()? submitting,
+    TResult? Function(String message)? success,
+    TResult? Function(Tax? defaultTax)? hasExistingDefault,
     TResult? Function(String message)? failure,
   }) {
     return initial?.call();
@@ -976,9 +954,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(Tax tax, String message)? success,
-    TResult Function(String message)? deleted,
+    TResult Function()? submitting,
+    TResult Function(String message)? success,
+    TResult Function(Tax? defaultTax)? hasExistingDefault,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -992,9 +970,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loading value) submitting,
     required TResult Function(_Success value) success,
-    required TResult Function(_Deleted value) deleted,
+    required TResult Function(_HasExistingDefault value) hasExistingDefault,
     required TResult Function(_Failure value) failure,
   }) {
     return initial(this);
@@ -1004,9 +982,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loading value)? submitting,
     TResult? Function(_Success value)? success,
-    TResult? Function(_Deleted value)? deleted,
+    TResult? Function(_HasExistingDefault value)? hasExistingDefault,
     TResult? Function(_Failure value)? failure,
   }) {
     return initial?.call(this);
@@ -1016,9 +994,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_Loading value)? submitting,
     TResult Function(_Success value)? success,
-    TResult Function(_Deleted value)? deleted,
+    TResult Function(_HasExistingDefault value)? hasExistingDefault,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
@@ -1056,7 +1034,7 @@ class _$LoadingImpl implements _Loading {
 
   @override
   String toString() {
-    return 'TaxState.loading()';
+    return 'TaxState.submitting()';
   }
 
   @override
@@ -1072,38 +1050,38 @@ class _$LoadingImpl implements _Loading {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(Tax tax, String message) success,
-    required TResult Function(String message) deleted,
+    required TResult Function() submitting,
+    required TResult Function(String message) success,
+    required TResult Function(Tax? defaultTax) hasExistingDefault,
     required TResult Function(String message) failure,
   }) {
-    return loading();
+    return submitting();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(Tax tax, String message)? success,
-    TResult? Function(String message)? deleted,
+    TResult? Function()? submitting,
+    TResult? Function(String message)? success,
+    TResult? Function(Tax? defaultTax)? hasExistingDefault,
     TResult? Function(String message)? failure,
   }) {
-    return loading?.call();
+    return submitting?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(Tax tax, String message)? success,
-    TResult Function(String message)? deleted,
+    TResult Function()? submitting,
+    TResult Function(String message)? success,
+    TResult Function(Tax? defaultTax)? hasExistingDefault,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
-    if (loading != null) {
-      return loading();
+    if (submitting != null) {
+      return submitting();
     }
     return orElse();
   }
@@ -1112,38 +1090,38 @@ class _$LoadingImpl implements _Loading {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loading value) submitting,
     required TResult Function(_Success value) success,
-    required TResult Function(_Deleted value) deleted,
+    required TResult Function(_HasExistingDefault value) hasExistingDefault,
     required TResult Function(_Failure value) failure,
   }) {
-    return loading(this);
+    return submitting(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loading value)? submitting,
     TResult? Function(_Success value)? success,
-    TResult? Function(_Deleted value)? deleted,
+    TResult? Function(_HasExistingDefault value)? hasExistingDefault,
     TResult? Function(_Failure value)? failure,
   }) {
-    return loading?.call(this);
+    return submitting?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_Loading value)? submitting,
     TResult Function(_Success value)? success,
-    TResult Function(_Deleted value)? deleted,
+    TResult Function(_HasExistingDefault value)? hasExistingDefault,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
-    if (loading != null) {
-      return loading(this);
+    if (submitting != null) {
+      return submitting(this);
     }
     return orElse();
   }
@@ -1159,9 +1137,7 @@ abstract class _$$SuccessImplCopyWith<$Res> {
           _$SuccessImpl value, $Res Function(_$SuccessImpl) then) =
       __$$SuccessImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Tax tax, String message});
-
-  $TaxCopyWith<$Res> get tax;
+  $Res call({String message});
 }
 
 /// @nodoc
@@ -1175,44 +1151,28 @@ class __$$SuccessImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tax = null,
     Object? message = null,
   }) {
     return _then(_$SuccessImpl(
-      null == tax
-          ? _value.tax
-          : tax // ignore: cast_nullable_to_non_nullable
-              as Tax,
-      message: null == message
+      null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
               as String,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $TaxCopyWith<$Res> get tax {
-    return $TaxCopyWith<$Res>(_value.tax, (value) {
-      return _then(_value.copyWith(tax: value));
-    });
   }
 }
 
 /// @nodoc
 
 class _$SuccessImpl implements _Success {
-  const _$SuccessImpl(this.tax, {this.message = ''});
+  const _$SuccessImpl(this.message);
 
   @override
-  final Tax tax;
-  @override
-  @JsonKey()
   final String message;
 
   @override
   String toString() {
-    return 'TaxState.success(tax: $tax, message: $message)';
+    return 'TaxState.success(message: $message)';
   }
 
   @override
@@ -1220,12 +1180,11 @@ class _$SuccessImpl implements _Success {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SuccessImpl &&
-            (identical(other.tax, tax) || other.tax == tax) &&
             (identical(other.message, message) || other.message == message));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, tax, message);
+  int get hashCode => Object.hash(runtimeType, message);
 
   @JsonKey(ignore: true)
   @override
@@ -1237,38 +1196,38 @@ class _$SuccessImpl implements _Success {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(Tax tax, String message) success,
-    required TResult Function(String message) deleted,
+    required TResult Function() submitting,
+    required TResult Function(String message) success,
+    required TResult Function(Tax? defaultTax) hasExistingDefault,
     required TResult Function(String message) failure,
   }) {
-    return success(tax, message);
+    return success(message);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(Tax tax, String message)? success,
-    TResult? Function(String message)? deleted,
+    TResult? Function()? submitting,
+    TResult? Function(String message)? success,
+    TResult? Function(Tax? defaultTax)? hasExistingDefault,
     TResult? Function(String message)? failure,
   }) {
-    return success?.call(tax, message);
+    return success?.call(message);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(Tax tax, String message)? success,
-    TResult Function(String message)? deleted,
+    TResult Function()? submitting,
+    TResult Function(String message)? success,
+    TResult Function(Tax? defaultTax)? hasExistingDefault,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(tax, message);
+      return success(message);
     }
     return orElse();
   }
@@ -1277,9 +1236,9 @@ class _$SuccessImpl implements _Success {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loading value) submitting,
     required TResult Function(_Success value) success,
-    required TResult Function(_Deleted value) deleted,
+    required TResult Function(_HasExistingDefault value) hasExistingDefault,
     required TResult Function(_Failure value) failure,
   }) {
     return success(this);
@@ -1289,9 +1248,9 @@ class _$SuccessImpl implements _Success {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loading value)? submitting,
     TResult? Function(_Success value)? success,
-    TResult? Function(_Deleted value)? deleted,
+    TResult? Function(_HasExistingDefault value)? hasExistingDefault,
     TResult? Function(_Failure value)? failure,
   }) {
     return success?.call(this);
@@ -1301,9 +1260,9 @@ class _$SuccessImpl implements _Success {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_Loading value)? submitting,
     TResult Function(_Success value)? success,
-    TResult Function(_Deleted value)? deleted,
+    TResult Function(_HasExistingDefault value)? hasExistingDefault,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
@@ -1315,9 +1274,8 @@ class _$SuccessImpl implements _Success {
 }
 
 abstract class _Success implements TaxState {
-  const factory _Success(final Tax tax, {final String message}) = _$SuccessImpl;
+  const factory _Success(final String message) = _$SuccessImpl;
 
-  Tax get tax;
   String get message;
   @JsonKey(ignore: true)
   _$$SuccessImplCopyWith<_$SuccessImpl> get copyWith =>
@@ -1325,102 +1283,118 @@ abstract class _Success implements TaxState {
 }
 
 /// @nodoc
-abstract class _$$DeletedImplCopyWith<$Res> {
-  factory _$$DeletedImplCopyWith(
-          _$DeletedImpl value, $Res Function(_$DeletedImpl) then) =
-      __$$DeletedImplCopyWithImpl<$Res>;
+abstract class _$$HasExistingDefaultImplCopyWith<$Res> {
+  factory _$$HasExistingDefaultImplCopyWith(_$HasExistingDefaultImpl value,
+          $Res Function(_$HasExistingDefaultImpl) then) =
+      __$$HasExistingDefaultImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({String message});
+  $Res call({Tax? defaultTax});
+
+  $TaxCopyWith<$Res>? get defaultTax;
 }
 
 /// @nodoc
-class __$$DeletedImplCopyWithImpl<$Res>
-    extends _$TaxStateCopyWithImpl<$Res, _$DeletedImpl>
-    implements _$$DeletedImplCopyWith<$Res> {
-  __$$DeletedImplCopyWithImpl(
-      _$DeletedImpl _value, $Res Function(_$DeletedImpl) _then)
+class __$$HasExistingDefaultImplCopyWithImpl<$Res>
+    extends _$TaxStateCopyWithImpl<$Res, _$HasExistingDefaultImpl>
+    implements _$$HasExistingDefaultImplCopyWith<$Res> {
+  __$$HasExistingDefaultImplCopyWithImpl(_$HasExistingDefaultImpl _value,
+      $Res Function(_$HasExistingDefaultImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? message = null,
+    Object? defaultTax = freezed,
   }) {
-    return _then(_$DeletedImpl(
-      null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
+    return _then(_$HasExistingDefaultImpl(
+      freezed == defaultTax
+          ? _value.defaultTax
+          : defaultTax // ignore: cast_nullable_to_non_nullable
+              as Tax?,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $TaxCopyWith<$Res>? get defaultTax {
+    if (_value.defaultTax == null) {
+      return null;
+    }
+
+    return $TaxCopyWith<$Res>(_value.defaultTax!, (value) {
+      return _then(_value.copyWith(defaultTax: value));
+    });
   }
 }
 
 /// @nodoc
 
-class _$DeletedImpl implements _Deleted {
-  const _$DeletedImpl(this.message);
+class _$HasExistingDefaultImpl implements _HasExistingDefault {
+  const _$HasExistingDefaultImpl(this.defaultTax);
 
   @override
-  final String message;
+  final Tax? defaultTax;
 
   @override
   String toString() {
-    return 'TaxState.deleted(message: $message)';
+    return 'TaxState.hasExistingDefault(defaultTax: $defaultTax)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$DeletedImpl &&
-            (identical(other.message, message) || other.message == message));
+            other is _$HasExistingDefaultImpl &&
+            (identical(other.defaultTax, defaultTax) ||
+                other.defaultTax == defaultTax));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, message);
+  int get hashCode => Object.hash(runtimeType, defaultTax);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$DeletedImplCopyWith<_$DeletedImpl> get copyWith =>
-      __$$DeletedImplCopyWithImpl<_$DeletedImpl>(this, _$identity);
+  _$$HasExistingDefaultImplCopyWith<_$HasExistingDefaultImpl> get copyWith =>
+      __$$HasExistingDefaultImplCopyWithImpl<_$HasExistingDefaultImpl>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(Tax tax, String message) success,
-    required TResult Function(String message) deleted,
+    required TResult Function() submitting,
+    required TResult Function(String message) success,
+    required TResult Function(Tax? defaultTax) hasExistingDefault,
     required TResult Function(String message) failure,
   }) {
-    return deleted(message);
+    return hasExistingDefault(defaultTax);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(Tax tax, String message)? success,
-    TResult? Function(String message)? deleted,
+    TResult? Function()? submitting,
+    TResult? Function(String message)? success,
+    TResult? Function(Tax? defaultTax)? hasExistingDefault,
     TResult? Function(String message)? failure,
   }) {
-    return deleted?.call(message);
+    return hasExistingDefault?.call(defaultTax);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(Tax tax, String message)? success,
-    TResult Function(String message)? deleted,
+    TResult Function()? submitting,
+    TResult Function(String message)? success,
+    TResult Function(Tax? defaultTax)? hasExistingDefault,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
-    if (deleted != null) {
-      return deleted(message);
+    if (hasExistingDefault != null) {
+      return hasExistingDefault(defaultTax);
     }
     return orElse();
   }
@@ -1429,49 +1403,50 @@ class _$DeletedImpl implements _Deleted {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loading value) submitting,
     required TResult Function(_Success value) success,
-    required TResult Function(_Deleted value) deleted,
+    required TResult Function(_HasExistingDefault value) hasExistingDefault,
     required TResult Function(_Failure value) failure,
   }) {
-    return deleted(this);
+    return hasExistingDefault(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loading value)? submitting,
     TResult? Function(_Success value)? success,
-    TResult? Function(_Deleted value)? deleted,
+    TResult? Function(_HasExistingDefault value)? hasExistingDefault,
     TResult? Function(_Failure value)? failure,
   }) {
-    return deleted?.call(this);
+    return hasExistingDefault?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_Loading value)? submitting,
     TResult Function(_Success value)? success,
-    TResult Function(_Deleted value)? deleted,
+    TResult Function(_HasExistingDefault value)? hasExistingDefault,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
-    if (deleted != null) {
-      return deleted(this);
+    if (hasExistingDefault != null) {
+      return hasExistingDefault(this);
     }
     return orElse();
   }
 }
 
-abstract class _Deleted implements TaxState {
-  const factory _Deleted(final String message) = _$DeletedImpl;
+abstract class _HasExistingDefault implements TaxState {
+  const factory _HasExistingDefault(final Tax? defaultTax) =
+      _$HasExistingDefaultImpl;
 
-  String get message;
+  Tax? get defaultTax;
   @JsonKey(ignore: true)
-  _$$DeletedImplCopyWith<_$DeletedImpl> get copyWith =>
+  _$$HasExistingDefaultImplCopyWith<_$HasExistingDefaultImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1540,9 +1515,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(Tax tax, String message) success,
-    required TResult Function(String message) deleted,
+    required TResult Function() submitting,
+    required TResult Function(String message) success,
+    required TResult Function(Tax? defaultTax) hasExistingDefault,
     required TResult Function(String message) failure,
   }) {
     return failure(message);
@@ -1552,9 +1527,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(Tax tax, String message)? success,
-    TResult? Function(String message)? deleted,
+    TResult? Function()? submitting,
+    TResult? Function(String message)? success,
+    TResult? Function(Tax? defaultTax)? hasExistingDefault,
     TResult? Function(String message)? failure,
   }) {
     return failure?.call(message);
@@ -1564,9 +1539,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(Tax tax, String message)? success,
-    TResult Function(String message)? deleted,
+    TResult Function()? submitting,
+    TResult Function(String message)? success,
+    TResult Function(Tax? defaultTax)? hasExistingDefault,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -1580,9 +1555,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loading value) submitting,
     required TResult Function(_Success value) success,
-    required TResult Function(_Deleted value) deleted,
+    required TResult Function(_HasExistingDefault value) hasExistingDefault,
     required TResult Function(_Failure value) failure,
   }) {
     return failure(this);
@@ -1592,9 +1567,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loading value)? submitting,
     TResult? Function(_Success value)? success,
-    TResult? Function(_Deleted value)? deleted,
+    TResult? Function(_HasExistingDefault value)? hasExistingDefault,
     TResult? Function(_Failure value)? failure,
   }) {
     return failure?.call(this);
@@ -1604,9 +1579,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? loading,
+    TResult Function(_Loading value)? submitting,
     TResult Function(_Success value)? success,
-    TResult Function(_Deleted value)? deleted,
+    TResult Function(_HasExistingDefault value)? hasExistingDefault,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {

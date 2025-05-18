@@ -328,7 +328,6 @@ class DataGridColumn {
 
   static List<ColumnData> registers = [
     ColumnData('id', 'ID'),
-    ColumnData('register_id', 'Register ID'),
     ColumnData('register_name', 'Register Name'),
     ColumnData('assigned_branch', 'Assigned Branch'),
     ColumnData('action', 'Action'),
@@ -339,5 +338,11 @@ class DataGridColumn {
     ColumnData('branch_name', 'Branch Name'),
     ColumnData('phone', 'Phone'),
     ColumnData('address', 'Address'),
+  ];
+
+  static List<ColumnData> receiptTemplates = [
+    ColumnData('id', 'ID'),
+    ColumnData('receipt_template_name', 'Receipt Template'),
+    ColumnData('receipt_template_description', 'Description'),
   ];
 }

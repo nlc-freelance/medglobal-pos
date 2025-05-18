@@ -77,4 +77,17 @@ class TaxRepositoryImpl implements TaxRepository {
       return Left(UnexpectedFailure(e.messsage));
     }
   }
+
+  @override
+  Future<Either<Failure, Tax?>> getDefaultTaxCode() async {
+    try {
+      final responseDto = await _taxApi.getDefaultTaxCode();
+
+      return Right(responseDto?.toDomain());
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.messsage));
+    } on UnexpectedException catch (e) {
+      return Left(UnexpectedFailure(e.messsage));
+    }
+  }
 }

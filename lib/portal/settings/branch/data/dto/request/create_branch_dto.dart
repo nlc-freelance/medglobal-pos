@@ -1,44 +1,53 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch1.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 
 part 'create_branch_dto.g.dart';
 
 @JsonSerializable()
 class CreateBranchDto {
+  final int accountId;
   final String name;
+  final String phone;
+  final String? email;
   final String street1;
-  final String street2;
+  final String? street2;
   final String city;
   final String state;
-  final String postalCode;
-  final String country;
-  final String businessRegistrationNumber;
-  final String? vatIdNumber;
+  final String? zipCode;
+  final String? country;
+  final String businessRegistrationNo;
+  final String? vatIdNo;
 
   CreateBranchDto({
+    required this.accountId,
     required this.name,
+    required this.phone,
+    this.email,
     required this.street1,
-    required this.street2,
+    this.street2,
     required this.city,
     required this.state,
-    required this.postalCode,
-    required this.country,
-    required this.businessRegistrationNumber,
-    required this.vatIdNumber,
+    this.zipCode,
+    this.country,
+    required this.businessRegistrationNo,
+    this.vatIdNo,
   });
 
   Map<String, dynamic> toJson() => _$CreateBranchDtoToJson(this);
 
   /// Mapping from domain entity
-  factory CreateBranchDto.fromDomain(Branch1 branch) => CreateBranchDto(
+  factory CreateBranchDto.fromDomain(Branch branch) => CreateBranchDto(
         name: branch.name,
+        accountId: branch.accountId,
+        phone: branch.phone,
+        email: branch.email,
         street1: branch.street1,
         street2: branch.street2,
         city: branch.city,
         state: branch.state,
-        postalCode: branch.postalCode,
+        zipCode: branch.postalCode,
         country: branch.country,
-        businessRegistrationNumber: branch.businessRegistrationNumber,
-        vatIdNumber: branch.vatIdNumber,
+        businessRegistrationNo: branch.businessRegistrationNumber,
+        vatIdNo: branch.vatIdNumber,
       );
 }

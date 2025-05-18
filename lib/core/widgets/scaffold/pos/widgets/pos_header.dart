@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/enums/register_shift.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register/register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PosHeader extends StatelessWidget {
@@ -18,7 +18,7 @@ class PosHeader extends StatelessWidget {
       surfaceTintColor: UIColors.transparent,
       backgroundColor: UIColors.background,
       centerTitle: false,
-      title: BlocBuilder<RegisterCubit, RegisterState>(
+      title: BlocBuilder<ActiveRegisterCubit, ActiveRegisterState>(
         builder: (context, state) {
           return Row(
             mainAxisSize: MainAxisSize.min,
@@ -50,7 +50,7 @@ class PosHeader extends StatelessWidget {
         },
       ),
       actions: [
-        BlocBuilder<RegisterCubit, RegisterState>(
+        BlocBuilder<ActiveRegisterCubit, ActiveRegisterState>(
           builder: (context, state) {
             final status = state.status;
             final isOpen = status == RegisterShiftStatus.open;

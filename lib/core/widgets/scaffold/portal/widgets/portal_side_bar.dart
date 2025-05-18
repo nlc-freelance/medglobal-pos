@@ -55,6 +55,7 @@ class _SideNavBarState extends State<PortalSidebar> {
             IndexedTreeNode(key: SideMenuTree.settings.items[0]),
             IndexedTreeNode(key: SideMenuTree.settings.items[1]),
             IndexedTreeNode(key: SideMenuTree.settings.items[2]),
+            IndexedTreeNode(key: SideMenuTree.settings.items[5]),
           ]),
       ],
     );

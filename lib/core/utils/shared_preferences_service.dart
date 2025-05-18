@@ -1,6 +1,6 @@
 import 'package:medglobal_admin_portal/core/enums/register_shift.dart';
-import 'package:medglobal_admin_portal/shared/register/domain/entities/register.dart';
-import 'package:medglobal_admin_portal/shared/register/domain/entities/register_shift.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register_shift.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesService {
@@ -23,10 +23,10 @@ class SharedPreferencesService {
     final prefs = await SharedPreferences.getInstance();
 
     /// Branch where the selected register is assigned
-    await prefs.setInt('register_branch_id', register.branch!.id!);
+    await prefs.setInt('register_branch_id', register.assignedBranch.id!);
 
     await prefs.setInt('register_id', register.id!);
-    await prefs.setString('register_name', register.name!);
+    await prefs.setString('register_name', register.name);
     await prefs.setString(
       'register_status',
       register.shiftDetail?.status == 'open' ? RegisterShiftStatus.open.name : RegisterShiftStatus.close.name,

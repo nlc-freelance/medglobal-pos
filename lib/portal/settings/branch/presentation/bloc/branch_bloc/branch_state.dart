@@ -2,10 +2,15 @@ part of 'branch_bloc.dart';
 
 @freezed
 class BranchState with _$BranchState {
-  const factory BranchState.initial() = _Initial;
-  const factory BranchState.loading() = _Loading;
-  // Success state for getById, create and update
-  const factory BranchState.success(Branch1 branch, {@Default('') String message}) = _Success;
-  const factory BranchState.deleted(String message) = _Deleted;
-  const factory BranchState.failure(String message) = _Failure;
+  const factory BranchState.initial() = _BranchInitial;
+
+  // Fetch by id
+  const factory BranchState.loading() = _BranchFetching;
+  const factory BranchState.loaded(Branch branch) = _BranchLoaded;
+  const factory BranchState.loadFailed(String message) = _BranchLoadFailed;
+
+  // Create, update, delete
+  const factory BranchState.submitting() = _BranchLoading;
+  const factory BranchState.success(String message) = _BranchSuccess;
+  const factory BranchState.failure(String message) = _BranchFailure;
 }

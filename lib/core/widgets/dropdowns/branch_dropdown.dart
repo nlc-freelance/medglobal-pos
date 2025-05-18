@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/branches/cubit/branch_lazy_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_lazy_list_cubit/branch_lazy_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 /// Custom lazy loading dropdown using Portal and Bloc

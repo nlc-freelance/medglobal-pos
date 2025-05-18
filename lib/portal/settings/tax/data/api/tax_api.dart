@@ -29,6 +29,19 @@ class TaxApi {
     );
   }
 
+  Future<TaxDto?> getDefaultTaxCode() async {
+    final response = await _api.getPaginated(
+      ApiEndpoints.tax,
+      queryParams: {'isDefault': true},
+      fromJson: TaxDto.fromJson,
+    );
+
+    for (final item in response.data.items) {
+      if (item.isDefault) return item;
+    }
+    return null;
+  }
+
   Future<TaxDto> getTaxCodeById(int id) async {
     final response = await _api.get(
       ApiEndpoints.taxById(id),

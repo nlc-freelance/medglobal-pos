@@ -23,6 +23,8 @@ class Strings {
   static const taxEmptyTitle = 'No tax codes available';
   static const taxEmptySubtitle =
       'You haven\'t added any tax codes yet. Start by creating one to manage applicable tax rates.';
+  static const taxEdit = 'Edit Tax Code';
+  static const taxAdd = 'Add Tax Code';
 
   // POS Register Settings
   static const posRegisterTitle = 'POS Registers';

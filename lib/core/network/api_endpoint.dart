@@ -6,7 +6,8 @@ class ApiEndpoint {
   static String baseUrl(path) {
     // String devBaseUrl = 'https://oesj4zfko3.execute-api.ap-southeast-1.amazonaws.com/dev';
     // String sandboxBaseUrl = 'https://rgg6sphmg6.execute-api.ap-southeast-1.amazonaws.com/sandbox/';
-    String devBaseUrl = 'https://059iccwuk4.execute-api.ap-southeast-1.amazonaws.com/dev';
+    // String devBaseUrl = 'https://059iccwuk4.execute-api.ap-southeast-1.amazonaws.com/dev';
+    String devBaseUrl = 'https://awimrjguq7.execute-api.ap-southeast-1.amazonaws.com/dev';
 
     // if (path.contains('/suppliers')) {
     //   url = kDebugMode ? sandboxBaseUrl : 'https://7ayvpkcn48.execute-api.ap-southeast-1.amazonaws.com/dev';

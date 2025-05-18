@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch1.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 
 part 'update_branch_dto.g.dart';
 
@@ -7,41 +7,47 @@ part 'update_branch_dto.g.dart';
 class UpdateBranchDto {
   final int id;
   final String? name;
+  final String? phone;
+  final String? email;
   final String? street1;
   final String? street2;
   final String? city;
   final String? state;
-  final String? postalCode;
+  final String? zipCode;
   final String? country;
-  final String? businessRegistrationNumber;
-  final String? vatIdNumber;
+  final String? businessRegistrationNo;
+  final String? vatIdNo;
 
   UpdateBranchDto({
     required this.id,
     this.name,
+    this.phone,
+    this.email,
     this.street1,
     this.street2,
     this.city,
     this.state,
-    this.postalCode,
+    this.zipCode,
     this.country,
-    this.businessRegistrationNumber,
-    this.vatIdNumber,
+    this.businessRegistrationNo,
+    this.vatIdNo,
   });
 
   Map<String, dynamic> toJson() => _$UpdateBranchDtoToJson(this);
 
   /// Mapping from domain entity
-  factory UpdateBranchDto.fromDomain(Branch1 branch) => UpdateBranchDto(
+  factory UpdateBranchDto.fromDomain(Branch branch) => UpdateBranchDto(
         id: branch.id!,
         name: branch.name,
+        phone: branch.phone,
+        email: branch.email,
         street1: branch.street1,
         street2: branch.street2,
         city: branch.city,
         state: branch.state,
-        postalCode: branch.postalCode,
+        zipCode: branch.postalCode,
         country: branch.country,
-        businessRegistrationNumber: branch.businessRegistrationNumber,
-        vatIdNumber: branch.vatIdNumber,
+        businessRegistrationNo: branch.businessRegistrationNumber,
+        vatIdNo: branch.vatIdNumber,
       );
 }
