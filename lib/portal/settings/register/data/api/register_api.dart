@@ -56,6 +56,6 @@ class RegisterApi {
   }
 
   Future<void> deleteRegister(int id) async {
-    return await _api.delete(ApiEndpoints.registerById(99));
+    return await _api.delete(ApiEndpoints.registerById(id));
   }
 }
