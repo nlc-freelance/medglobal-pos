@@ -67,7 +67,7 @@ class _TaxDataGridState extends State<TaxDataGrid> {
                   DataGridPagination<Tax>(
                     paginatedData,
                     onPageChanged: ({page, size}) =>
-                        context.read<PaginatedListBloc<Tax>>().add(PaginatedListEvent.fetch(
+                        context.read<PaginatedListBloc<Tax>>().add(PaginatedListEvent<Tax>.fetch(
                               page: page,
                               size: size,
                             )),

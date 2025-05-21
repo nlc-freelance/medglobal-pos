@@ -31,6 +31,8 @@ class _TaxFormDialogState extends State<TaxFormDialog> {
     _taxFormCubit = context.read<TaxFormCubit>();
     _taxBloc = context.read<TaxBloc>();
 
+    _taxBloc.add(const TaxEvent.reset()); // For when an error occured during deletion
+
     _codeController = TextEditingController(text: _taxFormCubit.state.code);
     _rateController = TextEditingController(text: _taxFormCubit.state.rate?.toString());
   }

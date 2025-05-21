@@ -19,6 +19,7 @@ mixin _$BranchEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(int id) getBranchById,
+    required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
     required TResult Function(Branch branch) deleteBranch,
@@ -27,6 +28,7 @@ mixin _$BranchEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getBranchById,
+    TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
     TResult? Function(Branch branch)? deleteBranch,
@@ -35,6 +37,7 @@ mixin _$BranchEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getBranchById,
+    TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
     TResult Function(Branch branch)? deleteBranch,
@@ -44,6 +47,7 @@ mixin _$BranchEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_GetBranchById value) getBranchById,
+    required TResult Function(_GetDefaultReceipt value) getDefaultReceipt,
     required TResult Function(_CreateBranch value) createBranch,
     required TResult Function(_UpdateBranch value) updateBranch,
     required TResult Function(_DeleteBranch value) deleteBranch,
@@ -52,6 +56,7 @@ mixin _$BranchEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetBranchById value)? getBranchById,
+    TResult? Function(_GetDefaultReceipt value)? getDefaultReceipt,
     TResult? Function(_CreateBranch value)? createBranch,
     TResult? Function(_UpdateBranch value)? updateBranch,
     TResult? Function(_DeleteBranch value)? deleteBranch,
@@ -60,6 +65,7 @@ mixin _$BranchEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetBranchById value)? getBranchById,
+    TResult Function(_GetDefaultReceipt value)? getDefaultReceipt,
     TResult Function(_CreateBranch value)? createBranch,
     TResult Function(_UpdateBranch value)? updateBranch,
     TResult Function(_DeleteBranch value)? deleteBranch,
@@ -151,6 +157,7 @@ class _$GetBranchByIdImpl implements _GetBranchById {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(int id) getBranchById,
+    required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
     required TResult Function(Branch branch) deleteBranch,
@@ -162,6 +169,7 @@ class _$GetBranchByIdImpl implements _GetBranchById {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getBranchById,
+    TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
     TResult? Function(Branch branch)? deleteBranch,
@@ -173,6 +181,7 @@ class _$GetBranchByIdImpl implements _GetBranchById {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getBranchById,
+    TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
     TResult Function(Branch branch)? deleteBranch,
@@ -188,6 +197,7 @@ class _$GetBranchByIdImpl implements _GetBranchById {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_GetBranchById value) getBranchById,
+    required TResult Function(_GetDefaultReceipt value) getDefaultReceipt,
     required TResult Function(_CreateBranch value) createBranch,
     required TResult Function(_UpdateBranch value) updateBranch,
     required TResult Function(_DeleteBranch value) deleteBranch,
@@ -199,6 +209,7 @@ class _$GetBranchByIdImpl implements _GetBranchById {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetBranchById value)? getBranchById,
+    TResult? Function(_GetDefaultReceipt value)? getDefaultReceipt,
     TResult? Function(_CreateBranch value)? createBranch,
     TResult? Function(_UpdateBranch value)? updateBranch,
     TResult? Function(_DeleteBranch value)? deleteBranch,
@@ -210,6 +221,7 @@ class _$GetBranchByIdImpl implements _GetBranchById {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetBranchById value)? getBranchById,
+    TResult Function(_GetDefaultReceipt value)? getDefaultReceipt,
     TResult Function(_CreateBranch value)? createBranch,
     TResult Function(_UpdateBranch value)? updateBranch,
     TResult Function(_DeleteBranch value)? deleteBranch,
@@ -229,6 +241,126 @@ abstract class _GetBranchById implements BranchEvent {
   @JsonKey(ignore: true)
   _$$GetBranchByIdImplCopyWith<_$GetBranchByIdImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$GetDefaultReceiptImplCopyWith<$Res> {
+  factory _$$GetDefaultReceiptImplCopyWith(_$GetDefaultReceiptImpl value,
+          $Res Function(_$GetDefaultReceiptImpl) then) =
+      __$$GetDefaultReceiptImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$GetDefaultReceiptImplCopyWithImpl<$Res>
+    extends _$BranchEventCopyWithImpl<$Res, _$GetDefaultReceiptImpl>
+    implements _$$GetDefaultReceiptImplCopyWith<$Res> {
+  __$$GetDefaultReceiptImplCopyWithImpl(_$GetDefaultReceiptImpl _value,
+      $Res Function(_$GetDefaultReceiptImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$GetDefaultReceiptImpl implements _GetDefaultReceipt {
+  const _$GetDefaultReceiptImpl();
+
+  @override
+  String toString() {
+    return 'BranchEvent.getDefaultReceipt()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$GetDefaultReceiptImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(int id) getBranchById,
+    required TResult Function() getDefaultReceipt,
+    required TResult Function(Branch branch) createBranch,
+    required TResult Function(Branch branch) updateBranch,
+    required TResult Function(Branch branch) deleteBranch,
+  }) {
+    return getDefaultReceipt();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(int id)? getBranchById,
+    TResult? Function()? getDefaultReceipt,
+    TResult? Function(Branch branch)? createBranch,
+    TResult? Function(Branch branch)? updateBranch,
+    TResult? Function(Branch branch)? deleteBranch,
+  }) {
+    return getDefaultReceipt?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(int id)? getBranchById,
+    TResult Function()? getDefaultReceipt,
+    TResult Function(Branch branch)? createBranch,
+    TResult Function(Branch branch)? updateBranch,
+    TResult Function(Branch branch)? deleteBranch,
+    required TResult orElse(),
+  }) {
+    if (getDefaultReceipt != null) {
+      return getDefaultReceipt();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_GetBranchById value) getBranchById,
+    required TResult Function(_GetDefaultReceipt value) getDefaultReceipt,
+    required TResult Function(_CreateBranch value) createBranch,
+    required TResult Function(_UpdateBranch value) updateBranch,
+    required TResult Function(_DeleteBranch value) deleteBranch,
+  }) {
+    return getDefaultReceipt(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_GetBranchById value)? getBranchById,
+    TResult? Function(_GetDefaultReceipt value)? getDefaultReceipt,
+    TResult? Function(_CreateBranch value)? createBranch,
+    TResult? Function(_UpdateBranch value)? updateBranch,
+    TResult? Function(_DeleteBranch value)? deleteBranch,
+  }) {
+    return getDefaultReceipt?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_GetBranchById value)? getBranchById,
+    TResult Function(_GetDefaultReceipt value)? getDefaultReceipt,
+    TResult Function(_CreateBranch value)? createBranch,
+    TResult Function(_UpdateBranch value)? updateBranch,
+    TResult Function(_DeleteBranch value)? deleteBranch,
+    required TResult orElse(),
+  }) {
+    if (getDefaultReceipt != null) {
+      return getDefaultReceipt(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _GetDefaultReceipt implements BranchEvent {
+  const factory _GetDefaultReceipt() = _$GetDefaultReceiptImpl;
 }
 
 /// @nodoc
@@ -306,6 +438,7 @@ class _$CreateBranchImpl implements _CreateBranch {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(int id) getBranchById,
+    required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
     required TResult Function(Branch branch) deleteBranch,
@@ -317,6 +450,7 @@ class _$CreateBranchImpl implements _CreateBranch {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getBranchById,
+    TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
     TResult? Function(Branch branch)? deleteBranch,
@@ -328,6 +462,7 @@ class _$CreateBranchImpl implements _CreateBranch {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getBranchById,
+    TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
     TResult Function(Branch branch)? deleteBranch,
@@ -343,6 +478,7 @@ class _$CreateBranchImpl implements _CreateBranch {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_GetBranchById value) getBranchById,
+    required TResult Function(_GetDefaultReceipt value) getDefaultReceipt,
     required TResult Function(_CreateBranch value) createBranch,
     required TResult Function(_UpdateBranch value) updateBranch,
     required TResult Function(_DeleteBranch value) deleteBranch,
@@ -354,6 +490,7 @@ class _$CreateBranchImpl implements _CreateBranch {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetBranchById value)? getBranchById,
+    TResult? Function(_GetDefaultReceipt value)? getDefaultReceipt,
     TResult? Function(_CreateBranch value)? createBranch,
     TResult? Function(_UpdateBranch value)? updateBranch,
     TResult? Function(_DeleteBranch value)? deleteBranch,
@@ -365,6 +502,7 @@ class _$CreateBranchImpl implements _CreateBranch {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetBranchById value)? getBranchById,
+    TResult Function(_GetDefaultReceipt value)? getDefaultReceipt,
     TResult Function(_CreateBranch value)? createBranch,
     TResult Function(_UpdateBranch value)? updateBranch,
     TResult Function(_DeleteBranch value)? deleteBranch,
@@ -461,6 +599,7 @@ class _$UpdateBranchImpl implements _UpdateBranch {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(int id) getBranchById,
+    required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
     required TResult Function(Branch branch) deleteBranch,
@@ -472,6 +611,7 @@ class _$UpdateBranchImpl implements _UpdateBranch {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getBranchById,
+    TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
     TResult? Function(Branch branch)? deleteBranch,
@@ -483,6 +623,7 @@ class _$UpdateBranchImpl implements _UpdateBranch {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getBranchById,
+    TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
     TResult Function(Branch branch)? deleteBranch,
@@ -498,6 +639,7 @@ class _$UpdateBranchImpl implements _UpdateBranch {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_GetBranchById value) getBranchById,
+    required TResult Function(_GetDefaultReceipt value) getDefaultReceipt,
     required TResult Function(_CreateBranch value) createBranch,
     required TResult Function(_UpdateBranch value) updateBranch,
     required TResult Function(_DeleteBranch value) deleteBranch,
@@ -509,6 +651,7 @@ class _$UpdateBranchImpl implements _UpdateBranch {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetBranchById value)? getBranchById,
+    TResult? Function(_GetDefaultReceipt value)? getDefaultReceipt,
     TResult? Function(_CreateBranch value)? createBranch,
     TResult? Function(_UpdateBranch value)? updateBranch,
     TResult? Function(_DeleteBranch value)? deleteBranch,
@@ -520,6 +663,7 @@ class _$UpdateBranchImpl implements _UpdateBranch {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetBranchById value)? getBranchById,
+    TResult Function(_GetDefaultReceipt value)? getDefaultReceipt,
     TResult Function(_CreateBranch value)? createBranch,
     TResult Function(_UpdateBranch value)? updateBranch,
     TResult Function(_DeleteBranch value)? deleteBranch,
@@ -616,6 +760,7 @@ class _$DeleteBranchImpl implements _DeleteBranch {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(int id) getBranchById,
+    required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
     required TResult Function(Branch branch) deleteBranch,
@@ -627,6 +772,7 @@ class _$DeleteBranchImpl implements _DeleteBranch {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getBranchById,
+    TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
     TResult? Function(Branch branch)? deleteBranch,
@@ -638,6 +784,7 @@ class _$DeleteBranchImpl implements _DeleteBranch {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getBranchById,
+    TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
     TResult Function(Branch branch)? deleteBranch,
@@ -653,6 +800,7 @@ class _$DeleteBranchImpl implements _DeleteBranch {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_GetBranchById value) getBranchById,
+    required TResult Function(_GetDefaultReceipt value) getDefaultReceipt,
     required TResult Function(_CreateBranch value) createBranch,
     required TResult Function(_UpdateBranch value) updateBranch,
     required TResult Function(_DeleteBranch value) deleteBranch,
@@ -664,6 +812,7 @@ class _$DeleteBranchImpl implements _DeleteBranch {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_GetBranchById value)? getBranchById,
+    TResult? Function(_GetDefaultReceipt value)? getDefaultReceipt,
     TResult? Function(_CreateBranch value)? createBranch,
     TResult? Function(_UpdateBranch value)? updateBranch,
     TResult? Function(_DeleteBranch value)? deleteBranch,
@@ -675,6 +824,7 @@ class _$DeleteBranchImpl implements _DeleteBranch {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_GetBranchById value)? getBranchById,
+    TResult Function(_GetDefaultReceipt value)? getDefaultReceipt,
     TResult Function(_CreateBranch value)? createBranch,
     TResult Function(_UpdateBranch value)? updateBranch,
     TResult Function(_DeleteBranch value)? deleteBranch,
@@ -701,10 +851,12 @@ mixin _$BranchState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function() initializingNewBranch,
+    required TResult Function(ReceiptTemplate template) newBranch,
     required TResult Function() loading,
     required TResult Function(Branch branch) loaded,
     required TResult Function(String message) loadFailed,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
     required TResult Function(String message) failure,
   }) =>
@@ -712,10 +864,12 @@ mixin _$BranchState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function()? initializingNewBranch,
+    TResult? Function(ReceiptTemplate template)? newBranch,
     TResult? Function()? loading,
     TResult? Function(Branch branch)? loaded,
     TResult? Function(String message)? loadFailed,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
     TResult? Function(String message)? failure,
   }) =>
@@ -723,10 +877,12 @@ mixin _$BranchState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function()? initializingNewBranch,
+    TResult Function(ReceiptTemplate template)? newBranch,
     TResult Function()? loading,
     TResult Function(Branch branch)? loaded,
     TResult Function(String message)? loadFailed,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
@@ -734,35 +890,42 @@ mixin _$BranchState {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_BranchInitial value) initial,
-    required TResult Function(_BranchFetching value) loading,
-    required TResult Function(_BranchLoaded value) loaded,
-    required TResult Function(_BranchLoadFailed value) loadFailed,
-    required TResult Function(_BranchLoading value) submitting,
-    required TResult Function(_BranchSuccess value) success,
-    required TResult Function(_BranchFailure value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_InitializingNewBranch value)
+        initializingNewBranch,
+    required TResult Function(_NewBranch value) newBranch,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_BranchInitial value)? initial,
-    TResult? Function(_BranchFetching value)? loading,
-    TResult? Function(_BranchLoaded value)? loaded,
-    TResult? Function(_BranchLoadFailed value)? loadFailed,
-    TResult? Function(_BranchLoading value)? submitting,
-    TResult? Function(_BranchSuccess value)? success,
-    TResult? Function(_BranchFailure value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult? Function(_NewBranch value)? newBranch,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_BranchInitial value)? initial,
-    TResult Function(_BranchFetching value)? loading,
-    TResult Function(_BranchLoaded value)? loaded,
-    TResult Function(_BranchLoadFailed value)? loadFailed,
-    TResult Function(_BranchLoading value)? submitting,
-    TResult Function(_BranchSuccess value)? success,
-    TResult Function(_BranchFailure value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult Function(_NewBranch value)? newBranch,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -787,25 +950,25 @@ class _$BranchStateCopyWithImpl<$Res, $Val extends BranchState>
 }
 
 /// @nodoc
-abstract class _$$BranchInitialImplCopyWith<$Res> {
-  factory _$$BranchInitialImplCopyWith(
-          _$BranchInitialImpl value, $Res Function(_$BranchInitialImpl) then) =
-      __$$BranchInitialImplCopyWithImpl<$Res>;
+abstract class _$$InitialImplCopyWith<$Res> {
+  factory _$$InitialImplCopyWith(
+          _$InitialImpl value, $Res Function(_$InitialImpl) then) =
+      __$$InitialImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$BranchInitialImplCopyWithImpl<$Res>
-    extends _$BranchStateCopyWithImpl<$Res, _$BranchInitialImpl>
-    implements _$$BranchInitialImplCopyWith<$Res> {
-  __$$BranchInitialImplCopyWithImpl(
-      _$BranchInitialImpl _value, $Res Function(_$BranchInitialImpl) _then)
+class __$$InitialImplCopyWithImpl<$Res>
+    extends _$BranchStateCopyWithImpl<$Res, _$InitialImpl>
+    implements _$$InitialImplCopyWith<$Res> {
+  __$$InitialImplCopyWithImpl(
+      _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$BranchInitialImpl implements _BranchInitial {
-  const _$BranchInitialImpl();
+class _$InitialImpl implements _Initial {
+  const _$InitialImpl();
 
   @override
   String toString() {
@@ -815,7 +978,7 @@ class _$BranchInitialImpl implements _BranchInitial {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$BranchInitialImpl);
+        (other.runtimeType == runtimeType && other is _$InitialImpl);
   }
 
   @override
@@ -825,10 +988,12 @@ class _$BranchInitialImpl implements _BranchInitial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function() initializingNewBranch,
+    required TResult Function(ReceiptTemplate template) newBranch,
     required TResult Function() loading,
     required TResult Function(Branch branch) loaded,
     required TResult Function(String message) loadFailed,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
     required TResult Function(String message) failure,
   }) {
@@ -839,10 +1004,12 @@ class _$BranchInitialImpl implements _BranchInitial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function()? initializingNewBranch,
+    TResult? Function(ReceiptTemplate template)? newBranch,
     TResult? Function()? loading,
     TResult? Function(Branch branch)? loaded,
     TResult? Function(String message)? loadFailed,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
     TResult? Function(String message)? failure,
   }) {
@@ -853,10 +1020,12 @@ class _$BranchInitialImpl implements _BranchInitial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function()? initializingNewBranch,
+    TResult Function(ReceiptTemplate template)? newBranch,
     TResult Function()? loading,
     TResult Function(Branch branch)? loaded,
     TResult Function(String message)? loadFailed,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
@@ -870,13 +1039,16 @@ class _$BranchInitialImpl implements _BranchInitial {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_BranchInitial value) initial,
-    required TResult Function(_BranchFetching value) loading,
-    required TResult Function(_BranchLoaded value) loaded,
-    required TResult Function(_BranchLoadFailed value) loadFailed,
-    required TResult Function(_BranchLoading value) submitting,
-    required TResult Function(_BranchSuccess value) success,
-    required TResult Function(_BranchFailure value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_InitializingNewBranch value)
+        initializingNewBranch,
+    required TResult Function(_NewBranch value) newBranch,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
     return initial(this);
   }
@@ -884,13 +1056,15 @@ class _$BranchInitialImpl implements _BranchInitial {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_BranchInitial value)? initial,
-    TResult? Function(_BranchFetching value)? loading,
-    TResult? Function(_BranchLoaded value)? loaded,
-    TResult? Function(_BranchLoadFailed value)? loadFailed,
-    TResult? Function(_BranchLoading value)? submitting,
-    TResult? Function(_BranchSuccess value)? success,
-    TResult? Function(_BranchFailure value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult? Function(_NewBranch value)? newBranch,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
     return initial?.call(this);
   }
@@ -898,13 +1072,15 @@ class _$BranchInitialImpl implements _BranchInitial {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_BranchInitial value)? initial,
-    TResult Function(_BranchFetching value)? loading,
-    TResult Function(_BranchLoaded value)? loaded,
-    TResult Function(_BranchLoadFailed value)? loadFailed,
-    TResult Function(_BranchLoading value)? submitting,
-    TResult Function(_BranchSuccess value)? success,
-    TResult Function(_BranchFailure value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult Function(_NewBranch value)? newBranch,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -914,40 +1090,42 @@ class _$BranchInitialImpl implements _BranchInitial {
   }
 }
 
-abstract class _BranchInitial implements BranchState {
-  const factory _BranchInitial() = _$BranchInitialImpl;
+abstract class _Initial implements BranchState {
+  const factory _Initial() = _$InitialImpl;
 }
 
 /// @nodoc
-abstract class _$$BranchFetchingImplCopyWith<$Res> {
-  factory _$$BranchFetchingImplCopyWith(_$BranchFetchingImpl value,
-          $Res Function(_$BranchFetchingImpl) then) =
-      __$$BranchFetchingImplCopyWithImpl<$Res>;
+abstract class _$$InitializingNewBranchImplCopyWith<$Res> {
+  factory _$$InitializingNewBranchImplCopyWith(
+          _$InitializingNewBranchImpl value,
+          $Res Function(_$InitializingNewBranchImpl) then) =
+      __$$InitializingNewBranchImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$BranchFetchingImplCopyWithImpl<$Res>
-    extends _$BranchStateCopyWithImpl<$Res, _$BranchFetchingImpl>
-    implements _$$BranchFetchingImplCopyWith<$Res> {
-  __$$BranchFetchingImplCopyWithImpl(
-      _$BranchFetchingImpl _value, $Res Function(_$BranchFetchingImpl) _then)
+class __$$InitializingNewBranchImplCopyWithImpl<$Res>
+    extends _$BranchStateCopyWithImpl<$Res, _$InitializingNewBranchImpl>
+    implements _$$InitializingNewBranchImplCopyWith<$Res> {
+  __$$InitializingNewBranchImplCopyWithImpl(_$InitializingNewBranchImpl _value,
+      $Res Function(_$InitializingNewBranchImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$BranchFetchingImpl implements _BranchFetching {
-  const _$BranchFetchingImpl();
+class _$InitializingNewBranchImpl implements _InitializingNewBranch {
+  const _$InitializingNewBranchImpl();
 
   @override
   String toString() {
-    return 'BranchState.loading()';
+    return 'BranchState.initializingNewBranch()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$BranchFetchingImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$InitializingNewBranchImpl);
   }
 
   @override
@@ -957,10 +1135,344 @@ class _$BranchFetchingImpl implements _BranchFetching {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function() initializingNewBranch,
+    required TResult Function(ReceiptTemplate template) newBranch,
     required TResult Function() loading,
     required TResult Function(Branch branch) loaded,
     required TResult Function(String message) loadFailed,
-    required TResult Function() submitting,
+    required TResult Function() processing,
+    required TResult Function(String message) success,
+    required TResult Function(String message) failure,
+  }) {
+    return initializingNewBranch();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? initializingNewBranch,
+    TResult? Function(ReceiptTemplate template)? newBranch,
+    TResult? Function()? loading,
+    TResult? Function(Branch branch)? loaded,
+    TResult? Function(String message)? loadFailed,
+    TResult? Function()? processing,
+    TResult? Function(String message)? success,
+    TResult? Function(String message)? failure,
+  }) {
+    return initializingNewBranch?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? initializingNewBranch,
+    TResult Function(ReceiptTemplate template)? newBranch,
+    TResult Function()? loading,
+    TResult Function(Branch branch)? loaded,
+    TResult Function(String message)? loadFailed,
+    TResult Function()? processing,
+    TResult Function(String message)? success,
+    TResult Function(String message)? failure,
+    required TResult orElse(),
+  }) {
+    if (initializingNewBranch != null) {
+      return initializingNewBranch();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_InitializingNewBranch value)
+        initializingNewBranch,
+    required TResult Function(_NewBranch value) newBranch,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
+  }) {
+    return initializingNewBranch(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult? Function(_NewBranch value)? newBranch,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
+  }) {
+    return initializingNewBranch?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult Function(_NewBranch value)? newBranch,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
+    required TResult orElse(),
+  }) {
+    if (initializingNewBranch != null) {
+      return initializingNewBranch(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _InitializingNewBranch implements BranchState {
+  const factory _InitializingNewBranch() = _$InitializingNewBranchImpl;
+}
+
+/// @nodoc
+abstract class _$$NewBranchImplCopyWith<$Res> {
+  factory _$$NewBranchImplCopyWith(
+          _$NewBranchImpl value, $Res Function(_$NewBranchImpl) then) =
+      __$$NewBranchImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({ReceiptTemplate template});
+
+  $ReceiptTemplateCopyWith<$Res> get template;
+}
+
+/// @nodoc
+class __$$NewBranchImplCopyWithImpl<$Res>
+    extends _$BranchStateCopyWithImpl<$Res, _$NewBranchImpl>
+    implements _$$NewBranchImplCopyWith<$Res> {
+  __$$NewBranchImplCopyWithImpl(
+      _$NewBranchImpl _value, $Res Function(_$NewBranchImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? template = null,
+  }) {
+    return _then(_$NewBranchImpl(
+      null == template
+          ? _value.template
+          : template // ignore: cast_nullable_to_non_nullable
+              as ReceiptTemplate,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ReceiptTemplateCopyWith<$Res> get template {
+    return $ReceiptTemplateCopyWith<$Res>(_value.template, (value) {
+      return _then(_value.copyWith(template: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$NewBranchImpl implements _NewBranch {
+  const _$NewBranchImpl(this.template);
+
+  @override
+  final ReceiptTemplate template;
+
+  @override
+  String toString() {
+    return 'BranchState.newBranch(template: $template)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$NewBranchImpl &&
+            (identical(other.template, template) ||
+                other.template == template));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, template);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$NewBranchImplCopyWith<_$NewBranchImpl> get copyWith =>
+      __$$NewBranchImplCopyWithImpl<_$NewBranchImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() initializingNewBranch,
+    required TResult Function(ReceiptTemplate template) newBranch,
+    required TResult Function() loading,
+    required TResult Function(Branch branch) loaded,
+    required TResult Function(String message) loadFailed,
+    required TResult Function() processing,
+    required TResult Function(String message) success,
+    required TResult Function(String message) failure,
+  }) {
+    return newBranch(template);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? initializingNewBranch,
+    TResult? Function(ReceiptTemplate template)? newBranch,
+    TResult? Function()? loading,
+    TResult? Function(Branch branch)? loaded,
+    TResult? Function(String message)? loadFailed,
+    TResult? Function()? processing,
+    TResult? Function(String message)? success,
+    TResult? Function(String message)? failure,
+  }) {
+    return newBranch?.call(template);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? initializingNewBranch,
+    TResult Function(ReceiptTemplate template)? newBranch,
+    TResult Function()? loading,
+    TResult Function(Branch branch)? loaded,
+    TResult Function(String message)? loadFailed,
+    TResult Function()? processing,
+    TResult Function(String message)? success,
+    TResult Function(String message)? failure,
+    required TResult orElse(),
+  }) {
+    if (newBranch != null) {
+      return newBranch(template);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_InitializingNewBranch value)
+        initializingNewBranch,
+    required TResult Function(_NewBranch value) newBranch,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
+  }) {
+    return newBranch(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult? Function(_NewBranch value)? newBranch,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
+  }) {
+    return newBranch?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult Function(_NewBranch value)? newBranch,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
+    required TResult orElse(),
+  }) {
+    if (newBranch != null) {
+      return newBranch(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _NewBranch implements BranchState {
+  const factory _NewBranch(final ReceiptTemplate template) = _$NewBranchImpl;
+
+  ReceiptTemplate get template;
+  @JsonKey(ignore: true)
+  _$$NewBranchImplCopyWith<_$NewBranchImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$LoadingImplCopyWith<$Res> {
+  factory _$$LoadingImplCopyWith(
+          _$LoadingImpl value, $Res Function(_$LoadingImpl) then) =
+      __$$LoadingImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$LoadingImplCopyWithImpl<$Res>
+    extends _$BranchStateCopyWithImpl<$Res, _$LoadingImpl>
+    implements _$$LoadingImplCopyWith<$Res> {
+  __$$LoadingImplCopyWithImpl(
+      _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$LoadingImpl implements _Loading {
+  const _$LoadingImpl();
+
+  @override
+  String toString() {
+    return 'BranchState.loading()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$LoadingImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() initializingNewBranch,
+    required TResult Function(ReceiptTemplate template) newBranch,
+    required TResult Function() loading,
+    required TResult Function(Branch branch) loaded,
+    required TResult Function(String message) loadFailed,
+    required TResult Function() processing,
     required TResult Function(String message) success,
     required TResult Function(String message) failure,
   }) {
@@ -971,10 +1483,12 @@ class _$BranchFetchingImpl implements _BranchFetching {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function()? initializingNewBranch,
+    TResult? Function(ReceiptTemplate template)? newBranch,
     TResult? Function()? loading,
     TResult? Function(Branch branch)? loaded,
     TResult? Function(String message)? loadFailed,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
     TResult? Function(String message)? failure,
   }) {
@@ -985,10 +1499,12 @@ class _$BranchFetchingImpl implements _BranchFetching {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function()? initializingNewBranch,
+    TResult Function(ReceiptTemplate template)? newBranch,
     TResult Function()? loading,
     TResult Function(Branch branch)? loaded,
     TResult Function(String message)? loadFailed,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
@@ -1002,13 +1518,16 @@ class _$BranchFetchingImpl implements _BranchFetching {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_BranchInitial value) initial,
-    required TResult Function(_BranchFetching value) loading,
-    required TResult Function(_BranchLoaded value) loaded,
-    required TResult Function(_BranchLoadFailed value) loadFailed,
-    required TResult Function(_BranchLoading value) submitting,
-    required TResult Function(_BranchSuccess value) success,
-    required TResult Function(_BranchFailure value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_InitializingNewBranch value)
+        initializingNewBranch,
+    required TResult Function(_NewBranch value) newBranch,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
     return loading(this);
   }
@@ -1016,13 +1535,15 @@ class _$BranchFetchingImpl implements _BranchFetching {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_BranchInitial value)? initial,
-    TResult? Function(_BranchFetching value)? loading,
-    TResult? Function(_BranchLoaded value)? loaded,
-    TResult? Function(_BranchLoadFailed value)? loadFailed,
-    TResult? Function(_BranchLoading value)? submitting,
-    TResult? Function(_BranchSuccess value)? success,
-    TResult? Function(_BranchFailure value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult? Function(_NewBranch value)? newBranch,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
     return loading?.call(this);
   }
@@ -1030,13 +1551,15 @@ class _$BranchFetchingImpl implements _BranchFetching {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_BranchInitial value)? initial,
-    TResult Function(_BranchFetching value)? loading,
-    TResult Function(_BranchLoaded value)? loaded,
-    TResult Function(_BranchLoadFailed value)? loadFailed,
-    TResult Function(_BranchLoading value)? submitting,
-    TResult Function(_BranchSuccess value)? success,
-    TResult Function(_BranchFailure value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult Function(_NewBranch value)? newBranch,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -1046,15 +1569,15 @@ class _$BranchFetchingImpl implements _BranchFetching {
   }
 }
 
-abstract class _BranchFetching implements BranchState {
-  const factory _BranchFetching() = _$BranchFetchingImpl;
+abstract class _Loading implements BranchState {
+  const factory _Loading() = _$LoadingImpl;
 }
 
 /// @nodoc
-abstract class _$$BranchLoadedImplCopyWith<$Res> {
-  factory _$$BranchLoadedImplCopyWith(
-          _$BranchLoadedImpl value, $Res Function(_$BranchLoadedImpl) then) =
-      __$$BranchLoadedImplCopyWithImpl<$Res>;
+abstract class _$$LoadedImplCopyWith<$Res> {
+  factory _$$LoadedImplCopyWith(
+          _$LoadedImpl value, $Res Function(_$LoadedImpl) then) =
+      __$$LoadedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Branch branch});
 
@@ -1062,11 +1585,11 @@ abstract class _$$BranchLoadedImplCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$BranchLoadedImplCopyWithImpl<$Res>
-    extends _$BranchStateCopyWithImpl<$Res, _$BranchLoadedImpl>
-    implements _$$BranchLoadedImplCopyWith<$Res> {
-  __$$BranchLoadedImplCopyWithImpl(
-      _$BranchLoadedImpl _value, $Res Function(_$BranchLoadedImpl) _then)
+class __$$LoadedImplCopyWithImpl<$Res>
+    extends _$BranchStateCopyWithImpl<$Res, _$LoadedImpl>
+    implements _$$LoadedImplCopyWith<$Res> {
+  __$$LoadedImplCopyWithImpl(
+      _$LoadedImpl _value, $Res Function(_$LoadedImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1074,7 +1597,7 @@ class __$$BranchLoadedImplCopyWithImpl<$Res>
   $Res call({
     Object? branch = null,
   }) {
-    return _then(_$BranchLoadedImpl(
+    return _then(_$LoadedImpl(
       null == branch
           ? _value.branch
           : branch // ignore: cast_nullable_to_non_nullable
@@ -1093,8 +1616,8 @@ class __$$BranchLoadedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$BranchLoadedImpl implements _BranchLoaded {
-  const _$BranchLoadedImpl(this.branch);
+class _$LoadedImpl implements _Loaded {
+  const _$LoadedImpl(this.branch);
 
   @override
   final Branch branch;
@@ -1108,7 +1631,7 @@ class _$BranchLoadedImpl implements _BranchLoaded {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$BranchLoadedImpl &&
+            other is _$LoadedImpl &&
             (identical(other.branch, branch) || other.branch == branch));
   }
 
@@ -1118,17 +1641,19 @@ class _$BranchLoadedImpl implements _BranchLoaded {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$BranchLoadedImplCopyWith<_$BranchLoadedImpl> get copyWith =>
-      __$$BranchLoadedImplCopyWithImpl<_$BranchLoadedImpl>(this, _$identity);
+  _$$LoadedImplCopyWith<_$LoadedImpl> get copyWith =>
+      __$$LoadedImplCopyWithImpl<_$LoadedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function() initializingNewBranch,
+    required TResult Function(ReceiptTemplate template) newBranch,
     required TResult Function() loading,
     required TResult Function(Branch branch) loaded,
     required TResult Function(String message) loadFailed,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
     required TResult Function(String message) failure,
   }) {
@@ -1139,10 +1664,12 @@ class _$BranchLoadedImpl implements _BranchLoaded {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function()? initializingNewBranch,
+    TResult? Function(ReceiptTemplate template)? newBranch,
     TResult? Function()? loading,
     TResult? Function(Branch branch)? loaded,
     TResult? Function(String message)? loadFailed,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
     TResult? Function(String message)? failure,
   }) {
@@ -1153,10 +1680,12 @@ class _$BranchLoadedImpl implements _BranchLoaded {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function()? initializingNewBranch,
+    TResult Function(ReceiptTemplate template)? newBranch,
     TResult Function()? loading,
     TResult Function(Branch branch)? loaded,
     TResult Function(String message)? loadFailed,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
@@ -1170,13 +1699,16 @@ class _$BranchLoadedImpl implements _BranchLoaded {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_BranchInitial value) initial,
-    required TResult Function(_BranchFetching value) loading,
-    required TResult Function(_BranchLoaded value) loaded,
-    required TResult Function(_BranchLoadFailed value) loadFailed,
-    required TResult Function(_BranchLoading value) submitting,
-    required TResult Function(_BranchSuccess value) success,
-    required TResult Function(_BranchFailure value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_InitializingNewBranch value)
+        initializingNewBranch,
+    required TResult Function(_NewBranch value) newBranch,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
     return loaded(this);
   }
@@ -1184,13 +1716,15 @@ class _$BranchLoadedImpl implements _BranchLoaded {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_BranchInitial value)? initial,
-    TResult? Function(_BranchFetching value)? loading,
-    TResult? Function(_BranchLoaded value)? loaded,
-    TResult? Function(_BranchLoadFailed value)? loadFailed,
-    TResult? Function(_BranchLoading value)? submitting,
-    TResult? Function(_BranchSuccess value)? success,
-    TResult? Function(_BranchFailure value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult? Function(_NewBranch value)? newBranch,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
     return loaded?.call(this);
   }
@@ -1198,13 +1732,15 @@ class _$BranchLoadedImpl implements _BranchLoaded {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_BranchInitial value)? initial,
-    TResult Function(_BranchFetching value)? loading,
-    TResult Function(_BranchLoaded value)? loaded,
-    TResult Function(_BranchLoadFailed value)? loadFailed,
-    TResult Function(_BranchLoading value)? submitting,
-    TResult Function(_BranchSuccess value)? success,
-    TResult Function(_BranchFailure value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult Function(_NewBranch value)? newBranch,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -1214,30 +1750,30 @@ class _$BranchLoadedImpl implements _BranchLoaded {
   }
 }
 
-abstract class _BranchLoaded implements BranchState {
-  const factory _BranchLoaded(final Branch branch) = _$BranchLoadedImpl;
+abstract class _Loaded implements BranchState {
+  const factory _Loaded(final Branch branch) = _$LoadedImpl;
 
   Branch get branch;
   @JsonKey(ignore: true)
-  _$$BranchLoadedImplCopyWith<_$BranchLoadedImpl> get copyWith =>
+  _$$LoadedImplCopyWith<_$LoadedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$BranchLoadFailedImplCopyWith<$Res> {
-  factory _$$BranchLoadFailedImplCopyWith(_$BranchLoadFailedImpl value,
-          $Res Function(_$BranchLoadFailedImpl) then) =
-      __$$BranchLoadFailedImplCopyWithImpl<$Res>;
+abstract class _$$LoadFailedImplCopyWith<$Res> {
+  factory _$$LoadFailedImplCopyWith(
+          _$LoadFailedImpl value, $Res Function(_$LoadFailedImpl) then) =
+      __$$LoadFailedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String message});
 }
 
 /// @nodoc
-class __$$BranchLoadFailedImplCopyWithImpl<$Res>
-    extends _$BranchStateCopyWithImpl<$Res, _$BranchLoadFailedImpl>
-    implements _$$BranchLoadFailedImplCopyWith<$Res> {
-  __$$BranchLoadFailedImplCopyWithImpl(_$BranchLoadFailedImpl _value,
-      $Res Function(_$BranchLoadFailedImpl) _then)
+class __$$LoadFailedImplCopyWithImpl<$Res>
+    extends _$BranchStateCopyWithImpl<$Res, _$LoadFailedImpl>
+    implements _$$LoadFailedImplCopyWith<$Res> {
+  __$$LoadFailedImplCopyWithImpl(
+      _$LoadFailedImpl _value, $Res Function(_$LoadFailedImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1245,7 +1781,7 @@ class __$$BranchLoadFailedImplCopyWithImpl<$Res>
   $Res call({
     Object? message = null,
   }) {
-    return _then(_$BranchLoadFailedImpl(
+    return _then(_$LoadFailedImpl(
       null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -1256,8 +1792,8 @@ class __$$BranchLoadFailedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$BranchLoadFailedImpl implements _BranchLoadFailed {
-  const _$BranchLoadFailedImpl(this.message);
+class _$LoadFailedImpl implements _LoadFailed {
+  const _$LoadFailedImpl(this.message);
 
   @override
   final String message;
@@ -1271,7 +1807,7 @@ class _$BranchLoadFailedImpl implements _BranchLoadFailed {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$BranchLoadFailedImpl &&
+            other is _$LoadFailedImpl &&
             (identical(other.message, message) || other.message == message));
   }
 
@@ -1281,18 +1817,19 @@ class _$BranchLoadFailedImpl implements _BranchLoadFailed {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$BranchLoadFailedImplCopyWith<_$BranchLoadFailedImpl> get copyWith =>
-      __$$BranchLoadFailedImplCopyWithImpl<_$BranchLoadFailedImpl>(
-          this, _$identity);
+  _$$LoadFailedImplCopyWith<_$LoadFailedImpl> get copyWith =>
+      __$$LoadFailedImplCopyWithImpl<_$LoadFailedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function() initializingNewBranch,
+    required TResult Function(ReceiptTemplate template) newBranch,
     required TResult Function() loading,
     required TResult Function(Branch branch) loaded,
     required TResult Function(String message) loadFailed,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
     required TResult Function(String message) failure,
   }) {
@@ -1303,10 +1840,12 @@ class _$BranchLoadFailedImpl implements _BranchLoadFailed {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function()? initializingNewBranch,
+    TResult? Function(ReceiptTemplate template)? newBranch,
     TResult? Function()? loading,
     TResult? Function(Branch branch)? loaded,
     TResult? Function(String message)? loadFailed,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
     TResult? Function(String message)? failure,
   }) {
@@ -1317,10 +1856,12 @@ class _$BranchLoadFailedImpl implements _BranchLoadFailed {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function()? initializingNewBranch,
+    TResult Function(ReceiptTemplate template)? newBranch,
     TResult Function()? loading,
     TResult Function(Branch branch)? loaded,
     TResult Function(String message)? loadFailed,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
@@ -1334,13 +1875,16 @@ class _$BranchLoadFailedImpl implements _BranchLoadFailed {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_BranchInitial value) initial,
-    required TResult Function(_BranchFetching value) loading,
-    required TResult Function(_BranchLoaded value) loaded,
-    required TResult Function(_BranchLoadFailed value) loadFailed,
-    required TResult Function(_BranchLoading value) submitting,
-    required TResult Function(_BranchSuccess value) success,
-    required TResult Function(_BranchFailure value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_InitializingNewBranch value)
+        initializingNewBranch,
+    required TResult Function(_NewBranch value) newBranch,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
     return loadFailed(this);
   }
@@ -1348,13 +1892,15 @@ class _$BranchLoadFailedImpl implements _BranchLoadFailed {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_BranchInitial value)? initial,
-    TResult? Function(_BranchFetching value)? loading,
-    TResult? Function(_BranchLoaded value)? loaded,
-    TResult? Function(_BranchLoadFailed value)? loadFailed,
-    TResult? Function(_BranchLoading value)? submitting,
-    TResult? Function(_BranchSuccess value)? success,
-    TResult? Function(_BranchFailure value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult? Function(_NewBranch value)? newBranch,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
     return loadFailed?.call(this);
   }
@@ -1362,13 +1908,15 @@ class _$BranchLoadFailedImpl implements _BranchLoadFailed {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_BranchInitial value)? initial,
-    TResult Function(_BranchFetching value)? loading,
-    TResult Function(_BranchLoaded value)? loaded,
-    TResult Function(_BranchLoadFailed value)? loadFailed,
-    TResult Function(_BranchLoading value)? submitting,
-    TResult Function(_BranchSuccess value)? success,
-    TResult Function(_BranchFailure value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult Function(_NewBranch value)? newBranch,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (loadFailed != null) {
@@ -1378,46 +1926,45 @@ class _$BranchLoadFailedImpl implements _BranchLoadFailed {
   }
 }
 
-abstract class _BranchLoadFailed implements BranchState {
-  const factory _BranchLoadFailed(final String message) =
-      _$BranchLoadFailedImpl;
+abstract class _LoadFailed implements BranchState {
+  const factory _LoadFailed(final String message) = _$LoadFailedImpl;
 
   String get message;
   @JsonKey(ignore: true)
-  _$$BranchLoadFailedImplCopyWith<_$BranchLoadFailedImpl> get copyWith =>
+  _$$LoadFailedImplCopyWith<_$LoadFailedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$BranchLoadingImplCopyWith<$Res> {
-  factory _$$BranchLoadingImplCopyWith(
-          _$BranchLoadingImpl value, $Res Function(_$BranchLoadingImpl) then) =
-      __$$BranchLoadingImplCopyWithImpl<$Res>;
+abstract class _$$ProcessingImplCopyWith<$Res> {
+  factory _$$ProcessingImplCopyWith(
+          _$ProcessingImpl value, $Res Function(_$ProcessingImpl) then) =
+      __$$ProcessingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$BranchLoadingImplCopyWithImpl<$Res>
-    extends _$BranchStateCopyWithImpl<$Res, _$BranchLoadingImpl>
-    implements _$$BranchLoadingImplCopyWith<$Res> {
-  __$$BranchLoadingImplCopyWithImpl(
-      _$BranchLoadingImpl _value, $Res Function(_$BranchLoadingImpl) _then)
+class __$$ProcessingImplCopyWithImpl<$Res>
+    extends _$BranchStateCopyWithImpl<$Res, _$ProcessingImpl>
+    implements _$$ProcessingImplCopyWith<$Res> {
+  __$$ProcessingImplCopyWithImpl(
+      _$ProcessingImpl _value, $Res Function(_$ProcessingImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$BranchLoadingImpl implements _BranchLoading {
-  const _$BranchLoadingImpl();
+class _$ProcessingImpl implements _Processing {
+  const _$ProcessingImpl();
 
   @override
   String toString() {
-    return 'BranchState.submitting()';
+    return 'BranchState.processing()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$BranchLoadingImpl);
+        (other.runtimeType == runtimeType && other is _$ProcessingImpl);
   }
 
   @override
@@ -1427,44 +1974,50 @@ class _$BranchLoadingImpl implements _BranchLoading {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function() initializingNewBranch,
+    required TResult Function(ReceiptTemplate template) newBranch,
     required TResult Function() loading,
     required TResult Function(Branch branch) loaded,
     required TResult Function(String message) loadFailed,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
     required TResult Function(String message) failure,
   }) {
-    return submitting();
+    return processing();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function()? initializingNewBranch,
+    TResult? Function(ReceiptTemplate template)? newBranch,
     TResult? Function()? loading,
     TResult? Function(Branch branch)? loaded,
     TResult? Function(String message)? loadFailed,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
     TResult? Function(String message)? failure,
   }) {
-    return submitting?.call();
+    return processing?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function()? initializingNewBranch,
+    TResult Function(ReceiptTemplate template)? newBranch,
     TResult Function()? loading,
     TResult Function(Branch branch)? loaded,
     TResult Function(String message)? loadFailed,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
-    if (submitting != null) {
-      return submitting();
+    if (processing != null) {
+      return processing();
     }
     return orElse();
   }
@@ -1472,69 +2025,76 @@ class _$BranchLoadingImpl implements _BranchLoading {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_BranchInitial value) initial,
-    required TResult Function(_BranchFetching value) loading,
-    required TResult Function(_BranchLoaded value) loaded,
-    required TResult Function(_BranchLoadFailed value) loadFailed,
-    required TResult Function(_BranchLoading value) submitting,
-    required TResult Function(_BranchSuccess value) success,
-    required TResult Function(_BranchFailure value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_InitializingNewBranch value)
+        initializingNewBranch,
+    required TResult Function(_NewBranch value) newBranch,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
-    return submitting(this);
+    return processing(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_BranchInitial value)? initial,
-    TResult? Function(_BranchFetching value)? loading,
-    TResult? Function(_BranchLoaded value)? loaded,
-    TResult? Function(_BranchLoadFailed value)? loadFailed,
-    TResult? Function(_BranchLoading value)? submitting,
-    TResult? Function(_BranchSuccess value)? success,
-    TResult? Function(_BranchFailure value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult? Function(_NewBranch value)? newBranch,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
-    return submitting?.call(this);
+    return processing?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_BranchInitial value)? initial,
-    TResult Function(_BranchFetching value)? loading,
-    TResult Function(_BranchLoaded value)? loaded,
-    TResult Function(_BranchLoadFailed value)? loadFailed,
-    TResult Function(_BranchLoading value)? submitting,
-    TResult Function(_BranchSuccess value)? success,
-    TResult Function(_BranchFailure value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult Function(_NewBranch value)? newBranch,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
-    if (submitting != null) {
-      return submitting(this);
+    if (processing != null) {
+      return processing(this);
     }
     return orElse();
   }
 }
 
-abstract class _BranchLoading implements BranchState {
-  const factory _BranchLoading() = _$BranchLoadingImpl;
+abstract class _Processing implements BranchState {
+  const factory _Processing() = _$ProcessingImpl;
 }
 
 /// @nodoc
-abstract class _$$BranchSuccessImplCopyWith<$Res> {
-  factory _$$BranchSuccessImplCopyWith(
-          _$BranchSuccessImpl value, $Res Function(_$BranchSuccessImpl) then) =
-      __$$BranchSuccessImplCopyWithImpl<$Res>;
+abstract class _$$SuccessImplCopyWith<$Res> {
+  factory _$$SuccessImplCopyWith(
+          _$SuccessImpl value, $Res Function(_$SuccessImpl) then) =
+      __$$SuccessImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String message});
 }
 
 /// @nodoc
-class __$$BranchSuccessImplCopyWithImpl<$Res>
-    extends _$BranchStateCopyWithImpl<$Res, _$BranchSuccessImpl>
-    implements _$$BranchSuccessImplCopyWith<$Res> {
-  __$$BranchSuccessImplCopyWithImpl(
-      _$BranchSuccessImpl _value, $Res Function(_$BranchSuccessImpl) _then)
+class __$$SuccessImplCopyWithImpl<$Res>
+    extends _$BranchStateCopyWithImpl<$Res, _$SuccessImpl>
+    implements _$$SuccessImplCopyWith<$Res> {
+  __$$SuccessImplCopyWithImpl(
+      _$SuccessImpl _value, $Res Function(_$SuccessImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1542,7 +2102,7 @@ class __$$BranchSuccessImplCopyWithImpl<$Res>
   $Res call({
     Object? message = null,
   }) {
-    return _then(_$BranchSuccessImpl(
+    return _then(_$SuccessImpl(
       null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -1553,8 +2113,8 @@ class __$$BranchSuccessImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$BranchSuccessImpl implements _BranchSuccess {
-  const _$BranchSuccessImpl(this.message);
+class _$SuccessImpl implements _Success {
+  const _$SuccessImpl(this.message);
 
   @override
   final String message;
@@ -1568,7 +2128,7 @@ class _$BranchSuccessImpl implements _BranchSuccess {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$BranchSuccessImpl &&
+            other is _$SuccessImpl &&
             (identical(other.message, message) || other.message == message));
   }
 
@@ -1578,17 +2138,19 @@ class _$BranchSuccessImpl implements _BranchSuccess {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$BranchSuccessImplCopyWith<_$BranchSuccessImpl> get copyWith =>
-      __$$BranchSuccessImplCopyWithImpl<_$BranchSuccessImpl>(this, _$identity);
+  _$$SuccessImplCopyWith<_$SuccessImpl> get copyWith =>
+      __$$SuccessImplCopyWithImpl<_$SuccessImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function() initializingNewBranch,
+    required TResult Function(ReceiptTemplate template) newBranch,
     required TResult Function() loading,
     required TResult Function(Branch branch) loaded,
     required TResult Function(String message) loadFailed,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
     required TResult Function(String message) failure,
   }) {
@@ -1599,10 +2161,12 @@ class _$BranchSuccessImpl implements _BranchSuccess {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function()? initializingNewBranch,
+    TResult? Function(ReceiptTemplate template)? newBranch,
     TResult? Function()? loading,
     TResult? Function(Branch branch)? loaded,
     TResult? Function(String message)? loadFailed,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
     TResult? Function(String message)? failure,
   }) {
@@ -1613,10 +2177,12 @@ class _$BranchSuccessImpl implements _BranchSuccess {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function()? initializingNewBranch,
+    TResult Function(ReceiptTemplate template)? newBranch,
     TResult Function()? loading,
     TResult Function(Branch branch)? loaded,
     TResult Function(String message)? loadFailed,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
@@ -1630,13 +2196,16 @@ class _$BranchSuccessImpl implements _BranchSuccess {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_BranchInitial value) initial,
-    required TResult Function(_BranchFetching value) loading,
-    required TResult Function(_BranchLoaded value) loaded,
-    required TResult Function(_BranchLoadFailed value) loadFailed,
-    required TResult Function(_BranchLoading value) submitting,
-    required TResult Function(_BranchSuccess value) success,
-    required TResult Function(_BranchFailure value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_InitializingNewBranch value)
+        initializingNewBranch,
+    required TResult Function(_NewBranch value) newBranch,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
     return success(this);
   }
@@ -1644,13 +2213,15 @@ class _$BranchSuccessImpl implements _BranchSuccess {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_BranchInitial value)? initial,
-    TResult? Function(_BranchFetching value)? loading,
-    TResult? Function(_BranchLoaded value)? loaded,
-    TResult? Function(_BranchLoadFailed value)? loadFailed,
-    TResult? Function(_BranchLoading value)? submitting,
-    TResult? Function(_BranchSuccess value)? success,
-    TResult? Function(_BranchFailure value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult? Function(_NewBranch value)? newBranch,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
     return success?.call(this);
   }
@@ -1658,13 +2229,15 @@ class _$BranchSuccessImpl implements _BranchSuccess {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_BranchInitial value)? initial,
-    TResult Function(_BranchFetching value)? loading,
-    TResult Function(_BranchLoaded value)? loaded,
-    TResult Function(_BranchLoadFailed value)? loadFailed,
-    TResult Function(_BranchLoading value)? submitting,
-    TResult Function(_BranchSuccess value)? success,
-    TResult Function(_BranchFailure value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult Function(_NewBranch value)? newBranch,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -1674,30 +2247,30 @@ class _$BranchSuccessImpl implements _BranchSuccess {
   }
 }
 
-abstract class _BranchSuccess implements BranchState {
-  const factory _BranchSuccess(final String message) = _$BranchSuccessImpl;
+abstract class _Success implements BranchState {
+  const factory _Success(final String message) = _$SuccessImpl;
 
   String get message;
   @JsonKey(ignore: true)
-  _$$BranchSuccessImplCopyWith<_$BranchSuccessImpl> get copyWith =>
+  _$$SuccessImplCopyWith<_$SuccessImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$BranchFailureImplCopyWith<$Res> {
-  factory _$$BranchFailureImplCopyWith(
-          _$BranchFailureImpl value, $Res Function(_$BranchFailureImpl) then) =
-      __$$BranchFailureImplCopyWithImpl<$Res>;
+abstract class _$$FailureImplCopyWith<$Res> {
+  factory _$$FailureImplCopyWith(
+          _$FailureImpl value, $Res Function(_$FailureImpl) then) =
+      __$$FailureImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String message});
 }
 
 /// @nodoc
-class __$$BranchFailureImplCopyWithImpl<$Res>
-    extends _$BranchStateCopyWithImpl<$Res, _$BranchFailureImpl>
-    implements _$$BranchFailureImplCopyWith<$Res> {
-  __$$BranchFailureImplCopyWithImpl(
-      _$BranchFailureImpl _value, $Res Function(_$BranchFailureImpl) _then)
+class __$$FailureImplCopyWithImpl<$Res>
+    extends _$BranchStateCopyWithImpl<$Res, _$FailureImpl>
+    implements _$$FailureImplCopyWith<$Res> {
+  __$$FailureImplCopyWithImpl(
+      _$FailureImpl _value, $Res Function(_$FailureImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1705,7 +2278,7 @@ class __$$BranchFailureImplCopyWithImpl<$Res>
   $Res call({
     Object? message = null,
   }) {
-    return _then(_$BranchFailureImpl(
+    return _then(_$FailureImpl(
       null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -1716,8 +2289,8 @@ class __$$BranchFailureImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$BranchFailureImpl implements _BranchFailure {
-  const _$BranchFailureImpl(this.message);
+class _$FailureImpl implements _Failure {
+  const _$FailureImpl(this.message);
 
   @override
   final String message;
@@ -1731,7 +2304,7 @@ class _$BranchFailureImpl implements _BranchFailure {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$BranchFailureImpl &&
+            other is _$FailureImpl &&
             (identical(other.message, message) || other.message == message));
   }
 
@@ -1741,17 +2314,19 @@ class _$BranchFailureImpl implements _BranchFailure {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$BranchFailureImplCopyWith<_$BranchFailureImpl> get copyWith =>
-      __$$BranchFailureImplCopyWithImpl<_$BranchFailureImpl>(this, _$identity);
+  _$$FailureImplCopyWith<_$FailureImpl> get copyWith =>
+      __$$FailureImplCopyWithImpl<_$FailureImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
+    required TResult Function() initializingNewBranch,
+    required TResult Function(ReceiptTemplate template) newBranch,
     required TResult Function() loading,
     required TResult Function(Branch branch) loaded,
     required TResult Function(String message) loadFailed,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
     required TResult Function(String message) failure,
   }) {
@@ -1762,10 +2337,12 @@ class _$BranchFailureImpl implements _BranchFailure {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
+    TResult? Function()? initializingNewBranch,
+    TResult? Function(ReceiptTemplate template)? newBranch,
     TResult? Function()? loading,
     TResult? Function(Branch branch)? loaded,
     TResult? Function(String message)? loadFailed,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
     TResult? Function(String message)? failure,
   }) {
@@ -1776,10 +2353,12 @@ class _$BranchFailureImpl implements _BranchFailure {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
+    TResult Function()? initializingNewBranch,
+    TResult Function(ReceiptTemplate template)? newBranch,
     TResult Function()? loading,
     TResult Function(Branch branch)? loaded,
     TResult Function(String message)? loadFailed,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
@@ -1793,13 +2372,16 @@ class _$BranchFailureImpl implements _BranchFailure {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_BranchInitial value) initial,
-    required TResult Function(_BranchFetching value) loading,
-    required TResult Function(_BranchLoaded value) loaded,
-    required TResult Function(_BranchLoadFailed value) loadFailed,
-    required TResult Function(_BranchLoading value) submitting,
-    required TResult Function(_BranchSuccess value) success,
-    required TResult Function(_BranchFailure value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_InitializingNewBranch value)
+        initializingNewBranch,
+    required TResult Function(_NewBranch value) newBranch,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
     return failure(this);
   }
@@ -1807,13 +2389,15 @@ class _$BranchFailureImpl implements _BranchFailure {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_BranchInitial value)? initial,
-    TResult? Function(_BranchFetching value)? loading,
-    TResult? Function(_BranchLoaded value)? loaded,
-    TResult? Function(_BranchLoadFailed value)? loadFailed,
-    TResult? Function(_BranchLoading value)? submitting,
-    TResult? Function(_BranchSuccess value)? success,
-    TResult? Function(_BranchFailure value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult? Function(_NewBranch value)? newBranch,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
     return failure?.call(this);
   }
@@ -1821,13 +2405,15 @@ class _$BranchFailureImpl implements _BranchFailure {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_BranchInitial value)? initial,
-    TResult Function(_BranchFetching value)? loading,
-    TResult Function(_BranchLoaded value)? loaded,
-    TResult Function(_BranchLoadFailed value)? loadFailed,
-    TResult Function(_BranchLoading value)? submitting,
-    TResult Function(_BranchSuccess value)? success,
-    TResult Function(_BranchFailure value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_InitializingNewBranch value)? initializingNewBranch,
+    TResult Function(_NewBranch value)? newBranch,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (failure != null) {
@@ -1837,11 +2423,11 @@ class _$BranchFailureImpl implements _BranchFailure {
   }
 }
 
-abstract class _BranchFailure implements BranchState {
-  const factory _BranchFailure(final String message) = _$BranchFailureImpl;
+abstract class _Failure implements BranchState {
+  const factory _Failure(final String message) = _$FailureImpl;
 
   String get message;
   @JsonKey(ignore: true)
-  _$$BranchFailureImplCopyWith<_$BranchFailureImpl> get copyWith =>
+  _$$FailureImplCopyWith<_$FailureImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

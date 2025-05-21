@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/route_guard.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/pos_scaffold.dart';
@@ -12,8 +14,10 @@ import 'package:medglobal_admin_portal/portal/reports/product_history/presentati
 import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/sales_per_category_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_details/sales_per_shift_details_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_list/sales_per_shift_page.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/pages/branch_form/branch_form_page.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/pages/branch_list/branch_list_page.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/presentation/page/receipt_template_form/receipt_template_form_page.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/presentation/page/receipt_template_list/receipt_template_list_page.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/presentation/pages/register_list/register_list_page.dart';
@@ -270,7 +274,13 @@ abstract class AppRouter {
                   ),
                   // Check the difference ShellRoute vs StatefullShellRoute, when navigating from the menu, does it keep state?
                   ShellRoute(
-                    pageBuilder: (context, state, child) => NoTransitionPage(child: child),
+                    pageBuilder: (context, state, child) => NoTransitionPage(
+                      child: BlocProvider(
+                        create: (_) =>
+                            GetIt.I<PaginatedListBloc<Branch>>()..add(const PaginatedListEvent<Branch>.fetch()),
+                        child: child,
+                      ),
+                    ),
                     routes: [
                       GoRoute(
                         name: SideMenuTreeItem.branch.name,
@@ -293,13 +303,18 @@ abstract class AppRouter {
                     ],
                   ),
                   ShellRoute(
-                    pageBuilder: (context, state, child) => NoTransitionPage(child: child),
+                    pageBuilder: (context, state, child) => NoTransitionPage(
+                      child: BlocProvider(
+                        create: (_) => GetIt.I<PaginatedListBloc<ReceiptTemplate>>()
+                          ..add(const PaginatedListEvent<ReceiptTemplate>.fetch()),
+                        child: child,
+                      ),
+                    ),
                     routes: [
                       GoRoute(
                         name: SideMenuTreeItem.receiptTemplate.name,
                         path: SideMenuTreeItem.receiptTemplate.path,
-                        pageBuilder: (context, state) => const NoTransitionPage(child: ReceiptTemplateFormPage()),
-                        // pageBuilder: (context, state) => const NoTransitionPage(child: ReceiptTemplateListPage()),
+                        pageBuilder: (context, state) => const NoTransitionPage(child: ReceiptTemplateListPage()),
                         routes: [
                           GoRoute(
                             name: SideMenuTreeItem.newReceiptTemplate.name,

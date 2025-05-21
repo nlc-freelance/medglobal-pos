@@ -8,12 +8,12 @@ part 'paginated_list_event.dart';
 part 'paginated_list_state.dart';
 part 'paginated_list_bloc.freezed.dart';
 
-class PaginatedListBloc<T> extends Bloc<PaginatedListEvent, PaginatedListState<T>> {
+class PaginatedListBloc<T> extends Bloc<PaginatedListEvent<T>, PaginatedListState<T>> {
   final Future<Either<Failure, PaginatedList<T>>> Function({int? page, int? size}) _fetch;
 
   PaginatedListBloc(this._fetch) : super(PaginatedListState<T>.initial()) {
-    on<_Fetch>(_onFetch);
-    on<_Reset>(_onReset);
+    on<_Fetch<T>>(_onFetch);
+    on<_Reset<T>>(_onReset);
   }
 
   Future<void> _onFetch(event, Emitter<PaginatedListState<T>> emit) async {

@@ -65,7 +65,7 @@ class _BranchDataGridState extends State<BranchDataGrid> {
                   DataGridPagination<Branch>(
                     paginatedData,
                     onPageChanged: ({page, size}) =>
-                        context.read<PaginatedListBloc<Branch>>().add(PaginatedListEvent.fetch(
+                        context.read<PaginatedListBloc<Branch>>().add(PaginatedListEvent<Branch>.fetch(
                               page: page,
                               size: size,
                             )),

@@ -67,7 +67,7 @@ class _RegisterDataGridState extends State<RegisterDataGrid> {
                   DataGridPagination<Register>(
                     paginatedData,
                     onPageChanged: ({page, size}) =>
-                        context.read<PaginatedListBloc<Register>>().add(PaginatedListEvent.fetch(
+                        context.read<PaginatedListBloc<Register>>().add(PaginatedListEvent<Register>.fetch(
                               page: page,
                               size: size,
                             )),

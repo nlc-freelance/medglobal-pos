@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/core/constants/constants.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'receipt_template.freezed.dart';
@@ -7,6 +8,7 @@ part 'receipt_template.freezed.dart';
 class ReceiptTemplate with _$ReceiptTemplate {
   const factory ReceiptTemplate({
     int? id,
+    required int accountId,
     required String name,
     String? description,
     @Default(false) bool isSystemDefault,
@@ -14,7 +16,7 @@ class ReceiptTemplate with _$ReceiptTemplate {
     @Default(false) bool showCompanyName,
     @Default(false) bool showBranchName,
     @Default(false) bool showBranchAddress,
-    @Default(false) bool showBranchContactDetails,
+    @Default(false) bool showBranchContact,
     @Default(false) bool showFooterMessage,
     String? footerTitle,
     String? footerMessage,
@@ -26,7 +28,7 @@ class ReceiptTemplate with _$ReceiptTemplate {
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'receipt_template_name', value: name),
-          DataGridCell<String>(columnName: 'receipt_template_description', value: description),
+          DataGridCell<String>(columnName: 'receipt_template_description', value: description ?? Strings.empty),
         ],
       );
 }

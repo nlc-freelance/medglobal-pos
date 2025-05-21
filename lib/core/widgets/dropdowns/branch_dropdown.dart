@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_lazy_list_cubit/branch_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -249,14 +249,19 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
     super.initState();
     if (widget.selectedItem != null) setState(() => _selectedItem = widget.selectedItem);
     _scrollController = ScrollController()..addListener(_scrollListener);
-    context.read<BranchLazyListCubit>().getBranches();
+    context.read<LazyListBloc<Branch>>().add(const LazyListEvent<Branch>.fetch());
+    // context.read<BranchLazyListCubit>().getBranches();
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
-        !context.read<BranchLazyListCubit>().state.isLoadingMore &&
-        !context.read<BranchLazyListCubit>().state.hasReachedMax) {
-      context.read<BranchLazyListCubit>().getBranches();
+        !context.read<LazyListBloc<Branch>>().state.isLoadingMore &&
+        !context.read<LazyListBloc<Branch>>().state.hasReachedMax) {
+      // !context.read<BranchLazyListCubit>().state.isLoadingMore &&
+      // !context.read<BranchLazyListCubit>().state.hasReachedMax) {
+      context.read<LazyListBloc<Branch>>().add(const LazyListEvent<Branch>.fetch());
+
+      // context.read<BranchLazyListCubit>().getBranches();
     }
   }
 
@@ -370,12 +375,15 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                 ),
               ),
       ),
-      body: BlocBuilder<BranchLazyListCubit, BranchLazyListState>(
+      body: BlocBuilder<LazyListBloc<Branch>, LazyListState<Branch>>(
+        // body: BlocBuilder<BranchLazyListCubit, BranchLazyListState>(
         builder: (context, state) {
-          final branchList = state.branches;
+          final branchList = state.items;
+          // final branchList = state.branches;
 
           double itemHeight = widget.isMultiSelect ? 48 : 40;
-          double totalHeight = (state.branches.isNotEmpty ? branchList.length : 3) * itemHeight;
+          double totalHeight = (state.items.isNotEmpty ? branchList.length : 3) * itemHeight;
+          // double totalHeight = (state.branches.isNotEmpty ? branchList.length : 3) * itemHeight;
           double height = totalHeight > 200 ? 200 : totalHeight;
 
           return Container(
@@ -389,17 +397,22 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (state.INITIAL_LOADING)
+                if (state.isLoadingInitial)
+                  // if (state.INITIAL_LOADING)
                   const CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)
-                else if (state.EMPTY)
+                else if (state.hasNoData)
+                  // else if (state.EMPTY)
                   UIText.labelMedium('No data available', align: TextAlign.center)
-                else if (state.ERROR)
+                else if (state.error != null)
+                  // else if (state.ERROR)
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         UIText.labelMedium(state.error!, align: TextAlign.center),
-                        UIButton.text('Reload', onClick: () => context.read<BranchLazyListCubit>().getBranches())
+                        UIButton.text('Reload',
+                            onClick: () => context.read<LazyListBloc<Branch>>().add(const LazyListEvent.fetch()))
+                        // UIButton.text('Reload', onClick: () => context.read<BranchLazyListCubit>().getBranches())
                       ],
                     ),
                   )

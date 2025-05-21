@@ -63,7 +63,13 @@ class AppTextFormField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       style: UIStyleText.bodyRegular.copyWith(fontSize: 12, color: UIColors.textDark),
-      decoration: InputDecoration(hintText: hint),
+      decoration: InputDecoration(
+        hintText: hint,
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          borderSide: BorderSide(color: UIColors.textGray),
+        ),
+      ),
       cursorHeight: 14,
       inputFormatters: [...?formatter],
       autovalidateMode: AutovalidateMode.onUserInteraction,

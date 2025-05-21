@@ -11,11 +11,14 @@ class ReceiptTemplateFormState with _$ReceiptTemplateFormState {
     @Default(false) bool showCompanyName,
     @Default(false) bool showBranchName,
     @Default(false) bool showBranchAddress,
-    @Default(false) bool showBranchContactDetails,
+    @Default(false) bool showBranchContact,
     @Default(false) bool showFooterMessage,
     String? footerTitle,
     String? footerMessage,
+    @Default(true) bool isConfigurationValid,
   }) = _ReceiptTemplateFormState;
+
+  const ReceiptTemplateFormState._();
 
   factory ReceiptTemplateFormState.initial() => const ReceiptTemplateFormState();
 
@@ -28,9 +31,12 @@ class ReceiptTemplateFormState with _$ReceiptTemplateFormState {
         showCompanyName: template.showCompanyName,
         showBranchName: template.showBranchName,
         showBranchAddress: template.showBranchAddress,
-        showBranchContactDetails: template.showBranchContactDetails,
+        showBranchContact: template.showBranchContact,
         showFooterMessage: template.showFooterMessage,
         footerTitle: template.footerTitle,
         footerMessage: template.footerMessage,
       );
+
+  bool hasValidConfiguration() =>
+      showCompanyName || showBranchName || showBranchAddress || showBranchContact || showFooterMessage;
 }

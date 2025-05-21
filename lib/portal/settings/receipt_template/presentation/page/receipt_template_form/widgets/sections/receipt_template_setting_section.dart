@@ -36,68 +36,82 @@ class _ReceiptTemplateSettingSectionState extends State<ReceiptTemplateSettingSe
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PageSectionTitle.subsection(
-              title: 'Configuration',
-              subtitle: 'The following details can be shown or hidden on the receipt.',
-            ),
+            state.isSystemDefault
+                ? const PageSectionTitle(title: 'Configuration')
+                : PageSectionTitle.subsection(
+                    title: 'Configuration',
+                    subtitle: 'The following details can be shown or hidden on the receipt.',
+                  ),
+            if (!state.isConfigurationValid)
+              UIText.dataGridText(
+                'Please add atleast one configuration to the receipt template.',
+                color: UIColors.buttonDanger,
+              ),
             SizedBox(
               width: 500,
-              child: Column(
-                children: [
-                  AppCheckboxListTile(
-                    label: 'Company Name',
-                    controlAffinity: ListTileControlAffinity.trailing,
-                    value: state.showCompanyName,
-                    onToggle: (value) => _receiptTemplateFormCubit.setIsDefault(value),
-                  ),
-                  const UIVerticalSpace(16),
-                  AppCheckboxListTile(
-                    label: 'Branch Name',
-                    controlAffinity: ListTileControlAffinity.trailing,
-                    value: state.showBranchName,
-                    onToggle: (value) => _receiptTemplateFormCubit.setShowBranchName(value),
-                  ),
-                  const UIVerticalSpace(16),
-                  AppCheckboxListTile(
-                    label: 'Branch Address',
-                    controlAffinity: ListTileControlAffinity.trailing,
-                    value: state.showBranchAddress,
-                    onToggle: (value) => _receiptTemplateFormCubit.setShowBranchAddress(value),
-                  ),
-                  const UIVerticalSpace(16),
-                  AppCheckboxListTile(
-                    label: 'Branch Contact Details',
-                    controlAffinity: ListTileControlAffinity.trailing,
-                    value: state.showBranchContactDetails,
-                    onToggle: (value) => _receiptTemplateFormCubit.setShowBranchContactDetails(value),
-                  ),
-                  const UIVerticalSpace(16),
-                  AppCheckboxListTile(
-                    label: 'Footer Message',
-                    value: state.showFooterMessage,
-                    controlAffinity: ListTileControlAffinity.trailing,
-                    onToggle: (value) => _receiptTemplateFormCubit.setShowFooterMessage(value),
-                  ),
-                  const UIVerticalSpace(16),
-                  if (state.showFooterMessage) ...[
-                    AppTextFormField.vertical(
-                      label: 'Title',
-                      hint: 'Enter footer message title',
-                      controller: _footerTitleController,
-                      isRequired: true,
-                      validator: FormValidators.required('Please enter a footer message title.'),
-                      onChanged: (value) => _receiptTemplateFormCubit.setFooterTitle(value),
+              child: IgnorePointer(
+                ignoring: state.isSystemDefault,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppCheckboxListTile(
+                      label: 'Show Company Name',
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      value: state.showCompanyName,
+                      onToggle: (value) => _receiptTemplateFormCubit.setShowCompanyName(value),
                     ),
                     const UIVerticalSpace(16),
-                    AppTextFormField.vertical(
-                      label: 'Messsage',
-                      hint: 'Enter footer message',
-                      controller: _footerMessageController,
-                      validator: FormValidators.required('Please enter a footer message.'),
-                      onChanged: (value) => _receiptTemplateFormCubit.setFooterMessage(value),
+                    AppCheckboxListTile(
+                      label: 'Show Branch Name',
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      value: state.showBranchName,
+                      onToggle: (value) => _receiptTemplateFormCubit.setShowBranchName(value),
                     ),
+                    const UIVerticalSpace(16),
+                    AppCheckboxListTile(
+                      label: 'Show Branch Address',
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      value: state.showBranchAddress,
+                      onToggle: (value) => _receiptTemplateFormCubit.setShowBranchAddress(value),
+                    ),
+                    const UIVerticalSpace(16),
+                    AppCheckboxListTile(
+                      label: 'Show Branch Contact',
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      value: state.showBranchContact,
+                      onToggle: (value) => _receiptTemplateFormCubit.setShowBranchContactDetails(value),
+                    ),
+                    const UIVerticalSpace(16),
+                    AppCheckboxListTile(
+                      label: 'Show Footer Message',
+                      value: state.showFooterMessage,
+                      controlAffinity: ListTileControlAffinity.trailing,
+                      onToggle: (value) => _receiptTemplateFormCubit.setShowFooterMessage(value),
+                    ),
+                    const UIVerticalSpace(16),
+                    if (state.isSystemDefault) ...[
+                      LabelValue.text(label: 'Footer Title', value: state.footerTitle),
+                      const UIVerticalSpace(16),
+                      LabelValue.text(label: 'Footer Message', value: state.footerMessage),
+                    ] else if (state.showFooterMessage) ...[
+                      AppTextFormField.vertical(
+                        label: 'Title',
+                        hint: 'Enter footer message title',
+                        controller: _footerTitleController,
+                        isRequired: true,
+                        validator: FormValidators.required('Please enter a footer message title.'),
+                        onChanged: (value) => _receiptTemplateFormCubit.setFooterTitle(value),
+                      ),
+                      const UIVerticalSpace(16),
+                      AppTextFormField.vertical(
+                        label: 'Messsage',
+                        hint: 'Enter footer message',
+                        controller: _footerMessageController,
+                        onChanged: (value) => _receiptTemplateFormCubit.setFooterMessage(value),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ],

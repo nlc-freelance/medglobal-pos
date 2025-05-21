@@ -10,7 +10,7 @@ class BranchDto with _$BranchDto {
   const factory BranchDto({
     required int id,
     required String name,
-    required int accountId, //
+    required int accountId,
     String? code,
     required String street1,
     String? street2,
@@ -21,7 +21,7 @@ class BranchDto with _$BranchDto {
     required String phone,
     String? email,
     String? vatIdNo,
-    required String businessRegistrationNo, //
+    required String businessRegistrationNo,
     @DateTimeConverter() DateTime? createdAt,
     @DateTimeConverter() DateTime? updatedAt,
     @DateTimeConverter() DateTime? deletedAt,

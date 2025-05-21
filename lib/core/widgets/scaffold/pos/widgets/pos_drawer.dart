@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/enums/register_shift.dart';
 import 'package:medglobal_admin_portal/core/routing/router.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/register_shift_dialog.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/register_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -124,7 +125,8 @@ class PosDrawer extends StatelessWidget {
                 context.read<OrderCubit>().reset();
 
                 // /// Dropdown
-                context.read<RegisterLazyListCubit>().reset();
+                context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.reset());
+                // context.read<RegisterLazyListCubit>().reset();
 
                 context.read<ActiveRegisterCubit>().reset();
                 context.read<AuthBloc>().add(const LogoutEvent());

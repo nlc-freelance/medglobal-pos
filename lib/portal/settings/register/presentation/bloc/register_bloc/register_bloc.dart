@@ -18,7 +18,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }
 
   Future<void> _onCreateRegister(event, emit) async {
-    emit(const RegisterState.submitting());
+    emit(const RegisterState.processing());
     try {
       final result = await _repository.createRegister(event.register);
 
@@ -32,7 +32,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }
 
   Future<void> _onUpdateRegister(event, emit) async {
-    emit(const RegisterState.submitting());
+    emit(const RegisterState.processing());
     try {
       final result = await _repository.updateRegister(event.register);
 
@@ -46,13 +46,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }
 
   Future<void> _onDeleteRegister(event, emit) async {
-    emit(const RegisterState.submitting());
+    emit(const RegisterState.processing());
     try {
       final result = await _repository.deleteRegister(event.register.id);
 
       result.fold(
         (failure) => emit(RegisterState.failure(failure.message)),
-        (_) => emit(RegisterState.success('${event.register.name} successfully deleted.')),
+        (_) => emit(RegisterState.deleted('${event.register.name} successfully deleted.')),
       );
     } catch (e) {
       emit(RegisterState.failure(e.toString()));

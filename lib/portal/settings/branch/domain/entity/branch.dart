@@ -9,7 +9,7 @@ class Branch with _$Branch {
   const factory Branch({
     int? id,
     required String name,
-    required int accountId, //
+    required int accountId,
     String? code,
     required String phone,
     String? email,
@@ -19,9 +19,9 @@ class Branch with _$Branch {
     required String state,
     String? postalCode,
     String? country,
-    required String businessRegistrationNumber, //
+    required String businessRegistrationNumber,
     String? vatIdNumber,
-    // Receipt template
+    // required ReceiptTemplate receiptTemplate,
   }) = _Branch;
 
   // For old (MVP) implementations without request DTOs

@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$ReceiptTemplate {
   int? get id => throw _privateConstructorUsedError;
+  int get accountId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   bool get isSystemDefault => throw _privateConstructorUsedError;
@@ -24,7 +25,7 @@ mixin _$ReceiptTemplate {
   bool get showCompanyName => throw _privateConstructorUsedError;
   bool get showBranchName => throw _privateConstructorUsedError;
   bool get showBranchAddress => throw _privateConstructorUsedError;
-  bool get showBranchContactDetails => throw _privateConstructorUsedError;
+  bool get showBranchContact => throw _privateConstructorUsedError;
   bool get showFooterMessage => throw _privateConstructorUsedError;
   String? get footerTitle => throw _privateConstructorUsedError;
   String? get footerMessage => throw _privateConstructorUsedError;
@@ -42,6 +43,7 @@ abstract class $ReceiptTemplateCopyWith<$Res> {
   @useResult
   $Res call(
       {int? id,
+      int accountId,
       String name,
       String? description,
       bool isSystemDefault,
@@ -49,7 +51,7 @@ abstract class $ReceiptTemplateCopyWith<$Res> {
       bool showCompanyName,
       bool showBranchName,
       bool showBranchAddress,
-      bool showBranchContactDetails,
+      bool showBranchContact,
       bool showFooterMessage,
       String? footerTitle,
       String? footerMessage});
@@ -69,6 +71,7 @@ class _$ReceiptTemplateCopyWithImpl<$Res, $Val extends ReceiptTemplate>
   @override
   $Res call({
     Object? id = freezed,
+    Object? accountId = null,
     Object? name = null,
     Object? description = freezed,
     Object? isSystemDefault = null,
@@ -76,7 +79,7 @@ class _$ReceiptTemplateCopyWithImpl<$Res, $Val extends ReceiptTemplate>
     Object? showCompanyName = null,
     Object? showBranchName = null,
     Object? showBranchAddress = null,
-    Object? showBranchContactDetails = null,
+    Object? showBranchContact = null,
     Object? showFooterMessage = null,
     Object? footerTitle = freezed,
     Object? footerMessage = freezed,
@@ -86,6 +89,10 @@ class _$ReceiptTemplateCopyWithImpl<$Res, $Val extends ReceiptTemplate>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
+      accountId: null == accountId
+          ? _value.accountId
+          : accountId // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -114,9 +121,9 @@ class _$ReceiptTemplateCopyWithImpl<$Res, $Val extends ReceiptTemplate>
           ? _value.showBranchAddress
           : showBranchAddress // ignore: cast_nullable_to_non_nullable
               as bool,
-      showBranchContactDetails: null == showBranchContactDetails
-          ? _value.showBranchContactDetails
-          : showBranchContactDetails // ignore: cast_nullable_to_non_nullable
+      showBranchContact: null == showBranchContact
+          ? _value.showBranchContact
+          : showBranchContact // ignore: cast_nullable_to_non_nullable
               as bool,
       showFooterMessage: null == showFooterMessage
           ? _value.showFooterMessage
@@ -144,6 +151,7 @@ abstract class _$$ReceiptTemplateImplCopyWith<$Res>
   @useResult
   $Res call(
       {int? id,
+      int accountId,
       String name,
       String? description,
       bool isSystemDefault,
@@ -151,7 +159,7 @@ abstract class _$$ReceiptTemplateImplCopyWith<$Res>
       bool showCompanyName,
       bool showBranchName,
       bool showBranchAddress,
-      bool showBranchContactDetails,
+      bool showBranchContact,
       bool showFooterMessage,
       String? footerTitle,
       String? footerMessage});
@@ -169,6 +177,7 @@ class __$$ReceiptTemplateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? accountId = null,
     Object? name = null,
     Object? description = freezed,
     Object? isSystemDefault = null,
@@ -176,7 +185,7 @@ class __$$ReceiptTemplateImplCopyWithImpl<$Res>
     Object? showCompanyName = null,
     Object? showBranchName = null,
     Object? showBranchAddress = null,
-    Object? showBranchContactDetails = null,
+    Object? showBranchContact = null,
     Object? showFooterMessage = null,
     Object? footerTitle = freezed,
     Object? footerMessage = freezed,
@@ -186,6 +195,10 @@ class __$$ReceiptTemplateImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
+      accountId: null == accountId
+          ? _value.accountId
+          : accountId // ignore: cast_nullable_to_non_nullable
+              as int,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -214,9 +227,9 @@ class __$$ReceiptTemplateImplCopyWithImpl<$Res>
           ? _value.showBranchAddress
           : showBranchAddress // ignore: cast_nullable_to_non_nullable
               as bool,
-      showBranchContactDetails: null == showBranchContactDetails
-          ? _value.showBranchContactDetails
-          : showBranchContactDetails // ignore: cast_nullable_to_non_nullable
+      showBranchContact: null == showBranchContact
+          ? _value.showBranchContact
+          : showBranchContact // ignore: cast_nullable_to_non_nullable
               as bool,
       showFooterMessage: null == showFooterMessage
           ? _value.showFooterMessage
@@ -239,6 +252,7 @@ class __$$ReceiptTemplateImplCopyWithImpl<$Res>
 class _$ReceiptTemplateImpl extends _ReceiptTemplate {
   const _$ReceiptTemplateImpl(
       {this.id,
+      required this.accountId,
       required this.name,
       this.description,
       this.isSystemDefault = false,
@@ -246,7 +260,7 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
       this.showCompanyName = false,
       this.showBranchName = false,
       this.showBranchAddress = false,
-      this.showBranchContactDetails = false,
+      this.showBranchContact = false,
       this.showFooterMessage = false,
       this.footerTitle,
       this.footerMessage})
@@ -254,6 +268,8 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
 
   @override
   final int? id;
+  @override
+  final int accountId;
   @override
   final String name;
   @override
@@ -275,7 +291,7 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
   final bool showBranchAddress;
   @override
   @JsonKey()
-  final bool showBranchContactDetails;
+  final bool showBranchContact;
   @override
   @JsonKey()
   final bool showFooterMessage;
@@ -286,7 +302,7 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
 
   @override
   String toString() {
-    return 'ReceiptTemplate(id: $id, name: $name, description: $description, isSystemDefault: $isSystemDefault, isDefault: $isDefault, showCompanyName: $showCompanyName, showBranchName: $showBranchName, showBranchAddress: $showBranchAddress, showBranchContactDetails: $showBranchContactDetails, showFooterMessage: $showFooterMessage, footerTitle: $footerTitle, footerMessage: $footerMessage)';
+    return 'ReceiptTemplate(id: $id, accountId: $accountId, name: $name, description: $description, isSystemDefault: $isSystemDefault, isDefault: $isDefault, showCompanyName: $showCompanyName, showBranchName: $showBranchName, showBranchAddress: $showBranchAddress, showBranchContact: $showBranchContact, showFooterMessage: $showFooterMessage, footerTitle: $footerTitle, footerMessage: $footerMessage)';
   }
 
   @override
@@ -295,6 +311,8 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
         (other.runtimeType == runtimeType &&
             other is _$ReceiptTemplateImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.accountId, accountId) ||
+                other.accountId == accountId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -308,9 +326,8 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
                 other.showBranchName == showBranchName) &&
             (identical(other.showBranchAddress, showBranchAddress) ||
                 other.showBranchAddress == showBranchAddress) &&
-            (identical(
-                    other.showBranchContactDetails, showBranchContactDetails) ||
-                other.showBranchContactDetails == showBranchContactDetails) &&
+            (identical(other.showBranchContact, showBranchContact) ||
+                other.showBranchContact == showBranchContact) &&
             (identical(other.showFooterMessage, showFooterMessage) ||
                 other.showFooterMessage == showFooterMessage) &&
             (identical(other.footerTitle, footerTitle) ||
@@ -323,6 +340,7 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
   int get hashCode => Object.hash(
       runtimeType,
       id,
+      accountId,
       name,
       description,
       isSystemDefault,
@@ -330,7 +348,7 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
       showCompanyName,
       showBranchName,
       showBranchAddress,
-      showBranchContactDetails,
+      showBranchContact,
       showFooterMessage,
       footerTitle,
       footerMessage);
@@ -346,6 +364,7 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
 abstract class _ReceiptTemplate extends ReceiptTemplate {
   const factory _ReceiptTemplate(
       {final int? id,
+      required final int accountId,
       required final String name,
       final String? description,
       final bool isSystemDefault,
@@ -353,7 +372,7 @@ abstract class _ReceiptTemplate extends ReceiptTemplate {
       final bool showCompanyName,
       final bool showBranchName,
       final bool showBranchAddress,
-      final bool showBranchContactDetails,
+      final bool showBranchContact,
       final bool showFooterMessage,
       final String? footerTitle,
       final String? footerMessage}) = _$ReceiptTemplateImpl;
@@ -361,6 +380,8 @@ abstract class _ReceiptTemplate extends ReceiptTemplate {
 
   @override
   int? get id;
+  @override
+  int get accountId;
   @override
   String get name;
   @override
@@ -376,7 +397,7 @@ abstract class _ReceiptTemplate extends ReceiptTemplate {
   @override
   bool get showBranchAddress;
   @override
-  bool get showBranchContactDetails;
+  bool get showBranchContact;
   @override
   bool get showFooterMessage;
   @override

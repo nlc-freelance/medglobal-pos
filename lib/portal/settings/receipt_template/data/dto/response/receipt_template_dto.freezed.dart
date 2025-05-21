@@ -21,6 +21,7 @@ ReceiptTemplateDto _$ReceiptTemplateDtoFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ReceiptTemplateDto {
   int get id => throw _privateConstructorUsedError;
+  int get accountId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   bool get isSystemDefault => throw _privateConstructorUsedError;
@@ -28,7 +29,7 @@ mixin _$ReceiptTemplateDto {
   bool get showCompanyName => throw _privateConstructorUsedError;
   bool get showBranchName => throw _privateConstructorUsedError;
   bool get showBranchAddress => throw _privateConstructorUsedError;
-  bool get showBranchContactDetails => throw _privateConstructorUsedError;
+  bool get showBranchContact => throw _privateConstructorUsedError;
   bool get showFooterMessage => throw _privateConstructorUsedError;
   String? get footerTitle => throw _privateConstructorUsedError;
   String? get footerMessage => throw _privateConstructorUsedError;
@@ -51,6 +52,7 @@ abstract class $ReceiptTemplateDtoCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
+      int accountId,
       String name,
       String? description,
       bool isSystemDefault,
@@ -58,7 +60,7 @@ abstract class $ReceiptTemplateDtoCopyWith<$Res> {
       bool showCompanyName,
       bool showBranchName,
       bool showBranchAddress,
-      bool showBranchContactDetails,
+      bool showBranchContact,
       bool showFooterMessage,
       String? footerTitle,
       String? footerMessage,
@@ -80,6 +82,7 @@ class _$ReceiptTemplateDtoCopyWithImpl<$Res, $Val extends ReceiptTemplateDto>
   @override
   $Res call({
     Object? id = null,
+    Object? accountId = null,
     Object? name = null,
     Object? description = freezed,
     Object? isSystemDefault = null,
@@ -87,7 +90,7 @@ class _$ReceiptTemplateDtoCopyWithImpl<$Res, $Val extends ReceiptTemplateDto>
     Object? showCompanyName = null,
     Object? showBranchName = null,
     Object? showBranchAddress = null,
-    Object? showBranchContactDetails = null,
+    Object? showBranchContact = null,
     Object? showFooterMessage = null,
     Object? footerTitle = freezed,
     Object? footerMessage = freezed,
@@ -98,6 +101,10 @@ class _$ReceiptTemplateDtoCopyWithImpl<$Res, $Val extends ReceiptTemplateDto>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      accountId: null == accountId
+          ? _value.accountId
+          : accountId // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
           ? _value.name
@@ -127,9 +134,9 @@ class _$ReceiptTemplateDtoCopyWithImpl<$Res, $Val extends ReceiptTemplateDto>
           ? _value.showBranchAddress
           : showBranchAddress // ignore: cast_nullable_to_non_nullable
               as bool,
-      showBranchContactDetails: null == showBranchContactDetails
-          ? _value.showBranchContactDetails
-          : showBranchContactDetails // ignore: cast_nullable_to_non_nullable
+      showBranchContact: null == showBranchContact
+          ? _value.showBranchContact
+          : showBranchContact // ignore: cast_nullable_to_non_nullable
               as bool,
       showFooterMessage: null == showFooterMessage
           ? _value.showFooterMessage
@@ -165,6 +172,7 @@ abstract class _$$ReceiptTemplateDtoImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
+      int accountId,
       String name,
       String? description,
       bool isSystemDefault,
@@ -172,7 +180,7 @@ abstract class _$$ReceiptTemplateDtoImplCopyWith<$Res>
       bool showCompanyName,
       bool showBranchName,
       bool showBranchAddress,
-      bool showBranchContactDetails,
+      bool showBranchContact,
       bool showFooterMessage,
       String? footerTitle,
       String? footerMessage,
@@ -192,6 +200,7 @@ class __$$ReceiptTemplateDtoImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? accountId = null,
     Object? name = null,
     Object? description = freezed,
     Object? isSystemDefault = null,
@@ -199,7 +208,7 @@ class __$$ReceiptTemplateDtoImplCopyWithImpl<$Res>
     Object? showCompanyName = null,
     Object? showBranchName = null,
     Object? showBranchAddress = null,
-    Object? showBranchContactDetails = null,
+    Object? showBranchContact = null,
     Object? showFooterMessage = null,
     Object? footerTitle = freezed,
     Object? footerMessage = freezed,
@@ -210,6 +219,10 @@ class __$$ReceiptTemplateDtoImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      accountId: null == accountId
+          ? _value.accountId
+          : accountId // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
           ? _value.name
@@ -239,9 +252,9 @@ class __$$ReceiptTemplateDtoImplCopyWithImpl<$Res>
           ? _value.showBranchAddress
           : showBranchAddress // ignore: cast_nullable_to_non_nullable
               as bool,
-      showBranchContactDetails: null == showBranchContactDetails
-          ? _value.showBranchContactDetails
-          : showBranchContactDetails // ignore: cast_nullable_to_non_nullable
+      showBranchContact: null == showBranchContact
+          ? _value.showBranchContact
+          : showBranchContact // ignore: cast_nullable_to_non_nullable
               as bool,
       showFooterMessage: null == showFooterMessage
           ? _value.showFooterMessage
@@ -272,6 +285,7 @@ class __$$ReceiptTemplateDtoImplCopyWithImpl<$Res>
 class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
   const _$ReceiptTemplateDtoImpl(
       {required this.id,
+      required this.accountId,
       required this.name,
       this.description,
       this.isSystemDefault = false,
@@ -279,7 +293,7 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
       this.showCompanyName = false,
       this.showBranchName = false,
       this.showBranchAddress = false,
-      this.showBranchContactDetails = false,
+      this.showBranchContact = false,
       this.showFooterMessage = false,
       this.footerTitle,
       this.footerMessage,
@@ -291,6 +305,8 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
 
   @override
   final int id;
+  @override
+  final int accountId;
   @override
   final String name;
   @override
@@ -312,7 +328,7 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
   final bool showBranchAddress;
   @override
   @JsonKey()
-  final bool showBranchContactDetails;
+  final bool showBranchContact;
   @override
   @JsonKey()
   final bool showFooterMessage;
@@ -329,7 +345,7 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
 
   @override
   String toString() {
-    return 'ReceiptTemplateDto(id: $id, name: $name, description: $description, isSystemDefault: $isSystemDefault, isDefault: $isDefault, showCompanyName: $showCompanyName, showBranchName: $showBranchName, showBranchAddress: $showBranchAddress, showBranchContactDetails: $showBranchContactDetails, showFooterMessage: $showFooterMessage, footerTitle: $footerTitle, footerMessage: $footerMessage, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ReceiptTemplateDto(id: $id, accountId: $accountId, name: $name, description: $description, isSystemDefault: $isSystemDefault, isDefault: $isDefault, showCompanyName: $showCompanyName, showBranchName: $showBranchName, showBranchAddress: $showBranchAddress, showBranchContact: $showBranchContact, showFooterMessage: $showFooterMessage, footerTitle: $footerTitle, footerMessage: $footerMessage, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -338,6 +354,8 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
         (other.runtimeType == runtimeType &&
             other is _$ReceiptTemplateDtoImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.accountId, accountId) ||
+                other.accountId == accountId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -351,9 +369,8 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
                 other.showBranchName == showBranchName) &&
             (identical(other.showBranchAddress, showBranchAddress) ||
                 other.showBranchAddress == showBranchAddress) &&
-            (identical(
-                    other.showBranchContactDetails, showBranchContactDetails) ||
-                other.showBranchContactDetails == showBranchContactDetails) &&
+            (identical(other.showBranchContact, showBranchContact) ||
+                other.showBranchContact == showBranchContact) &&
             (identical(other.showFooterMessage, showFooterMessage) ||
                 other.showFooterMessage == showFooterMessage) &&
             (identical(other.footerTitle, footerTitle) ||
@@ -371,6 +388,7 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
   int get hashCode => Object.hash(
       runtimeType,
       id,
+      accountId,
       name,
       description,
       isSystemDefault,
@@ -378,7 +396,7 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
       showCompanyName,
       showBranchName,
       showBranchAddress,
-      showBranchContactDetails,
+      showBranchContact,
       showFooterMessage,
       footerTitle,
       footerMessage,
@@ -403,6 +421,7 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
 abstract class _ReceiptTemplateDto implements ReceiptTemplateDto {
   const factory _ReceiptTemplateDto(
           {required final int id,
+          required final int accountId,
           required final String name,
           final String? description,
           final bool isSystemDefault,
@@ -410,7 +429,7 @@ abstract class _ReceiptTemplateDto implements ReceiptTemplateDto {
           final bool showCompanyName,
           final bool showBranchName,
           final bool showBranchAddress,
-          final bool showBranchContactDetails,
+          final bool showBranchContact,
           final bool showFooterMessage,
           final String? footerTitle,
           final String? footerMessage,
@@ -423,6 +442,8 @@ abstract class _ReceiptTemplateDto implements ReceiptTemplateDto {
 
   @override
   int get id;
+  @override
+  int get accountId;
   @override
   String get name;
   @override
@@ -438,7 +459,7 @@ abstract class _ReceiptTemplateDto implements ReceiptTemplateDto {
   @override
   bool get showBranchAddress;
   @override
-  bool get showBranchContactDetails;
+  bool get showBranchContact;
   @override
   bool get showFooterMessage;
   @override

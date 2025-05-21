@@ -77,13 +77,15 @@ class ToastNotification {
                         : Assets.icons.infoCircle.svg(width: 18, colorFilter: _color(type).toColorFilter),
                   ),
                   const UIHorizontalSpace(20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      UIText.heading6(type.title),
-                      const UIVerticalSpace(2),
-                      UIText.bodyRegular(message),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        UIText.heading6(type.title),
+                        const UIVerticalSpace(2),
+                        UIText.bodyRegular(message),
+                      ],
+                    ),
                   ),
                 ],
               ),

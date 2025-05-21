@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/extensions/extensions.dart';
 import 'package:medglobal_admin_portal/core/mixins/dialog_mixin.dart';
+import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/gen/assets.gen.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/branch_bloc/branch_bloc.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_form_cubit/branch_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/presentation/bloc/receipt_template_bloc/receipt_template_bloc.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/presentation/cubit/receipt_template_form_cubit/receipt_template_form_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class ReceiptTemplateActions extends StatelessWidget with DialogMixin {
@@ -24,12 +25,12 @@ class ReceiptTemplateActions extends StatelessWidget with DialogMixin {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // BlocBuilder<ReceiptTemplateBloc, ReceiptTemplateState>(
-          //   builder: (builderContext, state) => state.maybeWhen(
-          //     failure: (message) => PageErrorNotice(message: message),
-          //     orElse: () => const SizedBox(),
-          //   ),
-          // ),
+          BlocBuilder<ReceiptTemplateBloc, ReceiptTemplateState>(
+            builder: (builderContext, state) => state.maybeWhen(
+              failure: (message) => PageErrorNotice(message: message),
+              orElse: () => const SizedBox(),
+            ),
+          ),
           Row(
             children: [
               if (isEditMode)
@@ -50,27 +51,31 @@ class ReceiptTemplateActions extends StatelessWidget with DialogMixin {
   }
 
   void _onDelete(BuildContext context) {
-    final formCubit = context.read<BranchFormCubit>();
+    final formCubit = context.read<ReceiptTemplateFormCubit>();
 
     showDeleteDialog(
       context,
       subject: 'Receipt Template',
       item: formCubit.state.name!,
-      onDelete: () => context.read<BranchBloc>().add(BranchEvent.deleteBranch(formCubit.toBranch())),
+      onDelete: () => context
+          .read<ReceiptTemplateBloc>()
+          .add(ReceiptTemplateEvent.deleteReceiptTemplate(formCubit.toReceiptTemplate())),
     );
   }
 
   void _onCancel(BuildContext context) => Navigator.pop(context);
 
   void _onSave(BuildContext context) {
-    if (formKey.currentState?.validate() == true) {
-      final formCubit = context.read<BranchFormCubit>();
-      final branch = formCubit.toBranch();
+    final formCubit = context.read<ReceiptTemplateFormCubit>();
+    formCubit.validateConfiguration();
+
+    if (formKey.currentState?.validate() == true && formCubit.state.isConfigurationValid) {
+      final template = formCubit.toReceiptTemplate();
 
       if (formCubit.state.id == null) {
-        context.read<BranchBloc>().add(BranchEvent.createBranch(branch));
+        context.read<ReceiptTemplateBloc>().add(ReceiptTemplateEvent.createReceiptTemplate(template));
       } else {
-        context.read<BranchBloc>().add(BranchEvent.updateBranch(branch));
+        context.read<ReceiptTemplateBloc>().add(ReceiptTemplateEvent.updateReceiptTemplate(template));
       }
     }
   }

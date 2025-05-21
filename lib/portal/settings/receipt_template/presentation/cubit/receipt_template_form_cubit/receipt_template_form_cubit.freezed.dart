@@ -24,10 +24,11 @@ mixin _$ReceiptTemplateFormState {
   bool get showCompanyName => throw _privateConstructorUsedError;
   bool get showBranchName => throw _privateConstructorUsedError;
   bool get showBranchAddress => throw _privateConstructorUsedError;
-  bool get showBranchContactDetails => throw _privateConstructorUsedError;
+  bool get showBranchContact => throw _privateConstructorUsedError;
   bool get showFooterMessage => throw _privateConstructorUsedError;
   String? get footerTitle => throw _privateConstructorUsedError;
   String? get footerMessage => throw _privateConstructorUsedError;
+  bool get isConfigurationValid => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ReceiptTemplateFormStateCopyWith<ReceiptTemplateFormState> get copyWith =>
@@ -49,10 +50,11 @@ abstract class $ReceiptTemplateFormStateCopyWith<$Res> {
       bool showCompanyName,
       bool showBranchName,
       bool showBranchAddress,
-      bool showBranchContactDetails,
+      bool showBranchContact,
       bool showFooterMessage,
       String? footerTitle,
-      String? footerMessage});
+      String? footerMessage,
+      bool isConfigurationValid});
 }
 
 /// @nodoc
@@ -77,10 +79,11 @@ class _$ReceiptTemplateFormStateCopyWithImpl<$Res,
     Object? showCompanyName = null,
     Object? showBranchName = null,
     Object? showBranchAddress = null,
-    Object? showBranchContactDetails = null,
+    Object? showBranchContact = null,
     Object? showFooterMessage = null,
     Object? footerTitle = freezed,
     Object? footerMessage = freezed,
+    Object? isConfigurationValid = null,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -115,9 +118,9 @@ class _$ReceiptTemplateFormStateCopyWithImpl<$Res,
           ? _value.showBranchAddress
           : showBranchAddress // ignore: cast_nullable_to_non_nullable
               as bool,
-      showBranchContactDetails: null == showBranchContactDetails
-          ? _value.showBranchContactDetails
-          : showBranchContactDetails // ignore: cast_nullable_to_non_nullable
+      showBranchContact: null == showBranchContact
+          ? _value.showBranchContact
+          : showBranchContact // ignore: cast_nullable_to_non_nullable
               as bool,
       showFooterMessage: null == showFooterMessage
           ? _value.showFooterMessage
@@ -131,6 +134,10 @@ class _$ReceiptTemplateFormStateCopyWithImpl<$Res,
           ? _value.footerMessage
           : footerMessage // ignore: cast_nullable_to_non_nullable
               as String?,
+      isConfigurationValid: null == isConfigurationValid
+          ? _value.isConfigurationValid
+          : isConfigurationValid // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -153,10 +160,11 @@ abstract class _$$ReceiptTemplateFormStateImplCopyWith<$Res>
       bool showCompanyName,
       bool showBranchName,
       bool showBranchAddress,
-      bool showBranchContactDetails,
+      bool showBranchContact,
       bool showFooterMessage,
       String? footerTitle,
-      String? footerMessage});
+      String? footerMessage,
+      bool isConfigurationValid});
 }
 
 /// @nodoc
@@ -180,10 +188,11 @@ class __$$ReceiptTemplateFormStateImplCopyWithImpl<$Res>
     Object? showCompanyName = null,
     Object? showBranchName = null,
     Object? showBranchAddress = null,
-    Object? showBranchContactDetails = null,
+    Object? showBranchContact = null,
     Object? showFooterMessage = null,
     Object? footerTitle = freezed,
     Object? footerMessage = freezed,
+    Object? isConfigurationValid = null,
   }) {
     return _then(_$ReceiptTemplateFormStateImpl(
       id: freezed == id
@@ -218,9 +227,9 @@ class __$$ReceiptTemplateFormStateImplCopyWithImpl<$Res>
           ? _value.showBranchAddress
           : showBranchAddress // ignore: cast_nullable_to_non_nullable
               as bool,
-      showBranchContactDetails: null == showBranchContactDetails
-          ? _value.showBranchContactDetails
-          : showBranchContactDetails // ignore: cast_nullable_to_non_nullable
+      showBranchContact: null == showBranchContact
+          ? _value.showBranchContact
+          : showBranchContact // ignore: cast_nullable_to_non_nullable
               as bool,
       showFooterMessage: null == showFooterMessage
           ? _value.showFooterMessage
@@ -234,13 +243,17 @@ class __$$ReceiptTemplateFormStateImplCopyWithImpl<$Res>
           ? _value.footerMessage
           : footerMessage // ignore: cast_nullable_to_non_nullable
               as String?,
+      isConfigurationValid: null == isConfigurationValid
+          ? _value.isConfigurationValid
+          : isConfigurationValid // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
 
 /// @nodoc
 
-class _$ReceiptTemplateFormStateImpl implements _ReceiptTemplateFormState {
+class _$ReceiptTemplateFormStateImpl extends _ReceiptTemplateFormState {
   const _$ReceiptTemplateFormStateImpl(
       {this.id,
       this.name,
@@ -250,10 +263,12 @@ class _$ReceiptTemplateFormStateImpl implements _ReceiptTemplateFormState {
       this.showCompanyName = false,
       this.showBranchName = false,
       this.showBranchAddress = false,
-      this.showBranchContactDetails = false,
+      this.showBranchContact = false,
       this.showFooterMessage = false,
       this.footerTitle,
-      this.footerMessage});
+      this.footerMessage,
+      this.isConfigurationValid = true})
+      : super._();
 
   @override
   final int? id;
@@ -278,7 +293,7 @@ class _$ReceiptTemplateFormStateImpl implements _ReceiptTemplateFormState {
   final bool showBranchAddress;
   @override
   @JsonKey()
-  final bool showBranchContactDetails;
+  final bool showBranchContact;
   @override
   @JsonKey()
   final bool showFooterMessage;
@@ -286,10 +301,13 @@ class _$ReceiptTemplateFormStateImpl implements _ReceiptTemplateFormState {
   final String? footerTitle;
   @override
   final String? footerMessage;
+  @override
+  @JsonKey()
+  final bool isConfigurationValid;
 
   @override
   String toString() {
-    return 'ReceiptTemplateFormState(id: $id, name: $name, description: $description, isSystemDefault: $isSystemDefault, isDefault: $isDefault, showCompanyName: $showCompanyName, showBranchName: $showBranchName, showBranchAddress: $showBranchAddress, showBranchContactDetails: $showBranchContactDetails, showFooterMessage: $showFooterMessage, footerTitle: $footerTitle, footerMessage: $footerMessage)';
+    return 'ReceiptTemplateFormState(id: $id, name: $name, description: $description, isSystemDefault: $isSystemDefault, isDefault: $isDefault, showCompanyName: $showCompanyName, showBranchName: $showBranchName, showBranchAddress: $showBranchAddress, showBranchContact: $showBranchContact, showFooterMessage: $showFooterMessage, footerTitle: $footerTitle, footerMessage: $footerMessage, isConfigurationValid: $isConfigurationValid)';
   }
 
   @override
@@ -311,15 +329,16 @@ class _$ReceiptTemplateFormStateImpl implements _ReceiptTemplateFormState {
                 other.showBranchName == showBranchName) &&
             (identical(other.showBranchAddress, showBranchAddress) ||
                 other.showBranchAddress == showBranchAddress) &&
-            (identical(
-                    other.showBranchContactDetails, showBranchContactDetails) ||
-                other.showBranchContactDetails == showBranchContactDetails) &&
+            (identical(other.showBranchContact, showBranchContact) ||
+                other.showBranchContact == showBranchContact) &&
             (identical(other.showFooterMessage, showFooterMessage) ||
                 other.showFooterMessage == showFooterMessage) &&
             (identical(other.footerTitle, footerTitle) ||
                 other.footerTitle == footerTitle) &&
             (identical(other.footerMessage, footerMessage) ||
-                other.footerMessage == footerMessage));
+                other.footerMessage == footerMessage) &&
+            (identical(other.isConfigurationValid, isConfigurationValid) ||
+                other.isConfigurationValid == isConfigurationValid));
   }
 
   @override
@@ -333,10 +352,11 @@ class _$ReceiptTemplateFormStateImpl implements _ReceiptTemplateFormState {
       showCompanyName,
       showBranchName,
       showBranchAddress,
-      showBranchContactDetails,
+      showBranchContact,
       showFooterMessage,
       footerTitle,
-      footerMessage);
+      footerMessage,
+      isConfigurationValid);
 
   @JsonKey(ignore: true)
   @override
@@ -346,7 +366,7 @@ class _$ReceiptTemplateFormStateImpl implements _ReceiptTemplateFormState {
           _$ReceiptTemplateFormStateImpl>(this, _$identity);
 }
 
-abstract class _ReceiptTemplateFormState implements ReceiptTemplateFormState {
+abstract class _ReceiptTemplateFormState extends ReceiptTemplateFormState {
   const factory _ReceiptTemplateFormState(
       {final int? id,
       final String? name,
@@ -356,10 +376,12 @@ abstract class _ReceiptTemplateFormState implements ReceiptTemplateFormState {
       final bool showCompanyName,
       final bool showBranchName,
       final bool showBranchAddress,
-      final bool showBranchContactDetails,
+      final bool showBranchContact,
       final bool showFooterMessage,
       final String? footerTitle,
-      final String? footerMessage}) = _$ReceiptTemplateFormStateImpl;
+      final String? footerMessage,
+      final bool isConfigurationValid}) = _$ReceiptTemplateFormStateImpl;
+  const _ReceiptTemplateFormState._() : super._();
 
   @override
   int? get id;
@@ -378,13 +400,15 @@ abstract class _ReceiptTemplateFormState implements ReceiptTemplateFormState {
   @override
   bool get showBranchAddress;
   @override
-  bool get showBranchContactDetails;
+  bool get showBranchContact;
   @override
   bool get showFooterMessage;
   @override
   String? get footerTitle;
   @override
   String? get footerMessage;
+  @override
+  bool get isConfigurationValid;
   @override
   @JsonKey(ignore: true)
   _$$ReceiptTemplateFormStateImplCopyWith<_$ReceiptTemplateFormStateImpl>
