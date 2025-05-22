@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
@@ -16,8 +17,9 @@ class RegisterList extends StatelessWidget with DialogMixin {
   Widget build(BuildContext context) {
     return BlocListener<RegisterBloc, RegisterState>(
       listener: (context, state) => state.maybeWhen(
-        submitting: () => PageLoader.show(context),
-        success: (message) => _onSubmitSuccess(context, message),
+        processing: () => PageLoader.show(context),
+        success: (message) => _onSaveSuccess(context, message),
+        deleted: (message) => _onSuccess(context, message),
         failure: (message) => _onFailure(context, message),
         orElse: () => {},
       ),
@@ -30,12 +32,19 @@ class RegisterList extends StatelessWidget with DialogMixin {
     );
   }
 
-  void _onSubmitSuccess(BuildContext context, String message) {
+  void _onSuccess(BuildContext context, String message) {
+    // Reload the list of registers
     context.read<PaginatedListBloc<Register>>().add(const PaginatedListEvent.fetch());
+
+    // Reload lazy list for register dropdown
+    context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.refresh());
 
     ToastNotification.success(context, message);
     PageLoader.close();
+  }
 
+  void _onSaveSuccess(BuildContext context, String message) {
+    _onSuccess(context, message);
     Navigator.of(context, rootNavigator: true).pop(); // Close dialog
   }
 

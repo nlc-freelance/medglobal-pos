@@ -12,7 +12,7 @@ class UpdateReceiptTemplateDto {
   final bool? showCompanyName;
   final bool? showBranchName;
   final bool? showBranchAddress;
-  final bool? showBranchContactDetails;
+  final bool? showBranchContact;
   final bool? showFooterMessage;
   final String? footerTitle;
   final String? footerMessage;
@@ -25,7 +25,7 @@ class UpdateReceiptTemplateDto {
     this.showCompanyName,
     this.showBranchName,
     this.showBranchAddress,
-    this.showBranchContactDetails,
+    this.showBranchContact,
     this.showFooterMessage,
     this.footerTitle,
     this.footerMessage,
@@ -42,7 +42,7 @@ class UpdateReceiptTemplateDto {
         showCompanyName: receipt.showCompanyName,
         showBranchName: receipt.showBranchName,
         showBranchAddress: receipt.showBranchAddress,
-        showBranchContactDetails: receipt.showBranchContactDetails,
+        showBranchContact: receipt.showBranchContact,
         showFooterMessage: receipt.showFooterMessage,
         footerTitle: receipt.footerTitle,
         footerMessage: receipt.footerMessage,

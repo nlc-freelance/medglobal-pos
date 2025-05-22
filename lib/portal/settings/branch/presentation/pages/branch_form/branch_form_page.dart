@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/repository/branch_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/branch_bloc/branch_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/pages/branch_form/widgets/branch_form_view.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_form_cubit/branch_form_cubit.dart';
@@ -22,7 +22,7 @@ class BranchFormPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => BranchFormCubit()),
-        BlocProvider(create: (_) => BranchBloc(GetIt.I<BranchRepository>())),
+        BlocProvider(create: (_) => GetIt.I<BranchBloc>()),
       ],
       child: BranchForm(id: id),
     );
@@ -49,6 +49,8 @@ class _BranchFormState extends State<BranchForm> with DialogMixin {
     if (_isEditMode) {
       final branchId = int.parse(widget.id!);
       context.read<BranchBloc>().add(BranchEvent.getBranchById(branchId));
+    } else {
+      context.read<BranchBloc>().add(const BranchEvent.getDefaultReceipt());
     }
   }
 
@@ -57,8 +59,8 @@ class _BranchFormState extends State<BranchForm> with DialogMixin {
     return BlocConsumer<BranchBloc, BranchState>(
       listener: (_, state) => state.maybeWhen(
         loaded: (branch) => _branchFormCubit.initBranch(branch),
-        submitting: () => PageLoader.show(context),
-        success: (message) => _onSubmitSuccess(context, message),
+        processing: () => PageLoader.show(context),
+        success: (message) => _onSuccess(context, message),
         failure: (message) => _onFailure(context, message),
         orElse: () => {},
       ),
@@ -73,9 +75,12 @@ class _BranchFormState extends State<BranchForm> with DialogMixin {
 
   bool get _isEditMode => widget.id != null;
 
-  void _onSubmitSuccess(BuildContext context, String message) {
+  void _onSuccess(BuildContext context, String message) {
     // Reload the list of branches
-    context.read<PaginatedListBloc<Branch>>().add(const PaginatedListEvent.fetch());
+    context.read<PaginatedListBloc<Branch>>().add(const PaginatedListEvent<Branch>.fetch());
+
+    // Reload lazy list for branch dropdown
+    context.read<LazyListBloc<Branch>>().add(const LazyListEvent<Branch>.refresh());
 
     ToastNotification.success(context, message);
     PageLoader.close();

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 
 part 'branch_form_state.dart';
 part 'branch_form_cubit.freezed.dart';
@@ -32,7 +33,7 @@ class BranchFormCubit extends Cubit<BranchFormState> {
 
   void setVatIdNumber(String vatId) => emit(state.copyWith(vatIdNumber: vatId));
 
-  // void setReceiptTemplate(String value) => emit(state.copyWith(receiptTemplate: value));
+  void setReceiptTemplate(ReceiptTemplate receiptTemplate) => emit(state.copyWith(receiptTemplate: receiptTemplate));
 
   /// Given that the form is validated, map BranchFormState values to a Branch
   Branch toBranch() {

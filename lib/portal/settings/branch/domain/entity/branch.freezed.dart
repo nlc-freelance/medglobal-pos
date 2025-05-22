@@ -22,7 +22,7 @@ Branch _$BranchFromJson(Map<String, dynamic> json) {
 mixin _$Branch {
   int? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  int get accountId => throw _privateConstructorUsedError; //
+  int get accountId => throw _privateConstructorUsedError;
   String? get code => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
@@ -32,8 +32,7 @@ mixin _$Branch {
   String get state => throw _privateConstructorUsedError;
   String? get postalCode => throw _privateConstructorUsedError;
   String? get country => throw _privateConstructorUsedError;
-  String get businessRegistrationNumber =>
-      throw _privateConstructorUsedError; //
+  String get businessRegistrationNumber => throw _privateConstructorUsedError;
   String? get vatIdNumber => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -292,7 +291,6 @@ class _$BranchImpl extends _Branch {
   final String name;
   @override
   final int accountId;
-//
   @override
   final String? code;
   @override
@@ -313,7 +311,6 @@ class _$BranchImpl extends _Branch {
   final String? country;
   @override
   final String businessRegistrationNumber;
-//
   @override
   final String? vatIdNumber;
 
@@ -408,7 +405,7 @@ abstract class _Branch extends Branch {
   String get name;
   @override
   int get accountId;
-  @override //
+  @override
   String? get code;
   @override
   String get phone;
@@ -428,7 +425,7 @@ abstract class _Branch extends Branch {
   String? get country;
   @override
   String get businessRegistrationNumber;
-  @override //
+  @override
   String? get vatIdNumber;
   @override
   @JsonKey(ignore: true)

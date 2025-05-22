@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
@@ -18,9 +19,10 @@ class TaxList extends StatelessWidget with DialogMixin {
   Widget build(BuildContext context) {
     return BlocListener<TaxBloc, TaxState>(
       listener: (context, state) => state.maybeWhen(
-        submitting: () => PageLoader.show(context),
+        processing: () => PageLoader.show(context),
         hasExistingDefault: (defaultTax) => _onSetTaxAsDefault(context, defaultTax),
-        success: (message) => _onSubmitSuccess(context, message),
+        success: (message) => _onSaveSuccess(context, message),
+        deleted: (message) => _onSuccess(context, message),
         failure: (message) => _onFailure(context, message),
         orElse: () => {},
       ),
@@ -62,12 +64,19 @@ class TaxList extends StatelessWidget with DialogMixin {
     }
   }
 
-  void _onSubmitSuccess(BuildContext context, String message) {
+  void _onSuccess(BuildContext context, String message) {
+    // Reload the list of tax codes
     context.read<PaginatedListBloc<Tax>>().add(const PaginatedListEvent.fetch());
+
+    // Reload lazy list for tax dropdown
+    context.read<LazyListBloc<Tax>>().add(const LazyListEvent<Tax>.refresh());
 
     ToastNotification.success(context, message);
     PageLoader.close();
+  }
 
+  void _onSaveSuccess(BuildContext context, String message) {
+    _onSuccess(context, message);
     Navigator.of(context, rootNavigator: true).pop(); // Close dialog
   }
 

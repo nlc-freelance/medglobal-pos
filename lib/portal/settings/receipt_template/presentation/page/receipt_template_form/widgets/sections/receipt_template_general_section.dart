@@ -29,48 +29,61 @@ class _ReceiptTemplateGeneralSectionState extends State<ReceiptTemplateGeneralSe
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const PageSectionTitle(title: 'General Information'),
-        Row(
+    return BlocBuilder<ReceiptTemplateFormCubit, ReceiptTemplateFormState>(
+      builder: (context, state) {
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                children: [
-                  AppTextFormField.vertical(
-                    label: 'Receipt Name',
-                    hint: 'Enter receipt name',
-                    controller: _nameController,
-                    isRequired: true,
-                    validator: FormValidators.required('Please enter a receipt template name.'),
-                    onChanged: (value) => _receiptTemplateFormCubit.setName(value),
+            const PageSectionTitle(title: 'General Information'),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (state.isSystemDefault) ...[
+                        LabelValue.text(label: 'Receipt Name', value: state.name),
+                        const UIVerticalSpace(16),
+                        LabelValue.text(label: 'Description', value: state.description),
+                      ] else ...[
+                        AppTextFormField.vertical(
+                          label: 'Receipt Name',
+                          hint: 'Enter receipt name',
+                          controller: _nameController,
+                          isRequired: true,
+                          validator: FormValidators.required('Please enter a receipt template name.'),
+                          onChanged: (value) => _receiptTemplateFormCubit.setName(value),
+                        ),
+                        const UIVerticalSpace(16),
+                        AppCheckboxListTile(
+                          label: 'Set as default',
+                          subtitle:
+                              'When set as default, this template will be auto-selected when creating new branches.',
+                          value: state.isDefault,
+                          onToggle: (value) => _receiptTemplateFormCubit.setIsDefault(value),
+                        ),
+                      ],
+                    ],
                   ),
-                  const UIVerticalSpace(16),
-                  AppCheckboxListTile(
-                    label: 'Set as default',
-                    subtitle:
-                        'When set as default, this receipt template will be automatically applied to all of your branches. You can change the receipt template of a branch in the branch settings.',
-                    value: false,
-                    onToggle: (value) => _receiptTemplateFormCubit.setIsDefault(value),
+                ),
+                if (!state.isSystemDefault) ...[
+                  const UIHorizontalSpace(16),
+                  Expanded(
+                    child: AppTextFormField.vertical(
+                      label: 'Description',
+                      hint: 'Enter description',
+                      controller: _descriptionController,
+                      onChanged: (value) => _receiptTemplateFormCubit.setDescription(value),
+                    ),
                   ),
                 ],
-              ),
+              ],
             ),
-            const UIHorizontalSpace(16),
-            Expanded(
-              child: AppTextFormField.vertical(
-                label: 'Description',
-                hint: 'Enter description',
-                controller: _nameController,
-                onChanged: (value) => _receiptTemplateFormCubit.setDescription(value),
-              ),
-            ),
+            const UIVerticalSpace(30),
           ],
-        ),
-        const UIVerticalSpace(30),
-      ],
+        );
+      },
     );
   }
 

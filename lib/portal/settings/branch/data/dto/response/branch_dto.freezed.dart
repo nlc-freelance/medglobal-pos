@@ -22,7 +22,7 @@ BranchDto _$BranchDtoFromJson(Map<String, dynamic> json) {
 mixin _$BranchDto {
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  int get accountId => throw _privateConstructorUsedError; //
+  int get accountId => throw _privateConstructorUsedError;
   String? get code => throw _privateConstructorUsedError;
   String get street1 => throw _privateConstructorUsedError;
   String? get street2 => throw _privateConstructorUsedError;
@@ -33,7 +33,7 @@ mixin _$BranchDto {
   String get phone => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   String? get vatIdNo => throw _privateConstructorUsedError;
-  String get businessRegistrationNo => throw _privateConstructorUsedError; //
+  String get businessRegistrationNo => throw _privateConstructorUsedError;
   @DateTimeConverter()
   DateTime? get createdAt => throw _privateConstructorUsedError;
   @DateTimeConverter()
@@ -337,7 +337,6 @@ class _$BranchDtoImpl implements _BranchDto {
   final String name;
   @override
   final int accountId;
-//
   @override
   final String? code;
   @override
@@ -360,7 +359,6 @@ class _$BranchDtoImpl implements _BranchDto {
   final String? vatIdNo;
   @override
   final String businessRegistrationNo;
-//
   @override
   @DateTimeConverter()
   final DateTime? createdAt;
@@ -470,7 +468,7 @@ abstract class _BranchDto implements BranchDto {
   String get name;
   @override
   int get accountId;
-  @override //
+  @override
   String? get code;
   @override
   String get street1;
@@ -492,7 +490,7 @@ abstract class _BranchDto implements BranchDto {
   String? get vatIdNo;
   @override
   String get businessRegistrationNo;
-  @override //
+  @override
   @DateTimeConverter()
   DateTime? get createdAt;
   @override

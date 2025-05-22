@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid.dart';
@@ -60,12 +61,12 @@ class _ReceiptTemplateDataGridState extends State<ReceiptTemplateDataGrid> {
                 if (paginatedData.hasItems)
                   DataGridPagination<ReceiptTemplate>(
                     paginatedData,
-                    onPageChanged: ({page, size}) => context.read<PaginatedListBloc<ReceiptTemplate>>().add(
-                          PaginatedListEvent.fetch(
-                            page: page,
-                            size: size,
-                          ),
-                        ),
+                    onPageChanged: ({page, size}) => context
+                        .read<PaginatedListBloc<ReceiptTemplate>>()
+                        .add(PaginatedListEvent<ReceiptTemplate>.fetch(
+                          page: page,
+                          size: size,
+                        )),
                   ),
               ],
             );
@@ -98,7 +99,15 @@ class ReceiptTemplateDataGridSource extends DataGridSource with DialogMixin {
   List<ReceiptTemplate> _templates = [];
   List<DataGridRow> dataGridRows = [];
 
-  void buildDataGridRows() => dataGridRows = _templates.map((branch) => branch.toDataGridRow()).toList();
+  void buildDataGridRows() {
+    if (_templates.isNotEmpty) {
+      final systemDefault = _templates.where((item) => item.isSystemDefault).first;
+      final otherTemplates = List.from(_templates)..removeWhere((item) => item.isSystemDefault);
+      _templates = [systemDefault, ...otherTemplates];
+    }
+
+    dataGridRows = _templates.map((branch) => branch.toDataGridRow()).toList();
+  }
 
   @override
   List<DataGridRow> get rows => dataGridRows;
@@ -113,7 +122,7 @@ class ReceiptTemplateDataGridSource extends DataGridSource with DialogMixin {
           child: cellBuilder(
             colName: cell.columnName,
             cell: cell,
-            receiptTemplateId: row.getCells().first.value,
+            receiptTemplate: _templates.firstWhere((tax) => tax.id == row.getCells().first.value),
           ),
         );
       }).toList(),
@@ -123,27 +132,47 @@ class ReceiptTemplateDataGridSource extends DataGridSource with DialogMixin {
   Widget cellBuilder({
     required String colName,
     required DataGridCell cell,
-    required int receiptTemplateId,
+    required ReceiptTemplate receiptTemplate,
   }) =>
       switch (colName) {
         'receipt_template_name' => HoverBuilder(
             builder: (isHover) => InkWell(
-              onTap: () => _onEditReceiptTemplate(receiptTemplateId),
+              onTap: () => _onEditReceiptTemplate(receiptTemplate.id),
               hoverColor: UIColors.transparent,
-              child: UIText.dataGridText(
-                cell.value.toString(),
-                color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
-                textDecoration: TextDecoration.underline,
+              child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text(
+                    cell.value.toString(),
+                    style: UIStyleText.chip.copyWith(
+                      fontSize: 13,
+                      color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
+                      decoration: TextDecoration.underline,
+                      decorationThickness: 0.8,
+                      fontStyle: receiptTemplate.isSystemDefault ? FontStyle.italic : FontStyle.normal,
+                    ),
+                  ),
+                  if (receiptTemplate.isDefault) ...[
+                    const UIHorizontalSpace(8),
+                    UIText.dataGridHeader('(DEFAULT)'),
+                  ],
+                ],
               ),
             ),
           ),
-        _ => UIText.dataGridText(cell.value.toString()),
+        _ => Text(
+            cell.value.toString(),
+            style: UIStyleText.chip.copyWith(
+              fontSize: 13,
+              fontStyle: receiptTemplate.isSystemDefault ? FontStyle.italic : FontStyle.normal,
+            ),
+          ),
       };
 
   void _onEditReceiptTemplate(receiptTemplateId) {
-    // _context.goNamed(
-    //   SideMenuTreeItem.branchDetails.name,
-    //   pathParameters: {'id': branchId.toString()},
-    // );
+    _context.goNamed(
+      SideMenuTreeItem.receiptTemplateDetails.name,
+      pathParameters: {'id': receiptTemplateId.toString()},
+    );
   }
 }

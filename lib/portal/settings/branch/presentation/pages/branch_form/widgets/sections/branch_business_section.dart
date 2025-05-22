@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
+import 'package:medglobal_admin_portal/core/widgets/form/app_dropdown_form_field/dropdown_form_field.dart';
 import 'package:medglobal_admin_portal/core/widgets/form/form.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/branch_bloc/branch_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_form_cubit/branch_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class BranchBusinessSection extends StatefulWidget {
@@ -13,7 +17,7 @@ class BranchBusinessSection extends StatefulWidget {
   State<BranchBusinessSection> createState() => _BranchBusinessSectionState();
 }
 
-class _BranchBusinessSectionState extends State<BranchBusinessSection> {
+class _BranchBusinessSectionState extends State<BranchBusinessSection> with DialogMixin {
   late TextEditingController _brnController;
   late TextEditingController _vatIdController;
   late BranchFormCubit _formCubit;
@@ -34,15 +38,49 @@ class _BranchBusinessSectionState extends State<BranchBusinessSection> {
       children: [
         const PageSectionTitle(title: 'Business Information'),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: AppTextFormField.vertical(
-                label: 'Business Registration Number (BRN)',
-                hint: 'Enter business registration number',
-                controller: _brnController,
-                isRequired: true,
-                validator: FormValidators.required('Please enter the BRN.'),
-                onChanged: (value) => _formCubit.setBusinessRegistrationNumber(value),
+              child: Column(
+                children: [
+                  AppTextFormField.vertical(
+                    label: 'Business Registration Number (BRN)',
+                    hint: 'Enter business registration number',
+                    controller: _brnController,
+                    isRequired: true,
+                    validator: FormValidators.required('Please enter the BRN.'),
+                    onChanged: (value) => _formCubit.setBusinessRegistrationNumber(value),
+                  ),
+                  const UIVerticalSpace(16),
+                  BlocBuilder<BranchBloc, BranchState>(
+                    builder: (context, state) {
+                      return IgnorePointer(
+                        ignoring: state.maybeWhen(
+                          initializingNewBranch: () => true,
+                          orElse: () => false,
+                        ),
+                        child: DropdownFormField<ReceiptTemplate>.labelTop(
+                          label: 'Receipt Template',
+                          hint: state.maybeWhen(
+                            initializingNewBranch: () => 'Loading Default...',
+                            orElse: () => 'Select receipt template',
+                          ),
+                          isRequired: true,
+                          getName: (ReceiptTemplate item) => item.name,
+                          onChanged: (ReceiptTemplate item) => _formCubit.setReceiptTemplate(item),
+                          value: state.maybeWhen(
+                            newBranch: (template) => template,
+                            orElse: () => _formCubit.state.receiptTemplate,
+                          ),
+                          anchor: const Aligned(
+                            target: Alignment.topCenter,
+                            follower: Alignment.topCenter,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
             const UIHorizontalSpace(16),
@@ -56,8 +94,7 @@ class _BranchBusinessSectionState extends State<BranchBusinessSection> {
             ),
           ],
         ),
-        // Receipt Template
-        // const UIVerticalSpace(48),
+        const UIVerticalSpace(16),
       ],
     );
   }

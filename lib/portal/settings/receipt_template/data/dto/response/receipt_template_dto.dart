@@ -9,6 +9,7 @@ part 'receipt_template_dto.g.dart';
 class ReceiptTemplateDto with _$ReceiptTemplateDto {
   const factory ReceiptTemplateDto({
     required int id,
+    required int accountId,
     required String name,
     String? description,
     @Default(false) bool isSystemDefault,
@@ -16,7 +17,7 @@ class ReceiptTemplateDto with _$ReceiptTemplateDto {
     @Default(false) bool showCompanyName,
     @Default(false) bool showBranchName,
     @Default(false) bool showBranchAddress,
-    @Default(false) bool showBranchContactDetails,
+    @Default(false) bool showBranchContact,
     @Default(false) bool showFooterMessage,
     String? footerTitle,
     String? footerMessage,
@@ -31,13 +32,15 @@ extension ReceiptTemplateDtoExt on ReceiptTemplateDto {
   /// Mapping to domain entity
   ReceiptTemplate toDomain() => ReceiptTemplate(
         id: id,
+        accountId: accountId,
         name: name,
         description: description,
         isSystemDefault: isSystemDefault,
         isDefault: isDefault,
         showCompanyName: showCompanyName,
+        showBranchName: showBranchName,
         showBranchAddress: showBranchAddress,
-        showBranchContactDetails: showBranchContactDetails,
+        showBranchContact: showBranchContact,
         showFooterMessage: showFooterMessage,
         footerTitle: footerTitle,
         footerMessage: footerMessage,

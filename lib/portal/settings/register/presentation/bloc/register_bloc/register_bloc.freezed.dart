@@ -676,24 +676,27 @@ mixin _$RegisterState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
+    required TResult Function(String message) deleted,
     required TResult Function(String message) failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
+    TResult? Function(String message)? deleted,
     TResult? Function(String message)? failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
+    TResult Function(String message)? deleted,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) =>
@@ -701,24 +704,27 @@ mixin _$RegisterState {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) submitting,
+    required TResult Function(_Processing value) processing,
     required TResult Function(_Success value) success,
+    required TResult Function(_Deleted value) deleted,
     required TResult Function(_Failure value) failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? submitting,
+    TResult? Function(_Processing value)? processing,
     TResult? Function(_Success value)? success,
+    TResult? Function(_Deleted value)? deleted,
     TResult? Function(_Failure value)? failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? submitting,
+    TResult Function(_Processing value)? processing,
     TResult Function(_Success value)? success,
+    TResult Function(_Deleted value)? deleted,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) =>
@@ -782,8 +788,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
+    required TResult Function(String message) deleted,
     required TResult Function(String message) failure,
   }) {
     return initial();
@@ -793,8 +800,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
+    TResult? Function(String message)? deleted,
     TResult? Function(String message)? failure,
   }) {
     return initial?.call();
@@ -804,8 +812,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
+    TResult Function(String message)? deleted,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -819,8 +828,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) submitting,
+    required TResult Function(_Processing value) processing,
     required TResult Function(_Success value) success,
+    required TResult Function(_Deleted value) deleted,
     required TResult Function(_Failure value) failure,
   }) {
     return initial(this);
@@ -830,8 +840,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? submitting,
+    TResult? Function(_Processing value)? processing,
     TResult? Function(_Success value)? success,
+    TResult? Function(_Deleted value)? deleted,
     TResult? Function(_Failure value)? failure,
   }) {
     return initial?.call(this);
@@ -841,8 +852,9 @@ class _$InitialImpl implements _Initial {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? submitting,
+    TResult Function(_Processing value)? processing,
     TResult Function(_Success value)? success,
+    TResult Function(_Deleted value)? deleted,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
@@ -858,35 +870,35 @@ abstract class _Initial implements RegisterState {
 }
 
 /// @nodoc
-abstract class _$$LoadingImplCopyWith<$Res> {
-  factory _$$LoadingImplCopyWith(
-          _$LoadingImpl value, $Res Function(_$LoadingImpl) then) =
-      __$$LoadingImplCopyWithImpl<$Res>;
+abstract class _$$ProcessingImplCopyWith<$Res> {
+  factory _$$ProcessingImplCopyWith(
+          _$ProcessingImpl value, $Res Function(_$ProcessingImpl) then) =
+      __$$ProcessingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$LoadingImplCopyWithImpl<$Res>
-    extends _$RegisterStateCopyWithImpl<$Res, _$LoadingImpl>
-    implements _$$LoadingImplCopyWith<$Res> {
-  __$$LoadingImplCopyWithImpl(
-      _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
+class __$$ProcessingImplCopyWithImpl<$Res>
+    extends _$RegisterStateCopyWithImpl<$Res, _$ProcessingImpl>
+    implements _$$ProcessingImplCopyWith<$Res> {
+  __$$ProcessingImplCopyWithImpl(
+      _$ProcessingImpl _value, $Res Function(_$ProcessingImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$LoadingImpl implements _Loading {
-  const _$LoadingImpl();
+class _$ProcessingImpl implements _Processing {
+  const _$ProcessingImpl();
 
   @override
   String toString() {
-    return 'RegisterState.submitting()';
+    return 'RegisterState.processing()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoadingImpl);
+        (other.runtimeType == runtimeType && other is _$ProcessingImpl);
   }
 
   @override
@@ -896,35 +908,38 @@ class _$LoadingImpl implements _Loading {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
+    required TResult Function(String message) deleted,
     required TResult Function(String message) failure,
   }) {
-    return submitting();
+    return processing();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
+    TResult? Function(String message)? deleted,
     TResult? Function(String message)? failure,
   }) {
-    return submitting?.call();
+    return processing?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
+    TResult Function(String message)? deleted,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
-    if (submitting != null) {
-      return submitting();
+    if (processing != null) {
+      return processing();
     }
     return orElse();
   }
@@ -933,42 +948,45 @@ class _$LoadingImpl implements _Loading {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) submitting,
+    required TResult Function(_Processing value) processing,
     required TResult Function(_Success value) success,
+    required TResult Function(_Deleted value) deleted,
     required TResult Function(_Failure value) failure,
   }) {
-    return submitting(this);
+    return processing(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? submitting,
+    TResult? Function(_Processing value)? processing,
     TResult? Function(_Success value)? success,
+    TResult? Function(_Deleted value)? deleted,
     TResult? Function(_Failure value)? failure,
   }) {
-    return submitting?.call(this);
+    return processing?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? submitting,
+    TResult Function(_Processing value)? processing,
     TResult Function(_Success value)? success,
+    TResult Function(_Deleted value)? deleted,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
-    if (submitting != null) {
-      return submitting(this);
+    if (processing != null) {
+      return processing(this);
     }
     return orElse();
   }
 }
 
-abstract class _Loading implements RegisterState {
-  const factory _Loading() = _$LoadingImpl;
+abstract class _Processing implements RegisterState {
+  const factory _Processing() = _$ProcessingImpl;
 }
 
 /// @nodoc
@@ -1036,8 +1054,9 @@ class _$SuccessImpl implements _Success {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
+    required TResult Function(String message) deleted,
     required TResult Function(String message) failure,
   }) {
     return success(message);
@@ -1047,8 +1066,9 @@ class _$SuccessImpl implements _Success {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
+    TResult? Function(String message)? deleted,
     TResult? Function(String message)? failure,
   }) {
     return success?.call(message);
@@ -1058,8 +1078,9 @@ class _$SuccessImpl implements _Success {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
+    TResult Function(String message)? deleted,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -1073,8 +1094,9 @@ class _$SuccessImpl implements _Success {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) submitting,
+    required TResult Function(_Processing value) processing,
     required TResult Function(_Success value) success,
+    required TResult Function(_Deleted value) deleted,
     required TResult Function(_Failure value) failure,
   }) {
     return success(this);
@@ -1084,8 +1106,9 @@ class _$SuccessImpl implements _Success {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? submitting,
+    TResult? Function(_Processing value)? processing,
     TResult? Function(_Success value)? success,
+    TResult? Function(_Deleted value)? deleted,
     TResult? Function(_Failure value)? failure,
   }) {
     return success?.call(this);
@@ -1095,8 +1118,9 @@ class _$SuccessImpl implements _Success {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? submitting,
+    TResult Function(_Processing value)? processing,
     TResult Function(_Success value)? success,
+    TResult Function(_Deleted value)? deleted,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
@@ -1113,6 +1137,157 @@ abstract class _Success implements RegisterState {
   String get message;
   @JsonKey(ignore: true)
   _$$SuccessImplCopyWith<_$SuccessImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$DeletedImplCopyWith<$Res> {
+  factory _$$DeletedImplCopyWith(
+          _$DeletedImpl value, $Res Function(_$DeletedImpl) then) =
+      __$$DeletedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String message});
+}
+
+/// @nodoc
+class __$$DeletedImplCopyWithImpl<$Res>
+    extends _$RegisterStateCopyWithImpl<$Res, _$DeletedImpl>
+    implements _$$DeletedImplCopyWith<$Res> {
+  __$$DeletedImplCopyWithImpl(
+      _$DeletedImpl _value, $Res Function(_$DeletedImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? message = null,
+  }) {
+    return _then(_$DeletedImpl(
+      null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$DeletedImpl implements _Deleted {
+  const _$DeletedImpl(this.message);
+
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'RegisterState.deleted(message: $message)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DeletedImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DeletedImplCopyWith<_$DeletedImpl> get copyWith =>
+      __$$DeletedImplCopyWithImpl<_$DeletedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() processing,
+    required TResult Function(String message) success,
+    required TResult Function(String message) deleted,
+    required TResult Function(String message) failure,
+  }) {
+    return deleted(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? processing,
+    TResult? Function(String message)? success,
+    TResult? Function(String message)? deleted,
+    TResult? Function(String message)? failure,
+  }) {
+    return deleted?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? processing,
+    TResult Function(String message)? success,
+    TResult Function(String message)? deleted,
+    TResult Function(String message)? failure,
+    required TResult orElse(),
+  }) {
+    if (deleted != null) {
+      return deleted(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Processing value) processing,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Deleted value) deleted,
+    required TResult Function(_Failure value) failure,
+  }) {
+    return deleted(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Processing value)? processing,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Deleted value)? deleted,
+    TResult? Function(_Failure value)? failure,
+  }) {
+    return deleted?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Processing value)? processing,
+    TResult Function(_Success value)? success,
+    TResult Function(_Deleted value)? deleted,
+    TResult Function(_Failure value)? failure,
+    required TResult orElse(),
+  }) {
+    if (deleted != null) {
+      return deleted(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Deleted implements RegisterState {
+  const factory _Deleted(final String message) = _$DeletedImpl;
+
+  String get message;
+  @JsonKey(ignore: true)
+  _$$DeletedImplCopyWith<_$DeletedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -1181,8 +1356,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function() submitting,
+    required TResult Function() processing,
     required TResult Function(String message) success,
+    required TResult Function(String message) deleted,
     required TResult Function(String message) failure,
   }) {
     return failure(message);
@@ -1192,8 +1368,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function()? submitting,
+    TResult? Function()? processing,
     TResult? Function(String message)? success,
+    TResult? Function(String message)? deleted,
     TResult? Function(String message)? failure,
   }) {
     return failure?.call(message);
@@ -1203,8 +1380,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function()? submitting,
+    TResult Function()? processing,
     TResult Function(String message)? success,
+    TResult Function(String message)? deleted,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -1218,8 +1396,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
-    required TResult Function(_Loading value) submitting,
+    required TResult Function(_Processing value) processing,
     required TResult Function(_Success value) success,
+    required TResult Function(_Deleted value) deleted,
     required TResult Function(_Failure value) failure,
   }) {
     return failure(this);
@@ -1229,8 +1408,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
-    TResult? Function(_Loading value)? submitting,
+    TResult? Function(_Processing value)? processing,
     TResult? Function(_Success value)? success,
+    TResult? Function(_Deleted value)? deleted,
     TResult? Function(_Failure value)? failure,
   }) {
     return failure?.call(this);
@@ -1240,8 +1420,9 @@ class _$FailureImpl implements _Failure {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
-    TResult Function(_Loading value)? submitting,
+    TResult Function(_Processing value)? processing,
     TResult Function(_Success value)? success,
+    TResult Function(_Deleted value)? deleted,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {

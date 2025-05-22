@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/repository/receipt_template_repository.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/presentation/bloc/receipt_template_bloc/receipt_template_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/presentation/cubit/receipt_template_form_cubit/receipt_template_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/presentation/page/receipt_template_form/widgets/receipt_template_form_view.dart';
 
@@ -19,7 +23,7 @@ class ReceiptTemplateFormPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => ReceiptTemplateFormCubit()),
-        // BlocProvider(create: (_) => BranchBloc(GetIt.I<BranchRepository>())),
+        BlocProvider(create: (_) => ReceiptTemplateBloc(GetIt.I<ReceiptTemplateRepository>())),
       ],
       child: ReceiptTemplateForm(id: id),
     );
@@ -44,41 +48,43 @@ class _ReceiptTemplateFormState extends State<ReceiptTemplateForm> with DialogMi
     _receiptTemplateFormCubit = context.read<ReceiptTemplateFormCubit>();
 
     if (_isEditMode) {
-      // final branchId = int.parse(widget.id!);
-      // context.read<BranchBloc>().add(BranchEvent.getBranchById(branchId));
+      final receiptTemplateId = int.parse(widget.id!);
+      context.read<ReceiptTemplateBloc>().add(ReceiptTemplateEvent.getReceiptTemplateById(receiptTemplateId));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ReceiptTemplateFormView();
-    // return BlocConsumer<BranchBloc, BranchState>(
-    //   listener: (_, state) => state.maybeWhen(
-    //     // loaded: (template) => _receiptTemplateFormCubit.initReceiptTemplate(template),
-    //     submitting: () => PageLoader.show(context),
-    //     success: (message) => _onSubmitSuccess(context, message),
-    //     failure: (message) => _onFailure(context, message),
-    //     orElse: () => {},
-    //   ),
-    //   builder: (context, state) => state.maybeWhen(
-    //     initial: () => _isEditMode ? const LoadingView() : const ReceiptTemplateFormView(),
-    //     loading: () => const LoadingView(),
-    //     loadFailed: (message) => FailureView(message),
-    //     orElse: () => ReceiptTemplateFormView(isEditMode: _isEditMode),
-    //   ),
-    // );
+    return BlocConsumer<ReceiptTemplateBloc, ReceiptTemplateState>(
+      listener: (_, state) => state.maybeWhen(
+        loaded: (template) => _receiptTemplateFormCubit.initReceiptTemplate(template),
+        processing: () => PageLoader.show(context),
+        success: (message) => _onSuccess(context, message),
+        failure: (message) => _onFailure(context, message),
+        orElse: () => {},
+      ),
+      builder: (context, state) => state.maybeWhen(
+        initial: () => _isEditMode ? const LoadingView() : const ReceiptTemplateFormView(),
+        loading: () => const LoadingView(),
+        loadFailed: (message) => FailureView(message),
+        orElse: () => ReceiptTemplateFormView(isEditMode: _isEditMode),
+      ),
+    );
   }
 
   bool get _isEditMode => widget.id != null;
 
-  void _onSubmitSuccess(BuildContext context, String message) {
+  void _onSuccess(BuildContext context, String message) {
     // Reload the list of receipt templates
     context.read<PaginatedListBloc<ReceiptTemplate>>().add(const PaginatedListEvent.fetch());
+
+    // Reload lazy list for receipt template dropdown
+    context.read<LazyListBloc<ReceiptTemplate>>().add(const LazyListEvent<ReceiptTemplate>.refresh());
 
     ToastNotification.success(context, message);
     PageLoader.close();
 
-    context.goNamed(SideMenuTreeItem.branch.name);
+    context.goNamed(SideMenuTreeItem.receiptTemplate.name);
   }
 
   void _onFailure(BuildContext context, String message) {

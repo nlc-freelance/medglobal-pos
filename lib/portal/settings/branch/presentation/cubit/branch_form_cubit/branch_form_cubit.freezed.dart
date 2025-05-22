@@ -28,6 +28,7 @@ mixin _$BranchFormState {
   String? get country => throw _privateConstructorUsedError;
   String? get businessRegistrationNumber => throw _privateConstructorUsedError;
   String? get vatIdNumber => throw _privateConstructorUsedError;
+  ReceiptTemplate? get receiptTemplate => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $BranchFormStateCopyWith<BranchFormState> get copyWith =>
@@ -52,7 +53,10 @@ abstract class $BranchFormStateCopyWith<$Res> {
       String? postalCode,
       String? country,
       String? businessRegistrationNumber,
-      String? vatIdNumber});
+      String? vatIdNumber,
+      ReceiptTemplate? receiptTemplate});
+
+  $ReceiptTemplateCopyWith<$Res>? get receiptTemplate;
 }
 
 /// @nodoc
@@ -80,6 +84,7 @@ class _$BranchFormStateCopyWithImpl<$Res, $Val extends BranchFormState>
     Object? country = freezed,
     Object? businessRegistrationNumber = freezed,
     Object? vatIdNumber = freezed,
+    Object? receiptTemplate = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -130,7 +135,23 @@ class _$BranchFormStateCopyWithImpl<$Res, $Val extends BranchFormState>
           ? _value.vatIdNumber
           : vatIdNumber // ignore: cast_nullable_to_non_nullable
               as String?,
+      receiptTemplate: freezed == receiptTemplate
+          ? _value.receiptTemplate
+          : receiptTemplate // ignore: cast_nullable_to_non_nullable
+              as ReceiptTemplate?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ReceiptTemplateCopyWith<$Res>? get receiptTemplate {
+    if (_value.receiptTemplate == null) {
+      return null;
+    }
+
+    return $ReceiptTemplateCopyWith<$Res>(_value.receiptTemplate!, (value) {
+      return _then(_value.copyWith(receiptTemplate: value) as $Val);
+    });
   }
 }
 
@@ -154,7 +175,11 @@ abstract class _$$BranchFormStateImplCopyWith<$Res>
       String? postalCode,
       String? country,
       String? businessRegistrationNumber,
-      String? vatIdNumber});
+      String? vatIdNumber,
+      ReceiptTemplate? receiptTemplate});
+
+  @override
+  $ReceiptTemplateCopyWith<$Res>? get receiptTemplate;
 }
 
 /// @nodoc
@@ -180,6 +205,7 @@ class __$$BranchFormStateImplCopyWithImpl<$Res>
     Object? country = freezed,
     Object? businessRegistrationNumber = freezed,
     Object? vatIdNumber = freezed,
+    Object? receiptTemplate = freezed,
   }) {
     return _then(_$BranchFormStateImpl(
       id: freezed == id
@@ -230,6 +256,10 @@ class __$$BranchFormStateImplCopyWithImpl<$Res>
           ? _value.vatIdNumber
           : vatIdNumber // ignore: cast_nullable_to_non_nullable
               as String?,
+      receiptTemplate: freezed == receiptTemplate
+          ? _value.receiptTemplate
+          : receiptTemplate // ignore: cast_nullable_to_non_nullable
+              as ReceiptTemplate?,
     ));
   }
 }
@@ -249,7 +279,8 @@ class _$BranchFormStateImpl implements _BranchFormState {
       this.postalCode,
       this.country,
       this.businessRegistrationNumber,
-      this.vatIdNumber});
+      this.vatIdNumber,
+      this.receiptTemplate});
 
   @override
   final int? id;
@@ -275,10 +306,12 @@ class _$BranchFormStateImpl implements _BranchFormState {
   final String? businessRegistrationNumber;
   @override
   final String? vatIdNumber;
+  @override
+  final ReceiptTemplate? receiptTemplate;
 
   @override
   String toString() {
-    return 'BranchFormState(id: $id, name: $name, phone: $phone, email: $email, street1: $street1, street2: $street2, city: $city, state: $state, postalCode: $postalCode, country: $country, businessRegistrationNumber: $businessRegistrationNumber, vatIdNumber: $vatIdNumber)';
+    return 'BranchFormState(id: $id, name: $name, phone: $phone, email: $email, street1: $street1, street2: $street2, city: $city, state: $state, postalCode: $postalCode, country: $country, businessRegistrationNumber: $businessRegistrationNumber, vatIdNumber: $vatIdNumber, receiptTemplate: $receiptTemplate)';
   }
 
   @override
@@ -302,7 +335,9 @@ class _$BranchFormStateImpl implements _BranchFormState {
                 other.businessRegistrationNumber ==
                     businessRegistrationNumber) &&
             (identical(other.vatIdNumber, vatIdNumber) ||
-                other.vatIdNumber == vatIdNumber));
+                other.vatIdNumber == vatIdNumber) &&
+            (identical(other.receiptTemplate, receiptTemplate) ||
+                other.receiptTemplate == receiptTemplate));
   }
 
   @override
@@ -319,7 +354,8 @@ class _$BranchFormStateImpl implements _BranchFormState {
       postalCode,
       country,
       businessRegistrationNumber,
-      vatIdNumber);
+      vatIdNumber,
+      receiptTemplate);
 
   @JsonKey(ignore: true)
   @override
@@ -342,7 +378,8 @@ abstract class _BranchFormState implements BranchFormState {
       final String? postalCode,
       final String? country,
       final String? businessRegistrationNumber,
-      final String? vatIdNumber}) = _$BranchFormStateImpl;
+      final String? vatIdNumber,
+      final ReceiptTemplate? receiptTemplate}) = _$BranchFormStateImpl;
 
   @override
   int? get id;
@@ -368,6 +405,8 @@ abstract class _BranchFormState implements BranchFormState {
   String? get businessRegistrationNumber;
   @override
   String? get vatIdNumber;
+  @override
+  ReceiptTemplate? get receiptTemplate;
   @override
   @JsonKey(ignore: true)
   _$$BranchFormStateImplCopyWith<_$BranchFormStateImpl> get copyWith =>

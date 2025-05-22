@@ -18,32 +18,43 @@ class ReceiptTemplateFormCubit extends Cubit<ReceiptTemplateFormState> {
 
   void setIsDefault(bool isDefault) => emit(state.copyWith(isDefault: isDefault));
 
-  void setShowCompanyName(bool showCompanyName) => emit(state.copyWith(showCompanyName: showCompanyName));
+  void emitWithValidation(ReceiptTemplateFormState state) {
+    emit(state.copyWith(isConfigurationValid: state.hasValidConfiguration()));
+  }
 
-  void setShowBranchName(bool showBranchName) => emit(state.copyWith(showBranchName: showBranchName));
+  void setShowCompanyName(bool showCompanyName) => emitWithValidation(state.copyWith(showCompanyName: showCompanyName));
 
-  void setShowBranchAddress(bool showBranchAddress) => emit(state.copyWith(showBranchAddress: showBranchAddress));
+  void setShowBranchName(bool showBranchName) => emitWithValidation(state.copyWith(showBranchName: showBranchName));
 
-  void setShowBranchContactDetails(bool showBranchContactDetails) =>
-      emit(state.copyWith(showBranchContactDetails: showBranchContactDetails));
+  void setShowBranchAddress(bool showBranchAddress) =>
+      emitWithValidation(state.copyWith(showBranchAddress: showBranchAddress));
 
-  void setShowFooterMessage(bool showFooterMessage) => emit(state.copyWith(showFooterMessage: showFooterMessage));
+  void setShowBranchContactDetails(bool showBranchContact) =>
+      emitWithValidation(state.copyWith(showBranchContact: showBranchContact));
+
+  void setShowFooterMessage(bool showFooterMessage) =>
+      emitWithValidation(state.copyWith(showFooterMessage: showFooterMessage));
 
   void setFooterTitle(String footerTitle) => emit(state.copyWith(footerTitle: footerTitle));
 
   void setFooterMessage(String footerMessage) => emit(state.copyWith(footerMessage: footerMessage));
 
+  void validateConfiguration() {
+    emit(state.copyWith(isConfigurationValid: state.hasValidConfiguration()));
+  }
+
   /// Given that the form is validated, map ReceiptTemplateFormState values to a ReceiptTemplate
   ReceiptTemplate toReceiptTemplate() {
     return ReceiptTemplate(
       id: state.id,
+      accountId: 2,
       name: state.name!,
       description: state.description,
       isDefault: state.isDefault,
       showCompanyName: state.showCompanyName,
       showBranchName: state.showBranchName,
       showBranchAddress: state.showBranchAddress,
-      showBranchContactDetails: state.showBranchContactDetails,
+      showBranchContact: state.showBranchContact,
       showFooterMessage: state.showFooterMessage,
       footerTitle: state.footerTitle,
       footerMessage: state.footerMessage,

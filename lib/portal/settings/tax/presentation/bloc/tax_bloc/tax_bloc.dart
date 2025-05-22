@@ -19,7 +19,7 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
   }
 
   Future<void> _onGetDefaultTaxCode(event, emit) async {
-    emit(const TaxState.submitting());
+    emit(const TaxState.processing());
     try {
       final result = await _repository.getDefaultTaxCode();
 
@@ -33,7 +33,7 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
   }
 
   Future<void> _onCreateTaxCode(event, emit) async {
-    emit(const TaxState.submitting());
+    emit(const TaxState.processing());
     try {
       final result = await _repository.createTaxCode(event.tax);
 
@@ -47,7 +47,7 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
   }
 
   Future<void> _onUpdateTaxCode(event, emit) async {
-    emit(const TaxState.submitting());
+    emit(const TaxState.processing());
     try {
       final result = await _repository.updateTaxCode(event.tax);
 
@@ -61,13 +61,13 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
   }
 
   Future<void> _onDeleteTaxCode(event, emit) async {
-    emit(const TaxState.submitting());
+    emit(const TaxState.processing());
     try {
       final result = await _repository.deleteTaxCode(event.tax.id);
 
       result.fold(
         (failure) => emit(TaxState.failure(failure.message)),
-        (_) => emit(TaxState.success('${event.tax.code} successfully deleted.')),
+        (_) => emit(TaxState.deleted('${event.tax.code} successfully deleted.')),
       );
     } catch (e) {
       emit(TaxState.failure(e.toString()));

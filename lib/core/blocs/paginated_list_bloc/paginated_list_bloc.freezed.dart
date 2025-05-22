@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$PaginatedListEvent {
+mixin _$PaginatedListEvent<T> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(int? page, int? size) fetch,
@@ -37,35 +37,36 @@ mixin _$PaginatedListEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Fetch value) fetch,
-    required TResult Function(_Reset value) reset,
+    required TResult Function(_Fetch<T> value) fetch,
+    required TResult Function(_Reset<T> value) reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Fetch value)? fetch,
-    TResult? Function(_Reset value)? reset,
+    TResult? Function(_Fetch<T> value)? fetch,
+    TResult? Function(_Reset<T> value)? reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Fetch value)? fetch,
-    TResult Function(_Reset value)? reset,
+    TResult Function(_Fetch<T> value)? fetch,
+    TResult Function(_Reset<T> value)? reset,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $PaginatedListEventCopyWith<$Res> {
-  factory $PaginatedListEventCopyWith(
-          PaginatedListEvent value, $Res Function(PaginatedListEvent) then) =
-      _$PaginatedListEventCopyWithImpl<$Res, PaginatedListEvent>;
+abstract class $PaginatedListEventCopyWith<T, $Res> {
+  factory $PaginatedListEventCopyWith(PaginatedListEvent<T> value,
+          $Res Function(PaginatedListEvent<T>) then) =
+      _$PaginatedListEventCopyWithImpl<T, $Res, PaginatedListEvent<T>>;
 }
 
 /// @nodoc
-class _$PaginatedListEventCopyWithImpl<$Res, $Val extends PaginatedListEvent>
-    implements $PaginatedListEventCopyWith<$Res> {
+class _$PaginatedListEventCopyWithImpl<T, $Res,
+        $Val extends PaginatedListEvent<T>>
+    implements $PaginatedListEventCopyWith<T, $Res> {
   _$PaginatedListEventCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -75,20 +76,20 @@ class _$PaginatedListEventCopyWithImpl<$Res, $Val extends PaginatedListEvent>
 }
 
 /// @nodoc
-abstract class _$$FetchImplCopyWith<$Res> {
+abstract class _$$FetchImplCopyWith<T, $Res> {
   factory _$$FetchImplCopyWith(
-          _$FetchImpl value, $Res Function(_$FetchImpl) then) =
-      __$$FetchImplCopyWithImpl<$Res>;
+          _$FetchImpl<T> value, $Res Function(_$FetchImpl<T>) then) =
+      __$$FetchImplCopyWithImpl<T, $Res>;
   @useResult
   $Res call({int? page, int? size});
 }
 
 /// @nodoc
-class __$$FetchImplCopyWithImpl<$Res>
-    extends _$PaginatedListEventCopyWithImpl<$Res, _$FetchImpl>
-    implements _$$FetchImplCopyWith<$Res> {
+class __$$FetchImplCopyWithImpl<T, $Res>
+    extends _$PaginatedListEventCopyWithImpl<T, $Res, _$FetchImpl<T>>
+    implements _$$FetchImplCopyWith<T, $Res> {
   __$$FetchImplCopyWithImpl(
-      _$FetchImpl _value, $Res Function(_$FetchImpl) _then)
+      _$FetchImpl<T> _value, $Res Function(_$FetchImpl<T>) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -97,7 +98,7 @@ class __$$FetchImplCopyWithImpl<$Res>
     Object? page = freezed,
     Object? size = freezed,
   }) {
-    return _then(_$FetchImpl(
+    return _then(_$FetchImpl<T>(
       page: freezed == page
           ? _value.page
           : page // ignore: cast_nullable_to_non_nullable
@@ -112,7 +113,7 @@ class __$$FetchImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FetchImpl implements _Fetch {
+class _$FetchImpl<T> implements _Fetch<T> {
   const _$FetchImpl({this.page, this.size});
 
   @override
@@ -122,14 +123,14 @@ class _$FetchImpl implements _Fetch {
 
   @override
   String toString() {
-    return 'PaginatedListEvent.fetch(page: $page, size: $size)';
+    return 'PaginatedListEvent<$T>.fetch(page: $page, size: $size)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FetchImpl &&
+            other is _$FetchImpl<T> &&
             (identical(other.page, page) || other.page == page) &&
             (identical(other.size, size) || other.size == size));
   }
@@ -140,8 +141,8 @@ class _$FetchImpl implements _Fetch {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$FetchImplCopyWith<_$FetchImpl> get copyWith =>
-      __$$FetchImplCopyWithImpl<_$FetchImpl>(this, _$identity);
+  _$$FetchImplCopyWith<T, _$FetchImpl<T>> get copyWith =>
+      __$$FetchImplCopyWithImpl<T, _$FetchImpl<T>>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -177,8 +178,8 @@ class _$FetchImpl implements _Fetch {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Fetch value) fetch,
-    required TResult Function(_Reset value) reset,
+    required TResult Function(_Fetch<T> value) fetch,
+    required TResult Function(_Reset<T> value) reset,
   }) {
     return fetch(this);
   }
@@ -186,8 +187,8 @@ class _$FetchImpl implements _Fetch {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Fetch value)? fetch,
-    TResult? Function(_Reset value)? reset,
+    TResult? Function(_Fetch<T> value)? fetch,
+    TResult? Function(_Reset<T> value)? reset,
   }) {
     return fetch?.call(this);
   }
@@ -195,8 +196,8 @@ class _$FetchImpl implements _Fetch {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Fetch value)? fetch,
-    TResult Function(_Reset value)? reset,
+    TResult Function(_Fetch<T> value)? fetch,
+    TResult Function(_Reset<T> value)? reset,
     required TResult orElse(),
   }) {
     if (fetch != null) {
@@ -206,46 +207,46 @@ class _$FetchImpl implements _Fetch {
   }
 }
 
-abstract class _Fetch implements PaginatedListEvent {
-  const factory _Fetch({final int? page, final int? size}) = _$FetchImpl;
+abstract class _Fetch<T> implements PaginatedListEvent<T> {
+  const factory _Fetch({final int? page, final int? size}) = _$FetchImpl<T>;
 
   int? get page;
   int? get size;
   @JsonKey(ignore: true)
-  _$$FetchImplCopyWith<_$FetchImpl> get copyWith =>
+  _$$FetchImplCopyWith<T, _$FetchImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ResetImplCopyWith<$Res> {
+abstract class _$$ResetImplCopyWith<T, $Res> {
   factory _$$ResetImplCopyWith(
-          _$ResetImpl value, $Res Function(_$ResetImpl) then) =
-      __$$ResetImplCopyWithImpl<$Res>;
+          _$ResetImpl<T> value, $Res Function(_$ResetImpl<T>) then) =
+      __$$ResetImplCopyWithImpl<T, $Res>;
 }
 
 /// @nodoc
-class __$$ResetImplCopyWithImpl<$Res>
-    extends _$PaginatedListEventCopyWithImpl<$Res, _$ResetImpl>
-    implements _$$ResetImplCopyWith<$Res> {
+class __$$ResetImplCopyWithImpl<T, $Res>
+    extends _$PaginatedListEventCopyWithImpl<T, $Res, _$ResetImpl<T>>
+    implements _$$ResetImplCopyWith<T, $Res> {
   __$$ResetImplCopyWithImpl(
-      _$ResetImpl _value, $Res Function(_$ResetImpl) _then)
+      _$ResetImpl<T> _value, $Res Function(_$ResetImpl<T>) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$ResetImpl implements _Reset {
+class _$ResetImpl<T> implements _Reset<T> {
   const _$ResetImpl();
 
   @override
   String toString() {
-    return 'PaginatedListEvent.reset()';
+    return 'PaginatedListEvent<$T>.reset()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$ResetImpl);
+        (other.runtimeType == runtimeType && other is _$ResetImpl<T>);
   }
 
   @override
@@ -285,8 +286,8 @@ class _$ResetImpl implements _Reset {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Fetch value) fetch,
-    required TResult Function(_Reset value) reset,
+    required TResult Function(_Fetch<T> value) fetch,
+    required TResult Function(_Reset<T> value) reset,
   }) {
     return reset(this);
   }
@@ -294,8 +295,8 @@ class _$ResetImpl implements _Reset {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Fetch value)? fetch,
-    TResult? Function(_Reset value)? reset,
+    TResult? Function(_Fetch<T> value)? fetch,
+    TResult? Function(_Reset<T> value)? reset,
   }) {
     return reset?.call(this);
   }
@@ -303,8 +304,8 @@ class _$ResetImpl implements _Reset {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Fetch value)? fetch,
-    TResult Function(_Reset value)? reset,
+    TResult Function(_Fetch<T> value)? fetch,
+    TResult Function(_Reset<T> value)? reset,
     required TResult orElse(),
   }) {
     if (reset != null) {
@@ -314,8 +315,8 @@ class _$ResetImpl implements _Reset {
   }
 }
 
-abstract class _Reset implements PaginatedListEvent {
-  const factory _Reset() = _$ResetImpl;
+abstract class _Reset<T> implements PaginatedListEvent<T> {
+  const factory _Reset() = _$ResetImpl<T>;
 }
 
 /// @nodoc

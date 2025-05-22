@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/sidebar_cubit.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/core/network/dio_service.dart';
@@ -13,7 +14,6 @@ import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/log
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/logout.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_lazy_list_cubit/branch_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch_api.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/repository/branch_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/repository/branch_repository.dart';
@@ -73,6 +73,11 @@ import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentati
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transaction_page_size_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transactions_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/branch_bloc/branch_bloc.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/api/receipt_template_api.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/repository/receipt_template_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/repository/receipt_template_repository.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/presentation/bloc/receipt_template_bloc/receipt_template_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_api.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
@@ -197,7 +202,6 @@ import 'package:medglobal_admin_portal/portal/settings/register/data/repository/
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_shift_repository.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/register_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/data/api/transaction_api.dart';
 import 'package:medglobal_admin_portal/shared/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/repositories/transaction_repository.dart';
@@ -213,6 +217,7 @@ void initDependencyInjection() {
   initTaxDependencies();
   initBranchDependencies();
   initRegisterDependencies();
+  initReceiptTemplateDependencies();
 }
 
 void initCoreDependencies() {
@@ -232,6 +237,9 @@ void initTaxDependencies() {
     ..registerFactory<PaginatedListBloc<Tax>>(
       () => PaginatedListBloc<Tax>(inject<TaxRepository>().getTaxCodes),
     )
+    ..registerFactory<LazyListBloc<Tax>>(
+      () => LazyListBloc<Tax>(inject<TaxRepository>().getTaxCodes),
+    )
     ..registerFactory<TaxBloc>(
       () => TaxBloc(inject<TaxRepository>()),
     );
@@ -248,14 +256,16 @@ void initBranchDependencies() {
     ..registerFactory<PaginatedListBloc<Branch>>(
       () => PaginatedListBloc<Branch>(inject<BranchRepository>().getBranches),
     )
+    ..registerFactory<LazyListBloc<Branch>>(
+      () => LazyListBloc<Branch>(inject<BranchRepository>().getBranches),
+    )
     ..registerFactory<BranchBloc>(
-      () => BranchBloc(inject<BranchRepository>()),
+      () => BranchBloc(inject<BranchRepository>(), inject<ReceiptTemplateRepository>()),
     );
 }
 
 void initRegisterDependencies() {
   inject
-    // Register
     ..registerLazySingleton<RegisterApi>(
       () => RegisterApi(inject<BaseApiService>()),
     )
@@ -265,14 +275,12 @@ void initRegisterDependencies() {
     ..registerFactory<PaginatedListBloc<Register>>(
       () => PaginatedListBloc<Register>(inject<RegisterRepository>().getRegisters),
     )
+    ..registerFactory<LazyListBloc<Register>>(
+      () => LazyListBloc<Register>(inject<RegisterRepository>().getRegisters),
+    )
     ..registerFactory(
       () => RegisterBloc(inject<RegisterRepository>()),
     )
-    // Used in register dropdown
-    ..registerFactory(
-      () => RegisterLazyListCubit(inject<RegisterRepository>()),
-    )
-    // Register Shift
     ..registerLazySingleton<RegisterShiftApi>(
       () => RegisterShiftApiImpl(inject()), // Refactor to use BaseApiService
     )
@@ -284,10 +292,25 @@ void initRegisterDependencies() {
     );
 }
 
-void initReceiptTemplateDependencies() {}
+void initReceiptTemplateDependencies() {
+  inject
+    ..registerLazySingleton<ReceiptTemplateApi>(
+      () => ReceiptTemplateApi(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<ReceiptTemplateRepository>(
+      () => ReceiptTemplateRepositoryImpl(inject<ReceiptTemplateApi>()),
+    )
+    ..registerFactory<PaginatedListBloc<ReceiptTemplate>>(
+      () => PaginatedListBloc<ReceiptTemplate>(inject<ReceiptTemplateRepository>().getReceiptTemplates),
+    )
+    ..registerFactory<LazyListBloc<ReceiptTemplate>>(
+      () => LazyListBloc<ReceiptTemplate>(inject<ReceiptTemplateRepository>().getReceiptTemplates),
+    )
+    ..registerFactory<ReceiptTemplateBloc>(
+      () => ReceiptTemplateBloc(inject<ReceiptTemplateRepository>()),
+    );
+}
 
-//
-//
 // TODO: Break down into smaller init methods
 void initAll() {
   inject
@@ -486,7 +509,7 @@ void initAll() {
     ..registerFactory(() => SaleTransactionListFilterCubit())
     ..registerFactory(() => ReturnTransactionListFilterCubit())
     ..registerFactory(() => CategoryLazyListCubit(inject()))
-    ..registerFactory(() => BranchLazyListCubit(inject()))
+    // ..registerFactory(() => BranchLazyListCubit(inject()))
     ..registerFactory(() => SupplierLazyListCubit(inject()))
     ..registerFactory(() => ProductHistoryListCubit(inject()))
     ..registerFactory(() => ProductHistoryListFilterCubit())

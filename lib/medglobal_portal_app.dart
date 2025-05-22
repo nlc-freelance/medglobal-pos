@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_lazy_list_cubit/branch_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product/product_cubit.dart';
@@ -27,7 +27,7 @@ import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentati
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/sales_per_shift_list/sales_per_shift_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transaction_page_size_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transactions_cubit.dart';
-import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
@@ -81,8 +81,6 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/regi
 import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-import 'pos/point_of_sale/presentation/cubit/register/register_lazy_list_cubit.dart';
-
 class MedGlobaPortalApp extends StatelessWidget {
   const MedGlobaPortalApp({super.key});
 
@@ -91,9 +89,10 @@ class MedGlobaPortalApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => GetIt.I<AuthBloc>()..add(const AppInitEvent())),
-        BlocProvider(create: (_) => GetIt.I<PaginatedListBloc<Tax>>()),
-        BlocProvider(create: (_) => GetIt.I<PaginatedListBloc<Branch>>()),
-        BlocProvider(create: (_) => GetIt.I<PaginatedListBloc<Register>>()),
+        BlocProvider(create: (_) => GetIt.I<LazyListBloc<Branch>>()),
+        BlocProvider(create: (_) => GetIt.I<LazyListBloc<Tax>>()),
+        BlocProvider(create: (_) => GetIt.I<LazyListBloc<Register>>()),
+        BlocProvider(create: (_) => GetIt.I<LazyListBloc<ReceiptTemplate>>()),
         BlocProvider(create: (_) => ActiveRegisterCubit()),
         //
         BlocProvider(create: (_) => GetIt.I<SidebarCubit>()),
@@ -155,8 +154,8 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<PrintReceiptCubit>()),
         BlocProvider(create: (_) => GetIt.I<CategoryLazyListCubit>()),
         BlocProvider(create: (_) => GetIt.I<SupplierLazyListCubit>()),
-        BlocProvider(create: (_) => GetIt.I<BranchLazyListCubit>()),
-        BlocProvider(create: (_) => GetIt.I<RegisterLazyListCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<BranchLazyListCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<RegisterLazyListCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductHistoryListCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductHistoryListFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReportsBloc>()),

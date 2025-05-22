@@ -15,7 +15,7 @@ class BranchFormState with _$BranchFormState {
     String? country,
     String? businessRegistrationNumber,
     String? vatIdNumber,
-    // ReceiptTemplate receiptTemplate,
+    ReceiptTemplate? receiptTemplate,
   }) = _BranchFormState;
 
   factory BranchFormState.initial() => const BranchFormState();

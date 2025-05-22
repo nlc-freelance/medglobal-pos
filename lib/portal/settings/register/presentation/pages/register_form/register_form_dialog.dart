@@ -5,6 +5,7 @@ import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
 import 'package:medglobal_admin_portal/core/widgets/dialog/app_custom_dialog.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/form/form.dart';
+import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/presentation/bloc/register_bloc/register_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/presentation/cubit/register_form_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -30,6 +31,10 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
 
     _registerFormCubit = context.read<RegisterFormCubit>();
     _registerBloc = context.read<RegisterBloc>();
+
+    // Since the Form is just in a dialog and upon deletion the confirmation dialog is closed immediately,
+    // reset the state of the RegisterBloc to prevent stale error messages from when deletion failed
+    _registerBloc.add(const RegisterEvent.reset());
 
     _nameController = TextEditingController(text: _registerFormCubit.state.name);
   }
@@ -60,7 +65,15 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
                 required: true,
                 onSelectItem: (value) => _registerFormCubit.setAssignedBranch(value),
               ),
-              const UIVerticalSpace(24),
+              const UIVerticalSpace(16),
+              BlocBuilder<RegisterBloc, RegisterState>(
+                builder: (context, state) {
+                  return state.maybeWhen(
+                    failure: (message) => PageErrorNotice(message: message),
+                    orElse: () => const SizedBox(),
+                  );
+                },
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
