@@ -46,7 +46,7 @@ class _TaxFormDialogState extends State<TaxFormDialog> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppTextFormField.vertical(
+            AppTextFormField.top(
               label: 'Tax Code Name',
               hint: 'Enter tax code name',
               controller: _codeController,
@@ -55,7 +55,7 @@ class _TaxFormDialogState extends State<TaxFormDialog> {
               onChanged: (value) => _taxFormCubit.setCode(value),
             ),
             const UIVerticalSpace(16),
-            AppTextFormField.vertical(
+            AppTextFormField.top(
               label: 'Tax Rate (%)',
               hint: 'Enter tax rate',
               controller: _rateController,
@@ -77,8 +77,7 @@ class _TaxFormDialogState extends State<TaxFormDialog> {
             BlocBuilder<TaxFormCubit, TaxFormState>(
               builder: (context, state) => AppCheckboxListTile(
                 label: 'Set as default',
-                subtitle:
-                    'When set as default, this tax will be automatically applied to product pricing when applicable.',
+                subtitle: 'When set as default, this tax will be auto-selected when tax is enabled in product pricing.',
                 value: state.isDefault,
                 onToggle: (value) => _taxFormCubit.setIsDefault(value),
               ),

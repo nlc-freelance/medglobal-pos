@@ -49,7 +49,7 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppTextFormField.vertical(
+              AppTextFormField.top(
                 label: 'POS Register Name',
                 hint: 'Enter POS register name',
                 controller: _nameController,
@@ -64,8 +64,15 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
                 selectedItem: _registerFormCubit.state.assignedBranch,
                 required: true,
                 onSelectItem: (value) => _registerFormCubit.setAssignedBranch(value),
+                isReadOnly: _registerFormCubit.state.assignedBranch != null,
               ),
-              const UIVerticalSpace(16),
+              Text(
+                _hasAssignedBranch
+                    ? 'This branch was assigned when the register was created and can no longer be changed.'
+                    : 'You can only assign a branch when creating the register — it can\'t be changed afterward.',
+                style: UIStyleText.hint.copyWith(color: UIColors.textMuted),
+              ),
+              const UIVerticalSpace(24),
               BlocBuilder<RegisterBloc, RegisterState>(
                 builder: (context, state) {
                   return state.maybeWhen(
@@ -88,6 +95,8 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
       ),
     );
   }
+
+  bool get _hasAssignedBranch => _registerFormCubit.state.assignedBranch != null;
 
   void _onSave() {
     if (_registerFormKey.currentState?.validate() == true) {

@@ -17,6 +17,7 @@ class CreateBranchDto {
   final String? country;
   final String businessRegistrationNo;
   final String? vatIdNo;
+  final int receiptTemplateId;
 
   CreateBranchDto({
     required this.accountId,
@@ -31,6 +32,7 @@ class CreateBranchDto {
     this.country,
     required this.businessRegistrationNo,
     this.vatIdNo,
+    required this.receiptTemplateId,
   });
 
   Map<String, dynamic> toJson() => _$CreateBranchDtoToJson(this);
@@ -49,5 +51,6 @@ class CreateBranchDto {
         country: branch.country,
         businessRegistrationNo: branch.businessRegistrationNumber,
         vatIdNo: branch.vatIdNumber,
+        receiptTemplateId: branch.receiptTemplate.id!,
       );
 }

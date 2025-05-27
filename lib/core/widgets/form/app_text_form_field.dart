@@ -8,10 +8,10 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 /// To migrate: Product Name, Stock Keeping Unit details, Variant
 /// Others: Add focus node so this widget can be used in RegisterShiftDialog
 
-enum LabelLayout { none, vertical, horizontal }
+enum FieldLabelPosition { none, top, left }
 
 class AppTextFormField extends StatelessWidget {
-  final LabelLayout layout;
+  final FieldLabelPosition layout;
   final String? label;
   final String hint;
   final TextEditingController controller;
@@ -21,7 +21,7 @@ class AppTextFormField extends StatelessWidget {
   final void Function(String value)? onChanged;
   final List<TextInputFormatter>? formatter;
 
-  const AppTextFormField.vertical({
+  const AppTextFormField.top({
     super.key,
     required this.label,
     required this.hint,
@@ -31,9 +31,9 @@ class AppTextFormField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.formatter,
-  }) : layout = LabelLayout.vertical;
+  }) : layout = FieldLabelPosition.top;
 
-  const AppTextFormField.horizontal({
+  const AppTextFormField.left({
     super.key,
     required this.label,
     required this.hint,
@@ -43,7 +43,7 @@ class AppTextFormField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.formatter,
-  }) : layout = LabelLayout.horizontal;
+  }) : layout = FieldLabelPosition.left;
 
   const AppTextFormField.noLabel({
     super.key,
@@ -55,7 +55,7 @@ class AppTextFormField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.formatter,
-  }) : layout = LabelLayout.none;
+  }) : layout = FieldLabelPosition.none;
 
   @override
   Widget build(BuildContext context) {
@@ -76,30 +76,30 @@ class AppTextFormField extends StatelessWidget {
       validator: validator,
     );
 
-    return layout == LabelLayout.none
+    return layout == FieldLabelPosition.none
         ? textFormField
         : Flex(
-            direction: layout == LabelLayout.vertical ? Axis.vertical : Axis.horizontal,
-            crossAxisAlignment: layout == LabelLayout.vertical ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+            direction: layout == FieldLabelPosition.top ? Axis.vertical : Axis.horizontal,
+            crossAxisAlignment: layout == FieldLabelPosition.top ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: [
-              if (layout != LabelLayout.none)
+              if (layout != FieldLabelPosition.none)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
+                  padding: const EdgeInsets.only(bottom: 6),
                   child: Text.rich(
                     TextSpan(
                       text: label,
-                      style: UIStyleText.labelRegular.copyWith(fontSize: 10.5),
+                      style: UIStyleText.labelRegular.copyWith(fontSize: 11),
                       children: [
                         if (isRequired)
                           TextSpan(
                             text: ' *',
-                            style: UIStyleText.labelRegular.copyWith(fontSize: 10.5, color: Colors.red),
+                            style: UIStyleText.labelRegular.copyWith(color: Colors.red),
                           ),
                       ],
                     ),
                   ),
                 ),
-              layout == LabelLayout.horizontal ? Expanded(child: textFormField) : textFormField,
+              layout == FieldLabelPosition.left ? Expanded(child: textFormField) : textFormField,
             ],
           );
   }

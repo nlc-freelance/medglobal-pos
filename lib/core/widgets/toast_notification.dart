@@ -44,6 +44,11 @@ class ToastNotification {
         SnackBar(
           behavior: SnackBarBehavior.floating,
           backgroundColor: UIColors.transparent,
+          margin: EdgeInsets.only(
+            bottom: 16,
+            right: 16,
+            left: MediaQuery.of(context).size.width * 0.7,
+          ),
           duration: Duration(milliseconds: duration!),
           elevation: 0,
           content: Align(
@@ -51,41 +56,42 @@ class ToastNotification {
             child: Container(
               constraints: const BoxConstraints(maxWidth: 500),
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: UIColors.background,
-                border: Border(left: BorderSide(color: _color(type), width: 5)),
-                boxShadow: const [
+                border: Border.fromBorderSide(BorderSide(color: UIColors.borderRegular)),
+                boxShadow: [
                   BoxShadow(
                     color: UIColors.borderRegular,
-                    blurRadius: 8.0,
+                    blurRadius: 8,
                     offset: Offset(1, 1),
                   ),
                 ],
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
               ),
-              child: Row(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: _color(type).withOpacity(0.1),
-                      borderRadius: const BorderRadius.all(Radius.circular(50)),
-                    ),
-                    child: type == ToastType.SUCCESS
-                        ? Assets.icons.checkCircle.svg(width: 18, colorFilter: _color(type).toColorFilter)
-                        : Assets.icons.infoCircle.svg(width: 18, colorFilter: _color(type).toColorFilter),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      type == ToastType.SUCCESS
+                          ? Assets.icons.checkCircle.svg(width: 18, colorFilter: _color(type).toColorFilter)
+                          : Assets.icons.infoCircle.svg(width: 18, colorFilter: _color(type).toColorFilter),
+                      const UIHorizontalSpace(16),
+                      Expanded(child: Text(type.title, style: UIStyleText.heading6.copyWith(fontSize: 15))),
+                      Material(
+                        color: UIColors.transparent,
+                        child: InkWell(
+                          onTap: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+                          borderRadius: BorderRadius.circular(16),
+                          child: Assets.icons.close.svg(colorFilter: UIColors.textLight.toColorFilter),
+                        ),
+                      ),
+                    ],
                   ),
-                  const UIHorizontalSpace(20),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        UIText.heading6(type.title),
-                        const UIVerticalSpace(2),
-                        UIText.bodyRegular(message),
-                      ],
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 34, top: 2),
+                    child: UIText.bodyRegular(message, color: UIColors.textMuted),
                   ),
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class AppCheckboxListTile extends StatefulWidget {
@@ -8,6 +9,7 @@ class AppCheckboxListTile extends StatefulWidget {
     required this.onToggle,
     this.value,
     this.controlAffinity = ListTileControlAffinity.leading,
+    this.labelStyle,
     super.key,
   });
 
@@ -16,6 +18,7 @@ class AppCheckboxListTile extends StatefulWidget {
   final void Function(bool) onToggle;
   final bool? value;
   final ListTileControlAffinity controlAffinity;
+  final TextStyle? labelStyle;
 
   @override
   State<AppCheckboxListTile> createState() => _MGCheckboxListTileState();
@@ -46,16 +49,29 @@ class _MGCheckboxListTileState extends State<AppCheckboxListTile> {
           highlightColor: UIColors.transparent,
           splashColor: UIColors.transparent,
         ),
-        child: CheckboxListTile(
-          contentPadding: EdgeInsets.zero,
-          value: value,
-          onChanged: (_) {
-            setState(() => value = !value);
-            widget.onToggle(value);
-          },
-          title: UIText.labelMedium(widget.label),
-          controlAffinity: widget.controlAffinity,
-          subtitle: widget.subtitle != null ? UIText.subtitle(widget.subtitle!) : null,
-        ),
+        child: HoverBuilder(builder: (isHovered) {
+          return ListTileTheme(
+            horizontalTitleGap: 6,
+            child: CheckboxListTile(
+              value: value,
+              onChanged: (_) {
+                setState(() => value = !value);
+                widget.onToggle(value);
+              },
+              title: Text(widget.label, style: widget.labelStyle ?? UIStyleText.labelMedium),
+              controlAffinity: widget.controlAffinity,
+              subtitle: widget.subtitle != null ? UIText.subtitle(widget.subtitle!) : null,
+              side: WidgetStateBorderSide.resolveWith(
+                (states) => BorderSide(
+                  width: 1.5,
+                  color: states.contains(WidgetState.selected) || isHovered ? UIColors.primary : UIColors.borderRegular,
+                ),
+              ),
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
+            ),
+          );
+        }),
       );
 }

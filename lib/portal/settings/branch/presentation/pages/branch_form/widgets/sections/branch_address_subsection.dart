@@ -46,7 +46,7 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: AppTextFormField.vertical(
+              child: AppTextFormField.top(
                 label: 'Street Addess 1',
                 hint: 'Enter street address 1',
                 controller: _street1Controller,
@@ -57,7 +57,7 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
             ),
             const UIHorizontalSpace(16),
             Expanded(
-              child: AppTextFormField.vertical(
+              child: AppTextFormField.top(
                 label: 'Street Address 2',
                 hint: 'Enter street address 2',
                 controller: _street2Controller,
@@ -71,7 +71,7 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: AppTextFormField.vertical(
+              child: AppTextFormField.top(
                 label: 'City',
                 hint: 'Enter city',
                 controller: _cityController,
@@ -82,7 +82,7 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
             ),
             const UIHorizontalSpace(16),
             Expanded(
-              child: AppTextFormField.vertical(
+              child: AppTextFormField.top(
                 label: 'State',
                 hint: 'Enter state',
                 controller: _stateController,
@@ -98,7 +98,7 @@ class _BranchAddressSubsectionState extends State<BranchAddressSubsection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: AppTextFormField.vertical(
+              child: AppTextFormField.top(
                 label: 'Postal Code',
                 hint: 'Enter postal code',
                 controller: _postalCodeController,

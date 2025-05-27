@@ -64,8 +64,10 @@ class BranchActions extends StatelessWidget with DialogMixin {
   void _onCancel(BuildContext context) => Navigator.pop(context);
 
   void _onSave(BuildContext context) {
-    if (formKey.currentState?.validate() == true) {
-      final formCubit = context.read<BranchFormCubit>();
+    final formCubit = context.read<BranchFormCubit>();
+    formCubit.validate();
+
+    if (formKey.currentState?.validate() == true && formCubit.state.isFormValid) {
       final branch = formCubit.toBranch();
 
       if (formCubit.state.id == null) {

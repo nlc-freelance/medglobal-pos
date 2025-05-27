@@ -38,7 +38,7 @@ class _BranchContactSectionState extends State<BranchContactSection> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: AppTextFormField.vertical(
+              child: AppTextFormField.top(
                 label: 'Phone',
                 hint: 'Enter contact number',
                 controller: _phoneController,
@@ -49,7 +49,7 @@ class _BranchContactSectionState extends State<BranchContactSection> {
             ),
             const UIHorizontalSpace(16),
             Expanded(
-              child: AppTextFormField.vertical(
+              child: AppTextFormField.top(
                 label: 'Email',
                 hint: 'Enter email address',
                 controller: _emailController,

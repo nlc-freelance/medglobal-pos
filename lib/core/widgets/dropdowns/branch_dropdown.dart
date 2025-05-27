@@ -19,6 +19,7 @@ class BranchDropdown extends StatelessWidget {
     this.label,
     this.isInlineHint = false,
     this.required = false,
+    this.isReadOnly = false,
     this.isSelectInputType = false,
     this.isMultiSelect = false,
     this.showSelectedItems = false,
@@ -33,6 +34,7 @@ class BranchDropdown extends StatelessWidget {
   final String? label;
   final String? hint;
   final bool required;
+  final bool isReadOnly;
   final bool isInlineHint;
   final bool isSelectInputType;
   final bool isMultiSelect;
@@ -67,6 +69,7 @@ class BranchDropdown extends StatelessWidget {
     required String hint,
     required String label,
     bool required = false,
+    bool isReadOnly = false,
     bool isMultiSelect = false,
     bool showSelectedItems = false,
     required Function(Branch value) onSelectItem,
@@ -81,6 +84,7 @@ class BranchDropdown extends StatelessWidget {
         label: label,
         hint: hint,
         required: required,
+        isReadOnly: isReadOnly,
         isMultiSelect: isMultiSelect,
         showSelectedItems: showSelectedItems,
         onSelectItem: onSelectItem,
@@ -93,6 +97,7 @@ class BranchDropdown extends StatelessWidget {
     required String hint,
     required String label,
     bool required = false,
+    bool isReadOnly = false,
     Function(Branch value)? onSelectItem,
     Branch? selectedItem,
     Key? key,
@@ -103,6 +108,7 @@ class BranchDropdown extends StatelessWidget {
         label: label,
         hint: hint,
         required: required,
+        isReadOnly: isReadOnly,
         onSelectItem: onSelectItem,
         selectedItem: selectedItem,
       );
@@ -112,13 +118,17 @@ class BranchDropdown extends StatelessWidget {
     final textLabel = Text.rich(
       TextSpan(
         text: label,
-        style: type == BranchDropdownType.input_top ? UIStyleText.labelRegular : UIStyleText.labelMedium,
+        style: type == BranchDropdownType.input_top
+            ? UIStyleText.labelRegular.copyWith(fontSize: 11)
+            : UIStyleText.labelMedium,
         children: [
           if (required)
             TextSpan(
               text: ' *',
-              style:
-                  (type == BranchDropdownType.input_top ? UIStyleText.labelRegular : UIStyleText.labelMedium).copyWith(
+              style: (type == BranchDropdownType.input_top
+                      ? UIStyleText.labelRegular.copyWith(fontSize: 11)
+                      : UIStyleText.labelMedium)
+                  .copyWith(
                 color: UIColors.accent,
               ),
             ),
@@ -147,12 +157,14 @@ class BranchDropdown extends StatelessWidget {
                 ? _BranchDropdownOverlay(
                     hint: hint,
                     isMultiSelect: true,
+                    isReadOnly: isReadOnly,
                     onDeleteItem: onDeleteItem,
                     onSelectItem: onSelectItem,
                     selectedItems: selectedItems,
                   )
                 : _BranchDropdownOverlay(
                     hint: hint,
+                    isReadOnly: isReadOnly,
                     onSelectItem: onSelectItem,
                     selectedItem: selectedItem,
                   ),
@@ -195,6 +207,7 @@ class BranchDropdown extends StatelessWidget {
                     flex: 2,
                     child: _BranchDropdownOverlay(
                       hint: hint,
+                      isReadOnly: isReadOnly,
                       onSelectItem: onSelectItem,
                       selectedItem: selectedItem,
                     ),
@@ -215,6 +228,7 @@ class _BranchDropdownOverlay extends StatefulWidget {
     this.isSelectType = false,
     this.isSelectInputType = false,
     this.isMultiSelect = false,
+    this.isReadOnly = false,
     this.onSelectItem,
     this.selectedItem,
     this.selectedItems,
@@ -225,6 +239,7 @@ class _BranchDropdownOverlay extends StatefulWidget {
   final bool isSelectType;
   final bool isSelectInputType;
   final bool isMultiSelect;
+  final bool isReadOnly;
   final String? hint;
   final bool? isInlineHint;
   final Function(Branch value)? onSelectItem;
@@ -279,7 +294,7 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
         hoverColor: UIColors.transparent,
         highlightColor: UIColors.transparent,
         borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-        onTap: () => setState(() => _isVisible = true),
+        onTap: () => widget.isReadOnly ? {} : setState(() => _isVisible = true),
         child: widget.isSelectType
             ? HoverBuilder(
                 builder: (isHover) {
@@ -357,8 +372,9 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                 readOnly: true,
                 enabled: false,
                 controller: TextEditingController(text: _selectedItem?.name),
-                mouseCursor: SystemMouseCursors.click,
+                mouseCursor: widget.isReadOnly ? null : SystemMouseCursors.click,
                 showCursor: false,
+
                 style: UIStyleText.chip.copyWith(color: UIColors.textDark),
                 // TODO: Auto validation on user interaction, currently it only shows validation upon clicking 'Save'
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -370,8 +386,16 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                 },
                 decoration: InputDecoration(
                   hintText: widget.hint,
-                  suffixIcon: Assets.icons.arrowDown.svg(),
+                  suffixIcon: widget.isReadOnly
+                      ? Assets.icons.lock.svg(colorFilter: UIColors.textMuted.toColorFilter)
+                      : Assets.icons.arrowDown.svg(),
                   suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
+                  fillColor: UIColors.borderMuted.withOpacity(0.5),
+                  filled: widget.isReadOnly,
+                  disabledBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    borderSide: BorderSide(color: UIColors.borderRegular),
+                  ),
                 ),
               ),
       ),

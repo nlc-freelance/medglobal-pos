@@ -7,13 +7,14 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 
 enum LabelPosition { top, left }
 
-class DropdownFormField<T> extends StatefulWidget {
-  const DropdownFormField._({
+class AppDropdownFormField<T> extends StatefulWidget {
+  const AppDropdownFormField._({
     super.key,
     required this.label,
     required this.labelPosition,
     required this.hint,
     this.isRequired = false,
+    this.isReadOnly = false,
     this.value,
     required this.onChanged,
     required this.getName,
@@ -24,25 +25,28 @@ class DropdownFormField<T> extends StatefulWidget {
   final LabelPosition labelPosition;
   final String hint;
   final bool isRequired;
+  final bool isReadOnly;
   final T? value;
   final String Function(T item) getName;
   final void Function(T item) onChanged;
   final Anchor? anchor;
 
-  factory DropdownFormField.labelTop({
+  factory AppDropdownFormField.labelTop({
     required String label,
     required String hint,
     bool isRequired = false,
+    bool isReadOnly = false,
     T? value,
     required String Function(T item) getName,
     required void Function(T item) onChanged,
     Anchor? anchor,
   }) {
-    return DropdownFormField<T>._(
+    return AppDropdownFormField<T>._(
       label: label,
       labelPosition: LabelPosition.top,
       hint: hint,
       isRequired: isRequired,
+      isReadOnly: isReadOnly,
       value: value,
       getName: getName,
       onChanged: onChanged,
@@ -50,20 +54,22 @@ class DropdownFormField<T> extends StatefulWidget {
     );
   }
 
-  factory DropdownFormField.labelLeft({
+  factory AppDropdownFormField.labelLeft({
     required String label,
     required String hint,
     bool isRequired = false,
+    bool isReadOnly = false,
     T? value,
     required String Function(T item) getName,
     required void Function(T item) onChanged,
     Anchor? anchor,
   }) {
-    return DropdownFormField<T>._(
+    return AppDropdownFormField<T>._(
       label: label,
       labelPosition: LabelPosition.top,
       hint: hint,
       isRequired: isRequired,
+      isReadOnly: isReadOnly,
       value: value,
       getName: getName,
       onChanged: onChanged,
@@ -72,10 +78,10 @@ class DropdownFormField<T> extends StatefulWidget {
   }
 
   @override
-  State<DropdownFormField<T>> createState() => _DropdownFormFieldState<T>();
+  State<AppDropdownFormField<T>> createState() => _DropdownFormFieldState<T>();
 }
 
-class _DropdownFormFieldState<T> extends State<DropdownFormField<T>> {
+class _DropdownFormFieldState<T> extends State<AppDropdownFormField<T>> {
   final GlobalKey menuKey = GlobalKey();
 
   bool visible = false;
@@ -88,7 +94,7 @@ class _DropdownFormFieldState<T> extends State<DropdownFormField<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant DropdownFormField<T> oldWidget) {
+  void didUpdateWidget(covariant AppDropdownFormField<T> oldWidget) {
     if (widget.value != null) _setValue(widget.value);
     super.didUpdateWidget(oldWidget);
   }
@@ -96,12 +102,13 @@ class _DropdownFormFieldState<T> extends State<DropdownFormField<T>> {
   @override
   Widget build(BuildContext context) {
     return OverlayBuilder(
-      target: DropdownField(
+      target: _DropdownField(
         menuKey: menuKey,
         label: widget.label,
         labelPosition: widget.labelPosition,
         hint: widget.hint,
         isRequired: widget.isRequired,
+        isReadOnly: widget.isReadOnly,
         value: value == null ? null : widget.getName(value as T),
         onTap: () => setState(() => visible = true),
       ),
@@ -125,14 +132,15 @@ class _DropdownFormFieldState<T> extends State<DropdownFormField<T>> {
   void _hideDropdownList() => setState(() => visible = false);
 }
 
-class DropdownField<T> extends StatelessWidget {
-  const DropdownField({
+class _DropdownField<T> extends StatelessWidget {
+  const _DropdownField({
     super.key,
     required this.menuKey,
     required this.label,
     required this.labelPosition,
     required this.hint,
     required this.isRequired,
+    required this.isReadOnly,
     this.value,
     required this.onTap,
   });
@@ -142,6 +150,7 @@ class DropdownField<T> extends StatelessWidget {
   final LabelPosition labelPosition;
   final String hint;
   final bool isRequired;
+  final bool isReadOnly;
   final String? value;
   final VoidCallback? onTap;
 
@@ -164,6 +173,12 @@ class DropdownField<T> extends StatelessWidget {
           hintText: hint,
           suffixIcon: Assets.icons.arrowDown.svg(),
           suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
+          fillColor: UIColors.borderMuted.withOpacity(0.5),
+          filled: isReadOnly,
+          disabledBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            borderSide: BorderSide(color: UIColors.borderRegular),
+          ),
         ),
       ),
     );
@@ -177,12 +192,12 @@ class DropdownField<T> extends StatelessWidget {
           child: Text.rich(
             TextSpan(
               text: label,
-              style: UIStyleText.labelRegular.copyWith(fontSize: 10.5),
+              style: UIStyleText.labelRegular.copyWith(fontSize: 11),
               children: [
                 if (isRequired)
                   TextSpan(
                     text: ' *',
-                    style: UIStyleText.labelRegular.copyWith(fontSize: 10.5, color: Colors.red),
+                    style: UIStyleText.labelRegular.copyWith(color: Colors.red),
                   ),
               ],
             ),

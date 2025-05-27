@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+ReceiptTemplate _$ReceiptTemplateFromJson(Map<String, dynamic> json) {
+  return _ReceiptTemplate.fromJson(json);
+}
+
 /// @nodoc
 mixin _$ReceiptTemplate {
   int? get id => throw _privateConstructorUsedError;
@@ -30,6 +34,7 @@ mixin _$ReceiptTemplate {
   String? get footerTitle => throw _privateConstructorUsedError;
   String? get footerMessage => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $ReceiptTemplateCopyWith<ReceiptTemplate> get copyWith =>
       throw _privateConstructorUsedError;
@@ -248,7 +253,7 @@ class __$$ReceiptTemplateImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$ReceiptTemplateImpl extends _ReceiptTemplate {
   const _$ReceiptTemplateImpl(
       {this.id,
@@ -265,6 +270,9 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
       this.footerTitle,
       this.footerMessage})
       : super._();
+
+  factory _$ReceiptTemplateImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ReceiptTemplateImplFromJson(json);
 
   @override
   final int? id;
@@ -336,6 +344,7 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
                 other.footerMessage == footerMessage));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -359,6 +368,13 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
   _$$ReceiptTemplateImplCopyWith<_$ReceiptTemplateImpl> get copyWith =>
       __$$ReceiptTemplateImplCopyWithImpl<_$ReceiptTemplateImpl>(
           this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ReceiptTemplateImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _ReceiptTemplate extends ReceiptTemplate {
@@ -377,6 +393,9 @@ abstract class _ReceiptTemplate extends ReceiptTemplate {
       final String? footerTitle,
       final String? footerMessage}) = _$ReceiptTemplateImpl;
   const _ReceiptTemplate._() : super._();
+
+  factory _ReceiptTemplate.fromJson(Map<String, dynamic> json) =
+      _$ReceiptTemplateImpl.fromJson;
 
   @override
   int? get id;

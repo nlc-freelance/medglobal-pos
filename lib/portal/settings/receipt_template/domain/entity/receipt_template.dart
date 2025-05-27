@@ -3,6 +3,7 @@ import 'package:medglobal_admin_portal/core/constants/constants.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'receipt_template.freezed.dart';
+part 'receipt_template.g.dart';
 
 @freezed
 class ReceiptTemplate with _$ReceiptTemplate {
@@ -23,6 +24,8 @@ class ReceiptTemplate with _$ReceiptTemplate {
   }) = _ReceiptTemplate;
 
   const ReceiptTemplate._();
+
+  factory ReceiptTemplate.fromJson(Map<String, dynamic> json) => _$ReceiptTemplateFromJson(json);
 
   DataGridRow toDataGridRow() => DataGridRow(
         cells: [
