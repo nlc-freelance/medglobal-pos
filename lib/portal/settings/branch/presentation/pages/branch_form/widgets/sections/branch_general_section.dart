@@ -30,7 +30,7 @@ class _BranchGeneralSectionState extends State<BranchGeneralSection> {
     return Column(
       children: [
         const PageSectionTitle(title: 'General Information'),
-        AppTextFormField.vertical(
+        AppTextFormField.top(
           label: 'Branch Name',
           hint: 'Enter branch name',
           controller: _nameController,

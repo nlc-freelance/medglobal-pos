@@ -47,7 +47,7 @@ class _ReceiptTemplateGeneralSectionState extends State<ReceiptTemplateGeneralSe
                         const UIVerticalSpace(16),
                         LabelValue.text(label: 'Description', value: state.description),
                       ] else ...[
-                        AppTextFormField.vertical(
+                        AppTextFormField.top(
                           label: 'Receipt Name',
                           hint: 'Enter receipt name',
                           controller: _nameController,
@@ -70,7 +70,7 @@ class _ReceiptTemplateGeneralSectionState extends State<ReceiptTemplateGeneralSe
                 if (!state.isSystemDefault) ...[
                   const UIHorizontalSpace(16),
                   Expanded(
-                    child: AppTextFormField.vertical(
+                    child: AppTextFormField.top(
                       label: 'Description',
                       hint: 'Enter description',
                       controller: _descriptionController,

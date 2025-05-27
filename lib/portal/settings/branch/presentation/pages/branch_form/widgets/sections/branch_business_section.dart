@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
-import 'package:medglobal_admin_portal/core/widgets/form/app_dropdown_form_field/dropdown_form_field.dart';
 import 'package:medglobal_admin_portal/core/widgets/form/form.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/branch_bloc/branch_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/cubit/branch_form_cubit/branch_form_cubit.dart';
@@ -43,7 +42,7 @@ class _BranchBusinessSectionState extends State<BranchBusinessSection> with Dial
             Expanded(
               child: Column(
                 children: [
-                  AppTextFormField.vertical(
+                  AppTextFormField.top(
                     label: 'Business Registration Number (BRN)',
                     hint: 'Enter business registration number',
                     controller: _brnController,
@@ -52,31 +51,50 @@ class _BranchBusinessSectionState extends State<BranchBusinessSection> with Dial
                     onChanged: (value) => _formCubit.setBusinessRegistrationNumber(value),
                   ),
                   const UIVerticalSpace(16),
-                  BlocBuilder<BranchBloc, BranchState>(
+                  BlocConsumer<BranchBloc, BranchState>(
+                    listener: (context, state) {
+                      state.maybeWhen(
+                        newBranch: (template) => _formCubit.setReceiptTemplate(template),
+                        orElse: () {},
+                      );
+                    },
                     builder: (context, state) {
-                      return IgnorePointer(
-                        ignoring: state.maybeWhen(
-                          initializingNewBranch: () => true,
-                          orElse: () => false,
-                        ),
-                        child: DropdownFormField<ReceiptTemplate>.labelTop(
-                          label: 'Receipt Template',
-                          hint: state.maybeWhen(
-                            initializingNewBranch: () => 'Loading Default...',
-                            orElse: () => 'Select receipt template',
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          IgnorePointer(
+                            ignoring: state.maybeWhen(
+                              initializingNewBranch: () => true,
+                              orElse: () => false,
+                            ),
+                            child: AppDropdownFormField<ReceiptTemplate>.labelTop(
+                              label: 'Receipt Template',
+                              hint: state.maybeWhen(
+                                initializingNewBranch: () => 'Loading Default...',
+                                orElse: () => 'Select receipt template',
+                              ),
+                              isRequired: true,
+                              getName: (ReceiptTemplate item) => item.name,
+                              onChanged: (ReceiptTemplate item) => _formCubit.setReceiptTemplate(item),
+                              value: state.maybeWhen(
+                                newBranch: (template) => template,
+                                orElse: () => _formCubit.state.receiptTemplate,
+                              ),
+                              anchor: const Aligned(
+                                target: Alignment.topCenter,
+                                follower: Alignment.topCenter,
+                              ),
+                            ),
                           ),
-                          isRequired: true,
-                          getName: (ReceiptTemplate item) => item.name,
-                          onChanged: (ReceiptTemplate item) => _formCubit.setReceiptTemplate(item),
-                          value: state.maybeWhen(
-                            newBranch: (template) => template,
-                            orElse: () => _formCubit.state.receiptTemplate,
+                          BlocBuilder<BranchFormCubit, BranchFormState>(
+                            builder: (context, state) => !state.isFormValid
+                                ? UIText.dataGridText(
+                                    'Please select a receipt template.',
+                                    color: UIColors.buttonDanger,
+                                  )
+                                : const SizedBox(),
                           ),
-                          anchor: const Aligned(
-                            target: Alignment.topCenter,
-                            follower: Alignment.topCenter,
-                          ),
-                        ),
+                        ],
                       );
                     },
                   ),
@@ -85,7 +103,7 @@ class _BranchBusinessSectionState extends State<BranchBusinessSection> with Dial
             ),
             const UIHorizontalSpace(16),
             Expanded(
-              child: AppTextFormField.vertical(
+              child: AppTextFormField.top(
                 label: 'GST/VAT Id. No.',
                 hint: 'Enter GST/VAT Id. No.',
                 controller: _vatIdController,

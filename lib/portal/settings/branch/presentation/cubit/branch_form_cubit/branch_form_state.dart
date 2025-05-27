@@ -16,7 +16,10 @@ class BranchFormState with _$BranchFormState {
     String? businessRegistrationNumber,
     String? vatIdNumber,
     ReceiptTemplate? receiptTemplate,
+    @Default(true) bool isFormValid,
   }) = _BranchFormState;
+
+  const BranchFormState._();
 
   factory BranchFormState.initial() => const BranchFormState();
 
@@ -33,5 +36,8 @@ class BranchFormState with _$BranchFormState {
         country: branch.country,
         businessRegistrationNumber: branch.businessRegistrationNumber,
         vatIdNumber: branch.vatIdNumber,
+        receiptTemplate: branch.receiptTemplate,
       );
+
+  bool hasValidForm() => receiptTemplate != null;
 }

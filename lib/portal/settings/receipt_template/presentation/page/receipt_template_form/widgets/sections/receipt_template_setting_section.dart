@@ -44,7 +44,7 @@ class _ReceiptTemplateSettingSectionState extends State<ReceiptTemplateSettingSe
                   ),
             if (!state.isConfigurationValid)
               UIText.dataGridText(
-                'Please add atleast one configuration to the receipt template.',
+                'Please add configuration for this template.',
                 color: UIColors.buttonDanger,
               ),
             SizedBox(
@@ -94,7 +94,7 @@ class _ReceiptTemplateSettingSectionState extends State<ReceiptTemplateSettingSe
                       const UIVerticalSpace(16),
                       LabelValue.text(label: 'Footer Message', value: state.footerMessage),
                     ] else if (state.showFooterMessage) ...[
-                      AppTextFormField.vertical(
+                      AppTextFormField.top(
                         label: 'Title',
                         hint: 'Enter footer message title',
                         controller: _footerTitleController,
@@ -103,7 +103,7 @@ class _ReceiptTemplateSettingSectionState extends State<ReceiptTemplateSettingSe
                         onChanged: (value) => _receiptTemplateFormCubit.setFooterTitle(value),
                       ),
                       const UIVerticalSpace(16),
-                      AppTextFormField.vertical(
+                      AppTextFormField.top(
                         label: 'Messsage',
                         hint: 'Enter footer message',
                         controller: _footerMessageController,

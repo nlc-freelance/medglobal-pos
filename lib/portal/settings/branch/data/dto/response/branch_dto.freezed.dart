@@ -34,6 +34,7 @@ mixin _$BranchDto {
   String? get email => throw _privateConstructorUsedError;
   String? get vatIdNo => throw _privateConstructorUsedError;
   String get businessRegistrationNo => throw _privateConstructorUsedError;
+  ReceiptTemplateDto get receiptTemplate => throw _privateConstructorUsedError;
   @DateTimeConverter()
   DateTime? get createdAt => throw _privateConstructorUsedError;
   @DateTimeConverter()
@@ -67,9 +68,12 @@ abstract class $BranchDtoCopyWith<$Res> {
       String? email,
       String? vatIdNo,
       String businessRegistrationNo,
+      ReceiptTemplateDto receiptTemplate,
       @DateTimeConverter() DateTime? createdAt,
       @DateTimeConverter() DateTime? updatedAt,
       @DateTimeConverter() DateTime? deletedAt});
+
+  $ReceiptTemplateDtoCopyWith<$Res> get receiptTemplate;
 }
 
 /// @nodoc
@@ -99,6 +103,7 @@ class _$BranchDtoCopyWithImpl<$Res, $Val extends BranchDto>
     Object? email = freezed,
     Object? vatIdNo = freezed,
     Object? businessRegistrationNo = null,
+    Object? receiptTemplate = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? deletedAt = freezed,
@@ -160,6 +165,10 @@ class _$BranchDtoCopyWithImpl<$Res, $Val extends BranchDto>
           ? _value.businessRegistrationNo
           : businessRegistrationNo // ignore: cast_nullable_to_non_nullable
               as String,
+      receiptTemplate: null == receiptTemplate
+          ? _value.receiptTemplate
+          : receiptTemplate // ignore: cast_nullable_to_non_nullable
+              as ReceiptTemplateDto,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -173,6 +182,14 @@ class _$BranchDtoCopyWithImpl<$Res, $Val extends BranchDto>
           : deletedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ReceiptTemplateDtoCopyWith<$Res> get receiptTemplate {
+    return $ReceiptTemplateDtoCopyWith<$Res>(_value.receiptTemplate, (value) {
+      return _then(_value.copyWith(receiptTemplate: value) as $Val);
+    });
   }
 }
 
@@ -199,9 +216,13 @@ abstract class _$$BranchDtoImplCopyWith<$Res>
       String? email,
       String? vatIdNo,
       String businessRegistrationNo,
+      ReceiptTemplateDto receiptTemplate,
       @DateTimeConverter() DateTime? createdAt,
       @DateTimeConverter() DateTime? updatedAt,
       @DateTimeConverter() DateTime? deletedAt});
+
+  @override
+  $ReceiptTemplateDtoCopyWith<$Res> get receiptTemplate;
 }
 
 /// @nodoc
@@ -229,6 +250,7 @@ class __$$BranchDtoImplCopyWithImpl<$Res>
     Object? email = freezed,
     Object? vatIdNo = freezed,
     Object? businessRegistrationNo = null,
+    Object? receiptTemplate = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? deletedAt = freezed,
@@ -290,6 +312,10 @@ class __$$BranchDtoImplCopyWithImpl<$Res>
           ? _value.businessRegistrationNo
           : businessRegistrationNo // ignore: cast_nullable_to_non_nullable
               as String,
+      receiptTemplate: null == receiptTemplate
+          ? _value.receiptTemplate
+          : receiptTemplate // ignore: cast_nullable_to_non_nullable
+              as ReceiptTemplateDto,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -324,6 +350,7 @@ class _$BranchDtoImpl implements _BranchDto {
       this.email,
       this.vatIdNo,
       required this.businessRegistrationNo,
+      required this.receiptTemplate,
       @DateTimeConverter() this.createdAt,
       @DateTimeConverter() this.updatedAt,
       @DateTimeConverter() this.deletedAt});
@@ -360,6 +387,8 @@ class _$BranchDtoImpl implements _BranchDto {
   @override
   final String businessRegistrationNo;
   @override
+  final ReceiptTemplateDto receiptTemplate;
+  @override
   @DateTimeConverter()
   final DateTime? createdAt;
   @override
@@ -371,7 +400,7 @@ class _$BranchDtoImpl implements _BranchDto {
 
   @override
   String toString() {
-    return 'BranchDto(id: $id, name: $name, accountId: $accountId, code: $code, street1: $street1, street2: $street2, city: $city, state: $state, zipCode: $zipCode, country: $country, phone: $phone, email: $email, vatIdNo: $vatIdNo, businessRegistrationNo: $businessRegistrationNo, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
+    return 'BranchDto(id: $id, name: $name, accountId: $accountId, code: $code, street1: $street1, street2: $street2, city: $city, state: $state, zipCode: $zipCode, country: $country, phone: $phone, email: $email, vatIdNo: $vatIdNo, businessRegistrationNo: $businessRegistrationNo, receiptTemplate: $receiptTemplate, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt)';
   }
 
   @override
@@ -395,6 +424,8 @@ class _$BranchDtoImpl implements _BranchDto {
             (identical(other.vatIdNo, vatIdNo) || other.vatIdNo == vatIdNo) &&
             (identical(other.businessRegistrationNo, businessRegistrationNo) ||
                 other.businessRegistrationNo == businessRegistrationNo) &&
+            (identical(other.receiptTemplate, receiptTemplate) ||
+                other.receiptTemplate == receiptTemplate) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -421,6 +452,7 @@ class _$BranchDtoImpl implements _BranchDto {
       email,
       vatIdNo,
       businessRegistrationNo,
+      receiptTemplate,
       createdAt,
       updatedAt,
       deletedAt);
@@ -455,6 +487,7 @@ abstract class _BranchDto implements BranchDto {
       final String? email,
       final String? vatIdNo,
       required final String businessRegistrationNo,
+      required final ReceiptTemplateDto receiptTemplate,
       @DateTimeConverter() final DateTime? createdAt,
       @DateTimeConverter() final DateTime? updatedAt,
       @DateTimeConverter() final DateTime? deletedAt}) = _$BranchDtoImpl;
@@ -490,6 +523,8 @@ abstract class _BranchDto implements BranchDto {
   String? get vatIdNo;
   @override
   String get businessRegistrationNo;
+  @override
+  ReceiptTemplateDto get receiptTemplate;
   @override
   @DateTimeConverter()
   DateTime? get createdAt;

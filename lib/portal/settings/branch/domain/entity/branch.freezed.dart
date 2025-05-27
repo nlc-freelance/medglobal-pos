@@ -34,6 +34,7 @@ mixin _$Branch {
   String? get country => throw _privateConstructorUsedError;
   String get businessRegistrationNumber => throw _privateConstructorUsedError;
   String? get vatIdNumber => throw _privateConstructorUsedError;
+  ReceiptTemplate get receiptTemplate => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -59,7 +60,10 @@ abstract class $BranchCopyWith<$Res> {
       String? postalCode,
       String? country,
       String businessRegistrationNumber,
-      String? vatIdNumber});
+      String? vatIdNumber,
+      ReceiptTemplate receiptTemplate});
+
+  $ReceiptTemplateCopyWith<$Res> get receiptTemplate;
 }
 
 /// @nodoc
@@ -89,6 +93,7 @@ class _$BranchCopyWithImpl<$Res, $Val extends Branch>
     Object? country = freezed,
     Object? businessRegistrationNumber = null,
     Object? vatIdNumber = freezed,
+    Object? receiptTemplate = null,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -147,7 +152,19 @@ class _$BranchCopyWithImpl<$Res, $Val extends Branch>
           ? _value.vatIdNumber
           : vatIdNumber // ignore: cast_nullable_to_non_nullable
               as String?,
+      receiptTemplate: null == receiptTemplate
+          ? _value.receiptTemplate
+          : receiptTemplate // ignore: cast_nullable_to_non_nullable
+              as ReceiptTemplate,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ReceiptTemplateCopyWith<$Res> get receiptTemplate {
+    return $ReceiptTemplateCopyWith<$Res>(_value.receiptTemplate, (value) {
+      return _then(_value.copyWith(receiptTemplate: value) as $Val);
+    });
   }
 }
 
@@ -172,7 +189,11 @@ abstract class _$$BranchImplCopyWith<$Res> implements $BranchCopyWith<$Res> {
       String? postalCode,
       String? country,
       String businessRegistrationNumber,
-      String? vatIdNumber});
+      String? vatIdNumber,
+      ReceiptTemplate receiptTemplate});
+
+  @override
+  $ReceiptTemplateCopyWith<$Res> get receiptTemplate;
 }
 
 /// @nodoc
@@ -200,6 +221,7 @@ class __$$BranchImplCopyWithImpl<$Res>
     Object? country = freezed,
     Object? businessRegistrationNumber = null,
     Object? vatIdNumber = freezed,
+    Object? receiptTemplate = null,
   }) {
     return _then(_$BranchImpl(
       id: freezed == id
@@ -258,6 +280,10 @@ class __$$BranchImplCopyWithImpl<$Res>
           ? _value.vatIdNumber
           : vatIdNumber // ignore: cast_nullable_to_non_nullable
               as String?,
+      receiptTemplate: null == receiptTemplate
+          ? _value.receiptTemplate
+          : receiptTemplate // ignore: cast_nullable_to_non_nullable
+              as ReceiptTemplate,
     ));
   }
 }
@@ -279,7 +305,8 @@ class _$BranchImpl extends _Branch {
       this.postalCode,
       this.country,
       required this.businessRegistrationNumber,
-      this.vatIdNumber})
+      this.vatIdNumber,
+      required this.receiptTemplate})
       : super._();
 
   factory _$BranchImpl.fromJson(Map<String, dynamic> json) =>
@@ -313,10 +340,12 @@ class _$BranchImpl extends _Branch {
   final String businessRegistrationNumber;
   @override
   final String? vatIdNumber;
+  @override
+  final ReceiptTemplate receiptTemplate;
 
   @override
   String toString() {
-    return 'Branch(id: $id, name: $name, accountId: $accountId, code: $code, phone: $phone, email: $email, street1: $street1, street2: $street2, city: $city, state: $state, postalCode: $postalCode, country: $country, businessRegistrationNumber: $businessRegistrationNumber, vatIdNumber: $vatIdNumber)';
+    return 'Branch(id: $id, name: $name, accountId: $accountId, code: $code, phone: $phone, email: $email, street1: $street1, street2: $street2, city: $city, state: $state, postalCode: $postalCode, country: $country, businessRegistrationNumber: $businessRegistrationNumber, vatIdNumber: $vatIdNumber, receiptTemplate: $receiptTemplate)';
   }
 
   @override
@@ -343,7 +372,9 @@ class _$BranchImpl extends _Branch {
                 other.businessRegistrationNumber ==
                     businessRegistrationNumber) &&
             (identical(other.vatIdNumber, vatIdNumber) ||
-                other.vatIdNumber == vatIdNumber));
+                other.vatIdNumber == vatIdNumber) &&
+            (identical(other.receiptTemplate, receiptTemplate) ||
+                other.receiptTemplate == receiptTemplate));
   }
 
   @JsonKey(ignore: true)
@@ -363,7 +394,8 @@ class _$BranchImpl extends _Branch {
       postalCode,
       country,
       businessRegistrationNumber,
-      vatIdNumber);
+      vatIdNumber,
+      receiptTemplate);
 
   @JsonKey(ignore: true)
   @override
@@ -394,7 +426,8 @@ abstract class _Branch extends Branch {
       final String? postalCode,
       final String? country,
       required final String businessRegistrationNumber,
-      final String? vatIdNumber}) = _$BranchImpl;
+      final String? vatIdNumber,
+      required final ReceiptTemplate receiptTemplate}) = _$BranchImpl;
   const _Branch._() : super._();
 
   factory _Branch.fromJson(Map<String, dynamic> json) = _$BranchImpl.fromJson;
@@ -427,6 +460,8 @@ abstract class _Branch extends Branch {
   String get businessRegistrationNumber;
   @override
   String? get vatIdNumber;
+  @override
+  ReceiptTemplate get receiptTemplate;
   @override
   @JsonKey(ignore: true)
   _$$BranchImplCopyWith<_$BranchImpl> get copyWith =>

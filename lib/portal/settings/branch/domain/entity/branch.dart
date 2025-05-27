@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'branch.freezed.dart';
@@ -21,13 +22,12 @@ class Branch with _$Branch {
     String? country,
     required String businessRegistrationNumber,
     String? vatIdNumber,
-    // required ReceiptTemplate receiptTemplate,
+    required ReceiptTemplate receiptTemplate,
   }) = _Branch;
 
-  // For old (MVP) implementations without request DTOs
-  factory Branch.fromJson(Map<String, dynamic> json) => _$BranchFromJson(json);
-
   const Branch._();
+
+  factory Branch.fromJson(Map<String, dynamic> json) => _$BranchFromJson(json);
 
   DataGridRow toDataGridRow() => DataGridRow(
         cells: [

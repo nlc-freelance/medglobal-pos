@@ -17,6 +17,7 @@ class UpdateBranchDto {
   final String? country;
   final String? businessRegistrationNo;
   final String? vatIdNo;
+  final int? receiptTemplateId;
 
   UpdateBranchDto({
     required this.id,
@@ -31,6 +32,7 @@ class UpdateBranchDto {
     this.country,
     this.businessRegistrationNo,
     this.vatIdNo,
+    this.receiptTemplateId,
   });
 
   Map<String, dynamic> toJson() => _$UpdateBranchDtoToJson(this);
@@ -49,5 +51,6 @@ class UpdateBranchDto {
         country: branch.country,
         businessRegistrationNo: branch.businessRegistrationNumber,
         vatIdNo: branch.vatIdNumber,
+        receiptTemplateId: branch.receiptTemplate.id,
       );
 }

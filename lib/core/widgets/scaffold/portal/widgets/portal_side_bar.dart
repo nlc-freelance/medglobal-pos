@@ -50,11 +50,15 @@ class _SideNavBarState extends State<PortalSidebar> {
                 ]),
             ],
           ),
+        IndexedTreeNode(key: SideMenuTree.employee.title)
+          ..addAll([
+            IndexedTreeNode(key: 'Manage Employees'),
+          ]),
         IndexedTreeNode(key: SideMenuTree.settings.title)
           ..addAll([
             IndexedTreeNode(key: SideMenuTree.settings.items[0]),
             IndexedTreeNode(key: SideMenuTree.settings.items[1]),
-            IndexedTreeNode(key: SideMenuTree.settings.items[2]),
+            IndexedTreeNode(key: SideMenuTree.settings.items[4]),
             IndexedTreeNode(key: SideMenuTree.settings.items[5]),
           ]),
       ],
@@ -193,6 +197,7 @@ class _SideNavBarState extends State<PortalSidebar> {
         'Returns Management' => Assets.icons.undo,
         'Reports' => Assets.icons.presentionChart,
         'Settings' => Assets.icons.settings,
+        'Employees' => Assets.icons.employees,
         _ => null,
       };
 

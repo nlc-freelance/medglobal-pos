@@ -40,13 +40,21 @@ enum SideMenuTree {
     'Settings',
     [
       'Tax',
-      'POS Register',
       'Branch',
       'New Branch',
       'Branch Details',
+      'POS Register',
       'Receipt Template',
       'New Receipt Template',
       'Receipt Template Details'
+    ],
+  ),
+  employee(
+    'Employees',
+    [
+      'Manage Employees',
+      'New Employee',
+      'Employee Details',
     ],
   );
 
@@ -105,7 +113,12 @@ enum SideMenuTreeItem {
   branchDetails('Branch Details', 'id=:id', 'settings/branches/:id'),
   receiptTemplate('Receipt Template', 'receipt-templates', 'settings/receipt-templates'),
   newReceiptTemplate('New Receipt Template', 'new', '/settings/receipt-templates/new'),
-  receiptTemplateDetails('Receipt Template Details', 'id=:id', 'settings/receipt-templates/:id');
+  receiptTemplateDetails('Receipt Template Details', 'id=:id', 'settings/receipt-templates/:id'),
+
+  employees('Employees', '/employees', '/employees'),
+  employee('Manage Employees', 'employee', '/employees/employee'),
+  newEmployee('New Employee', 'new', '/employees/employee/new'),
+  employeeDetails('Employee Details', 'id=:id', '/employees/employee/:id');
 
   final String name;
   final String path;

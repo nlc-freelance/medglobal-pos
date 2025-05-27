@@ -33,13 +33,20 @@ class BranchFormCubit extends Cubit<BranchFormState> {
 
   void setVatIdNumber(String vatId) => emit(state.copyWith(vatIdNumber: vatId));
 
-  void setReceiptTemplate(ReceiptTemplate receiptTemplate) => emit(state.copyWith(receiptTemplate: receiptTemplate));
+  void setReceiptTemplate(ReceiptTemplate? receiptTemplate) => emit(state.copyWith(
+        receiptTemplate: receiptTemplate,
+        isFormValid: receiptTemplate != null,
+      ));
+
+  void validate() {
+    emit(state.copyWith(isFormValid: state.hasValidForm()));
+  }
 
   /// Given that the form is validated, map BranchFormState values to a Branch
   Branch toBranch() {
     return Branch(
       id: state.id,
-      accountId: 1, // Default to 1 for MedGlobal account, later add in env variables
+      accountId: 2, // Default to 1 for MedGlobal account, later add in env variables
       name: state.name!,
       phone: state.phone!,
       email: state.email,
@@ -51,6 +58,7 @@ class BranchFormCubit extends Cubit<BranchFormState> {
       country: state.country,
       businessRegistrationNumber: state.businessRegistrationNumber!,
       vatIdNumber: state.vatIdNumber,
+      receiptTemplate: state.receiptTemplate!,
     );
   }
 }
