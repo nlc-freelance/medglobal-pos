@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/receipt_config.dart';
 
 abstract class BranchRepository {
   /// Retrieves a list of all branches
@@ -18,4 +19,7 @@ abstract class BranchRepository {
 
   /// Deletes a branch
   Future<Either<Failure, void>> deleteBranch(int id);
+
+  /// Retrieves the receipt configuration for a branch by id
+  Future<Either<Failure, ReceiptConfig>> getReceiptConfigByBranchId(int id);
 }

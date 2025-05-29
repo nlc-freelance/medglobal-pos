@@ -18,6 +18,6 @@ class CreateRegisterDto {
   /// Mapping from domain entity
   factory CreateRegisterDto.fromDomain(Register register) => CreateRegisterDto(
         name: register.name,
-        storeId: register.assignedBranch.id!,
+        storeId: register.assignedBranch!.id!,
       );
 }

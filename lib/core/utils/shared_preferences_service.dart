@@ -23,7 +23,7 @@ class SharedPreferencesService {
     final prefs = await SharedPreferences.getInstance();
 
     /// Branch where the selected register is assigned
-    await prefs.setInt('register_branch_id', register.assignedBranch.id!);
+    await prefs.setInt('register_branch_id', register.assignedBranch!.id!);
 
     await prefs.setInt('register_id', register.id!);
     await prefs.setString('register_name', register.name);

@@ -85,7 +85,7 @@ class RegisterDto with _$RegisterDto {
   const factory RegisterDto({
     required int id,
     required String name,
-    required BranchDto store,
+    BranchDto? store,
     RegisterShiftDto? shiftDetail,
     String? serialNumber,
     @DateTimeConverter() DateTime? createdAt,
@@ -100,7 +100,7 @@ extension RegisterDtoExt on RegisterDto {
   Register toDomain() => Register(
         id: id,
         name: name,
-        assignedBranch: store.toDomain(),
+        assignedBranch: store?.toDomain(),
         shiftDetail: shiftDetail?.toEntity(),
       );
 }

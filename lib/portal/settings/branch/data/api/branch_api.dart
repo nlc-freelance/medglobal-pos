@@ -4,6 +4,7 @@ import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/request/create_branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/request/update_branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/receipt_config.dart';
 
 class BranchApi {
   final BaseApiService _api;
@@ -57,5 +58,13 @@ class BranchApi {
 
   Future<void> deleteBranch(int id) async {
     return await _api.delete(ApiEndpoints.branchById(id));
+  }
+
+  Future<ReceiptConfig> getReceiptConfigByBranchId(int id) async {
+    final response = await _api.get(
+      ApiEndpoints.receiptConfigByBranchId(id),
+      fromJson: ReceiptConfig.fromJson,
+    );
+    return response.data;
   }
 }

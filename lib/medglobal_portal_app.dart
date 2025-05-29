@@ -72,6 +72,7 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/orde
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/print_receipt/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_search/pos_product_search_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/sale_remote/sale_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_remote_cubit.dart';
@@ -94,6 +95,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<Register>>()),
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<ReceiptTemplate>>()),
         BlocProvider(create: (_) => ActiveRegisterCubit()),
+        BlocProvider(create: (_) => GetIt.I<ReceiptConfigBloc>()),
         //
         BlocProvider(create: (_) => GetIt.I<SidebarCubit>()),
         BlocProvider(create: (_) => GetIt.I<SupplierListCubit>()),

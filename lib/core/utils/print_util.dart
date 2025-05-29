@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/receipt_config.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:pdf/pdf.dart';
@@ -10,7 +11,10 @@ import 'package:universal_html/html.dart' as html;
 class PrintUtil {
   const PrintUtil();
 
-  static Future<void> generateAndPrintReceipt(Transaction transaction) async {
+  static Future<void> generateAndPrintReceipt({
+    required Transaction transaction,
+    required ReceiptConfig config,
+  }) async {
     try {
       final doc = Document();
 
@@ -43,19 +47,41 @@ class PrintUtil {
                     children: [
                       Center(
                         child: Text(
-                          'MEDGLOBAL PHARMACY',
+                          (config.companyName ?? Strings.noValue).toUpperCase(),
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Center(child: Text('${transaction.branch?.name}', style: theme.header2)),
+                      if (config.showBranchName) ...[
+                        SizedBox(height: 10),
+                        Center(child: Text('${config.branchName}', style: theme.header2)),
+                      ],
                       Center(
                         child: Text(
-                          transaction.branch!.address,
+                          config.branchAddress ?? Strings.noValue,
                           style: theme.tableCell,
                           textAlign: TextAlign.center,
                         ),
                       ),
+                      if (config.showBranchContact) ...[
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Phone: ${config.branchPhone ?? Strings.noValue}',
+                                style: theme.header4,
+                              ),
+                              if (config.branchEmail?.isNotEmpty == true)
+                                Text(
+                                  'Email: ${config.branchEmail ?? Strings.noValue}',
+                                  style: theme.header4,
+                                  textAlign: TextAlign.center,
+                                )
+                            ],
+                          ),
+                        ),
+                      ],
                       SizedBox(height: 30),
                       Text(
                         'Receipt Date: ${DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now())}',
@@ -192,20 +218,26 @@ class PrintUtil {
                           Text('${transaction.amountPaid! - transaction.total!}'.toPesoString(), style: theme.header3),
                         ],
                       ),
-                      SizedBox(height: 30),
-                      Center(
-                        child: Text(
-                          'Stay safe and take care!',
-                          style: theme.tableHeader,
-                          textAlign: TextAlign.center,
+                      if (config.showFooterMessage) ...[
+                        SizedBox(height: 30),
+                        Center(
+                          child: Text(
+                            config.footerTitle ?? Strings.noValue,
+                            style: theme.tableHeader,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'We appreciate your feedback! Please feel free to text or call us at 09177094242.',
-                        textAlign: TextAlign.center,
-                        style: theme.paragraphStyle.copyWith(lineSpacing: 0.6),
-                      ),
+                        if (config.footerMessage?.isNotEmpty == true) ...[
+                          SizedBox(height: 2),
+                          Center(
+                            child: Text(
+                              config.footerMessage!,
+                              textAlign: TextAlign.center,
+                              style: theme.paragraphStyle.copyWith(lineSpacing: 0.6),
+                            ),
+                          ),
+                        ],
+                      ],
                     ],
                   ),
                 ),

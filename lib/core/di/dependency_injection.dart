@@ -188,6 +188,7 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/orde
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/print_receipt/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_search/pos_product_search_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/sale_remote/sale_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/api/refund_api.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/repositories/refund_repository_impl.dart';
@@ -533,5 +534,6 @@ void initAll() {
     ..registerFactory(() => TransactionListByBranchCubit(inject()))
     ..registerFactory(() => RefundCubit())
     ..registerFactory(() => RefundRemoteCubit(inject()))
-    ..registerFactory(() => PrintReceiptCubit());
+    ..registerFactory(() => PrintReceiptCubit())
+    ..registerFactory(() => ReceiptConfigBloc(inject<BranchRepository>()));
 }

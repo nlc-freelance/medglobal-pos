@@ -10,19 +10,19 @@ class Branch with _$Branch {
   const factory Branch({
     int? id,
     required String name,
-    required int accountId,
+    int? accountId,
     String? code,
-    required String phone,
+    String? phone,
     String? email,
-    required String street1,
+    String? street1,
     String? street2,
-    required String city,
-    required String state,
+    String? city,
+    String? state,
     String? postalCode,
     String? country,
-    required String businessRegistrationNumber,
+    String? businessRegistrationNumber,
     String? vatIdNumber,
-    required ReceiptTemplate receiptTemplate,
+    ReceiptTemplate? receiptTemplate,
   }) = _Branch;
 
   const Branch._();

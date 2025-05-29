@@ -22,7 +22,7 @@ Register _$RegisterFromJson(Map<String, dynamic> json) {
 mixin _$Register {
   int? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  Branch get assignedBranch => throw _privateConstructorUsedError;
+  Branch? get assignedBranch => throw _privateConstructorUsedError;
   RegisterShift? get shiftDetail => throw _privateConstructorUsedError;
   String? get serialNumber => throw _privateConstructorUsedError;
 
@@ -40,11 +40,11 @@ abstract class $RegisterCopyWith<$Res> {
   $Res call(
       {int? id,
       String name,
-      Branch assignedBranch,
+      Branch? assignedBranch,
       RegisterShift? shiftDetail,
       String? serialNumber});
 
-  $BranchCopyWith<$Res> get assignedBranch;
+  $BranchCopyWith<$Res>? get assignedBranch;
 }
 
 /// @nodoc
@@ -62,7 +62,7 @@ class _$RegisterCopyWithImpl<$Res, $Val extends Register>
   $Res call({
     Object? id = freezed,
     Object? name = null,
-    Object? assignedBranch = null,
+    Object? assignedBranch = freezed,
     Object? shiftDetail = freezed,
     Object? serialNumber = freezed,
   }) {
@@ -75,10 +75,10 @@ class _$RegisterCopyWithImpl<$Res, $Val extends Register>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      assignedBranch: null == assignedBranch
+      assignedBranch: freezed == assignedBranch
           ? _value.assignedBranch
           : assignedBranch // ignore: cast_nullable_to_non_nullable
-              as Branch,
+              as Branch?,
       shiftDetail: freezed == shiftDetail
           ? _value.shiftDetail
           : shiftDetail // ignore: cast_nullable_to_non_nullable
@@ -92,8 +92,12 @@ class _$RegisterCopyWithImpl<$Res, $Val extends Register>
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchCopyWith<$Res> get assignedBranch {
-    return $BranchCopyWith<$Res>(_value.assignedBranch, (value) {
+  $BranchCopyWith<$Res>? get assignedBranch {
+    if (_value.assignedBranch == null) {
+      return null;
+    }
+
+    return $BranchCopyWith<$Res>(_value.assignedBranch!, (value) {
       return _then(_value.copyWith(assignedBranch: value) as $Val);
     });
   }
@@ -110,12 +114,12 @@ abstract class _$$RegisterImplCopyWith<$Res>
   $Res call(
       {int? id,
       String name,
-      Branch assignedBranch,
+      Branch? assignedBranch,
       RegisterShift? shiftDetail,
       String? serialNumber});
 
   @override
-  $BranchCopyWith<$Res> get assignedBranch;
+  $BranchCopyWith<$Res>? get assignedBranch;
 }
 
 /// @nodoc
@@ -131,7 +135,7 @@ class __$$RegisterImplCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? name = null,
-    Object? assignedBranch = null,
+    Object? assignedBranch = freezed,
     Object? shiftDetail = freezed,
     Object? serialNumber = freezed,
   }) {
@@ -144,10 +148,10 @@ class __$$RegisterImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      assignedBranch: null == assignedBranch
+      assignedBranch: freezed == assignedBranch
           ? _value.assignedBranch
           : assignedBranch // ignore: cast_nullable_to_non_nullable
-              as Branch,
+              as Branch?,
       shiftDetail: freezed == shiftDetail
           ? _value.shiftDetail
           : shiftDetail // ignore: cast_nullable_to_non_nullable
@@ -166,7 +170,7 @@ class _$RegisterImpl extends _Register {
   const _$RegisterImpl(
       {this.id,
       required this.name,
-      required this.assignedBranch,
+      this.assignedBranch,
       this.shiftDetail,
       this.serialNumber})
       : super._();
@@ -179,7 +183,7 @@ class _$RegisterImpl extends _Register {
   @override
   final String name;
   @override
-  final Branch assignedBranch;
+  final Branch? assignedBranch;
   @override
   final RegisterShift? shiftDetail;
   @override
@@ -228,7 +232,7 @@ abstract class _Register extends Register {
   const factory _Register(
       {final int? id,
       required final String name,
-      required final Branch assignedBranch,
+      final Branch? assignedBranch,
       final RegisterShift? shiftDetail,
       final String? serialNumber}) = _$RegisterImpl;
   const _Register._() : super._();
@@ -241,7 +245,7 @@ abstract class _Register extends Register {
   @override
   String get name;
   @override
-  Branch get assignedBranch;
+  Branch? get assignedBranch;
   @override
   RegisterShift? get shiftDetail;
   @override

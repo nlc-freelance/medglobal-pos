@@ -21,6 +21,6 @@ class UpdateRegisterDto {
   factory UpdateRegisterDto.fromDomain(Register register) => UpdateRegisterDto(
         id: register.id!,
         name: register.name,
-        storeId: register.assignedBranch.id,
+        storeId: register.assignedBranch?.id,
       );
 }

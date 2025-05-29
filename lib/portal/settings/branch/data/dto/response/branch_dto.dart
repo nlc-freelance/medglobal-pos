@@ -11,19 +11,19 @@ class BranchDto with _$BranchDto {
   const factory BranchDto({
     required int id,
     required String name,
-    required int accountId,
+    int? accountId,
     String? code,
-    required String street1,
+    String? street1,
     String? street2,
-    required String city,
-    required String state,
+    String? city,
+    String? state,
     String? zipCode,
     String? country,
-    required String phone,
+    String? phone,
     String? email,
     String? vatIdNo,
-    required String businessRegistrationNo,
-    required ReceiptTemplateDto receiptTemplate,
+    String? businessRegistrationNo,
+    ReceiptTemplateDto? receiptTemplate,
     @DateTimeConverter() DateTime? createdAt,
     @DateTimeConverter() DateTime? updatedAt,
     @DateTimeConverter() DateTime? deletedAt,
@@ -49,5 +49,5 @@ extension BranchDtoExt on BranchDto {
       email: email,
       businessRegistrationNumber: businessRegistrationNo,
       vatIdNumber: vatIdNo,
-      receiptTemplate: receiptTemplate.toDomain());
+      receiptTemplate: receiptTemplate?.toDomain());
 }

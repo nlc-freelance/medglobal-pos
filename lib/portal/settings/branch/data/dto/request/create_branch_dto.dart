@@ -40,17 +40,17 @@ class CreateBranchDto {
   /// Mapping from domain entity
   factory CreateBranchDto.fromDomain(Branch branch) => CreateBranchDto(
         name: branch.name,
-        accountId: branch.accountId,
-        phone: branch.phone,
+        accountId: branch.accountId!,
+        phone: branch.phone!,
         email: branch.email,
-        street1: branch.street1,
+        street1: branch.street1!,
         street2: branch.street2,
-        city: branch.city,
-        state: branch.state,
+        city: branch.city!,
+        state: branch.state!,
         zipCode: branch.postalCode,
         country: branch.country,
-        businessRegistrationNo: branch.businessRegistrationNumber,
+        businessRegistrationNo: branch.businessRegistrationNumber!,
         vatIdNo: branch.vatIdNumber,
-        receiptTemplateId: branch.receiptTemplate.id!,
+        receiptTemplateId: branch.receiptTemplate!.id!,
       );
 }

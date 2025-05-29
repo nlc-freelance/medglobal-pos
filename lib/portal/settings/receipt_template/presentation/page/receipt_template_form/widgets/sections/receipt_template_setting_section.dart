@@ -54,13 +54,13 @@ class _ReceiptTemplateSettingSectionState extends State<ReceiptTemplateSettingSe
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppCheckboxListTile(
-                      label: 'Show Company Name',
-                      controlAffinity: ListTileControlAffinity.trailing,
-                      value: state.showCompanyName,
-                      onToggle: (value) => _receiptTemplateFormCubit.setShowCompanyName(value),
-                    ),
-                    const UIVerticalSpace(16),
+                    // AppCheckboxListTile(
+                    //   label: 'Show Company Name',
+                    //   controlAffinity: ListTileControlAffinity.trailing,
+                    //   value: state.showCompanyName,
+                    //   onToggle: (value) => _receiptTemplateFormCubit.setShowCompanyName(value),
+                    // ),
+                    // const UIVerticalSpace(16),
                     AppCheckboxListTile(
                       label: 'Show Branch Name',
                       controlAffinity: ListTileControlAffinity.trailing,
@@ -68,13 +68,13 @@ class _ReceiptTemplateSettingSectionState extends State<ReceiptTemplateSettingSe
                       onToggle: (value) => _receiptTemplateFormCubit.setShowBranchName(value),
                     ),
                     const UIVerticalSpace(16),
-                    AppCheckboxListTile(
-                      label: 'Show Branch Address',
-                      controlAffinity: ListTileControlAffinity.trailing,
-                      value: state.showBranchAddress,
-                      onToggle: (value) => _receiptTemplateFormCubit.setShowBranchAddress(value),
-                    ),
-                    const UIVerticalSpace(16),
+                    // AppCheckboxListTile(
+                    //   label: 'Show Branch Address',
+                    //   controlAffinity: ListTileControlAffinity.trailing,
+                    //   value: state.showBranchAddress,
+                    //   onToggle: (value) => _receiptTemplateFormCubit.setShowBranchAddress(value),
+                    // ),
+                    // const UIVerticalSpace(16),
                     AppCheckboxListTile(
                       label: 'Show Branch Contact',
                       controlAffinity: ListTileControlAffinity.trailing,

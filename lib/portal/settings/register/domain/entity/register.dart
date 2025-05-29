@@ -42,7 +42,7 @@ class Register with _$Register {
   const factory Register({
     int? id,
     required String name,
-    required Branch assignedBranch,
+    Branch? assignedBranch,
     RegisterShift? shiftDetail,
     String? serialNumber,
   }) = _Register;
@@ -56,7 +56,7 @@ class Register with _$Register {
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'register_name', value: name),
-          DataGridCell<String>(columnName: 'assigned_branch', value: assignedBranch.name),
+          DataGridCell<String>(columnName: 'assigned_branch', value: assignedBranch?.name),
           const DataGridCell(columnName: 'action', value: null),
         ],
       );

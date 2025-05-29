@@ -22,19 +22,19 @@ Branch _$BranchFromJson(Map<String, dynamic> json) {
 mixin _$Branch {
   int? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  int get accountId => throw _privateConstructorUsedError;
+  int? get accountId => throw _privateConstructorUsedError;
   String? get code => throw _privateConstructorUsedError;
-  String get phone => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
-  String get street1 => throw _privateConstructorUsedError;
+  String? get street1 => throw _privateConstructorUsedError;
   String? get street2 => throw _privateConstructorUsedError;
-  String get city => throw _privateConstructorUsedError;
-  String get state => throw _privateConstructorUsedError;
+  String? get city => throw _privateConstructorUsedError;
+  String? get state => throw _privateConstructorUsedError;
   String? get postalCode => throw _privateConstructorUsedError;
   String? get country => throw _privateConstructorUsedError;
-  String get businessRegistrationNumber => throw _privateConstructorUsedError;
+  String? get businessRegistrationNumber => throw _privateConstructorUsedError;
   String? get vatIdNumber => throw _privateConstructorUsedError;
-  ReceiptTemplate get receiptTemplate => throw _privateConstructorUsedError;
+  ReceiptTemplate? get receiptTemplate => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -49,21 +49,21 @@ abstract class $BranchCopyWith<$Res> {
   $Res call(
       {int? id,
       String name,
-      int accountId,
+      int? accountId,
       String? code,
-      String phone,
+      String? phone,
       String? email,
-      String street1,
+      String? street1,
       String? street2,
-      String city,
-      String state,
+      String? city,
+      String? state,
       String? postalCode,
       String? country,
-      String businessRegistrationNumber,
+      String? businessRegistrationNumber,
       String? vatIdNumber,
-      ReceiptTemplate receiptTemplate});
+      ReceiptTemplate? receiptTemplate});
 
-  $ReceiptTemplateCopyWith<$Res> get receiptTemplate;
+  $ReceiptTemplateCopyWith<$Res>? get receiptTemplate;
 }
 
 /// @nodoc
@@ -81,19 +81,19 @@ class _$BranchCopyWithImpl<$Res, $Val extends Branch>
   $Res call({
     Object? id = freezed,
     Object? name = null,
-    Object? accountId = null,
+    Object? accountId = freezed,
     Object? code = freezed,
-    Object? phone = null,
+    Object? phone = freezed,
     Object? email = freezed,
-    Object? street1 = null,
+    Object? street1 = freezed,
     Object? street2 = freezed,
-    Object? city = null,
-    Object? state = null,
+    Object? city = freezed,
+    Object? state = freezed,
     Object? postalCode = freezed,
     Object? country = freezed,
-    Object? businessRegistrationNumber = null,
+    Object? businessRegistrationNumber = freezed,
     Object? vatIdNumber = freezed,
-    Object? receiptTemplate = null,
+    Object? receiptTemplate = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -104,38 +104,38 @@ class _$BranchCopyWithImpl<$Res, $Val extends Branch>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      accountId: null == accountId
+      accountId: freezed == accountId
           ? _value.accountId
           : accountId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       code: freezed == code
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as String?,
-      phone: null == phone
+      phone: freezed == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      street1: null == street1
+      street1: freezed == street1
           ? _value.street1
           : street1 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       street2: freezed == street2
           ? _value.street2
           : street2 // ignore: cast_nullable_to_non_nullable
               as String?,
-      city: null == city
+      city: freezed == city
           ? _value.city
           : city // ignore: cast_nullable_to_non_nullable
-              as String,
-      state: null == state
+              as String?,
+      state: freezed == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       postalCode: freezed == postalCode
           ? _value.postalCode
           : postalCode // ignore: cast_nullable_to_non_nullable
@@ -144,25 +144,29 @@ class _$BranchCopyWithImpl<$Res, $Val extends Branch>
           ? _value.country
           : country // ignore: cast_nullable_to_non_nullable
               as String?,
-      businessRegistrationNumber: null == businessRegistrationNumber
+      businessRegistrationNumber: freezed == businessRegistrationNumber
           ? _value.businessRegistrationNumber
           : businessRegistrationNumber // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       vatIdNumber: freezed == vatIdNumber
           ? _value.vatIdNumber
           : vatIdNumber // ignore: cast_nullable_to_non_nullable
               as String?,
-      receiptTemplate: null == receiptTemplate
+      receiptTemplate: freezed == receiptTemplate
           ? _value.receiptTemplate
           : receiptTemplate // ignore: cast_nullable_to_non_nullable
-              as ReceiptTemplate,
+              as ReceiptTemplate?,
     ) as $Val);
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $ReceiptTemplateCopyWith<$Res> get receiptTemplate {
-    return $ReceiptTemplateCopyWith<$Res>(_value.receiptTemplate, (value) {
+  $ReceiptTemplateCopyWith<$Res>? get receiptTemplate {
+    if (_value.receiptTemplate == null) {
+      return null;
+    }
+
+    return $ReceiptTemplateCopyWith<$Res>(_value.receiptTemplate!, (value) {
       return _then(_value.copyWith(receiptTemplate: value) as $Val);
     });
   }
@@ -178,22 +182,22 @@ abstract class _$$BranchImplCopyWith<$Res> implements $BranchCopyWith<$Res> {
   $Res call(
       {int? id,
       String name,
-      int accountId,
+      int? accountId,
       String? code,
-      String phone,
+      String? phone,
       String? email,
-      String street1,
+      String? street1,
       String? street2,
-      String city,
-      String state,
+      String? city,
+      String? state,
       String? postalCode,
       String? country,
-      String businessRegistrationNumber,
+      String? businessRegistrationNumber,
       String? vatIdNumber,
-      ReceiptTemplate receiptTemplate});
+      ReceiptTemplate? receiptTemplate});
 
   @override
-  $ReceiptTemplateCopyWith<$Res> get receiptTemplate;
+  $ReceiptTemplateCopyWith<$Res>? get receiptTemplate;
 }
 
 /// @nodoc
@@ -209,19 +213,19 @@ class __$$BranchImplCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? name = null,
-    Object? accountId = null,
+    Object? accountId = freezed,
     Object? code = freezed,
-    Object? phone = null,
+    Object? phone = freezed,
     Object? email = freezed,
-    Object? street1 = null,
+    Object? street1 = freezed,
     Object? street2 = freezed,
-    Object? city = null,
-    Object? state = null,
+    Object? city = freezed,
+    Object? state = freezed,
     Object? postalCode = freezed,
     Object? country = freezed,
-    Object? businessRegistrationNumber = null,
+    Object? businessRegistrationNumber = freezed,
     Object? vatIdNumber = freezed,
-    Object? receiptTemplate = null,
+    Object? receiptTemplate = freezed,
   }) {
     return _then(_$BranchImpl(
       id: freezed == id
@@ -232,38 +236,38 @@ class __$$BranchImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      accountId: null == accountId
+      accountId: freezed == accountId
           ? _value.accountId
           : accountId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       code: freezed == code
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as String?,
-      phone: null == phone
+      phone: freezed == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      street1: null == street1
+      street1: freezed == street1
           ? _value.street1
           : street1 // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       street2: freezed == street2
           ? _value.street2
           : street2 // ignore: cast_nullable_to_non_nullable
               as String?,
-      city: null == city
+      city: freezed == city
           ? _value.city
           : city // ignore: cast_nullable_to_non_nullable
-              as String,
-      state: null == state
+              as String?,
+      state: freezed == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       postalCode: freezed == postalCode
           ? _value.postalCode
           : postalCode // ignore: cast_nullable_to_non_nullable
@@ -272,18 +276,18 @@ class __$$BranchImplCopyWithImpl<$Res>
           ? _value.country
           : country // ignore: cast_nullable_to_non_nullable
               as String?,
-      businessRegistrationNumber: null == businessRegistrationNumber
+      businessRegistrationNumber: freezed == businessRegistrationNumber
           ? _value.businessRegistrationNumber
           : businessRegistrationNumber // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       vatIdNumber: freezed == vatIdNumber
           ? _value.vatIdNumber
           : vatIdNumber // ignore: cast_nullable_to_non_nullable
               as String?,
-      receiptTemplate: null == receiptTemplate
+      receiptTemplate: freezed == receiptTemplate
           ? _value.receiptTemplate
           : receiptTemplate // ignore: cast_nullable_to_non_nullable
-              as ReceiptTemplate,
+              as ReceiptTemplate?,
     ));
   }
 }
@@ -294,19 +298,19 @@ class _$BranchImpl extends _Branch {
   const _$BranchImpl(
       {this.id,
       required this.name,
-      required this.accountId,
+      this.accountId,
       this.code,
-      required this.phone,
+      this.phone,
       this.email,
-      required this.street1,
+      this.street1,
       this.street2,
-      required this.city,
-      required this.state,
+      this.city,
+      this.state,
       this.postalCode,
       this.country,
-      required this.businessRegistrationNumber,
+      this.businessRegistrationNumber,
       this.vatIdNumber,
-      required this.receiptTemplate})
+      this.receiptTemplate})
       : super._();
 
   factory _$BranchImpl.fromJson(Map<String, dynamic> json) =>
@@ -317,31 +321,31 @@ class _$BranchImpl extends _Branch {
   @override
   final String name;
   @override
-  final int accountId;
+  final int? accountId;
   @override
   final String? code;
   @override
-  final String phone;
+  final String? phone;
   @override
   final String? email;
   @override
-  final String street1;
+  final String? street1;
   @override
   final String? street2;
   @override
-  final String city;
+  final String? city;
   @override
-  final String state;
+  final String? state;
   @override
   final String? postalCode;
   @override
   final String? country;
   @override
-  final String businessRegistrationNumber;
+  final String? businessRegistrationNumber;
   @override
   final String? vatIdNumber;
   @override
-  final ReceiptTemplate receiptTemplate;
+  final ReceiptTemplate? receiptTemplate;
 
   @override
   String toString() {
@@ -415,19 +419,19 @@ abstract class _Branch extends Branch {
   const factory _Branch(
       {final int? id,
       required final String name,
-      required final int accountId,
+      final int? accountId,
       final String? code,
-      required final String phone,
+      final String? phone,
       final String? email,
-      required final String street1,
+      final String? street1,
       final String? street2,
-      required final String city,
-      required final String state,
+      final String? city,
+      final String? state,
       final String? postalCode,
       final String? country,
-      required final String businessRegistrationNumber,
+      final String? businessRegistrationNumber,
       final String? vatIdNumber,
-      required final ReceiptTemplate receiptTemplate}) = _$BranchImpl;
+      final ReceiptTemplate? receiptTemplate}) = _$BranchImpl;
   const _Branch._() : super._();
 
   factory _Branch.fromJson(Map<String, dynamic> json) = _$BranchImpl.fromJson;
@@ -437,31 +441,31 @@ abstract class _Branch extends Branch {
   @override
   String get name;
   @override
-  int get accountId;
+  int? get accountId;
   @override
   String? get code;
   @override
-  String get phone;
+  String? get phone;
   @override
   String? get email;
   @override
-  String get street1;
+  String? get street1;
   @override
   String? get street2;
   @override
-  String get city;
+  String? get city;
   @override
-  String get state;
+  String? get state;
   @override
   String? get postalCode;
   @override
   String? get country;
   @override
-  String get businessRegistrationNumber;
+  String? get businessRegistrationNumber;
   @override
   String? get vatIdNumber;
   @override
-  ReceiptTemplate get receiptTemplate;
+  ReceiptTemplate? get receiptTemplate;
   @override
   @JsonKey(ignore: true)
   _$$BranchImplCopyWith<_$BranchImpl> get copyWith =>

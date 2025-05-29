@@ -7,6 +7,7 @@ import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/bran
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/repository/branch_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/request/create_branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/request/update_branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/receipt_config.dart';
 
 class BranchRepositoryImpl implements BranchRepository {
   final BranchApi _branchApi;
@@ -71,6 +72,17 @@ class BranchRepositoryImpl implements BranchRepository {
   Future<Either<Failure, void>> deleteBranch(int id) async {
     try {
       return Right(await _branchApi.deleteBranch(id));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.messsage));
+    } on UnexpectedException catch (e) {
+      return Left(UnexpectedFailure(e.messsage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ReceiptConfig>> getReceiptConfigByBranchId(int id) async {
+    try {
+      return Right(await _branchApi.getReceiptConfigByBranchId(id));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.messsage));
     } on UnexpectedException catch (e) {

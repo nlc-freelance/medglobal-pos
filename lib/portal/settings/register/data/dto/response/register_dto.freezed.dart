@@ -22,7 +22,7 @@ RegisterDto _$RegisterDtoFromJson(Map<String, dynamic> json) {
 mixin _$RegisterDto {
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  BranchDto get store => throw _privateConstructorUsedError;
+  BranchDto? get store => throw _privateConstructorUsedError;
   RegisterShiftDto? get shiftDetail => throw _privateConstructorUsedError;
   String? get serialNumber => throw _privateConstructorUsedError;
   @DateTimeConverter()
@@ -45,13 +45,13 @@ abstract class $RegisterDtoCopyWith<$Res> {
   $Res call(
       {int id,
       String name,
-      BranchDto store,
+      BranchDto? store,
       RegisterShiftDto? shiftDetail,
       String? serialNumber,
       @DateTimeConverter() DateTime? createdAt,
       @DateTimeConverter() DateTime? updatedAt});
 
-  $BranchDtoCopyWith<$Res> get store;
+  $BranchDtoCopyWith<$Res>? get store;
 }
 
 /// @nodoc
@@ -69,7 +69,7 @@ class _$RegisterDtoCopyWithImpl<$Res, $Val extends RegisterDto>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? store = null,
+    Object? store = freezed,
     Object? shiftDetail = freezed,
     Object? serialNumber = freezed,
     Object? createdAt = freezed,
@@ -84,10 +84,10 @@ class _$RegisterDtoCopyWithImpl<$Res, $Val extends RegisterDto>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      store: null == store
+      store: freezed == store
           ? _value.store
           : store // ignore: cast_nullable_to_non_nullable
-              as BranchDto,
+              as BranchDto?,
       shiftDetail: freezed == shiftDetail
           ? _value.shiftDetail
           : shiftDetail // ignore: cast_nullable_to_non_nullable
@@ -109,8 +109,12 @@ class _$RegisterDtoCopyWithImpl<$Res, $Val extends RegisterDto>
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchDtoCopyWith<$Res> get store {
-    return $BranchDtoCopyWith<$Res>(_value.store, (value) {
+  $BranchDtoCopyWith<$Res>? get store {
+    if (_value.store == null) {
+      return null;
+    }
+
+    return $BranchDtoCopyWith<$Res>(_value.store!, (value) {
       return _then(_value.copyWith(store: value) as $Val);
     });
   }
@@ -127,14 +131,14 @@ abstract class _$$RegisterDtoImplCopyWith<$Res>
   $Res call(
       {int id,
       String name,
-      BranchDto store,
+      BranchDto? store,
       RegisterShiftDto? shiftDetail,
       String? serialNumber,
       @DateTimeConverter() DateTime? createdAt,
       @DateTimeConverter() DateTime? updatedAt});
 
   @override
-  $BranchDtoCopyWith<$Res> get store;
+  $BranchDtoCopyWith<$Res>? get store;
 }
 
 /// @nodoc
@@ -150,7 +154,7 @@ class __$$RegisterDtoImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? store = null,
+    Object? store = freezed,
     Object? shiftDetail = freezed,
     Object? serialNumber = freezed,
     Object? createdAt = freezed,
@@ -165,10 +169,10 @@ class __$$RegisterDtoImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      store: null == store
+      store: freezed == store
           ? _value.store
           : store // ignore: cast_nullable_to_non_nullable
-              as BranchDto,
+              as BranchDto?,
       shiftDetail: freezed == shiftDetail
           ? _value.shiftDetail
           : shiftDetail // ignore: cast_nullable_to_non_nullable
@@ -195,7 +199,7 @@ class _$RegisterDtoImpl implements _RegisterDto {
   const _$RegisterDtoImpl(
       {required this.id,
       required this.name,
-      required this.store,
+      this.store,
       this.shiftDetail,
       this.serialNumber,
       @DateTimeConverter() this.createdAt,
@@ -209,7 +213,7 @@ class _$RegisterDtoImpl implements _RegisterDto {
   @override
   final String name;
   @override
-  final BranchDto store;
+  final BranchDto? store;
   @override
   final RegisterShiftDto? shiftDetail;
   @override
@@ -267,7 +271,7 @@ abstract class _RegisterDto implements RegisterDto {
   const factory _RegisterDto(
       {required final int id,
       required final String name,
-      required final BranchDto store,
+      final BranchDto? store,
       final RegisterShiftDto? shiftDetail,
       final String? serialNumber,
       @DateTimeConverter() final DateTime? createdAt,
@@ -281,7 +285,7 @@ abstract class _RegisterDto implements RegisterDto {
   @override
   String get name;
   @override
-  BranchDto get store;
+  BranchDto? get store;
   @override
   RegisterShiftDto? get shiftDetail;
   @override

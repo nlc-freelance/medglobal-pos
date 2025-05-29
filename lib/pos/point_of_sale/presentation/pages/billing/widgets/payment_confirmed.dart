@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/print_receipt/print_receipt_cubit.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/sale_remote/sale_remote_cubit.dart';
 import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -92,26 +93,51 @@ class PaymentConfirmed extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
-                child: BlocListener<PrintReceiptCubit, PrintReceiptState>(
+                child: BlocConsumer<ReceiptConfigBloc, ReceiptConfigState>(
                   listener: (context, state) {
-                    if (state is PrintReceiptSuccess) {
-                      ToastNotification.success(
-                        context,
-                        'Receipt successfully generated.',
-                        duration: 5000,
-                      );
-                    }
-                    if (state is PrintReceiptError) ToastNotification.error(context, state.message);
+                    state.maybeWhen(
+                      loaded: (config) => context.read<PrintReceiptCubit>().generateAndPrintReceipt(
+                            transaction: transaction,
+                            receiptConfig: config,
+                          ),
+                      orElse: () {},
+                    );
                   },
-                  child: UIButton.filled(
-                    'Print Receipt',
-                    onClick: () => context.read<PrintReceiptCubit>().generateAndPrintReceipt(transaction),
-                    style: UIStyleButton.filled.style?.copyWith(
-                      minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
-                      backgroundColor: UIStyleUtil.setColor(UIColors.borderMuted.withOpacity(0.9)),
-                      overlayColor: UIStyleUtil.setColor(UIColors.borderRegular),
-                      textStyle: UIStyleUtil.setTextStyle(UIStyleText.heading6),
-                      foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
+                  builder: (context, state) => state.maybeWhen(
+                    orElse: () => BlocListener<PrintReceiptCubit, PrintReceiptState>(
+                      listener: (context, state) {
+                        if (state is PrintReceiptSuccess) {
+                          ToastNotification.success(
+                            context,
+                            'Receipt successfully generated.',
+                            duration: 5000,
+                          );
+                        }
+                        if (state is PrintReceiptError) ToastNotification.error(context, state.message);
+                      },
+                      child: FilledButton.icon(
+                        label: state.maybeWhen(
+                          orElse: () => const Text('Print Receipt'),
+                          loading: () => const SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(color: UIColors.background, strokeWidth: 2),
+                          ),
+                        ),
+                        style: UIStyleButton.filled.style?.copyWith(
+                          minimumSize: const WidgetStatePropertyAll(Size.fromHeight(60)),
+                          backgroundColor: UIStyleUtil.setColor(UIColors.borderMuted.withOpacity(0.9)),
+                          overlayColor: UIStyleUtil.setColor(UIColors.borderRegular),
+                          textStyle: UIStyleUtil.setTextStyle(UIStyleText.heading6),
+                          foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
+                        ),
+                        onPressed: () => state.maybeWhen(
+                          orElse: () => context
+                              .read<ReceiptConfigBloc>()
+                              .add(ReceiptConfigEvent.getReceiptConfigByBranchId(transaction.branch!.id!)),
+                          loading: () => {},
+                        ),
+                      ),
                     ),
                   ),
                 ),
