@@ -18,7 +18,7 @@ class SelectedProductsToolbar extends StatelessWidget {
               children: [
                 UIText.labelMedium('${state.selectedProductIds.length} item(s) selected', color: UIColors.textLight),
                 const UIHorizontalSpace(16.0),
-                const BulkActionPopupMenu(),
+                // const BulkActionPopupMenu(),
               ],
             ),
           );

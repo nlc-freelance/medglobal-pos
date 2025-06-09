@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/api/product_api.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product_paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/repositories/product_repository.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
@@ -13,11 +13,18 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl(this._productApi);
 
   @override
-  Future<Either<Failure, ProductPaginatedList>> getProducts(
-      {required int page, required int size, String? search}) async {
+  Future<Either<Failure, PaginatedList<Product>>> getProducts({
+    int? page,
+    int? size,
+    String? search,
+  }) async {
     try {
-      final response = await _productApi.getProducts(page: page, size: size, search: search);
-      return Right(response);
+      final responseDto = await _productApi.getProducts(
+        page: page,
+        size: size,
+        search: search,
+      );
+      return Right(responseDto.convert((item) => item.toDomain()));
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
@@ -45,25 +52,27 @@ class ProductRepositoryImpl implements ProductRepository {
   Future<Either<Failure, Product>> getProductById(int id) async {
     try {
       final response = await _productApi.getProductById(id);
-      return Right(response.toEntity());
+      return Right(response.toDomain());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
   }
 
   @override
-  Future<Either<Failure, void>> create(Product product) async {
+  Future<Either<Failure, Product>> create(Product product) async {
     try {
-      return Right(await _productApi.create(product));
+      final responseDto = await _productApi.createProduct(product);
+      return Right(responseDto.toDomain());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
   }
 
   @override
-  Future<Either<Failure, void>> update(int id, Product product) async {
+  Future<Either<Failure, Product>> update(int id, Product product) async {
     try {
-      return Right(await _productApi.update(id, product));
+      final responseDto = await _productApi.updateProduct(product);
+      return Right(responseDto.toDomain());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
@@ -72,7 +81,7 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Either<Failure, void>> delete(int id) async {
     try {
-      return Right(await _productApi.delete(id));
+      return Right(await _productApi.deleteProduct(id));
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

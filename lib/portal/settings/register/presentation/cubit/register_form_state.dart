@@ -5,7 +5,7 @@ class RegisterFormState with _$RegisterFormState {
   const factory RegisterFormState({
     int? id,
     String? name,
-    Branch? assignedBranch,
+    BranchLite? assignedBranch,
   }) = _RegisterFormState;
 
   factory RegisterFormState.initial() => const RegisterFormState();

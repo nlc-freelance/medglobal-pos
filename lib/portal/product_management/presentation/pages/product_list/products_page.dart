@@ -38,15 +38,17 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ProductBulkActionCubit, ProductBulkActionState>(
-      listener: (context, state) {
-        if (state is ProductBulkActionError) SnackbarUtil.error(context, state.message);
-        if (state is ProductBulkActionSuccess) {
-          context.read<ProductListCubit>().getProducts();
-          SnackbarUtil.success(context, state.message);
-        }
-      },
-      child: Column(
+    return 
+    // BlocListener<ProductBulkActionCubit, ProductBulkActionState>(
+    //   listener: (context, state) {
+    //     if (state is ProductBulkActionError) SnackbarUtil.error(context, state.message);
+    //     if (state is ProductBulkActionSuccess) {
+    //       context.read<ProductListCubit>().getProducts();
+    //       SnackbarUtil.success(context, state.message);
+    //     }
+    //   },
+    //   child: 
+      Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PageHeader(

@@ -2,14 +2,14 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_paginated_list.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/get_purchase_orders_usecase.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
 
 part 'purchase_order_list_remote_state.dart';
 
 class PurchaseOrderListRemoteCubit extends Cubit<PurchaseOrderListRemoteState> {
-  final GetPurchaseOrdersUseCase _getPurchaseOrdersUseCase;
+  final PurchaseOrderRepository _repository;
 
-  PurchaseOrderListRemoteCubit(this._getPurchaseOrdersUseCase) : super(PurchaseOrderListInitial());
+  PurchaseOrderListRemoteCubit(this._repository) : super(PurchaseOrderListInitial());
 
   Future<void> getPurchaseOrders({
     int page = 1,
@@ -22,14 +22,14 @@ class PurchaseOrderListRemoteCubit extends Cubit<PurchaseOrderListRemoteState> {
     emit(PurchaseOrderListLoading());
 
     try {
-      final result = await _getPurchaseOrdersUseCase.call(GetPurchaseOrdersParams(
+      final result = await _repository.getPurchaseOrders(
         page: page,
         size: size,
         status: status,
         branchId: branchId,
         startDate: startDate,
         endDate: endDate,
-      ));
+      );
       result.fold(
         (error) => emit(PurchaseOrderListError(message: error.message)),
         (data) => emit(PurchaseOrderListLoaded(data: data)),

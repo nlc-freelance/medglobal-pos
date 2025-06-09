@@ -95,11 +95,11 @@ import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/api/purchase_order_api.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/repositories/purchase_order_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/create_purchase_order_usecase.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/delete_purchase_order_usecase.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/get_purchase_order_by_id_usecase.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/get_purchase_orders_usecase.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/update_purchase_order_usecase.dart';
+// import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/create_purchase_order_usecase.dart';
+// import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/delete_purchase_order_usecase.dart';
+// import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/get_purchase_order_by_id_usecase.dart';
+// import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/get_purchase_orders_usecase.dart';
+// import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/usecases/update_purchase_order_usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_filter/purchase_order_list_filter_cubit.dart';
@@ -169,8 +169,6 @@ import 'package:medglobal_admin_portal/portal/supplier_management/presentation/c
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_lazy_list/supplier_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list_filter/supplier_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transaction_by_id_usecase.dart';
-import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transactions_usecase.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/data/api/return_api.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/data/repositories/return_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/domain/repositories/return_repository.dart';
@@ -189,6 +187,7 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/domain/repositories/pos
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/repositories/sale_repository.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/usecases/create_sale_usecase.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/usecases/get_pos_products_usecase.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/sale_bloc/sale_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/order/order_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/print_receipt/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
@@ -198,8 +197,11 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/sale
 import 'package:medglobal_admin_portal/pos/transactions/data/api/refund_api.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/repositories/refund_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund_repository.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/usecases/create_refund_transaction_usecase.dart';
-import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_cubit.dart';
+// import 'package:medglobal_admin_portal/pos/transactions/domain/usecases/create_refund_transaction_usecase.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_bloc/pos_transaction_bloc.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_list_bloc/pos_transaction_list_bloc.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/refund_bloc/refund_bloc.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_form_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_shift_api.dart';
@@ -208,10 +210,10 @@ import 'package:medglobal_admin_portal/portal/settings/register/data/repository/
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_shift_repository.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
-import 'package:medglobal_admin_portal/shared/transactions/data/api/transaction_api.dart';
-import 'package:medglobal_admin_portal/shared/transactions/data/repositories/transaction_repository_impl.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/repositories/transaction_repository.dart';
-import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/api/transaction_api.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/repositories/transaction_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transaction_repository.dart';
+// import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 
 /// lazySingleton are only initialized when needed while factory are always initialized
 
@@ -232,6 +234,48 @@ void initCoreDependencies() {
   inject
     ..registerSingleton(DioServiceNew())
     ..registerSingleton(BaseApiService(inject<DioServiceNew>()));
+}
+
+void initProductDependencies() {
+  inject
+    ..registerLazySingleton<ProductApi>(
+      () => ProductApi(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<ProductRepository>(
+      () => ProductRepositoryImpl(inject<ProductApi>()),
+    )
+    ..registerFactory<PaginatedListBloc<Product>>(
+      () => PaginatedListBloc<Product>(inject<ProductRepository>().getProducts),
+    )
+    ..registerFactory<ProductBloc>(
+      () => ProductBloc(inject<ProductRepository>()),
+    );
+}
+
+void initTransactionDependencies() {
+  inject
+    ..registerLazySingleton<TransactionApi>(
+      () => TransactionApi(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<TransactionRepository>(
+      () => TransactionRepositoryImpl(inject<TransactionApi>()),
+    );
+}
+
+void initPosDependencies() {
+  inject
+    ..registerFactory<PosTransactionListBloc>(
+      () => PosTransactionListBloc(inject<TransactionRepository>()),
+    )
+    ..registerFactory<PosTransactionBloc>(
+      () => PosTransactionBloc(inject<TransactionRepository>()),
+    )
+    ..registerFactory<SaleBloc>(
+      () => SaleBloc(inject<SaleRepository>()),
+    )
+    ..registerFactory<RefundBloc>(
+      () => RefundBloc(inject<RefundRepository>()),
+    );
 }
 
 void initTaxDependencies() {
@@ -380,11 +424,11 @@ void initAll() {
     ..registerLazySingleton<ProductApi>(() => ProductApiImpl(inject()))
     ..registerLazySingleton<ProductVariantApi>(() => ProductVariantApiImpl(inject()))
     ..registerLazySingleton<SupplyNeedsApi>(() => SupplyNeedsApiImpl(inject()))
-    ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(inject()))
+    // ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(inject()))
     ..registerLazySingleton<StockReturnApi>(() => StockReturnApiImpl(inject()))
     ..registerLazySingleton<StockTransferApi>(() => StockTransferApiImpl(inject()))
     ..registerLazySingleton<StockTakeApi>(() => StockTakeApiImpl(inject()))
-    ..registerLazySingleton<TransactionApi>(() => TransactionApiImpl(inject()))
+    // ..registerLazySingleton<TransactionApi>(() => TransactionApiImpl(inject()))
     ..registerLazySingleton<ReturnApi>(() => ReturnApiImpl(inject()))
     ..registerLazySingleton<ProductHistoryApi>(() => ProductHistoryApiImpl(inject()))
     // ..registerLazySingleton<ReportsApi>(() => ReportsApiImpl(inject()))
@@ -440,24 +484,24 @@ void initAll() {
     ..registerLazySingleton(() => GetCategoriesUseCase(inject()))
 
     /// Product UseCase
-    ..registerLazySingleton(() => GetProductsUseCase(inject()))
-    ..registerLazySingleton(() => BulkUpdateProductsUseCase(inject()))
-    ..registerLazySingleton(() => BulkDeleteProductsUseCase(inject()))
-    ..registerLazySingleton(() => GetProductByIdUseCase(inject()))
-    ..registerLazySingleton(() => CreateProductUseCase(inject()))
-    ..registerLazySingleton(() => UpdateProductUseCase(inject()))
-    ..registerLazySingleton(() => DeleteProductUseCase(inject()))
+    // ..registerLazySingleton(() => GetProductsUseCase(inject()))
+    // ..registerLazySingleton(() => BulkUpdateProductsUseCase(inject()))
+    // ..registerLazySingleton(() => BulkDeleteProductsUseCase(inject()))
+    // ..registerLazySingleton(() => GetProductByIdUseCase(inject()))
+    // ..registerLazySingleton(() => CreateProductUseCase(inject()))
+    // ..registerLazySingleton(() => UpdateProductUseCase(inject()))
+    // ..registerLazySingleton(() => DeleteProductUseCase(inject()))
 
     /// Stock Management
     /// Supply Needs
     ..registerLazySingleton(() => GetSupplyNeedsUseCase(inject()))
 
     /// Purchase Order
-    ..registerLazySingleton(() => GetPurchaseOrdersUseCase(inject()))
-    ..registerLazySingleton(() => GetPurchaseOrderByIdUseCase(inject()))
-    ..registerLazySingleton(() => CreatePurchaseOrderUseCase(inject()))
-    ..registerLazySingleton(() => UpdatePurchaseOrderUseCase(inject()))
-    ..registerLazySingleton(() => DeletePurchaseOrderUseCase(inject()))
+    // ..registerLazySingleton(() => GetPurchaseOrdersUseCase(inject()))
+    // ..registerLazySingleton(() => GetPurchaseOrderByIdUseCase(inject()))
+    // ..registerLazySingleton(() => CreatePurchaseOrderUseCase(inject()))
+    // ..registerLazySingleton(() => UpdatePurchaseOrderUseCase(inject()))
+    // ..registerLazySingleton(() => DeletePurchaseOrderUseCase(inject()))
 
     /// Stock Return
     ..registerLazySingleton(() => GetStockReturnsUseCase(inject()))
@@ -481,8 +525,8 @@ void initAll() {
     ..registerLazySingleton(() => UpdateStockTakeItemsByIdUseCase(inject()))
 
     /// Transactions
-    ..registerLazySingleton(() => GetTransactionsUseCase(inject()))
-    ..registerLazySingleton(() => GetTransactionByIdUseCase(inject()))
+    // ..registerLazySingleton(() => GetTransactionsUseCase(inject()))
+    // ..registerLazySingleton(() => GetTransactionByIdUseCase(inject()))
     ..registerLazySingleton(() => UpdateReturnTransactionUseCase(inject()))
 
     /// Reports
@@ -501,11 +545,11 @@ void initAll() {
     ///
     /// Register Items
     ..registerLazySingleton(() => GetPOSProductsUseCase(inject()))
-    ..registerLazySingleton(() => CreateSaleUseCase(inject()))
+    // ..registerLazySingleton(() => CreateSaleUseCase(inject()))
 
     ///
     /// Issue Refund
-    ..registerLazySingleton(() => CreateRefundTransactionUseCase(inject()))
+    // ..registerLazySingleton(() => CreateRefundTransactionUseCase(inject()))
 
     /// Bloc
     ..registerFactory(() => AuthBloc(inject(), inject(), inject(), inject()))
@@ -515,19 +559,19 @@ void initAll() {
     ..registerFactory(() => SupplierCubit(inject(), inject(), inject(), inject()))
     ..registerFactory(() => CategoryCubit(inject()))
     ..registerFactory(() => ProductSelectionCubit())
-    ..registerFactory(() => ProductBulkActionCubit(inject(), inject()))
+    // ..registerFactory(() => ProductBulkActionCubit(inject(), inject()))
     ..registerFactory(() => ProductListCubit(inject()))
     ..registerFactory(() => ProductListFilterCubit())
-    ..registerFactory(() => ProductCubit(inject(), inject(), inject(), inject()))
-    ..registerFactory(() => ProductFormCubit())
-    ..registerFactory(() => VariantFormCubit())
+    // ..registerFactory(() => ProductCubit(inject(), inject(), inject(), inject()))
+    // ..registerFactory(() => ProductFormCubit())
+    // ..registerFactory(() => VariantFormCubit())
     ..registerFactory(() => VariantFormUiCubit())
     ..registerFactory(() => SupplyNeedsCubit(inject()))
     ..registerFactory(() => SupplyNeedCubit())
     ..registerFactory(() => PurchaseOrderListRemoteCubit(inject()))
     ..registerFactory(() => PurchaseOrderListFilterCubit())
-    ..registerFactory(() => PurchaseOrderRemoteCubit(inject(), inject(), inject(), inject()))
-    ..registerFactory(() => PurchaseOrderCubit())
+    // ..registerFactory(() => PurchaseOrderRemoteCubit(inject(), inject(), inject(), inject()))
+    // ..registerFactory(() => PurchaseOrderCubit())
     ..registerFactory(() => NewPurchaseOrderCubit())
     ..registerFactory(() => StockReturnListRemoteCubit(inject()))
     ..registerFactory(() => StockReturnListFilterCubit())
@@ -551,7 +595,7 @@ void initAll() {
     ..registerFactory(() => NewStockTakeCubit())
     ..registerFactory(() => UncountedItemsDraftCubit())
     ..registerFactory(() => SaleTransactionListCubit(inject()))
-    ..registerFactory(() => TransactionCubit(inject()))
+    // ..registerFactory(() => TransactionCubit(inject()))
     ..registerFactory(() => ReturnTransactionListCubit(inject()))
     ..registerFactory(() => ReturnCubit())
     ..registerFactory(() => ReturnRemoteCubit(inject()))
@@ -578,11 +622,11 @@ void initAll() {
 
     ..registerFactory(() => PosProductListCubit(inject()))
     ..registerFactory(() => PosProductSearchCubit())
-    ..registerFactory(() => OrderCubit())
-    ..registerFactory(() => SaleRemoteCubit(inject()))
-    ..registerFactory(() => TransactionListByBranchCubit(inject()))
-    ..registerFactory(() => RefundCubit())
-    ..registerFactory(() => RefundRemoteCubit(inject()))
+    // ..registerFactory(() => OrderCubit())
+    // ..registerFactory(() => SaleRemoteCubit(inject()))
+    // ..registerFactory(() => TransactionListByBranchCubit(inject()))
+    // ..registerFactory(() => RefundCubit())
+    // ..registerFactory(() => RefundRemoteCubit(inject()))
     ..registerFactory(() => PrintReceiptCubit())
     ..registerFactory(() => ReceiptConfigBloc(inject<BranchRepository>()));
 }

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/data/dto/stock_transfer_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
@@ -11,9 +12,9 @@ part 'stock_transfer_dto.g.dart';
 class StockTransferDto extends Equatable {
   final int? id;
   @JsonKey(name: 'fromStore')
-  final Branch? sourceBranch;
+  final BranchLiteDto? sourceBranch;
   @JsonKey(name: 'toStore')
-  final Branch? destinationBranch;
+  final BranchLiteDto? destinationBranch;
   final String? status;
   @JsonKey(name: 'stockTransferDetails')
   final List<StockTransferItemDto>? items;

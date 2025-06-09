@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/domain/repositories/return_repository.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 
 class UpdateReturnTransactionUseCase implements UseCase<Transaction, UpdateReturnTransactionParams> {
   final ReturnRepository repository;

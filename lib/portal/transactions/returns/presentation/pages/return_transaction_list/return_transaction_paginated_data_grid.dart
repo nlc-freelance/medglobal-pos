@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -42,7 +42,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
     return BlocConsumer<ReturnTransactionListCubit, ReturnTransactionListState>(
       listener: (context, state) {
         if (state is ReturnTransactionListLoaded) {
-          returns = state.data.transactions ?? [];
+          returns = state.data.items ?? [];
           _returnTransactionDataSource = ReturnTransactionDataSource(returns);
         }
         if (state is ReturnTransactionSearchNoResult) {
@@ -100,7 +100,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                 ),
               ),
               const UIVerticalSpace(16),
-              if (state.data.transactions?.isNotEmpty == true)
+              if (state.data.items.isNotEmpty == true)
 
                 /// TODO: Extract pager to its own widget
                 Row(
@@ -302,7 +302,7 @@ class ReturnTransactionDataSource extends DataGridSource {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: ((cell.value as ReturnStatus) == ReturnStatus.AWAITING_ACTION
+            color: ((cell.value as ReturnStatus) == ReturnStatus.awaiting_action
                     ? UIColors.awaitingActionBg
                     : UIColors.completedBg)
                 .withOpacity(0.6),
@@ -313,7 +313,7 @@ class ReturnTransactionDataSource extends DataGridSource {
               Text(
                 (cell.value as ReturnStatus).label,
                 style: UIStyleText.hint.copyWith(
-                  color: (cell.value as ReturnStatus) == ReturnStatus.AWAITING_ACTION
+                  color: (cell.value as ReturnStatus) == ReturnStatus.awaiting_action
                       ? UIColors.awaitingAction
                       : UIColors.completed,
                   fontSize: 11,

@@ -12,7 +12,7 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/prod
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
-import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
+// import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PosDrawer extends StatelessWidget {
@@ -120,9 +120,9 @@ class PosDrawer extends StatelessWidget {
               onTap: () {
                 // context.read<RegisterShiftBloc>().add(ResetRegisterShiftOnLogoutEvent());
                 context.read<PosProductListCubit>().reset();
-                context.read<TransactionListByBranchCubit>().reset();
-                context.read<TransactionCubit>().reset();
-                context.read<OrderCubit>().reset();
+                // context.read<TransactionListByBranchCubit>().reset();
+                // context.read<TransactionCubit>().reset();
+                // context.read<OrderCubit>().reset();
 
                 // /// Dropdown
                 context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.reset());

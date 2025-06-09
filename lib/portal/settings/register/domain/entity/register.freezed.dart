@@ -14,19 +14,149 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-Register _$RegisterFromJson(Map<String, dynamic> json) {
-  return _Register.fromJson(json);
+/// @nodoc
+mixin _$RegisterLite {
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $RegisterLiteCopyWith<RegisterLite> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $RegisterLiteCopyWith<$Res> {
+  factory $RegisterLiteCopyWith(
+          RegisterLite value, $Res Function(RegisterLite) then) =
+      _$RegisterLiteCopyWithImpl<$Res, RegisterLite>;
+  @useResult
+  $Res call({int id, String name});
+}
+
+/// @nodoc
+class _$RegisterLiteCopyWithImpl<$Res, $Val extends RegisterLite>
+    implements $RegisterLiteCopyWith<$Res> {
+  _$RegisterLiteCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$RegisterLiteImplCopyWith<$Res>
+    implements $RegisterLiteCopyWith<$Res> {
+  factory _$$RegisterLiteImplCopyWith(
+          _$RegisterLiteImpl value, $Res Function(_$RegisterLiteImpl) then) =
+      __$$RegisterLiteImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int id, String name});
+}
+
+/// @nodoc
+class __$$RegisterLiteImplCopyWithImpl<$Res>
+    extends _$RegisterLiteCopyWithImpl<$Res, _$RegisterLiteImpl>
+    implements _$$RegisterLiteImplCopyWith<$Res> {
+  __$$RegisterLiteImplCopyWithImpl(
+      _$RegisterLiteImpl _value, $Res Function(_$RegisterLiteImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+  }) {
+    return _then(_$RegisterLiteImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$RegisterLiteImpl implements _RegisterLite {
+  const _$RegisterLiteImpl({required this.id, required this.name});
+
+  @override
+  final int id;
+  @override
+  final String name;
+
+  @override
+  String toString() {
+    return 'RegisterLite(id: $id, name: $name)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RegisterLiteImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$RegisterLiteImplCopyWith<_$RegisterLiteImpl> get copyWith =>
+      __$$RegisterLiteImplCopyWithImpl<_$RegisterLiteImpl>(this, _$identity);
+}
+
+abstract class _RegisterLite implements RegisterLite {
+  const factory _RegisterLite(
+      {required final int id, required final String name}) = _$RegisterLiteImpl;
+
+  @override
+  int get id;
+  @override
+  String get name;
+  @override
+  @JsonKey(ignore: true)
+  _$$RegisterLiteImplCopyWith<_$RegisterLiteImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 mixin _$Register {
   int? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  Branch? get assignedBranch => throw _privateConstructorUsedError;
+  BranchLite? get assignedBranch =>
+      throw _privateConstructorUsedError; // Branch? assignedBranch,
   RegisterShift? get shiftDetail => throw _privateConstructorUsedError;
   String? get serialNumber => throw _privateConstructorUsedError;
 
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $RegisterCopyWith<Register> get copyWith =>
       throw _privateConstructorUsedError;
@@ -40,11 +170,11 @@ abstract class $RegisterCopyWith<$Res> {
   $Res call(
       {int? id,
       String name,
-      Branch? assignedBranch,
+      BranchLite? assignedBranch,
       RegisterShift? shiftDetail,
       String? serialNumber});
 
-  $BranchCopyWith<$Res>? get assignedBranch;
+  $BranchLiteCopyWith<$Res>? get assignedBranch;
 }
 
 /// @nodoc
@@ -78,7 +208,7 @@ class _$RegisterCopyWithImpl<$Res, $Val extends Register>
       assignedBranch: freezed == assignedBranch
           ? _value.assignedBranch
           : assignedBranch // ignore: cast_nullable_to_non_nullable
-              as Branch?,
+              as BranchLite?,
       shiftDetail: freezed == shiftDetail
           ? _value.shiftDetail
           : shiftDetail // ignore: cast_nullable_to_non_nullable
@@ -92,12 +222,12 @@ class _$RegisterCopyWithImpl<$Res, $Val extends Register>
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchCopyWith<$Res>? get assignedBranch {
+  $BranchLiteCopyWith<$Res>? get assignedBranch {
     if (_value.assignedBranch == null) {
       return null;
     }
 
-    return $BranchCopyWith<$Res>(_value.assignedBranch!, (value) {
+    return $BranchLiteCopyWith<$Res>(_value.assignedBranch!, (value) {
       return _then(_value.copyWith(assignedBranch: value) as $Val);
     });
   }
@@ -114,12 +244,12 @@ abstract class _$$RegisterImplCopyWith<$Res>
   $Res call(
       {int? id,
       String name,
-      Branch? assignedBranch,
+      BranchLite? assignedBranch,
       RegisterShift? shiftDetail,
       String? serialNumber});
 
   @override
-  $BranchCopyWith<$Res>? get assignedBranch;
+  $BranchLiteCopyWith<$Res>? get assignedBranch;
 }
 
 /// @nodoc
@@ -151,7 +281,7 @@ class __$$RegisterImplCopyWithImpl<$Res>
       assignedBranch: freezed == assignedBranch
           ? _value.assignedBranch
           : assignedBranch // ignore: cast_nullable_to_non_nullable
-              as Branch?,
+              as BranchLite?,
       shiftDetail: freezed == shiftDetail
           ? _value.shiftDetail
           : shiftDetail // ignore: cast_nullable_to_non_nullable
@@ -165,7 +295,7 @@ class __$$RegisterImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _$RegisterImpl extends _Register {
   const _$RegisterImpl(
       {this.id,
@@ -175,15 +305,13 @@ class _$RegisterImpl extends _Register {
       this.serialNumber})
       : super._();
 
-  factory _$RegisterImpl.fromJson(Map<String, dynamic> json) =>
-      _$$RegisterImplFromJson(json);
-
   @override
   final int? id;
   @override
   final String name;
   @override
-  final Branch? assignedBranch;
+  final BranchLite? assignedBranch;
+// Branch? assignedBranch,
   @override
   final RegisterShift? shiftDetail;
   @override
@@ -209,7 +337,6 @@ class _$RegisterImpl extends _Register {
                 other.serialNumber == serialNumber));
   }
 
-  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType, id, name, assignedBranch, shiftDetail, serialNumber);
@@ -219,34 +346,24 @@ class _$RegisterImpl extends _Register {
   @pragma('vm:prefer-inline')
   _$$RegisterImplCopyWith<_$RegisterImpl> get copyWith =>
       __$$RegisterImplCopyWithImpl<_$RegisterImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$RegisterImplToJson(
-      this,
-    );
-  }
 }
 
 abstract class _Register extends Register {
   const factory _Register(
       {final int? id,
       required final String name,
-      final Branch? assignedBranch,
+      final BranchLite? assignedBranch,
       final RegisterShift? shiftDetail,
       final String? serialNumber}) = _$RegisterImpl;
   const _Register._() : super._();
-
-  factory _Register.fromJson(Map<String, dynamic> json) =
-      _$RegisterImpl.fromJson;
 
   @override
   int? get id;
   @override
   String get name;
   @override
-  Branch? get assignedBranch;
-  @override
+  BranchLite? get assignedBranch;
+  @override // Branch? assignedBranch,
   RegisterShift? get shiftDetail;
   @override
   String? get serialNumber;

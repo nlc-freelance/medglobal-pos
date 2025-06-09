@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/data/dto/stock_return_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
@@ -12,7 +13,7 @@ part 'stock_return_dto.g.dart';
 class StockReturnDto extends Equatable {
   final int? id;
   @JsonKey(name: 'store')
-  final Branch? branch;
+  final BranchLiteDto? branch;
   final Supplier? supplier;
   final String? status;
   final double? totalAmount;

@@ -22,7 +22,7 @@ class RegisterShiftRepositoryImpl implements RegisterShiftRepository {
       );
 
       final response = await _registerShiftApi.shift(request);
-      return Right(response.toEntity());
+      return Right(response.toDomain());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
@@ -38,7 +38,7 @@ class RegisterShiftRepositoryImpl implements RegisterShiftRepository {
       );
 
       final response = await _registerShiftApi.shift(request);
-      return Right(response.toEntity());
+      return Right(response.toDomain());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

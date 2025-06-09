@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/receipt_config.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:universal_html/html.dart' as html;
@@ -90,9 +90,9 @@ class PrintUtil {
                       SizedBox(height: 1),
                       Text('Receipt ID: ${transaction.receiptId}', style: theme.header4),
                       SizedBox(height: 1),
-                      Text('Cashier: ${transaction.employee?.name}', style: theme.header4),
+                      Text('Cashier: ${transaction.employee.name}', style: theme.header4),
                       SizedBox(height: 1),
-                      Text('Register: ${transaction.registerNo}', style: theme.header4),
+                      Text('Register: ${transaction.register.name}', style: theme.header4),
                       SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,10 +124,12 @@ class PrintUtil {
                                   ),
                                 ],
                               ),
-                              if (item.discount != null && item.discount != 0 && item.discountInPeso != null) ...[
+                              if (item.discountValue != null &&
+                                  item.discountValue != 0 &&
+                                  item.discountAmount != null) ...[
                                 SizedBox(height: 2),
                                 Text(
-                                  '*Disc. ${item.discountType == DiscountType.PERCENT ? '${item.discount}%' : '₱${item.discount.toPesoString()}'}  (-${item.discountInPeso.toPesoString()})',
+                                  '*Disc. ${item.discountType == DiscountType.percentage ? '${item.discountValue}%' : '₱${item.discountValue.toPesoString()}'}  (-${item.discountAmount.toPesoString()})',
                                   style: theme.tableCell,
                                 ),
                               ],
@@ -138,7 +140,7 @@ class PrintUtil {
                                   Spacer(),
                                   Expanded(
                                     child: Text(
-                                      item.qty.toString(),
+                                      item.quantity.toString(),
                                       style: theme.tableCell,
                                       textAlign: TextAlign.end,
                                     ),
@@ -189,7 +191,7 @@ class PrintUtil {
                             'TOTAL DISCOUNT',
                             style: theme.header3,
                           ),
-                          Text('-${transaction.totalDiscountInPeso.toPesoString()}', style: theme.header3),
+                          Text('-${transaction.totalDiscountAmount.toPesoString()}', style: theme.header3),
                         ],
                       ),
                       Divider(),
@@ -305,7 +307,8 @@ class PrintUtil {
       final List<List<String?>> tableData = order.items
               ?.map((item) => [
                     item.name,
-                    (order.status == StockOrderStatus.FOR_RECEIVING ? item.qtyToOrder : item.qtyReceived).toString(),
+                    (order.status == StockOrderStatus.FOR_RECEIVING ? item.quantityOrdered : item.quantityReceived)
+                        .toString(),
                     item.supplierPrice.toPesoString(),
                     item.total.toPesoString(),
                   ])

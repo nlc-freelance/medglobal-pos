@@ -1,9 +1,9 @@
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/shared/transactions/data/dto/transaction_dto.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/data/dto/return/update_return_dto.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/dto/response/transaction_dto.dart';
 
 abstract class ReturnApi {
-  Future<TransactionDto> update(Transaction transaction);
+  Future<TransactionDto> update(int id, UpdateReturnDto dto);
 }
 
 class ReturnApiImpl implements ReturnApi {
@@ -12,11 +12,11 @@ class ReturnApiImpl implements ReturnApi {
   ReturnApiImpl(this._apiService);
 
   @override
-  Future<TransactionDto> update(Transaction transaction) async {
+  Future<TransactionDto> update(int id, UpdateReturnDto dto) async {
     try {
       final response = await _apiService.update<TransactionDto>(
-        '/returns/${transaction.id}',
-        data: transaction.toReturnPayload(),
+        '/returns/$id',
+        data: dto.toJson(),
         converter: TransactionDto.fromJson,
       );
       return response!;

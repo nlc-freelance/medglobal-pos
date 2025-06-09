@@ -282,7 +282,7 @@ class __$$ReceiptTemplateDtoImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
+class _$ReceiptTemplateDtoImpl extends _ReceiptTemplateDto {
   const _$ReceiptTemplateDtoImpl(
       {required this.id,
       required this.accountId,
@@ -298,7 +298,8 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
       this.footerTitle,
       this.footerMessage,
       @DateTimeConverter() this.createdAt,
-      @DateTimeConverter() this.updatedAt});
+      @DateTimeConverter() this.updatedAt})
+      : super._();
 
   factory _$ReceiptTemplateDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$ReceiptTemplateDtoImplFromJson(json);
@@ -418,7 +419,7 @@ class _$ReceiptTemplateDtoImpl implements _ReceiptTemplateDto {
   }
 }
 
-abstract class _ReceiptTemplateDto implements ReceiptTemplateDto {
+abstract class _ReceiptTemplateDto extends ReceiptTemplateDto {
   const factory _ReceiptTemplateDto(
           {required final int id,
           required final int accountId,
@@ -436,6 +437,7 @@ abstract class _ReceiptTemplateDto implements ReceiptTemplateDto {
           @DateTimeConverter() final DateTime? createdAt,
           @DateTimeConverter() final DateTime? updatedAt}) =
       _$ReceiptTemplateDtoImpl;
+  const _ReceiptTemplateDto._() : super._();
 
   factory _ReceiptTemplateDto.fromJson(Map<String, dynamic> json) =
       _$ReceiptTemplateDtoImpl.fromJson;

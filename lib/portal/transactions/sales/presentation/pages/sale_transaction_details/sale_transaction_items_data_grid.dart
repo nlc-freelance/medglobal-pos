@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -187,7 +187,7 @@ class SaleItemsDataSource extends DataGridSource {
   }
 
   Widget _buildCell(String column, DataGridCell cell, int id) {
-    double? discount() => _items.singleWhere((sale) => sale.id == id).discount;
+    double? discount() => _items.singleWhere((sale) => sale.id == id).discountValue;
     DiscountType? discountType() => _items.singleWhere((sale) => sale.id == id).discountType;
 
     return switch (column) {
@@ -195,7 +195,7 @@ class SaleItemsDataSource extends DataGridSource {
           mainAxisSize: MainAxisSize.min,
           children: [
             UIText.dataGridText((cell.value as double).toPesoString()),
-            if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
+            if (discount() != null && discount() != 0 && discountType() == DiscountType.percentage) ...[
               const UIHorizontalSpace(8),
               Container(
                 margin: const EdgeInsets.only(top: 0),
@@ -249,7 +249,7 @@ class SaleItemsDataSource extends DataGridSource {
     double? value;
     switch (label) {
       case 'Total Discount':
-        value = _transaction.totalDiscountInPeso;
+        value = _transaction.totalDiscountAmount;
       case 'Tax':
         value = _transaction.tax;
       case 'Total':

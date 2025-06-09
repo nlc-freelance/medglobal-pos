@@ -11,7 +11,7 @@ final class SaleTransactionListInitial extends SaleTransactionListState {}
 final class SaleTransactionListLoading extends SaleTransactionListState {}
 
 final class SaleTransactionListLoaded extends SaleTransactionListState {
-  final TransactionPaginatedList data;
+  final PaginatedList<Transaction> data;
   const SaleTransactionListLoaded({required this.data});
 
   @override

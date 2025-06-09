@@ -23,9 +23,7 @@ mixin _$ReceiptConfig {
   int get id => throw _privateConstructorUsedError;
   int get accountId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  bool get showCompanyName => throw _privateConstructorUsedError;
   bool get showBranchName => throw _privateConstructorUsedError;
-  bool get showBranchAddress => throw _privateConstructorUsedError;
   bool get showBranchContact => throw _privateConstructorUsedError;
   bool get showFooterMessage => throw _privateConstructorUsedError;
   String? get footerTitle => throw _privateConstructorUsedError;
@@ -52,9 +50,7 @@ abstract class $ReceiptConfigCopyWith<$Res> {
       {int id,
       int accountId,
       String name,
-      bool showCompanyName,
       bool showBranchName,
-      bool showBranchAddress,
       bool showBranchContact,
       bool showFooterMessage,
       String? footerTitle,
@@ -82,9 +78,7 @@ class _$ReceiptConfigCopyWithImpl<$Res, $Val extends ReceiptConfig>
     Object? id = null,
     Object? accountId = null,
     Object? name = null,
-    Object? showCompanyName = null,
     Object? showBranchName = null,
-    Object? showBranchAddress = null,
     Object? showBranchContact = null,
     Object? showFooterMessage = null,
     Object? footerTitle = freezed,
@@ -108,17 +102,9 @@ class _$ReceiptConfigCopyWithImpl<$Res, $Val extends ReceiptConfig>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      showCompanyName: null == showCompanyName
-          ? _value.showCompanyName
-          : showCompanyName // ignore: cast_nullable_to_non_nullable
-              as bool,
       showBranchName: null == showBranchName
           ? _value.showBranchName
           : showBranchName // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showBranchAddress: null == showBranchAddress
-          ? _value.showBranchAddress
-          : showBranchAddress // ignore: cast_nullable_to_non_nullable
               as bool,
       showBranchContact: null == showBranchContact
           ? _value.showBranchContact
@@ -172,9 +158,7 @@ abstract class _$$ReceiptConfigImplCopyWith<$Res>
       {int id,
       int accountId,
       String name,
-      bool showCompanyName,
       bool showBranchName,
-      bool showBranchAddress,
       bool showBranchContact,
       bool showFooterMessage,
       String? footerTitle,
@@ -200,9 +184,7 @@ class __$$ReceiptConfigImplCopyWithImpl<$Res>
     Object? id = null,
     Object? accountId = null,
     Object? name = null,
-    Object? showCompanyName = null,
     Object? showBranchName = null,
-    Object? showBranchAddress = null,
     Object? showBranchContact = null,
     Object? showFooterMessage = null,
     Object? footerTitle = freezed,
@@ -226,17 +208,9 @@ class __$$ReceiptConfigImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      showCompanyName: null == showCompanyName
-          ? _value.showCompanyName
-          : showCompanyName // ignore: cast_nullable_to_non_nullable
-              as bool,
       showBranchName: null == showBranchName
           ? _value.showBranchName
           : showBranchName // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showBranchAddress: null == showBranchAddress
-          ? _value.showBranchAddress
-          : showBranchAddress // ignore: cast_nullable_to_non_nullable
               as bool,
       showBranchContact: null == showBranchContact
           ? _value.showBranchContact
@@ -285,9 +259,7 @@ class _$ReceiptConfigImpl implements _ReceiptConfig {
       {required this.id,
       required this.accountId,
       required this.name,
-      this.showCompanyName = false,
       this.showBranchName = false,
-      this.showBranchAddress = false,
       this.showBranchContact = false,
       this.showFooterMessage = false,
       this.footerTitle,
@@ -309,13 +281,7 @@ class _$ReceiptConfigImpl implements _ReceiptConfig {
   final String name;
   @override
   @JsonKey()
-  final bool showCompanyName;
-  @override
-  @JsonKey()
   final bool showBranchName;
-  @override
-  @JsonKey()
-  final bool showBranchAddress;
   @override
   @JsonKey()
   final bool showBranchContact;
@@ -339,7 +305,7 @@ class _$ReceiptConfigImpl implements _ReceiptConfig {
 
   @override
   String toString() {
-    return 'ReceiptConfig(id: $id, accountId: $accountId, name: $name, showCompanyName: $showCompanyName, showBranchName: $showBranchName, showBranchAddress: $showBranchAddress, showBranchContact: $showBranchContact, showFooterMessage: $showFooterMessage, footerTitle: $footerTitle, footerMessage: $footerMessage, companyName: $companyName, branchName: $branchName, branchAddress: $branchAddress, branchPhone: $branchPhone, branchEmail: $branchEmail)';
+    return 'ReceiptConfig(id: $id, accountId: $accountId, name: $name, showBranchName: $showBranchName, showBranchContact: $showBranchContact, showFooterMessage: $showFooterMessage, footerTitle: $footerTitle, footerMessage: $footerMessage, companyName: $companyName, branchName: $branchName, branchAddress: $branchAddress, branchPhone: $branchPhone, branchEmail: $branchEmail)';
   }
 
   @override
@@ -351,12 +317,8 @@ class _$ReceiptConfigImpl implements _ReceiptConfig {
             (identical(other.accountId, accountId) ||
                 other.accountId == accountId) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.showCompanyName, showCompanyName) ||
-                other.showCompanyName == showCompanyName) &&
             (identical(other.showBranchName, showBranchName) ||
                 other.showBranchName == showBranchName) &&
-            (identical(other.showBranchAddress, showBranchAddress) ||
-                other.showBranchAddress == showBranchAddress) &&
             (identical(other.showBranchContact, showBranchContact) ||
                 other.showBranchContact == showBranchContact) &&
             (identical(other.showFooterMessage, showFooterMessage) ||
@@ -384,9 +346,7 @@ class _$ReceiptConfigImpl implements _ReceiptConfig {
       id,
       accountId,
       name,
-      showCompanyName,
       showBranchName,
-      showBranchAddress,
       showBranchContact,
       showFooterMessage,
       footerTitle,
@@ -416,9 +376,7 @@ abstract class _ReceiptConfig implements ReceiptConfig {
       {required final int id,
       required final int accountId,
       required final String name,
-      final bool showCompanyName,
       final bool showBranchName,
-      final bool showBranchAddress,
       final bool showBranchContact,
       final bool showFooterMessage,
       final String? footerTitle,
@@ -439,11 +397,7 @@ abstract class _ReceiptConfig implements ReceiptConfig {
   @override
   String get name;
   @override
-  bool get showCompanyName;
-  @override
   bool get showBranchName;
-  @override
-  bool get showBranchAddress;
   @override
   bool get showBranchContact;
   @override

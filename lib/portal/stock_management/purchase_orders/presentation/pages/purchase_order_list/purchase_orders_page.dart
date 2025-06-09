@@ -35,8 +35,8 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
     // context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
 
     /// Reset last selected purchase order
-    context.read<PurchaseOrderCubit>().reset();
-    context.read<PurchaseOrderListFilterCubit>().reset();
+    // context.read<PurchaseOrderCubit>().reset();
+    // context.read<PurchaseOrderListFilterCubit>().reset();
   }
 
   @override

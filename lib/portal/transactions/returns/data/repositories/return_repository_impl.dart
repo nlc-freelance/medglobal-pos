@@ -3,7 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/data/api/return_api.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/domain/repositories/return_repository.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/data/dto/return/update_return_dto.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/dto/response/transaction_dto.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 
 class ReturnRepositoryImpl implements ReturnRepository {
   final ReturnApi _returnApi;
@@ -13,8 +15,9 @@ class ReturnRepositoryImpl implements ReturnRepository {
   @override
   Future<Either<Failure, Transaction>> update(Transaction transaction) async {
     try {
-      final response = await _returnApi.update(transaction);
-      return Right(response.toEntity());
+      final requestDto = UpdateReturnDto.fromDomain(transaction);
+      final response = await _returnApi.update(transaction.id, requestDto);
+      return Right(response.toDomain());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

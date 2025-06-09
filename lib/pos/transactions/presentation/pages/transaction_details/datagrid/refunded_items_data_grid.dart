@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -206,11 +206,11 @@ class RefundedItemsDataSource extends DataGridSource {
     double? value;
     switch (label) {
       case 'Discount':
-        value = _transaction.totalDiscountInPeso;
+        value = _transaction.totalDiscountAmount;
       case 'Tax':
         value = _transaction.tax;
       case 'Total Refund':
-        value = (int.tryParse(subtotal) ?? 0) - (_transaction.totalDiscountInPeso ?? 0);
+        value = (int.tryParse(subtotal) ?? 0) - (_transaction.totalDiscountAmount ?? 0);
       default:
         return subtotal.toPesoString();
     }

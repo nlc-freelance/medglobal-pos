@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_cubit.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/refund_item.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_form_cubit.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -19,8 +20,6 @@ class RefundableItemsDataGrid extends StatefulWidget {
 }
 
 class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
-  late List<TransactionItem> _items = <TransactionItem>[];
-
   late DataGridController _dataGridController;
   late RefundableItemsDataSource _refundableItemsDataSource;
   late CustomSelectionManager customSelectionManager;
@@ -33,18 +32,20 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
-    _items = widget.transaction.items ?? [];
+    final items = widget.transaction.items.map((item) => item.toRefundItem).toList();
 
-    _refundableItemsDataSource = RefundableItemsDataSource(_items, context);
+    _refundableItemsDataSource = RefundableItemsDataSource(items, context);
+
+    context.read<RefundFormCubit>().loadItems(items);
 
     /// Set a new transaction in RefundCubit and copy the items of the original sale transaction register, id and items
-    context.read<RefundCubit>().setRefund(
-          Transaction(
-            register: widget.transaction.register,
-            saleTransactionId: widget.transaction.id,
-            items: _items,
-          ),
-        );
+    // context.read<RefundCubit>().setRefund(
+    //       Transaction(
+    //         register: widget.transaction.register,
+    //         saleTransactionId: widget.transaction.id,
+    //         items: _items,
+    //       ),
+    //     );
   }
 
   @override
@@ -63,23 +64,23 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Please input the quantity you wish to refund for a specific product.',
+              'Please enter the quantity you would like to refund for each product.',
               style: UIStyleText.hint,
             ),
             const Spacer(),
-            BlocListener<RefundCubit, RefundState>(
+            BlocListener<RefundFormCubit, RefundFormState>(
               listener: (context, state) {
-                setState(() => _isRefundAllSelected = state.refund.items?.every((item) => item.isSelected) == true);
+                setState(() => _isRefundAllSelected = state.items.every((item) => item.isSelectedForRefund) == true);
               },
               child: Checkbox(
                 value: _isRefundAllSelected,
                 onChanged: (isSelected) {
                   setState(() => _isRefundAllSelected = isSelected == true);
                   for (var item in _refundableItemsDataSource._items) {
-                    context.read<RefundCubit>().setRefundItemQty(
-                          id: item.id!,
-                          qtyToRefund: _isRefundAllSelected ? item.qty! : 0,
-                          subtotal: _isRefundAllSelected ? item.subtotalPerItem : 0,
+                    context.read<RefundFormCubit>().setRefundItemQty(
+                          id: item.id,
+                          qtyToRefund: _isRefundAllSelected ? item.quantity : 0,
+                          // subtotal: _isRefundAllSelected ? item.subtotalPerItem : 0,
                         );
                   }
                 },
@@ -96,9 +97,9 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
             clipper: HorizontalBorderClipper(),
             child: SfDataGridTheme(
               data: DataGridUtil.cellNavigationStyle,
-              child: BlocConsumer<RefundCubit, RefundState>(
+              child: BlocConsumer<RefundFormCubit, RefundFormState>(
                 listener: (context, state) {
-                  _refundableItemsDataSource._items = state.refund.items ?? [];
+                  _refundableItemsDataSource._items = state.items ?? [];
 
                   _refundableItemsDataSource.buildDataGridRows();
                   _refundableItemsDataSource.updateDataGridSource();
@@ -203,7 +204,7 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
 
 class RefundableItemsDataSource extends DataGridSource {
   RefundableItemsDataSource(
-    List<TransactionItem> items,
+    List<RefundItem> items,
     BuildContext context,
   ) {
     _items = items;
@@ -211,7 +212,7 @@ class RefundableItemsDataSource extends DataGridSource {
     buildDataGridRows();
   }
 
-  List<TransactionItem> _items = [];
+  List<RefundItem> _items = [];
 
   List<DataGridRow> dataGridRows = [];
 
@@ -238,8 +239,8 @@ class RefundableItemsDataSource extends DataGridSource {
   }
 
   Widget _buildCell(String column, DataGridCell cell, int id) {
-    double? discount() => _items.singleWhere((sale) => sale.id == id).discount;
-    double? discountInPesoPerUnit() => _items.singleWhere((sale) => sale.id == id).discountInPesoPerItemUnit;
+    double? discount() => _items.singleWhere((sale) => sale.id == id).discountValue;
+    double? discountInPesoPerUnit() => _items.singleWhere((sale) => sale.id == id).discountAmountPerUnit;
     DiscountType? discountType() => _items.singleWhere((sale) => sale.id == id).discountType;
 
     return switch (column) {
@@ -258,7 +259,7 @@ class RefundableItemsDataSource extends DataGridSource {
       'discount' => Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
+            if (discount() != null && discount() != 0 && discountType() == DiscountType.percentage) ...[
               UIText.bodyRegular(discountInPesoPerUnit().toPesoString()),
               const UIHorizontalSpace(8),
               Container(
@@ -336,10 +337,10 @@ class RefundableItemsDataSource extends DataGridSource {
 
       final refundItem = _items[dataRowIndex];
 
-      _context.read<RefundCubit>().setRefundItemQty(
-            id: refundItem.id!,
+      _context.read<RefundFormCubit>().setRefundItemQty(
+            id: refundItem.id,
             qtyToRefund: qtyToRefund,
-            subtotal: newSubtotal,
+            // subtotal: newSubtotal,
           );
     }
   }
@@ -407,9 +408,9 @@ class RefundableItemsDataSource extends DataGridSource {
 
   String getSummaryValue(String label, String subtotal) {
     /// Get discounts
-    final refundItems = _context.read<RefundCubit>().state.refund.items?.where((item) => item.isSelected).toList();
+    final refundItems = _context.read<RefundFormCubit>().state.items.where((item) => item.isSelectedForRefund).toList();
     final selectedItemsToRefundTotalDiscount =
-        refundItems?.fold(0.0, (discount, item) => discount + (item.discountInPesoPerItemUnit * item.qtyRefund!)) ?? 0;
+        refundItems.fold(0.0, (discount, item) => discount + (item.discountAmountPerUnit * item.quantity));
 
     double? value;
     switch (label) {

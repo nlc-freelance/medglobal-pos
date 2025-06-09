@@ -14,6 +14,197 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+BranchLiteDto _$BranchLiteDtoFromJson(Map<String, dynamic> json) {
+  return _BranchLiteDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$BranchLiteDto {
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String get address => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $BranchLiteDtoCopyWith<BranchLiteDto> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $BranchLiteDtoCopyWith<$Res> {
+  factory $BranchLiteDtoCopyWith(
+          BranchLiteDto value, $Res Function(BranchLiteDto) then) =
+      _$BranchLiteDtoCopyWithImpl<$Res, BranchLiteDto>;
+  @useResult
+  $Res call({int id, String name, String address, String? phone});
+}
+
+/// @nodoc
+class _$BranchLiteDtoCopyWithImpl<$Res, $Val extends BranchLiteDto>
+    implements $BranchLiteDtoCopyWith<$Res> {
+  _$BranchLiteDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? address = null,
+    Object? phone = freezed,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$BranchLiteDtoImplCopyWith<$Res>
+    implements $BranchLiteDtoCopyWith<$Res> {
+  factory _$$BranchLiteDtoImplCopyWith(
+          _$BranchLiteDtoImpl value, $Res Function(_$BranchLiteDtoImpl) then) =
+      __$$BranchLiteDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int id, String name, String address, String? phone});
+}
+
+/// @nodoc
+class __$$BranchLiteDtoImplCopyWithImpl<$Res>
+    extends _$BranchLiteDtoCopyWithImpl<$Res, _$BranchLiteDtoImpl>
+    implements _$$BranchLiteDtoImplCopyWith<$Res> {
+  __$$BranchLiteDtoImplCopyWithImpl(
+      _$BranchLiteDtoImpl _value, $Res Function(_$BranchLiteDtoImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? address = null,
+    Object? phone = freezed,
+  }) {
+    return _then(_$BranchLiteDtoImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$BranchLiteDtoImpl extends _BranchLiteDto {
+  const _$BranchLiteDtoImpl(
+      {required this.id, required this.name, required this.address, this.phone})
+      : super._();
+
+  factory _$BranchLiteDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BranchLiteDtoImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String name;
+  @override
+  final String address;
+  @override
+  final String? phone;
+
+  @override
+  String toString() {
+    return 'BranchLiteDto(id: $id, name: $name, address: $address, phone: $phone)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$BranchLiteDtoImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.phone, phone) || other.phone == phone));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name, address, phone);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$BranchLiteDtoImplCopyWith<_$BranchLiteDtoImpl> get copyWith =>
+      __$$BranchLiteDtoImplCopyWithImpl<_$BranchLiteDtoImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$BranchLiteDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _BranchLiteDto extends BranchLiteDto {
+  const factory _BranchLiteDto(
+      {required final int id,
+      required final String name,
+      required final String address,
+      final String? phone}) = _$BranchLiteDtoImpl;
+  const _BranchLiteDto._() : super._();
+
+  factory _BranchLiteDto.fromJson(Map<String, dynamic> json) =
+      _$BranchLiteDtoImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get name;
+  @override
+  String get address;
+  @override
+  String? get phone;
+  @override
+  @JsonKey(ignore: true)
+  _$$BranchLiteDtoImplCopyWith<_$BranchLiteDtoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 BranchDto _$BranchDtoFromJson(Map<String, dynamic> json) {
   return _BranchDto.fromJson(json);
 }
@@ -22,19 +213,19 @@ BranchDto _$BranchDtoFromJson(Map<String, dynamic> json) {
 mixin _$BranchDto {
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  int? get accountId => throw _privateConstructorUsedError;
+  int get accountId => throw _privateConstructorUsedError;
   String? get code => throw _privateConstructorUsedError;
-  String? get street1 => throw _privateConstructorUsedError;
+  String get street1 => throw _privateConstructorUsedError;
   String? get street2 => throw _privateConstructorUsedError;
-  String? get city => throw _privateConstructorUsedError;
-  String? get state => throw _privateConstructorUsedError;
+  String get city => throw _privateConstructorUsedError;
+  String get state => throw _privateConstructorUsedError;
   String? get zipCode => throw _privateConstructorUsedError;
   String? get country => throw _privateConstructorUsedError;
-  String? get phone => throw _privateConstructorUsedError;
+  String get phone => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   String? get vatIdNo => throw _privateConstructorUsedError;
-  String? get businessRegistrationNo => throw _privateConstructorUsedError;
-  ReceiptTemplateDto? get receiptTemplate => throw _privateConstructorUsedError;
+  String get businessRegistrationNo => throw _privateConstructorUsedError;
+  ReceiptTemplateDto get receiptTemplate => throw _privateConstructorUsedError;
   @DateTimeConverter()
   DateTime? get createdAt => throw _privateConstructorUsedError;
   @DateTimeConverter()
@@ -56,24 +247,24 @@ abstract class $BranchDtoCopyWith<$Res> {
   $Res call(
       {int id,
       String name,
-      int? accountId,
+      int accountId,
       String? code,
-      String? street1,
+      String street1,
       String? street2,
-      String? city,
-      String? state,
+      String city,
+      String state,
       String? zipCode,
       String? country,
-      String? phone,
+      String phone,
       String? email,
       String? vatIdNo,
-      String? businessRegistrationNo,
-      ReceiptTemplateDto? receiptTemplate,
+      String businessRegistrationNo,
+      ReceiptTemplateDto receiptTemplate,
       @DateTimeConverter() DateTime? createdAt,
       @DateTimeConverter() DateTime? updatedAt,
       @DateTimeConverter() DateTime? deletedAt});
 
-  $ReceiptTemplateDtoCopyWith<$Res>? get receiptTemplate;
+  $ReceiptTemplateDtoCopyWith<$Res> get receiptTemplate;
 }
 
 /// @nodoc
@@ -91,19 +282,19 @@ class _$BranchDtoCopyWithImpl<$Res, $Val extends BranchDto>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? accountId = freezed,
+    Object? accountId = null,
     Object? code = freezed,
-    Object? street1 = freezed,
+    Object? street1 = null,
     Object? street2 = freezed,
-    Object? city = freezed,
-    Object? state = freezed,
+    Object? city = null,
+    Object? state = null,
     Object? zipCode = freezed,
     Object? country = freezed,
-    Object? phone = freezed,
+    Object? phone = null,
     Object? email = freezed,
     Object? vatIdNo = freezed,
-    Object? businessRegistrationNo = freezed,
-    Object? receiptTemplate = freezed,
+    Object? businessRegistrationNo = null,
+    Object? receiptTemplate = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? deletedAt = freezed,
@@ -117,30 +308,30 @@ class _$BranchDtoCopyWithImpl<$Res, $Val extends BranchDto>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      accountId: freezed == accountId
+      accountId: null == accountId
           ? _value.accountId
           : accountId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       code: freezed == code
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as String?,
-      street1: freezed == street1
+      street1: null == street1
           ? _value.street1
           : street1 // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       street2: freezed == street2
           ? _value.street2
           : street2 // ignore: cast_nullable_to_non_nullable
               as String?,
-      city: freezed == city
+      city: null == city
           ? _value.city
           : city // ignore: cast_nullable_to_non_nullable
-              as String?,
-      state: freezed == state
+              as String,
+      state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       zipCode: freezed == zipCode
           ? _value.zipCode
           : zipCode // ignore: cast_nullable_to_non_nullable
@@ -149,10 +340,10 @@ class _$BranchDtoCopyWithImpl<$Res, $Val extends BranchDto>
           ? _value.country
           : country // ignore: cast_nullable_to_non_nullable
               as String?,
-      phone: freezed == phone
+      phone: null == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -161,14 +352,14 @@ class _$BranchDtoCopyWithImpl<$Res, $Val extends BranchDto>
           ? _value.vatIdNo
           : vatIdNo // ignore: cast_nullable_to_non_nullable
               as String?,
-      businessRegistrationNo: freezed == businessRegistrationNo
+      businessRegistrationNo: null == businessRegistrationNo
           ? _value.businessRegistrationNo
           : businessRegistrationNo // ignore: cast_nullable_to_non_nullable
-              as String?,
-      receiptTemplate: freezed == receiptTemplate
+              as String,
+      receiptTemplate: null == receiptTemplate
           ? _value.receiptTemplate
           : receiptTemplate // ignore: cast_nullable_to_non_nullable
-              as ReceiptTemplateDto?,
+              as ReceiptTemplateDto,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -186,12 +377,8 @@ class _$BranchDtoCopyWithImpl<$Res, $Val extends BranchDto>
 
   @override
   @pragma('vm:prefer-inline')
-  $ReceiptTemplateDtoCopyWith<$Res>? get receiptTemplate {
-    if (_value.receiptTemplate == null) {
-      return null;
-    }
-
-    return $ReceiptTemplateDtoCopyWith<$Res>(_value.receiptTemplate!, (value) {
+  $ReceiptTemplateDtoCopyWith<$Res> get receiptTemplate {
+    return $ReceiptTemplateDtoCopyWith<$Res>(_value.receiptTemplate, (value) {
       return _then(_value.copyWith(receiptTemplate: value) as $Val);
     });
   }
@@ -208,25 +395,25 @@ abstract class _$$BranchDtoImplCopyWith<$Res>
   $Res call(
       {int id,
       String name,
-      int? accountId,
+      int accountId,
       String? code,
-      String? street1,
+      String street1,
       String? street2,
-      String? city,
-      String? state,
+      String city,
+      String state,
       String? zipCode,
       String? country,
-      String? phone,
+      String phone,
       String? email,
       String? vatIdNo,
-      String? businessRegistrationNo,
-      ReceiptTemplateDto? receiptTemplate,
+      String businessRegistrationNo,
+      ReceiptTemplateDto receiptTemplate,
       @DateTimeConverter() DateTime? createdAt,
       @DateTimeConverter() DateTime? updatedAt,
       @DateTimeConverter() DateTime? deletedAt});
 
   @override
-  $ReceiptTemplateDtoCopyWith<$Res>? get receiptTemplate;
+  $ReceiptTemplateDtoCopyWith<$Res> get receiptTemplate;
 }
 
 /// @nodoc
@@ -242,19 +429,19 @@ class __$$BranchDtoImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? accountId = freezed,
+    Object? accountId = null,
     Object? code = freezed,
-    Object? street1 = freezed,
+    Object? street1 = null,
     Object? street2 = freezed,
-    Object? city = freezed,
-    Object? state = freezed,
+    Object? city = null,
+    Object? state = null,
     Object? zipCode = freezed,
     Object? country = freezed,
-    Object? phone = freezed,
+    Object? phone = null,
     Object? email = freezed,
     Object? vatIdNo = freezed,
-    Object? businessRegistrationNo = freezed,
-    Object? receiptTemplate = freezed,
+    Object? businessRegistrationNo = null,
+    Object? receiptTemplate = null,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? deletedAt = freezed,
@@ -268,30 +455,30 @@ class __$$BranchDtoImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      accountId: freezed == accountId
+      accountId: null == accountId
           ? _value.accountId
           : accountId // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       code: freezed == code
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as String?,
-      street1: freezed == street1
+      street1: null == street1
           ? _value.street1
           : street1 // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       street2: freezed == street2
           ? _value.street2
           : street2 // ignore: cast_nullable_to_non_nullable
               as String?,
-      city: freezed == city
+      city: null == city
           ? _value.city
           : city // ignore: cast_nullable_to_non_nullable
-              as String?,
-      state: freezed == state
+              as String,
+      state: null == state
           ? _value.state
           : state // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       zipCode: freezed == zipCode
           ? _value.zipCode
           : zipCode // ignore: cast_nullable_to_non_nullable
@@ -300,10 +487,10 @@ class __$$BranchDtoImplCopyWithImpl<$Res>
           ? _value.country
           : country // ignore: cast_nullable_to_non_nullable
               as String?,
-      phone: freezed == phone
+      phone: null == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -312,14 +499,14 @@ class __$$BranchDtoImplCopyWithImpl<$Res>
           ? _value.vatIdNo
           : vatIdNo // ignore: cast_nullable_to_non_nullable
               as String?,
-      businessRegistrationNo: freezed == businessRegistrationNo
+      businessRegistrationNo: null == businessRegistrationNo
           ? _value.businessRegistrationNo
           : businessRegistrationNo // ignore: cast_nullable_to_non_nullable
-              as String?,
-      receiptTemplate: freezed == receiptTemplate
+              as String,
+      receiptTemplate: null == receiptTemplate
           ? _value.receiptTemplate
           : receiptTemplate // ignore: cast_nullable_to_non_nullable
-              as ReceiptTemplateDto?,
+              as ReceiptTemplateDto,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -338,26 +525,27 @@ class __$$BranchDtoImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$BranchDtoImpl implements _BranchDto {
+class _$BranchDtoImpl extends _BranchDto {
   const _$BranchDtoImpl(
       {required this.id,
       required this.name,
-      this.accountId,
+      required this.accountId,
       this.code,
-      this.street1,
+      required this.street1,
       this.street2,
-      this.city,
-      this.state,
+      required this.city,
+      required this.state,
       this.zipCode,
       this.country,
-      this.phone,
+      required this.phone,
       this.email,
       this.vatIdNo,
-      this.businessRegistrationNo,
-      this.receiptTemplate,
+      required this.businessRegistrationNo,
+      required this.receiptTemplate,
       @DateTimeConverter() this.createdAt,
       @DateTimeConverter() this.updatedAt,
-      @DateTimeConverter() this.deletedAt});
+      @DateTimeConverter() this.deletedAt})
+      : super._();
 
   factory _$BranchDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$BranchDtoImplFromJson(json);
@@ -367,31 +555,31 @@ class _$BranchDtoImpl implements _BranchDto {
   @override
   final String name;
   @override
-  final int? accountId;
+  final int accountId;
   @override
   final String? code;
   @override
-  final String? street1;
+  final String street1;
   @override
   final String? street2;
   @override
-  final String? city;
+  final String city;
   @override
-  final String? state;
+  final String state;
   @override
   final String? zipCode;
   @override
   final String? country;
   @override
-  final String? phone;
+  final String phone;
   @override
   final String? email;
   @override
   final String? vatIdNo;
   @override
-  final String? businessRegistrationNo;
+  final String businessRegistrationNo;
   @override
-  final ReceiptTemplateDto? receiptTemplate;
+  final ReceiptTemplateDto receiptTemplate;
   @override
   @DateTimeConverter()
   final DateTime? createdAt;
@@ -475,26 +663,27 @@ class _$BranchDtoImpl implements _BranchDto {
   }
 }
 
-abstract class _BranchDto implements BranchDto {
+abstract class _BranchDto extends BranchDto {
   const factory _BranchDto(
       {required final int id,
       required final String name,
-      final int? accountId,
+      required final int accountId,
       final String? code,
-      final String? street1,
+      required final String street1,
       final String? street2,
-      final String? city,
-      final String? state,
+      required final String city,
+      required final String state,
       final String? zipCode,
       final String? country,
-      final String? phone,
+      required final String phone,
       final String? email,
       final String? vatIdNo,
-      final String? businessRegistrationNo,
-      final ReceiptTemplateDto? receiptTemplate,
+      required final String businessRegistrationNo,
+      required final ReceiptTemplateDto receiptTemplate,
       @DateTimeConverter() final DateTime? createdAt,
       @DateTimeConverter() final DateTime? updatedAt,
       @DateTimeConverter() final DateTime? deletedAt}) = _$BranchDtoImpl;
+  const _BranchDto._() : super._();
 
   factory _BranchDto.fromJson(Map<String, dynamic> json) =
       _$BranchDtoImpl.fromJson;
@@ -504,31 +693,31 @@ abstract class _BranchDto implements BranchDto {
   @override
   String get name;
   @override
-  int? get accountId;
+  int get accountId;
   @override
   String? get code;
   @override
-  String? get street1;
+  String get street1;
   @override
   String? get street2;
   @override
-  String? get city;
+  String get city;
   @override
-  String? get state;
+  String get state;
   @override
   String? get zipCode;
   @override
   String? get country;
   @override
-  String? get phone;
+  String get phone;
   @override
   String? get email;
   @override
   String? get vatIdNo;
   @override
-  String? get businessRegistrationNo;
+  String get businessRegistrationNo;
   @override
-  ReceiptTemplateDto? get receiptTemplate;
+  ReceiptTemplateDto get receiptTemplate;
   @override
   @DateTimeConverter()
   DateTime? get createdAt;

@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -42,7 +42,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
     return BlocConsumer<SaleTransactionListCubit, SaleTransactionListState>(
       listener: (context, state) {
         if (state is SaleTransactionListLoaded) {
-          sales = state.data.transactions ?? [];
+          sales = state.data.items ?? [];
           _saleTransactionDataSource = SaleTransactionDataSource(sales);
         }
         if (state is SaleTransactionSearchNoResult) {
@@ -108,7 +108,7 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                 ),
               ),
               const UIVerticalSpace(16),
-              if (state.data.transactions?.isNotEmpty == true)
+              if (state.data.items.isNotEmpty == true)
 
                 /// TODO: Extract pager to its own widget
                 Row(

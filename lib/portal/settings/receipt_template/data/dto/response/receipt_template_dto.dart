@@ -25,11 +25,10 @@ class ReceiptTemplateDto with _$ReceiptTemplateDto {
     @DateTimeConverter() DateTime? updatedAt,
   }) = _ReceiptTemplateDto;
 
-  factory ReceiptTemplateDto.fromJson(Map<String, dynamic> json) => _$ReceiptTemplateDtoFromJson(json);
-}
+  const ReceiptTemplateDto._();
 
-extension ReceiptTemplateDtoExt on ReceiptTemplateDto {
-  /// Mapping to domain entity
+  factory ReceiptTemplateDto.fromJson(Map<String, dynamic> json) => _$ReceiptTemplateDtoFromJson(json);
+
   ReceiptTemplate toDomain() => ReceiptTemplate(
         id: id,
         accountId: accountId,

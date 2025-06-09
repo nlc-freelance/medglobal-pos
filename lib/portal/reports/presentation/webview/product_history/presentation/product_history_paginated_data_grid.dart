@@ -10,7 +10,8 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/p
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_remote/stock_transfer_remote_cubit.dart';
-import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/bloc/transaction_bloc.dart';
+// import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -292,8 +293,10 @@ class ProductHistoryDataSource extends DataGridSource {
                           /// TODO: initState on the destination page is not being triggered for every goNamed call
                           /// that's why we are fetching the resource by id again here before navigating
                           switch (action) {
+                            // TODO: Create a bloc for product history and inject repositories to get these by id
+                            // so the original bloc does not need to be created/provided from higher context to be shared
                             case ProductHistoryAction.PURCHASE:
-                              _context.read<PurchaseOrderRemoteCubit>().getPurchaseOrderById(id);
+                              _context.read<PurchaseOrderBloc>().add(PurchaseOrderEvent.getPurchaseOrderById(id));
                               AppRouter.router.goNamed(
                                 'Purchase Order Details',
                                 pathParameters: {'id': row.getCells().first.value.toString()},
@@ -317,7 +320,7 @@ class ProductHistoryDataSource extends DataGridSource {
                                 pathParameters: {'id': row.getCells().first.value.toString()},
                               );
                             case ProductHistoryAction.SALE:
-                              _context.read<TransactionCubit>().getTransactionById(id);
+                              _context.read<TransactionBloc>().add(TransactionEvent.getTransactionById(id));
                               AppRouter.router.goNamed(
                                 'Sale Details',
                                 pathParameters: {'id': row.getCells().first.value.toString()},

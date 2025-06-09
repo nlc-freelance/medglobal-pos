@@ -1,15 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/transactions/domain/entities/transaction_paginated_list.dart';
-import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transactions_usecase.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transaction_repository.dart';
 
 part 'sale_transaction_list_state.dart';
 
 class SaleTransactionListCubit extends Cubit<SaleTransactionListState> {
-  final GetTransactionsUseCase _getTransactionsUseCase;
-
-  SaleTransactionListCubit(this._getTransactionsUseCase) : super(SaleTransactionListInitial());
+  final TransactionRepository _repository;
+  SaleTransactionListCubit(this._repository) : super(SaleTransactionListInitial());
 
   Future<void> getTransactions({
     int page = 1,
@@ -22,20 +22,20 @@ class SaleTransactionListCubit extends Cubit<SaleTransactionListState> {
     emit(SaleTransactionListLoading());
 
     try {
-      final result = await _getTransactionsUseCase.call(GetTransactionsParams(
-        type: TransactionType.SALE,
+      final result = await _repository.getTransactions(
+        type: TransactionType.sale,
         page: page,
         size: size,
         search: search,
-        branchId: branchId,
+        branch: branchId,
         isAllBranches: branchId == null,
         startDate: startDate,
         endDate: endDate,
-      ));
+      );
       result.fold(
         (error) => emit(SaleTransactionListError(message: error.message)),
         (data) {
-          if (search != null && data.totalCount == 0 && data.transactions?.isEmpty == true) {
+          if (search != null && data.totalCount == 0 && data.items.isEmpty == true) {
             emit(SaleTransactionSearchNoResult(message: 'No results found for \'$search\''));
           } else {
             emit(SaleTransactionListLoaded(data: data));

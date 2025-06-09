@@ -75,12 +75,12 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/prod
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_search/pos_product_search_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/sale_remote/sale_remote_cubit.dart';
-import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_cubit.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_form_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
-import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
+// import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class MedGlobaPortalApp extends StatelessWidget {
@@ -91,7 +91,7 @@ class MedGlobaPortalApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => GetIt.I<AuthBloc>()..add(const AppInitEvent())),
-        BlocProvider(create: (_) => GetIt.I<LazyListBloc<Branch>>()),
+        BlocProvider(create: (_) => GetIt.I<LazyListBloc<BranchLite>>()),
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<Tax>>()),
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<Register>>()),
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<ReceiptTemplate>>()),
@@ -107,19 +107,19 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<SupplierCubit>()),
         BlocProvider(create: (_) => GetIt.I<CategoryCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductSelectionCubit>()),
-        BlocProvider(create: (_) => GetIt.I<ProductBulkActionCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<ProductBulkActionCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductListCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductListFilterCubit>()),
-        BlocProvider(create: (_) => GetIt.I<ProductCubit>()),
-        BlocProvider(create: (_) => GetIt.I<ProductFormCubit>()),
-        BlocProvider(create: (_) => GetIt.I<VariantFormCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<ProductCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<ProductFormCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<VariantFormCubit>()),
         BlocProvider(create: (_) => GetIt.I<VariantFormUiCubit>()),
         BlocProvider(create: (_) => GetIt.I<SupplyNeedsCubit>()),
         BlocProvider(create: (_) => GetIt.I<SupplyNeedCubit>()),
         BlocProvider(create: (_) => GetIt.I<PurchaseOrderListRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<PurchaseOrderListFilterCubit>()),
-        BlocProvider(create: (_) => GetIt.I<PurchaseOrderRemoteCubit>()),
-        BlocProvider(create: (_) => GetIt.I<PurchaseOrderCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<PurchaseOrderRemoteCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<PurchaseOrderCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewPurchaseOrderCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnListRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnListFilterCubit>()),
@@ -145,16 +145,16 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<RegisterShiftBloc>()),
         BlocProvider(create: (_) => GetIt.I<PosProductListCubit>()),
         BlocProvider(create: (_) => GetIt.I<PosProductSearchCubit>()),
-        BlocProvider(create: (_) => GetIt.I<OrderCubit>()),
-        BlocProvider(create: (_) => GetIt.I<SaleRemoteCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<OrderCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<SaleRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<SaleTransactionListCubit>()),
         BlocProvider(create: (_) => GetIt.I<SaleTransactionListFilterCubit>()),
-        BlocProvider(create: (_) => GetIt.I<TransactionCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<TransactionCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnTransactionListCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnTransactionListFilterCubit>()),
-        BlocProvider(create: (_) => GetIt.I<TransactionListByBranchCubit>()),
-        BlocProvider(create: (_) => GetIt.I<RefundCubit>()),
-        BlocProvider(create: (_) => GetIt.I<RefundRemoteCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<TransactionListByBranchCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<RefundCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<RefundRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<PrintReceiptCubit>()),

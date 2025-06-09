@@ -3,31 +3,42 @@ import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/e
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'branch.freezed.dart';
-part 'branch.g.dart';
+
+// abstract class BranchBase {
+//   int? get id;
+//   String get name;
+// }
+
+@freezed
+class BranchLite with _$BranchLite {
+  const factory BranchLite({
+    required int id,
+    required String name,
+    required String address,
+    String? phone,
+  }) = _BranchLite;
+}
 
 @freezed
 class Branch with _$Branch {
+  const Branch._();
   const factory Branch({
     int? id,
     required String name,
-    int? accountId,
+    required int accountId,
     String? code,
-    String? phone,
+    required String phone,
     String? email,
-    String? street1,
+    required String street1,
     String? street2,
-    String? city,
-    String? state,
+    required String city,
+    required String state,
     String? postalCode,
     String? country,
-    String? businessRegistrationNumber,
+    required String businessRegistrationNumber,
     String? vatIdNumber,
-    ReceiptTemplate? receiptTemplate,
+    required ReceiptTemplate receiptTemplate,
   }) = _Branch;
-
-  const Branch._();
-
-  factory Branch.fromJson(Map<String, dynamic> json) => _$BranchFromJson(json);
 
   DataGridRow toDataGridRow() => DataGridRow(
         cells: [

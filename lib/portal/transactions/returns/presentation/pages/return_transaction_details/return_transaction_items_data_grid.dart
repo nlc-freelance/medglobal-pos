@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_cubit.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -25,16 +25,18 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
   late ReturnItemsDataSource _returnItemsDataSource;
   late CustomSelectionManager customSelectionManager;
 
+  late bool _isAwaitingAction;
+
   @override
   void initState() {
     super.initState();
-    _items = widget.transaction.items ?? [];
+    _items = widget.transaction.items;
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
-    final isEditable = widget.transaction.status == ReturnStatus.AWAITING_ACTION;
+    _isAwaitingAction = widget.transaction.status == ReturnStatus.awaiting_action;
 
-    _returnItemsDataSource = ReturnItemsDataSource(_items, context, isEditable);
+    _returnItemsDataSource = ReturnItemsDataSource(_items, context, _isAwaitingAction);
   }
 
   @override
@@ -47,8 +49,8 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
   Widget build(BuildContext context) {
     return BlocConsumer<ReturnCubit, ReturnState>(
       listener: (context, state) {
-        _returnItemsDataSource._items = state.transaction.items ?? [];
-        _returnItemsDataSource._isEditable = state.transaction.status == ReturnStatus.AWAITING_ACTION;
+        _returnItemsDataSource._items = state.items;
+        _returnItemsDataSource._isEditable = _isAwaitingAction;
 
         _returnItemsDataSource.buildDataGridRows();
         _returnItemsDataSource.updateDataGridSource();

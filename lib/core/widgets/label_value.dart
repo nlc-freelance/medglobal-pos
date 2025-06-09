@@ -91,9 +91,9 @@ class LabelValue extends StatelessWidget {
             label: Text(
               type!.label,
               style: UIStyleText.chip
-                  .copyWith(color: type == TransactionType.SALE ? UIColors.completed : UIColors.cancelled),
+                  .copyWith(color: type == TransactionType.sale ? UIColors.completed : UIColors.cancelled),
             ),
-            backgroundColor: type == TransactionType.SALE ? UIColors.completedBg : UIColors.cancelledBg,
+            backgroundColor: type == TransactionType.sale ? UIColors.completedBg : UIColors.cancelledBg,
             padding: const EdgeInsets.symmetric(horizontal: 8),
             visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
             shape: RoundedRectangleBorder(
@@ -108,9 +108,9 @@ class LabelValue extends StatelessWidget {
             label: Text(
               returnStatus!.label,
               style: UIStyleText.chip.copyWith(
-                  color: returnStatus == ReturnStatus.COMPLETED ? UIColors.completed : UIColors.awaitingAction),
+                  color: returnStatus == ReturnStatus.completed ? UIColors.completed : UIColors.awaitingAction),
             ),
-            backgroundColor: returnStatus == ReturnStatus.COMPLETED ? UIColors.completedBg : UIColors.awaitingActionBg,
+            backgroundColor: returnStatus == ReturnStatus.completed ? UIColors.completedBg : UIColors.awaitingActionBg,
             padding: const EdgeInsets.symmetric(horizontal: 8),
             visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
             shape: RoundedRectangleBorder(

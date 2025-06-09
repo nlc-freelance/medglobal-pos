@@ -23,7 +23,7 @@ class RegisterShiftDto extends Equatable {
 
   factory RegisterShiftDto.fromJson(Map<String, dynamic> json) => _$RegisterShiftDtoFromJson(json);
 
-  RegisterShift toEntity() => RegisterShift(
+  RegisterShift toDomain() => RegisterShift(
         status: status,
         createdAt: createdAt,
         updatedAt: updatedAt,

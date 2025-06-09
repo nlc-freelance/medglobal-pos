@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/data/api/supplier_api.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_request_dto.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/repositories/supplier_repository.dart';
 
@@ -25,7 +26,7 @@ class SupplierRepositoryImpl implements SupplierRepository {
   Future<Either<Failure, Supplier>> getSupplierById(int id) async {
     try {
       final supplier = await supplierApi.getSupplier(id);
-      return Right(supplier.toEntity());
+      return Right(supplier.toDomain());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
@@ -34,7 +35,8 @@ class SupplierRepositoryImpl implements SupplierRepository {
   @override
   Future<Either<Failure, void>> create(Supplier supplier) async {
     try {
-      return Right(await supplierApi.create(supplier));
+      final requestDto = SupplierRequestDto.fromDomain(supplier);
+      return Right(await supplierApi.create(requestDto));
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
@@ -43,7 +45,8 @@ class SupplierRepositoryImpl implements SupplierRepository {
   @override
   Future<Either<Failure, void>> update(int id, Supplier supplier) async {
     try {
-      return Right(await supplierApi.update(id, supplier));
+      final requestDto = SupplierRequestDto.fromDomain(supplier);
+      return Right(await supplierApi.update(id, requestDto));
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

@@ -11,7 +11,7 @@ final class ShiftTransactionsInitial extends ShiftTransactionsState {}
 final class ShiftTransactionsLoading extends ShiftTransactionsState {}
 
 final class ShiftTransactionsLoaded extends ShiftTransactionsState {
-  final TransactionPaginatedList data;
+  final PaginatedList<Transaction> data;
   const ShiftTransactionsLoaded({required this.data});
 
   @override

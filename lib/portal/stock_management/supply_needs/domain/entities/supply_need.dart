@@ -8,7 +8,7 @@ part 'supply_need.g.dart';
 @JsonSerializable()
 class SupplyNeed extends Equatable {
   final int? id;
-  final Branch? branch;
+  final BranchLite? branch;
   final List<SupplyNeedItem>? items;
 
   const SupplyNeed({

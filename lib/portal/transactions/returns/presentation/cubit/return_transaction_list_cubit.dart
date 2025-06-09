@@ -1,15 +1,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/transactions/domain/entities/transaction_paginated_list.dart';
-import 'package:medglobal_admin_portal/portal/transactions/domain/usecases/get_transactions_usecase.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
+
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transaction_repository.dart';
 
 part 'return_transaction_list_state.dart';
 
 class ReturnTransactionListCubit extends Cubit<ReturnTransactionListState> {
-  final GetTransactionsUseCase _getTransactionsUseCase;
-
-  ReturnTransactionListCubit(this._getTransactionsUseCase) : super(ReturnTransactionListInitial());
+  final TransactionRepository _repository;
+  ReturnTransactionListCubit(this._repository) : super(ReturnTransactionListInitial());
 
   Future<void> getTransactions({
     int page = 1,
@@ -22,20 +23,20 @@ class ReturnTransactionListCubit extends Cubit<ReturnTransactionListState> {
     emit(ReturnTransactionListLoading());
 
     try {
-      final result = await _getTransactionsUseCase.call(GetTransactionsParams(
-        type: TransactionType.REFUND,
+      final result = await _repository.getTransactions(
+        type: TransactionType.refund,
         page: page,
         size: size,
         search: search,
-        branchId: branchId,
+        branch: branchId,
         isAllBranches: branchId == null,
         startDate: startDate,
         endDate: endDate,
-      ));
+      );
       result.fold(
         (error) => emit(ReturnTransactionListError(message: error.message)),
         (data) {
-          if (search != null && data.totalCount == 0 && data.transactions?.isEmpty == true) {
+          if (search != null && data.totalCount == 0 && data.items.isEmpty == true) {
             emit(ReturnTransactionSearchNoResult(message: 'No results found for \'$search\''));
           } else {
             emit(ReturnTransactionListLoaded(data: data));

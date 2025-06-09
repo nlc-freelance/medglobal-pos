@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -199,7 +199,7 @@ class TransactionItemsDataSource extends DataGridSource {
   }
 
   Widget _buildCell(String column, DataGridCell cell, int id) {
-    double? discount() => _items.singleWhere((sale) => sale.id == id).discount;
+    double? discount() => _items.singleWhere((sale) => sale.id == id).discountValue;
     DiscountType? discountType() => _items.singleWhere((sale) => sale.id == id).discountType;
 
     return switch (column) {
@@ -207,7 +207,7 @@ class TransactionItemsDataSource extends DataGridSource {
           mainAxisSize: MainAxisSize.min,
           children: [
             UIText.bodyRegular((cell.value as double).toPesoString()),
-            if (discount() != null && discount() != 0 && discountType() == DiscountType.PERCENT) ...[
+            if (discount() != null && discount() != 0 && discountType() == DiscountType.percentage) ...[
               const UIHorizontalSpace(8),
               Container(
                 margin: const EdgeInsets.only(top: 0),
@@ -254,46 +254,46 @@ class TransactionItemsDataSource extends DataGridSource {
                 textAlign: TextAlign.end,
                 style: UIStyleText.labelSemiBold,
               )
-            : summaryRow.title == 'Discount'
-                ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      UIText.labelSemiBold(getSummaryValue(summaryRow.title!, summaryValue)),
-                      if (_transaction.discountType == DiscountType.PERCENT &&
-                          _transaction.discount != null &&
-                          _transaction.discount != 0) ...[
-                        const UIHorizontalSpace(8),
-                        Container(
-                          margin: const EdgeInsets.only(top: 0),
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: UIColors.cancelledBg.withOpacity(0.4),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
-                              const UIHorizontalSpace(8),
-                              Text(
-                                '${_transaction.discount.toString()}%',
-                                style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ],
-                  )
-                : UIText.labelSemiBold(getSummaryValue(summaryRow.title!, summaryValue)),
+            // : summaryRow.title == 'Discount'
+            //     ? Row(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         mainAxisSize: MainAxisSize.min,
+            //         children: [
+            //           UIText.labelSemiBold(getSummaryValue(summaryRow.title!, summaryValue)),
+            //           if (_transaction.discountType == DiscountType.percentage &&
+            //               _transaction.discount != null &&
+            //               _transaction.discount != 0) ...[
+            //             const UIHorizontalSpace(8),
+            //             Container(
+            //               margin: const EdgeInsets.only(top: 0),
+            //               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            //               decoration: BoxDecoration(
+            //                 borderRadius: BorderRadius.circular(50),
+            //                 color: UIColors.cancelledBg.withOpacity(0.4),
+            //               ),
+            //               child: Row(
+            //                 mainAxisSize: MainAxisSize.min,
+            //                 children: [
+            //                   Assets.icons.tag.svg(colorFilter: UIColors.buttonDanger.toColorFilter, width: 12),
+            //                   const UIHorizontalSpace(8),
+            //                   Text(
+            //                     '${_transaction.discount.toString()}%',
+            //                     style: UIStyleText.hint.copyWith(color: UIColors.buttonDanger, fontSize: 11),
+            //                   ),
+            //                 ],
+            //               ),
+            //             )
+            //           ],
+            //         ],
+            //       )
+            : UIText.labelSemiBold(getSummaryValue(summaryRow.title!, summaryValue)),
       );
 
   String getSummaryValue(String label, String subtotal) {
     double? value;
     switch (label) {
       case 'Total Discount':
-        value = _transaction.totalDiscountInPeso;
+        value = _transaction.totalDiscountAmount;
       case 'Tax':
         value = _transaction.tax;
       case 'Total':

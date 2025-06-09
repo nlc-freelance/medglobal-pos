@@ -31,7 +31,7 @@ class BranchRepositoryImpl implements BranchRepository {
     try {
       final responseDto = await _branchApi.getBranchById(id);
 
-      return Right(responseDto.toDomain());
+      return Right(responseDto.toEntity());
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
@@ -45,7 +45,7 @@ class BranchRepositoryImpl implements BranchRepository {
       final requestDto = CreateBranchDto.fromDomain(branch);
       final responseDto = await _branchApi.createBranch(requestDto);
 
-      return Right(responseDto.toDomain());
+      return Right(responseDto.toEntity());
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
@@ -59,7 +59,7 @@ class BranchRepositoryImpl implements BranchRepository {
       final requestDto = UpdateBranchDto.fromDomain(branch);
       final responseDto = await _branchApi.updateBranch(requestDto);
 
-      return Right(responseDto.toDomain());
+      return Right(responseDto.toEntity());
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {

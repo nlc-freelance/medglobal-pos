@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
 import 'package:medglobal_admin_portal/core/widgets/dialog/app_custom_dialog.dart';
-import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/form/form.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/presentation/bloc/register_bloc/register_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/presentation/cubit/register_form_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -58,13 +58,22 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
                 onChanged: (value) => _registerFormCubit.setName(value),
               ),
               const UIVerticalSpace(16),
-              BranchDropdown.input_top(
-                hint: 'Select branch',
+              // BranchDropdown.input_top(
+              //   hint: 'Select branch',
+              //   label: 'Assigned Branch',
+              //   // selectedItem: _registerFormCubit.state.assignedBranch,
+              //   required: true,
+              //   onSelectItem: (value) => _registerFormCubit.setAssignedBranch(value),
+              //   isReadOnly: _registerFormCubit.state.assignedBranch != null,
+              // ),
+              AppDropdownFormField<BranchLite>.labelTop(
                 label: 'Assigned Branch',
-                selectedItem: _registerFormCubit.state.assignedBranch,
-                required: true,
-                onSelectItem: (value) => _registerFormCubit.setAssignedBranch(value),
+                hint: 'Select branch',
+                isRequired: true,
                 isReadOnly: _registerFormCubit.state.assignedBranch != null,
+                value: _registerFormCubit.state.assignedBranch,
+                getName: (branch) => branch.name,
+                onChanged: (branch) => _registerFormCubit.setAssignedBranch(branch),
               ),
               Text(
                 _hasAssignedBranch

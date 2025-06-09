@@ -9,7 +9,7 @@ class ReceiptTemplateFormCubit extends Cubit<ReceiptTemplateFormState> {
   ReceiptTemplateFormCubit() : super(ReceiptTemplateFormState.initial());
 
   void initReceiptTemplate(ReceiptTemplate template) {
-    emit(ReceiptTemplateFormState.fromTax(template));
+    emit(ReceiptTemplateFormState.fromReceiptTemplate(template));
   }
 
   void setName(String name) => emit(state.copyWith(name: name));

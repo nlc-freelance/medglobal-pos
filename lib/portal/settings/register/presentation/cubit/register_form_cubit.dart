@@ -13,9 +13,8 @@ class RegisterFormCubit extends Cubit<RegisterFormState> {
 
   void setName(String name) => emit(state.copyWith(name: name));
 
-  void setAssignedBranch(Branch branch) => emit(state.copyWith(assignedBranch: branch));
+  void setAssignedBranch(BranchLite branch) => emit(state.copyWith(assignedBranch: branch));
 
-  /// After form is validated, map TaxFormState values to a Tax
   Register toRegister() {
     return Register(
       id: state.id,

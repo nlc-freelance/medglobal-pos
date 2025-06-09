@@ -4,7 +4,6 @@ import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/api/receipt_template_api.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/request/create_receipt_template_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/request/update_receipt_template_dto.dart';
-import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/response/receipt_template_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/repository/receipt_template_repository.dart';
 

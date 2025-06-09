@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_bloc/pos_transaction_bloc.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_list_bloc/pos_transaction_list_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+// import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class TransactionList extends StatefulWidget {
@@ -26,14 +28,14 @@ class _TransactionListState extends State<TransactionList> {
     super.initState();
     _searchController = TextEditingController();
     _scrollController = ScrollController()..addListener(_scrollListener);
-    context.read<TransactionListByBranchCubit>().getTransactionsByBranch();
+    context.read<PosTransactionListBloc>().add(const PosTransactionListEvent.fetch());
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
-        !context.read<TransactionListByBranchCubit>().state.isLoadingMore &&
-        !context.read<TransactionListByBranchCubit>().state.hasReachedMax) {
-      context.read<TransactionListByBranchCubit>().getTransactionsByBranch();
+        !context.read<PosTransactionListBloc>().state.isLoadingMore &&
+        !context.read<PosTransactionListBloc>().state.hasReachedMax) {
+      context.read<PosTransactionListBloc>().add(const PosTransactionListEvent.fetch());
     }
   }
 
@@ -48,7 +50,7 @@ class _TransactionListState extends State<TransactionList> {
     Map<DateTime, List<Transaction>> groupedItems = {};
 
     for (var item in transactions) {
-      DateTime date = DateTime(item.createdAt!.year, item.createdAt!.month, item.createdAt!.day);
+      DateTime date = DateTime(item.createdAt.year, item.createdAt.month, item.createdAt.day);
       if (groupedItems[date] == null) {
         groupedItems[date] = [];
       }
@@ -60,7 +62,7 @@ class _TransactionListState extends State<TransactionList> {
 
     /// Sort transactions within each date from latest to oldest
     sortedGroupedItems.forEach((key, value) {
-      value.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+      value.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     });
 
     return sortedGroupedItems;
@@ -76,7 +78,7 @@ class _TransactionListState extends State<TransactionList> {
           border: Border.all(color: UIColors.borderMuted, width: 1.0),
           borderRadius: const BorderRadius.all(Radius.circular(10.0)),
         ),
-        child: BlocBuilder<TransactionListByBranchCubit, TransactionListByBranchState>(
+        child: BlocBuilder<PosTransactionListBloc, PosTransactionListState>(
           builder: (context, state) {
             return Column(
               children: [
@@ -89,14 +91,11 @@ class _TransactionListState extends State<TransactionList> {
                   ),
                   controller: _searchController,
                   onChanged: (value) => _debouncer.run(
-                    (() => context.read<TransactionListByBranchCubit>().getTransactionsByBranch(
-                          search: value,
-                          isInitialSearch: true,
-                        )),
+                    (() => context.read<PosTransactionListBloc>().add(PosTransactionListEvent.fetch(search: value))),
                   ),
                 ),
                 const UIVerticalSpace(24),
-                if (state.LOADING)
+                if (state.isLoadingInitial)
                   const Padding(
                     padding: EdgeInsets.all(30),
                     child: SizedBox(
@@ -105,14 +104,14 @@ class _TransactionListState extends State<TransactionList> {
                       child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2),
                     ),
                   )
-                else if (state.EMPTY)
+                else if (state.hasNoData)
                   Padding(
                     padding: const EdgeInsets.all(30),
                     child: UIText.labelMedium(_searchController.text.isNotEmpty
                         ? 'No results found for \'${_searchController.text}\''
                         : 'No data available'),
                   )
-                else if (state.ERROR)
+                else if (state.error != null)
                   Padding(
                     padding: const EdgeInsets.all(30),
                     child: UIText.labelMedium(state.error!),
@@ -143,20 +142,25 @@ class _TransactionListState extends State<TransactionList> {
                                       (item) => Container(
                                         margin: const EdgeInsets.symmetric(vertical: 2),
                                         decoration: UIStyleContainer.topBorder,
-                                        child: BlocSelector<TransactionCubit, TransactionState, Transaction?>(
-                                          selector: (state) {
-                                            if (state is TransactionByIdSuccess) return state.transaction;
+                                        child: BlocSelector<PosTransactionBloc, PosTransactionState, Transaction?>(
+                                          selector: (state) => state.maybeWhen(
+                                            loaded: (transaction) => transaction,
+                                            orElse: () => null,
+                                          ),
+                                          // {
+                                          // if (state is TransactionByIdSuccess) return state.transaction;
 
-                                            return null;
-                                          },
+                                          // return null;
+                                          // },
                                           builder: (context, currentTransaction) {
                                             return Container(
                                               color: currentTransaction?.id == item.id
                                                   ? UIColors.buttonSecondaryHover
                                                   : null,
                                               child: ListTile(
-                                                onTap: () =>
-                                                    context.read<TransactionCubit>().getTransactionById(item.id!),
+                                                onTap: () => context
+                                                    .read<PosTransactionBloc>()
+                                                    .add(PosTransactionEvent.getTransactionById(item.id)),
                                                 hoverColor: UIColors.buttonSecondaryHover,
                                                 dense: true,
                                                 contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -164,7 +168,7 @@ class _TransactionListState extends State<TransactionList> {
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Text(
-                                                      item.receiptId!,
+                                                      item.receiptId,
                                                       style:
                                                           UIStyleText.hintRegular.copyWith(color: UIColors.textRegular),
                                                     ),
@@ -173,14 +177,14 @@ class _TransactionListState extends State<TransactionList> {
                                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                                       decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.circular(8),
-                                                        color: (item.type == TransactionType.SALE
+                                                        color: (item.type == TransactionType.sale
                                                                 ? UIColors.completedBg
                                                                 : UIColors.cancelledBg)
                                                             .withOpacity(0.4),
                                                       ),
                                                       child: Row(
                                                         children: [
-                                                          item.type == TransactionType.REFUND
+                                                          item.type == TransactionType.refund
                                                               ? Assets.icons.import
                                                                   .svg(colorFilter: UIColors.buttonDanger.toColorFilter)
                                                               : Assets.icons.received.svg(
@@ -188,8 +192,8 @@ class _TransactionListState extends State<TransactionList> {
                                                                   width: 10),
                                                           const UIHorizontalSpace(8),
                                                           UIText.labelRegular(
-                                                            item.type!.label,
-                                                            color: item.type == TransactionType.SALE
+                                                            item.type.label,
+                                                            color: item.type == TransactionType.sale
                                                                 ? UIColors.completed
                                                                 : UIColors.buttonDanger,
                                                           ),
@@ -203,11 +207,11 @@ class _TransactionListState extends State<TransactionList> {
                                                   child: Row(
                                                     children: [
                                                       Text(
-                                                        DateFormat('h:mm a').format(item.createdAt!),
+                                                        DateFormat('h:mm a').format(item.createdAt),
                                                         style: UIStyleText.hint.copyWith(color: UIColors.textMuted),
                                                       ),
                                                       const Spacer(),
-                                                      if (item.type == TransactionType.REFUND) UIText.label('-'),
+                                                      if (item.type == TransactionType.refund) UIText.label('-'),
                                                       UIText.label('₱${item.total.toPesoString()} '),
                                                     ],
                                                   ),

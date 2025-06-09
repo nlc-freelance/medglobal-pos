@@ -2,11 +2,10 @@ import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_dto.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_request_dto.dart';
 
 class SupplierApi {
   final BaseApiService _api;
-
   SupplierApi(this._api);
 
   Future<PaginatedList<SupplierDto>> getSuppliers({required PageQuery filters}) async {
@@ -33,20 +32,20 @@ class SupplierApi {
     return response.data;
   }
 
-  Future<SupplierDto> create(Supplier supplier) async {
+  Future<SupplierDto> create(SupplierRequestDto dto) async {
     final response = await _api.post<SupplierDto>(
       ApiEndpoint.suppliers(),
-      data: supplier.toJson(),
+      data: dto.toJson(),
       fromJson: SupplierDto.fromJson,
     );
 
     return response.data;
   }
 
-  Future<SupplierDto> update(int id, Supplier supplier) async {
+  Future<SupplierDto> update(int id, SupplierRequestDto dto) async {
     final response = await _api.update<SupplierDto>(
       ApiEndpoint.suppliers(id),
-      data: supplier.toJson(),
+      data: dto.toJson(),
       fromJson: SupplierDto.fromJson,
     );
 

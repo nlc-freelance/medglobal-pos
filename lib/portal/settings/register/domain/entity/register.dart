@@ -35,22 +35,36 @@ import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/re
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'register.freezed.dart';
-part 'register.g.dart';
+// part 'register.g.dart';
+
+abstract class RegisterBase {
+  int? get id;
+  String get name;
+}
+
+@freezed
+class RegisterLite with _$RegisterLite implements RegisterBase {
+  const factory RegisterLite({
+    required int id,
+    required String name,
+  }) = _RegisterLite;
+}
 
 @freezed
 class Register with _$Register {
+  const Register._();
+
   const factory Register({
     int? id,
     required String name,
-    Branch? assignedBranch,
+    BranchLite? assignedBranch,
+    // Branch? assignedBranch,
     RegisterShift? shiftDetail,
     String? serialNumber,
   }) = _Register;
 
   // For old (MVP) implementations without request DTOs
-  factory Register.fromJson(Map<String, dynamic> json) => _$RegisterFromJson(json);
-
-  const Register._();
+  // factory Register.fromJson(Map<String, dynamic> json) => _$RegisterFromJson(json);
 
   DataGridRow toDataGridRow() => DataGridRow(
         cells: [

@@ -11,7 +11,7 @@ final class ReturnTransactionListInitial extends ReturnTransactionListState {}
 final class ReturnTransactionListLoading extends ReturnTransactionListState {}
 
 final class ReturnTransactionListLoaded extends ReturnTransactionListState {
-  final TransactionPaginatedList data;
+  final PaginatedList<Transaction> data;
   const ReturnTransactionListLoaded({required this.data});
 
   @override

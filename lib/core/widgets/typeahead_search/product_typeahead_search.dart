@@ -34,7 +34,7 @@ class _ProductTypeAheadSearchState extends State<ProductTypeAheadSearch> {
 
   @override
   Widget build(BuildContext context) => TypeAheadField<ProductDto>(
-        suggestionsCallback: (search) async => await GetIt.I<ProductApi>().searchProducts(search: search),
+        suggestionsCallback: (search) async => await GetIt.I<ProductApi>().getProductList(search: search),
         constraints: const BoxConstraints(maxHeight: 200),
         builder: (context, _, focusNode) {
           return TextField(

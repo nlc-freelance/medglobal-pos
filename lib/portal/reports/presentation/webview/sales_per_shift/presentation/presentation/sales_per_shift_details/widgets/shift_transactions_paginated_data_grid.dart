@@ -38,7 +38,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
     return BlocConsumer<ShiftTransactionsCubit, ShiftTransactionsState>(
       listener: (context, state) {
         if (state is ShiftTransactionsLoaded) {
-          transactions = state.data.transactions ?? [];
+          transactions = state.data.items ?? [];
           _shiftTransactions = ShiftTransactionsDataSource(transactions, context);
         }
       },
@@ -82,7 +82,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
                 ),
               ),
               const UIVerticalSpace(16),
-              if (state.data.transactions?.isNotEmpty == true)
+              if (state.data.items?.isNotEmpty == true)
 
                 /// TODO: Extract pager to its own widget
                 Row(
@@ -256,7 +256,7 @@ class ShiftTransactionsDataSource extends DataGridSource {
       'receipt_id' => HoverBuilder(
           builder: (isHover) => InkWell(
             onTap: () {
-              _context.read<TransactionCubit>().getTransactionById(id);
+              _context.read<TransactionBloc>().add(TransactionEvent.getTransactionById(id));
 
               AppRouter.router.goNamed(
                 type.toLowerCase() == 'sale' ? 'Sale Details' : 'Return Details',

@@ -51,6 +51,6 @@ class UpdateBranchDto {
         country: branch.country,
         businessRegistrationNo: branch.businessRegistrationNumber,
         vatIdNo: branch.vatIdNumber,
-        receiptTemplateId: branch.receiptTemplate?.id,
+        receiptTemplateId: branch.receiptTemplate.id,
       );
 }

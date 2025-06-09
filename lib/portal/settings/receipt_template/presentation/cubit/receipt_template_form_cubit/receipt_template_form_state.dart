@@ -22,7 +22,7 @@ class ReceiptTemplateFormState with _$ReceiptTemplateFormState {
 
   factory ReceiptTemplateFormState.initial() => const ReceiptTemplateFormState();
 
-  factory ReceiptTemplateFormState.fromTax(ReceiptTemplate template) => ReceiptTemplateFormState(
+  factory ReceiptTemplateFormState.fromReceiptTemplate(ReceiptTemplate template) => ReceiptTemplateFormState(
         id: template.id,
         name: template.name,
         description: template.description,
