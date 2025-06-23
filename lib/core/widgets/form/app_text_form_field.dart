@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:medglobal_admin_portal/core/extensions/extensions.dart';
+import 'package:medglobal_admin_portal/gen/assets.gen.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 /// Todos:
@@ -17,6 +19,8 @@ class AppTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final bool isObscured;
   final bool isRequired;
+  final bool isReadOnly;
+
   final String? Function(String?)? validator;
   final void Function(String value)? onChanged;
   final List<TextInputFormatter>? formatter;
@@ -28,6 +32,7 @@ class AppTextFormField extends StatelessWidget {
     required this.controller,
     this.isObscured = false,
     this.isRequired = false,
+    this.isReadOnly = false,
     this.validator,
     this.onChanged,
     this.formatter,
@@ -40,6 +45,7 @@ class AppTextFormField extends StatelessWidget {
     required this.controller,
     this.isObscured = false,
     this.isRequired = false,
+    this.isReadOnly = false,
     this.validator,
     this.onChanged,
     this.formatter,
@@ -52,6 +58,7 @@ class AppTextFormField extends StatelessWidget {
     required this.controller,
     this.isObscured = false,
     this.isRequired = false,
+    this.isReadOnly = false,
     this.validator,
     this.onChanged,
     this.formatter,
@@ -60,6 +67,7 @@ class AppTextFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textFormField = TextFormField(
+      enabled: !isReadOnly,
       controller: controller,
       onChanged: onChanged,
       style: UIStyleText.bodyRegular.copyWith(fontSize: 12, color: UIColors.textDark),
@@ -69,11 +77,20 @@ class AppTextFormField extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           borderSide: BorderSide(color: UIColors.textGray),
         ),
+        suffixIcon: isReadOnly ? Assets.icons.lock.svg(colorFilter: UIColors.textMuted.toColorFilter) : null,
+        suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
+        fillColor: UIColors.borderMuted.withOpacity(0.5),
+        filled: isReadOnly,
+        disabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          borderSide: BorderSide(color: UIColors.borderRegular),
+        ),
       ),
       cursorHeight: 14,
       inputFormatters: [...?formatter],
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: validator,
+      mouseCursor: isReadOnly ? null : SystemMouseCursors.text,
     );
 
     return layout == FieldLabelPosition.none

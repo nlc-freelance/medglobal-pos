@@ -15,7 +15,7 @@ class AppRadioGroup<T> extends StatefulWidget {
   });
 
   final List<T> items;
-  final void Function(T?) onChanged;
+  final void Function(T) onChanged;
   final String Function(T) itemAsString;
   final TextStyle? labelStyle;
   final Axis direction;
@@ -64,8 +64,10 @@ class _AppRadioGroupState<T> extends State<AppRadioGroup<T>> {
                         value: item,
                         groupValue: selected,
                         onChanged: (value) {
-                          setState(() => selected = value as T);
-                          widget.onChanged(value);
+                          if (value != null) {
+                            setState(() => selected = value as T);
+                            widget.onChanged(value);
+                          }
                         },
                         title: Text(widget.itemAsString(item), style: widget.labelStyle ?? UIStyleText.labelMedium),
                         fillColor: WidgetStateColor.resolveWith(

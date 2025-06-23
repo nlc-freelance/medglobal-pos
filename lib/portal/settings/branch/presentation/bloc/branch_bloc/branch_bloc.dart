@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/repository/branch_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
@@ -29,7 +30,7 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
     emit(const BranchState.initializingNewBranch());
 
     try {
-      final result = await _receiptTemplateRepository.getReceiptTemplates();
+      final result = await _receiptTemplateRepository.getReceiptTemplates(filters: const FilterList());
 
       result.fold(
         (failure) => emit(BranchState.failure(failure.message)),

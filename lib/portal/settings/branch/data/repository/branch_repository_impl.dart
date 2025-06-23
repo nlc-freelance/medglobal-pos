@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/models/paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch_api.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
@@ -15,9 +16,9 @@ class BranchRepositoryImpl implements BranchRepository {
   BranchRepositoryImpl(this._branchApi);
 
   @override
-  Future<Either<Failure, PaginatedList<Branch>>> getBranches({int? page, int? size}) async {
+  Future<Either<Failure, PaginatedList<Branch>>> getBranches({required FilterList filters}) async {
     try {
-      final responseDto = await _branchApi.getBranches(page: page, size: size);
+      final responseDto = await _branchApi.getBranches(filters: filters);
 
       return Right(responseDto.convert((item) => item.toDomain()));
     } on ServerException catch (e) {

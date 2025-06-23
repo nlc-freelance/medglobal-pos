@@ -1,4 +1,3 @@
-import 'package:medglobal_admin_portal/core/constants/constants.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/request/create_receipt_template_dto.dart';
@@ -10,13 +9,10 @@ class ReceiptTemplateApi {
 
   ReceiptTemplateApi(this._api);
 
-  Future<PaginatedList<ReceiptTemplateDto>> getReceiptTemplates({int? page, int? size}) async {
+  Future<PaginatedList<ReceiptTemplateDto>> getReceiptTemplates({required FilterList filters}) async {
     final response = await _api.getPaginated<ReceiptTemplateDto>(
       ApiEndpoints.receiptTemplates,
-      queryParams: {
-        if (page != null) 'page': page,
-        'size': size ?? Sizes.defaultPageSize,
-      },
+      queryParams: filters.toJson(),
       fromJson: ReceiptTemplateDto.fromJson,
     );
 

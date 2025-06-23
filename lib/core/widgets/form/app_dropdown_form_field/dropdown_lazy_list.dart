@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class DropdownItems<T> extends StatefulWidget {
-  const DropdownItems({
+class DropdownLazyList<T> extends StatefulWidget {
+  const DropdownLazyList({
     super.key,
     required this.menuKey,
     required this.onChanged,
@@ -16,10 +16,10 @@ class DropdownItems<T> extends StatefulWidget {
   final String Function(T item) getName;
 
   @override
-  State<DropdownItems<T>> createState() => _DropdownItemsState<T>();
+  State<DropdownLazyList<T>> createState() => _DropdownLazyListState<T>();
 }
 
-class _DropdownItemsState<T> extends State<DropdownItems<T>> {
+class _DropdownLazyListState<T> extends State<DropdownLazyList<T>> {
   late ScrollController _scrollController;
 
   @override

@@ -18,19 +18,19 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$PaginatedListEvent<T> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int? page, int? size) fetch,
+    required TResult Function(FilterList? filters) fetch,
     required TResult Function() reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int? page, int? size)? fetch,
+    TResult? Function(FilterList? filters)? fetch,
     TResult? Function()? reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int? page, int? size)? fetch,
+    TResult Function(FilterList? filters)? fetch,
     TResult Function()? reset,
     required TResult orElse(),
   }) =>
@@ -81,7 +81,9 @@ abstract class _$$FetchImplCopyWith<T, $Res> {
           _$FetchImpl<T> value, $Res Function(_$FetchImpl<T>) then) =
       __$$FetchImplCopyWithImpl<T, $Res>;
   @useResult
-  $Res call({int? page, int? size});
+  $Res call({FilterList? filters});
+
+  $FilterListCopyWith<$Res>? get filters;
 }
 
 /// @nodoc
@@ -95,35 +97,40 @@ class __$$FetchImplCopyWithImpl<T, $Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? page = freezed,
-    Object? size = freezed,
+    Object? filters = freezed,
   }) {
     return _then(_$FetchImpl<T>(
-      page: freezed == page
-          ? _value.page
-          : page // ignore: cast_nullable_to_non_nullable
-              as int?,
-      size: freezed == size
-          ? _value.size
-          : size // ignore: cast_nullable_to_non_nullable
-              as int?,
+      filters: freezed == filters
+          ? _value.filters
+          : filters // ignore: cast_nullable_to_non_nullable
+              as FilterList?,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $FilterListCopyWith<$Res>? get filters {
+    if (_value.filters == null) {
+      return null;
+    }
+
+    return $FilterListCopyWith<$Res>(_value.filters!, (value) {
+      return _then(_value.copyWith(filters: value));
+    });
   }
 }
 
 /// @nodoc
 
 class _$FetchImpl<T> implements _Fetch<T> {
-  const _$FetchImpl({this.page, this.size});
+  const _$FetchImpl({this.filters});
 
   @override
-  final int? page;
-  @override
-  final int? size;
+  final FilterList? filters;
 
   @override
   String toString() {
-    return 'PaginatedListEvent<$T>.fetch(page: $page, size: $size)';
+    return 'PaginatedListEvent<$T>.fetch(filters: $filters)';
   }
 
   @override
@@ -131,12 +138,11 @@ class _$FetchImpl<T> implements _Fetch<T> {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FetchImpl<T> &&
-            (identical(other.page, page) || other.page == page) &&
-            (identical(other.size, size) || other.size == size));
+            (identical(other.filters, filters) || other.filters == filters));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, page, size);
+  int get hashCode => Object.hash(runtimeType, filters);
 
   @JsonKey(ignore: true)
   @override
@@ -147,30 +153,30 @@ class _$FetchImpl<T> implements _Fetch<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int? page, int? size) fetch,
+    required TResult Function(FilterList? filters) fetch,
     required TResult Function() reset,
   }) {
-    return fetch(page, size);
+    return fetch(filters);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int? page, int? size)? fetch,
+    TResult? Function(FilterList? filters)? fetch,
     TResult? Function()? reset,
   }) {
-    return fetch?.call(page, size);
+    return fetch?.call(filters);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int? page, int? size)? fetch,
+    TResult Function(FilterList? filters)? fetch,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
     if (fetch != null) {
-      return fetch(page, size);
+      return fetch(filters);
     }
     return orElse();
   }
@@ -208,10 +214,9 @@ class _$FetchImpl<T> implements _Fetch<T> {
 }
 
 abstract class _Fetch<T> implements PaginatedListEvent<T> {
-  const factory _Fetch({final int? page, final int? size}) = _$FetchImpl<T>;
+  const factory _Fetch({final FilterList? filters}) = _$FetchImpl<T>;
 
-  int? get page;
-  int? get size;
+  FilterList? get filters;
   @JsonKey(ignore: true)
   _$$FetchImplCopyWith<T, _$FetchImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
@@ -255,7 +260,7 @@ class _$ResetImpl<T> implements _Reset<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int? page, int? size) fetch,
+    required TResult Function(FilterList? filters) fetch,
     required TResult Function() reset,
   }) {
     return reset();
@@ -264,7 +269,7 @@ class _$ResetImpl<T> implements _Reset<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int? page, int? size)? fetch,
+    TResult? Function(FilterList? filters)? fetch,
     TResult? Function()? reset,
   }) {
     return reset?.call();
@@ -273,7 +278,7 @@ class _$ResetImpl<T> implements _Reset<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int? page, int? size)? fetch,
+    TResult Function(FilterList? filters)? fetch,
     TResult Function()? reset,
     required TResult orElse(),
   }) {

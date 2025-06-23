@@ -1,4 +1,3 @@
-import 'package:medglobal_admin_portal/core/constants/constants.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/dto/request/create_register_dto.dart';
@@ -10,13 +9,10 @@ class RegisterApi {
 
   RegisterApi(this._api);
 
-  Future<PaginatedList<RegisterDto>> getRegisters({int? page, int? size}) async {
+  Future<PaginatedList<RegisterDto>> getRegisters({required FilterList filters}) async {
     final response = await _api.getPaginated<RegisterDto>(
       ApiEndpoints.registers,
-      queryParams: {
-        if (page != null) 'page': page,
-        'size': size ?? Sizes.defaultPageSize,
-      },
+      queryParams: filters.toJson(),
       fromJson: RegisterDto.fromJson,
     );
 

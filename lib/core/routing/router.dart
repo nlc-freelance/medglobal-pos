@@ -8,7 +8,9 @@ import 'package:medglobal_admin_portal/core/widgets/route_guard.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/pos_scaffold.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_form/employee_form_page.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_list/employee_list_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/products_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/product_history_page.dart';
@@ -344,30 +346,37 @@ abstract class AppRouter {
                 builder: (context, state) => const SizedBox(),
                 routes: [
                   ShellRoute(
+                    // pageBuilder: (context, state, child) => NoTransitionPage(
+                    //   // child: BlocProvider(
+                    //   //   create: (_) => GetIt.I<PaginatedListBloc<ReceiptTemplate>>()
+                    //   //     ..add(const PaginatedListEvent<ReceiptTemplate>.fetch()),
+                    //   child: child,
+                    //   // ),
+                    // ),
                     pageBuilder: (context, state, child) => NoTransitionPage(
-                      // child: BlocProvider(
-                      //   create: (_) => GetIt.I<PaginatedListBloc<ReceiptTemplate>>()
-                      //     ..add(const PaginatedListEvent<ReceiptTemplate>.fetch()),
-                      child: child,
-                      // ),
+                      child: BlocProvider(
+                        create: (_) =>
+                            GetIt.I<PaginatedListBloc<Employee>>()..add(const PaginatedListEvent<Employee>.fetch()),
+                        child: child,
+                      ),
                     ),
                     routes: [
                       GoRoute(
                         name: SideMenuTreeItem.employee.name,
                         path: SideMenuTreeItem.employee.path,
-                        pageBuilder: (context, state) => const NoTransitionPage(child: EmployeeFormPage()),
+                        pageBuilder: (context, state) => const NoTransitionPage(child: EmployeeListPage()),
                         routes: [
-                          // GoRoute(
-                          //   name: SideMenuTreeItem.newEmployee.name,
-                          //   path: SideMenuTreeItem.newEmployee.path,
-                          //   pageBuilder: (context, state) => const NoTransitionPage(child: EmployeeFormPage()),
-                          // ),
-                          // GoRoute(
-                          //   name: SideMenuTreeItem.employeeDetails.name,
-                          //   path: SideMenuTreeItem.employeeDetails.path,
-                          //   pageBuilder: (context, state) =>
-                          //       NoTransitionPage(child: EmployeeFormPage(id: state.pathParameters['id']!)),
-                          // ),
+                          GoRoute(
+                            name: SideMenuTreeItem.newEmployee.name,
+                            path: SideMenuTreeItem.newEmployee.path,
+                            pageBuilder: (context, state) => const NoTransitionPage(child: EmployeeFormPage()),
+                          ),
+                          GoRoute(
+                            name: SideMenuTreeItem.employeeDetails.name,
+                            path: SideMenuTreeItem.employeeDetails.path,
+                            pageBuilder: (context, state) =>
+                                NoTransitionPage(child: EmployeeFormPage(id: state.pathParameters['id']!)),
+                          ),
                         ],
                       ),
                     ],

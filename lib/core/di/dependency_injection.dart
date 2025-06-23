@@ -13,6 +13,11 @@ import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/get
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/logout.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/data/api/employee_api.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/data/repository/employee_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/domain/repository/employee_repository.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/presentation/bloc/employee_bloc/employee_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch_api.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/repository/branch_repository_impl.dart';
@@ -219,12 +224,29 @@ void initDependencyInjection() {
   initBranchDependencies();
   initRegisterDependencies();
   initReceiptTemplateDependencies();
+  initEmployeeDependencies();
 }
 
 void initCoreDependencies() {
   inject
     ..registerSingleton(DioServiceNew())
     ..registerSingleton(BaseApiService(inject<DioServiceNew>()));
+}
+
+void initEmployeeDependencies() {
+  inject
+    ..registerLazySingleton<EmployeeApi>(
+      () => EmployeeApi(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<EmployeeRepository>(
+      () => EmployeeRepositoryImpl(inject<EmployeeApi>()),
+    )
+    ..registerFactory<PaginatedListBloc<Employee>>(
+      () => PaginatedListBloc<Employee>(inject<EmployeeRepository>().getEmployees),
+    )
+    ..registerFactory<EmployeeBloc>(
+      () => EmployeeBloc(inject<EmployeeRepository>()),
+    );
 }
 
 void initTaxDependencies() {

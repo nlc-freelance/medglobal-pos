@@ -14,9 +14,9 @@ class ReceiptTemplateRepositoryImpl implements ReceiptTemplateRepository {
   ReceiptTemplateRepositoryImpl(this._registerApi);
 
   @override
-  Future<Either<Failure, PaginatedList<ReceiptTemplate>>> getReceiptTemplates({int? page, int? size}) async {
+  Future<Either<Failure, PaginatedList<ReceiptTemplate>>> getReceiptTemplates({required FilterList filters}) async {
     try {
-      final responseDto = await _registerApi.getReceiptTemplates(page: page, size: size);
+      final responseDto = await _registerApi.getReceiptTemplates(filters: filters);
 
       return Right(responseDto.convert((item) => item.toDomain()));
     } on ServerException catch (e) {

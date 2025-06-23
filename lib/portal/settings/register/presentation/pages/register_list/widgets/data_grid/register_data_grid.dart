@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/presentation/bloc/register_bloc/register_bloc.dart';
@@ -66,10 +67,12 @@ class _RegisterDataGridState extends State<RegisterDataGrid> {
                 if (paginatedData.hasItems)
                   DataGridPagination<Register>(
                     paginatedData,
-                    onPageChanged: ({page, size}) =>
+                    onPageChanged: ({required page, required size}) =>
                         context.read<PaginatedListBloc<Register>>().add(PaginatedListEvent<Register>.fetch(
-                              page: page,
-                              size: size,
+                              filters: FilterList(
+                                page: page,
+                                size: size,
+                              ),
                             )),
                   ),
               ],

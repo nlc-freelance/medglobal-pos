@@ -1,4 +1,3 @@
-import 'package:medglobal_admin_portal/core/constants/constants.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/request/create_tax_dto.dart';
@@ -10,13 +9,10 @@ class TaxApi {
 
   TaxApi(this._api);
 
-  Future<PaginatedList<TaxDto>> getTaxCodes({int? page, int? size}) async {
+  Future<PaginatedList<TaxDto>> getTaxCodes({required FilterList filters}) async {
     final response = await _api.getPaginated<TaxDto>(
       ApiEndpoints.tax,
-      queryParams: {
-        if (page != null) 'page': page,
-        'size': size ?? Sizes.defaultPageSize,
-      },
+      queryParams: filters.toJson(),
       fromJson: TaxDto.fromJson,
     );
 

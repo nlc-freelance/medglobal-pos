@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_portal/flutter_portal.dart';
-import 'package:medglobal_admin_portal/core/widgets/form/app_dropdown_form_field/dropdown_items.dart';
+import 'package:medglobal_admin_portal/core/widgets/form/app_dropdown_form_field/dropdown_lazy_list.dart';
 import 'package:medglobal_admin_portal/core/widgets/overlay_builder.dart';
 import 'package:medglobal_admin_portal/gen/assets.gen.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -112,7 +112,7 @@ class _DropdownFormFieldState<T> extends State<AppDropdownFormField<T>> {
         value: value == null ? null : widget.getName(value as T),
         onTap: () => setState(() => visible = true),
       ),
-      follower: DropdownItems<T>(
+      follower: DropdownLazyList<T>(
         menuKey: menuKey,
         onChanged: (T item) {
           widget.onChanged(item);

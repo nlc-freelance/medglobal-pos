@@ -345,4 +345,13 @@ class DataGridColumn {
     ColumnData('receipt_template_name', 'Receipt Template'),
     ColumnData('receipt_template_description', 'Description'),
   ];
+
+  static List<ColumnData> employees = [
+    ColumnData('id', 'ID'),
+    ColumnData('employee_name', 'Name'),
+    ColumnData('branch', 'Branch'),
+    ColumnData('email', 'Email'),
+    ColumnData('phone', 'Phone'),
+    ColumnData('role', 'Role'),
+  ];
 }

@@ -95,6 +95,11 @@ class ApiEndpoints {
   static const String tax = '/tax-codes';
   static String taxById(int id) => '$tax/$id';
 
+  // Receipt Templates
   static const String receiptTemplates = '/receipt-templates';
   static String receiptTemplateById(int id) => '$receiptTemplates/$id';
+
+  // Employee
+  static const String employees = '/users';
+  static String employeeById(int id) => '$employees/$id';
 }
