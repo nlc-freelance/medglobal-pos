@@ -14,9 +14,9 @@ class RegisterRepositoryImpl implements RegisterRepository {
   RegisterRepositoryImpl(this._registerApi);
 
   @override
-  Future<Either<Failure, PaginatedList<Register>>> getRegisters({int? page, int? size}) async {
+  Future<Either<Failure, PaginatedList<Register>>> getRegisters({required FilterList filters}) async {
     try {
-      final responseDto = await _registerApi.getRegisters(page: page, size: size);
+      final responseDto = await _registerApi.getRegisters(filters: filters);
 
       return Right(responseDto.convert((item) => item.toDomain()));
     } on ServerException catch (e) {

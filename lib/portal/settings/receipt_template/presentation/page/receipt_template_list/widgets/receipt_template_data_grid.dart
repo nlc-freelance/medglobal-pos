@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
@@ -61,11 +62,13 @@ class _ReceiptTemplateDataGridState extends State<ReceiptTemplateDataGrid> {
                 if (paginatedData.hasItems)
                   DataGridPagination<ReceiptTemplate>(
                     paginatedData,
-                    onPageChanged: ({page, size}) => context
+                    onPageChanged: ({required page, required size}) => context
                         .read<PaginatedListBloc<ReceiptTemplate>>()
                         .add(PaginatedListEvent<ReceiptTemplate>.fetch(
-                          page: page,
-                          size: size,
+                          filters: FilterList(
+                            page: page,
+                            size: size,
+                          ),
                         )),
                   ),
               ],

@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dar
 
 abstract class TaxRepository {
   /// Retrieves a list of all tax codes
-  Future<Either<Failure, PaginatedList<Tax>>> getTaxCodes({int? page, int? size});
+  Future<Either<Failure, PaginatedList<Tax>>> getTaxCodes({required FilterList filters});
 
   /// Check if there's a set default tax code
   Future<Either<Failure, Tax?>> getDefaultTaxCode();

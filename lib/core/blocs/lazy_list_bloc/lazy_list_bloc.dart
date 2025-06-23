@@ -12,7 +12,7 @@ class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
   final int _pageSize = 10;
   int _currentPage = 1;
 
-  final Future<Either<Failure, PaginatedList<T>>> Function({int? page, int? size}) _fetch;
+  final Future<Either<Failure, PaginatedList<T>>> Function({required FilterList filters}) _fetch;
 
   LazyListBloc(this._fetch) : super(LazyListState<T>.initial()) {
     on<_Fetch<T>>(_onFetch);
@@ -31,7 +31,7 @@ class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
     }
 
     try {
-      final result = await _fetch(page: _currentPage, size: _pageSize);
+      final result = await _fetch(filters: FilterList(page: _currentPage, size: _pageSize));
 
       result.fold(
         (failure) => emit(state.copyWith(
@@ -74,7 +74,7 @@ class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
     try {
       _currentPage = 1;
 
-      final result = await _fetch(page: _currentPage, size: _pageSize);
+      final result = await _fetch(filters: FilterList(page: _currentPage, size: _pageSize));
 
       result.fold(
         (failure) => emit(state.copyWith(

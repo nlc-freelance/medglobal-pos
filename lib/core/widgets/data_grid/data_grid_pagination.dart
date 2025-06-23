@@ -8,7 +8,7 @@ class DataGridPagination<T> extends StatelessWidget {
   const DataGridPagination(this.data, {super.key, required this.onPageChanged});
 
   final PaginatedList<T> data;
-  final void Function({int? page, int? size}) onPageChanged;
+  final void Function({required int page, required int size}) onPageChanged;
 
   @override
   Widget build(BuildContext context) {

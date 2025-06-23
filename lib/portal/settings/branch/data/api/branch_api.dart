@@ -1,4 +1,3 @@
-import 'package:medglobal_admin_portal/core/constants/constants.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
@@ -11,13 +10,10 @@ class BranchApi {
 
   BranchApi(this._api);
 
-  Future<PaginatedList<BranchDto>> getBranches({int? page, int? size}) async {
+  Future<PaginatedList<BranchDto>> getBranches({required FilterList filters}) async {
     final response = await _api.getPaginated<BranchDto>(
       ApiEndpoints.branches,
-      queryParams: {
-        if (page != null) 'page': page,
-        'size': size ?? Sizes.defaultPageSize,
-      },
+      queryParams: filters.toJson(),
       fromJson: BranchDto.fromJson,
     );
 

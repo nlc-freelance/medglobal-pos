@@ -378,12 +378,15 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                 style: UIStyleText.chip.copyWith(color: UIColors.textDark),
                 // TODO: Auto validation on user interaction, currently it only shows validation upon clicking 'Save'
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (_) {
-                  if (widget.selectedItems?.isEmpty == true) {
-                    return 'Please select branches to add product price and QOH.';
-                  }
-                  return null;
-                },
+                // TODO: this is just for the employee, need to extract this so it can be used without tightly coupling it to the branch dropdown in products
+                validator: widget.hint == 'Select branches to assign'
+                    ? null
+                    : (_) {
+                        if (widget.selectedItems?.isEmpty == true) {
+                          return 'Please select branches to add product price and QOH.';
+                        }
+                        return null;
+                      },
                 decoration: InputDecoration(
                   hintText: widget.hint,
                   suffixIcon: widget.isReadOnly
