@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_remote_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/transaction_list_by_branch_cubit.dart';
@@ -44,7 +44,7 @@ class _TransactionDetailsState extends State<TransactionDetails> {
         if (state is RefundSuccess) {
           context.read<TransactionCubit>().getTransactionById(state.refund.id!);
           context.read<TransactionListByBranchCubit>().addNewTransactionToList(state.refund);
-          ToastNotification.success(context, 'A refund has been successfully issued.');
+          SnackbarUtil.success(context, 'A refund has been successfully issued.');
         }
       },
       builder: (context, state) {

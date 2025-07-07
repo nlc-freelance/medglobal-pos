@@ -14,15 +14,15 @@ class ReceiptTemplateRepositoryImpl implements ReceiptTemplateRepository {
   ReceiptTemplateRepositoryImpl(this._registerApi);
 
   @override
-  Future<Either<Failure, PaginatedList<ReceiptTemplate>>> getReceiptTemplates({required FilterList filters}) async {
+  Future<Either<Failure, PaginatedList<ReceiptTemplate>>> getReceiptTemplates({required PageQuery filters}) async {
     try {
       final responseDto = await _registerApi.getReceiptTemplates(filters: filters);
 
       return Right(responseDto.convert((item) => item.toDomain()));
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -33,9 +33,9 @@ class ReceiptTemplateRepositoryImpl implements ReceiptTemplateRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -47,9 +47,9 @@ class ReceiptTemplateRepositoryImpl implements ReceiptTemplateRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -61,9 +61,9 @@ class ReceiptTemplateRepositoryImpl implements ReceiptTemplateRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -72,9 +72,9 @@ class ReceiptTemplateRepositoryImpl implements ReceiptTemplateRepository {
     try {
       return Right(await _registerApi.deleteReceiptTemplate(id));
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 }

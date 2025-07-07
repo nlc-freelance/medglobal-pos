@@ -43,6 +43,7 @@ class _SideNavBarState extends State<PortalSidebar> {
           ..addAll(
             [
               IndexedTreeNode(key: SideMenuTree.REPORTS.items[0]),
+              IndexedTreeNode(key: 'Product Performance'),
               IndexedTreeNode(key: SideMenuTree.REPORTS.items[1])
                 ..addAll([
                   IndexedTreeNode(key: SideMenuTree.REPORTS.items[2]),

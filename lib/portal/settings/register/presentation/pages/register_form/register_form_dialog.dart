@@ -81,16 +81,16 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
                   );
                 },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
-                  const UIHorizontalSpace(8),
-                  UIButton.filled('Save', onClick: _onSave),
-                ],
-              ),
             ],
           ),
+        ),
+        actions: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
+            const UIHorizontalSpace(8),
+            UIButton.filled('Save', onClick: _onSave),
+          ],
         ),
       ),
     );

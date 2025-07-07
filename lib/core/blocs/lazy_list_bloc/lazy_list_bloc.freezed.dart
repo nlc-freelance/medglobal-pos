@@ -18,22 +18,19 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$LazyListEvent<T> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
-    required TResult Function() refresh,
+    required TResult Function(bool forceRefresh) fetch,
     required TResult Function() reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
-    TResult? Function()? refresh,
+    TResult? Function(bool forceRefresh)? fetch,
     TResult? Function()? reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
-    TResult Function()? refresh,
+    TResult Function(bool forceRefresh)? fetch,
     TResult Function()? reset,
     required TResult orElse(),
   }) =>
@@ -41,21 +38,18 @@ mixin _$LazyListEvent<T> {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Fetch<T> value) fetch,
-    required TResult Function(_Refresh<T> value) refresh,
     required TResult Function(_Reset<T> value) reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Fetch<T> value)? fetch,
-    TResult? Function(_Refresh<T> value)? refresh,
     TResult? Function(_Reset<T> value)? reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Fetch<T> value)? fetch,
-    TResult Function(_Refresh<T> value)? refresh,
     TResult Function(_Reset<T> value)? reset,
     required TResult orElse(),
   }) =>
@@ -85,6 +79,8 @@ abstract class _$$FetchImplCopyWith<T, $Res> {
   factory _$$FetchImplCopyWith(
           _$FetchImpl<T> value, $Res Function(_$FetchImpl<T>) then) =
       __$$FetchImplCopyWithImpl<T, $Res>;
+  @useResult
+  $Res call({bool forceRefresh});
 }
 
 /// @nodoc
@@ -94,57 +90,80 @@ class __$$FetchImplCopyWithImpl<T, $Res>
   __$$FetchImplCopyWithImpl(
       _$FetchImpl<T> _value, $Res Function(_$FetchImpl<T>) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? forceRefresh = null,
+  }) {
+    return _then(_$FetchImpl<T>(
+      forceRefresh: null == forceRefresh
+          ? _value.forceRefresh
+          : forceRefresh // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$FetchImpl<T> implements _Fetch<T> {
-  const _$FetchImpl();
+  const _$FetchImpl({this.forceRefresh = false});
+
+  @override
+  @JsonKey()
+  final bool forceRefresh;
 
   @override
   String toString() {
-    return 'LazyListEvent<$T>.fetch()';
+    return 'LazyListEvent<$T>.fetch(forceRefresh: $forceRefresh)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$FetchImpl<T>);
+        (other.runtimeType == runtimeType &&
+            other is _$FetchImpl<T> &&
+            (identical(other.forceRefresh, forceRefresh) ||
+                other.forceRefresh == forceRefresh));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, forceRefresh);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FetchImplCopyWith<T, _$FetchImpl<T>> get copyWith =>
+      __$$FetchImplCopyWithImpl<T, _$FetchImpl<T>>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
-    required TResult Function() refresh,
+    required TResult Function(bool forceRefresh) fetch,
     required TResult Function() reset,
   }) {
-    return fetch();
+    return fetch(forceRefresh);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
-    TResult? Function()? refresh,
+    TResult? Function(bool forceRefresh)? fetch,
     TResult? Function()? reset,
   }) {
-    return fetch?.call();
+    return fetch?.call(forceRefresh);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
-    TResult Function()? refresh,
+    TResult Function(bool forceRefresh)? fetch,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
     if (fetch != null) {
-      return fetch();
+      return fetch(forceRefresh);
     }
     return orElse();
   }
@@ -153,7 +172,6 @@ class _$FetchImpl<T> implements _Fetch<T> {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Fetch<T> value) fetch,
-    required TResult Function(_Refresh<T> value) refresh,
     required TResult Function(_Reset<T> value) reset,
   }) {
     return fetch(this);
@@ -163,7 +181,6 @@ class _$FetchImpl<T> implements _Fetch<T> {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Fetch<T> value)? fetch,
-    TResult? Function(_Refresh<T> value)? refresh,
     TResult? Function(_Reset<T> value)? reset,
   }) {
     return fetch?.call(this);
@@ -173,7 +190,6 @@ class _$FetchImpl<T> implements _Fetch<T> {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Fetch<T> value)? fetch,
-    TResult Function(_Refresh<T> value)? refresh,
     TResult Function(_Reset<T> value)? reset,
     required TResult orElse(),
   }) {
@@ -185,115 +201,12 @@ class _$FetchImpl<T> implements _Fetch<T> {
 }
 
 abstract class _Fetch<T> implements LazyListEvent<T> {
-  const factory _Fetch() = _$FetchImpl<T>;
-}
+  const factory _Fetch({final bool forceRefresh}) = _$FetchImpl<T>;
 
-/// @nodoc
-abstract class _$$RefreshImplCopyWith<T, $Res> {
-  factory _$$RefreshImplCopyWith(
-          _$RefreshImpl<T> value, $Res Function(_$RefreshImpl<T>) then) =
-      __$$RefreshImplCopyWithImpl<T, $Res>;
-}
-
-/// @nodoc
-class __$$RefreshImplCopyWithImpl<T, $Res>
-    extends _$LazyListEventCopyWithImpl<T, $Res, _$RefreshImpl<T>>
-    implements _$$RefreshImplCopyWith<T, $Res> {
-  __$$RefreshImplCopyWithImpl(
-      _$RefreshImpl<T> _value, $Res Function(_$RefreshImpl<T>) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$RefreshImpl<T> implements _Refresh<T> {
-  const _$RefreshImpl();
-
-  @override
-  String toString() {
-    return 'LazyListEvent<$T>.refresh()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$RefreshImpl<T>);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
-    required TResult Function() refresh,
-    required TResult Function() reset,
-  }) {
-    return refresh();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
-    TResult? Function()? refresh,
-    TResult? Function()? reset,
-  }) {
-    return refresh?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
-    TResult Function()? refresh,
-    TResult Function()? reset,
-    required TResult orElse(),
-  }) {
-    if (refresh != null) {
-      return refresh();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Fetch<T> value) fetch,
-    required TResult Function(_Refresh<T> value) refresh,
-    required TResult Function(_Reset<T> value) reset,
-  }) {
-    return refresh(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Fetch<T> value)? fetch,
-    TResult? Function(_Refresh<T> value)? refresh,
-    TResult? Function(_Reset<T> value)? reset,
-  }) {
-    return refresh?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Fetch<T> value)? fetch,
-    TResult Function(_Refresh<T> value)? refresh,
-    TResult Function(_Reset<T> value)? reset,
-    required TResult orElse(),
-  }) {
-    if (refresh != null) {
-      return refresh(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _Refresh<T> implements LazyListEvent<T> {
-  const factory _Refresh() = _$RefreshImpl<T>;
+  bool get forceRefresh;
+  @JsonKey(ignore: true)
+  _$$FetchImplCopyWith<T, _$FetchImpl<T>> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -334,8 +247,7 @@ class _$ResetImpl<T> implements _Reset<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() fetch,
-    required TResult Function() refresh,
+    required TResult Function(bool forceRefresh) fetch,
     required TResult Function() reset,
   }) {
     return reset();
@@ -344,8 +256,7 @@ class _$ResetImpl<T> implements _Reset<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? fetch,
-    TResult? Function()? refresh,
+    TResult? Function(bool forceRefresh)? fetch,
     TResult? Function()? reset,
   }) {
     return reset?.call();
@@ -354,8 +265,7 @@ class _$ResetImpl<T> implements _Reset<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? fetch,
-    TResult Function()? refresh,
+    TResult Function(bool forceRefresh)? fetch,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
@@ -369,7 +279,6 @@ class _$ResetImpl<T> implements _Reset<T> {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Fetch<T> value) fetch,
-    required TResult Function(_Refresh<T> value) refresh,
     required TResult Function(_Reset<T> value) reset,
   }) {
     return reset(this);
@@ -379,7 +288,6 @@ class _$ResetImpl<T> implements _Reset<T> {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Fetch<T> value)? fetch,
-    TResult? Function(_Refresh<T> value)? refresh,
     TResult? Function(_Reset<T> value)? reset,
   }) {
     return reset?.call(this);
@@ -389,7 +297,6 @@ class _$ResetImpl<T> implements _Reset<T> {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Fetch<T> value)? fetch,
-    TResult Function(_Refresh<T> value)? refresh,
     TResult Function(_Reset<T> value)? reset,
     required TResult orElse(),
   }) {

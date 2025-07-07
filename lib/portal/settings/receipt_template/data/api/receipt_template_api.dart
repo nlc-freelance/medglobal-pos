@@ -9,7 +9,7 @@ class ReceiptTemplateApi {
 
   ReceiptTemplateApi(this._api);
 
-  Future<PaginatedList<ReceiptTemplateDto>> getReceiptTemplates({required FilterList filters}) async {
+  Future<PaginatedList<ReceiptTemplateDto>> getReceiptTemplates({required PageQuery filters}) async {
     final response = await _api.getPaginated<ReceiptTemplateDto>(
       ApiEndpoints.receiptTemplates,
       queryParams: filters.toJson(),

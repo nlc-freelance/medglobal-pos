@@ -91,16 +91,16 @@ class _TaxFormDialogState extends State<TaxFormDialog> {
                 );
               },
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
-                const UIHorizontalSpace(8),
-                UIButton.filled('Save', onClick: _onSave),
-              ],
-            ),
           ],
         ),
+      ),
+      actions: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
+          const UIHorizontalSpace(8),
+          UIButton.filled('Save', onClick: _onSave),
+        ],
       ),
     );
   }

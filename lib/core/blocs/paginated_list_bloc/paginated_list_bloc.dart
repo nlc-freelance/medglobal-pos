@@ -9,7 +9,7 @@ part 'paginated_list_state.dart';
 part 'paginated_list_bloc.freezed.dart';
 
 class PaginatedListBloc<T> extends Bloc<PaginatedListEvent<T>, PaginatedListState<T>> {
-  final Future<Either<Failure, PaginatedList<T>>> Function({required FilterList filters}) _fetch;
+  final Future<Either<Failure, PaginatedList<T>>> Function({required PageQuery filters}) _fetch;
 
   PaginatedListBloc(this._fetch) : super(PaginatedListState<T>.initial()) {
     on<_Fetch<T>>(_onFetch);
@@ -20,7 +20,7 @@ class PaginatedListBloc<T> extends Bloc<PaginatedListEvent<T>, PaginatedListStat
     emit(PaginatedListState<T>.loading());
 
     try {
-      final result = await _fetch(filters: event.filters ?? const FilterList());
+      final result = await _fetch(filters: event.filters);
 
       result.fold(
         (failure) => emit(PaginatedListState<T>.failure(failure.message)),

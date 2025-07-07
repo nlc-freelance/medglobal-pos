@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/variant.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product/product_cubit.dart';
@@ -83,7 +83,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               }
               if (state is ProductSuccess) {
                 AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PRODUCTS.name);
-                ToastNotification.success(context, state.message);
+                SnackbarUtil.success(context, state.message);
               }
             },
             builder: (_, state) {

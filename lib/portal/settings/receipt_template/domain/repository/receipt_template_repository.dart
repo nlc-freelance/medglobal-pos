@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/e
 
 abstract class ReceiptTemplateRepository {
   /// Retrieves a list of all receipt templates
-  Future<Either<Failure, PaginatedList<ReceiptTemplate>>> getReceiptTemplates({required FilterList filters});
+  Future<Either<Failure, PaginatedList<ReceiptTemplate>>> getReceiptTemplates({required PageQuery filters});
 
   /// Retrieves a receipt template by id
   Future<Either<Failure, ReceiptTemplate>> getReceiptTemplate(int id);

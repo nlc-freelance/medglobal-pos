@@ -39,13 +39,13 @@ class SupplierLazyListCubit extends Cubit<SupplierLazyListState> {
           (error) => emit(state.copyWith(isInitLoading: false, isLoadingMore: false, error: error.message)),
           (data) {
             _currentPage++;
-            _suppliers = {..._suppliers, ...?data.suppliers};
-            _totalCount = data.totalCount!;
+            _suppliers = {..._suppliers, ...data.items};
+            _totalCount = data.totalCount;
             emit(state.copyWith(
               isInitLoading: false,
               isLoadingMore: false,
               suppliers: _suppliers.toList(),
-              hasNoData: data.totalCount == 0 && data.suppliers?.isEmpty == true,
+              hasNoData: data.totalCount == 0 && data.items.isEmpty == true,
               hasReachedMax: data.currentPage == data.totalPages,
             ));
           },

@@ -9,7 +9,7 @@ class TaxApi {
 
   TaxApi(this._api);
 
-  Future<PaginatedList<TaxDto>> getTaxCodes({required FilterList filters}) async {
+  Future<PaginatedList<TaxDto>> getTaxCodes({required PageQuery filters}) async {
     final response = await _api.getPaginated<TaxDto>(
       ApiEndpoints.tax,
       queryParams: filters.toJson(),

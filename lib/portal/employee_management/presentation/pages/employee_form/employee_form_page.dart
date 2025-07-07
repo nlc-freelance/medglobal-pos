@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/bloc/employee_bloc/employee_bloc.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/cubit/employee_form_cubit/employee_form_cubit.dart';
@@ -83,7 +83,7 @@ class _EmployeeFormState extends State<EmployeeForm> {
     // Reload the list of employees
     context.read<PaginatedListBloc<Employee>>().add(const PaginatedListEvent.fetch());
 
-    ToastNotification.success(context, message);
+    SnackbarUtil.success(context, message);
     PageLoader.close();
 
     context.goNamed(SideMenuTreeItem.employee.name);
@@ -91,6 +91,6 @@ class _EmployeeFormState extends State<EmployeeForm> {
 
   void _onFailure(BuildContext context, String message) {
     PageLoader.close();
-    ToastNotification.error(context, message);
+    SnackbarUtil.error(context, message);
   }
 }

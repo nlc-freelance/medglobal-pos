@@ -1,4 +1,4 @@
-import 'package:medglobal_admin_portal/core/enums/register_shift.dart';
+import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register_shift.dart';
 import 'package:shared_preferences/shared_preferences.dart';

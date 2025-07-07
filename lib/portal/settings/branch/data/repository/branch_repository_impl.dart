@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
-import 'package:medglobal_admin_portal/core/models/paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch_api.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
@@ -16,15 +15,14 @@ class BranchRepositoryImpl implements BranchRepository {
   BranchRepositoryImpl(this._branchApi);
 
   @override
-  Future<Either<Failure, PaginatedList<Branch>>> getBranches({required FilterList filters}) async {
+  Future<Either<Failure, PaginatedList<Branch>>> getBranches({required PageQuery filters}) async {
     try {
       final responseDto = await _branchApi.getBranches(filters: filters);
-
       return Right(responseDto.convert((item) => item.toDomain()));
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -35,9 +33,9 @@ class BranchRepositoryImpl implements BranchRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -49,9 +47,9 @@ class BranchRepositoryImpl implements BranchRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -63,9 +61,9 @@ class BranchRepositoryImpl implements BranchRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -74,9 +72,9 @@ class BranchRepositoryImpl implements BranchRepository {
     try {
       return Right(await _branchApi.deleteBranch(id));
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -85,9 +83,9 @@ class BranchRepositoryImpl implements BranchRepository {
     try {
       return Right(await _branchApi.getReceiptConfigByBranchId(id));
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 }

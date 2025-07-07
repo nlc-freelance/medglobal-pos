@@ -13,15 +13,15 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
   EmployeeRepositoryImpl(this._employeeApi);
 
   @override
-  Future<Either<Failure, PaginatedList<Employee>>> getEmployees({required FilterList filters}) async {
+  Future<Either<Failure, PaginatedList<Employee>>> getEmployees({required PageQuery filters}) async {
     try {
-      final responseDto = await _employeeApi.getEmployees(filters: filters);
+      final responseDto = await _employeeApi.getEmployees(filters);
 
       return Right(responseDto.convert((item) => item.toDomain()));
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -32,9 +32,9 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -46,9 +46,9 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -60,9 +60,9 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -71,9 +71,9 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
     try {
       return Right(await _employeeApi.deleteEmployee(id));
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 }

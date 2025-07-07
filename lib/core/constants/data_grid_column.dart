@@ -354,4 +354,10 @@ class DataGridColumn {
     ColumnData('phone', 'Phone'),
     ColumnData('role', 'Role'),
   ];
+
+  static List<ColumnData> productPerformanceReports = [
+    ColumnData('id', 'ID'),
+    ColumnData('name', 'Report Name'),
+    ColumnData('action', 'Action'),
+  ];
 }

@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/api/category_api.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category_paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/repositories/category_repository.dart';
 
 class CategoryRepositoryImpl implements CategoryRepository {
@@ -22,10 +22,10 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, CategoryPaginatedList>> getCategories({required int page}) async {
+  Future<Either<Failure, PaginatedList<Category>>> getCategories({required PageQuery filters}) async {
     try {
-      final response = await _categoryApi.getCategories(page: page);
-      return Right(response);
+      final response = await _categoryApi.getCategories(filters: filters);
+      return Right(response.convert((item) => item.toEntity()));
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

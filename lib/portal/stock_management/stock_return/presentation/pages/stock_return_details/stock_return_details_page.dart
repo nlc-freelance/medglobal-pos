@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
@@ -37,7 +37,7 @@ class _StockReturnDetailsPageState extends State<StockReturnDetailsPage> {
         }
         if (state is StockReturnSuccess) {
           _stockReturn = state.stockReturn;
-          ToastNotification.success(context, 'Stock Return updated successfully.');
+          SnackbarUtil.success(context, 'Stock Return updated successfully.');
         }
       },
       builder: (context, state) {

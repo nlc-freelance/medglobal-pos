@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/enums/reports_enum.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
@@ -137,7 +138,7 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
           selector: (state) => state,
           builder: (context, filters) {
             return DataGridToolbar(
-              reportType: ReportType.STOCK_RETURN_CSV,
+              reportType: ReportType.stockReturn,
               reportFilters: {
                 'status': filters.status?.label.toLowerCase(),
                 'branch': filters.branchId,

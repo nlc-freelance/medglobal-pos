@@ -65,7 +65,7 @@ class _ReceiptTemplateDataGridState extends State<ReceiptTemplateDataGrid> {
                     onPageChanged: ({required page, required size}) => context
                         .read<PaginatedListBloc<ReceiptTemplate>>()
                         .add(PaginatedListEvent<ReceiptTemplate>.fetch(
-                          filters: FilterList(
+                          filters: PageQuery(
                             page: page,
                             size: size,
                           ),

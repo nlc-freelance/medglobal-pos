@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/print_util.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
@@ -52,11 +52,11 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
         if (state is PurchaseOrderSuccess) {
           _purchaseOrder = state.purchaseOrder;
           context.read<PurchaseOrderCubit>().setPurchaseOrder(state.purchaseOrder);
-          ToastNotification.success(context, 'Purchase Order updated successfully.');
+          SnackbarUtil.success(context, 'Purchase Order updated successfully.');
         }
         if (state is PurchaseOrderDeleteSuccess) {
           AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name);
-          ToastNotification.success(context, 'Purchase Order deleted successfully.');
+          SnackbarUtil.success(context, 'Purchase Order deleted successfully.');
         }
       },
       builder: (context, state) {

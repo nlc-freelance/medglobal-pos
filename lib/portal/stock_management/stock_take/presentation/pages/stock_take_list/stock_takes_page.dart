@@ -144,7 +144,7 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
           selector: (state) => state,
           builder: (context, filters) {
             return DataGridToolbar(
-              reportType: ReportType.STOCK_TAKE_CSV,
+              reportType: ReportType.stockTake,
               reportFilters: {
                 'status': filters.status?.label.toLowerCase(),
                 'startDate': filters.startDate,

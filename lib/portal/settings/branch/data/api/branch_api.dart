@@ -10,7 +10,7 @@ class BranchApi {
 
   BranchApi(this._api);
 
-  Future<PaginatedList<BranchDto>> getBranches({required FilterList filters}) async {
+  Future<PaginatedList<BranchDto>> getBranches({required PageQuery filters}) async {
     final response = await _api.getPaginated<BranchDto>(
       ApiEndpoints.branches,
       queryParams: filters.toJson(),

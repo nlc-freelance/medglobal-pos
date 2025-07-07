@@ -43,7 +43,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
     return BlocConsumer<SupplierListCubit, SupplierListState>(
       listener: (context, state) {
         if (state is SupplierListLoaded) {
-          suppliers = state.data.suppliers ?? [];
+          suppliers = state.data.items;
           _supplierDataSource = SupplierDataSource(suppliers);
         }
         if (state is SupplierSearchNoResult) {
@@ -98,8 +98,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
                           if (details.rowColumnIndex.rowIndex != 0) {
                             final id =
                                 _supplierDataSource.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value;
-                            SupplierDetailsDialog(
-                                    (state.data.suppliers ?? []).firstWhere((supplier) => supplier.id == id))
+                            SupplierDetailsDialog((state.data.items).firstWhere((supplier) => supplier.id == id))
                                 .showSidePeek(context);
                           }
                         },
@@ -109,7 +108,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
                 ),
               ),
               const UIVerticalSpace(16),
-              if (state.data.suppliers?.isNotEmpty == true)
+              if (state.data.items.isNotEmpty == true)
 
                 /// TODO: Extract pager to its own widget
                 Row(
@@ -136,9 +135,9 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
                           /// To avoid, use the [totalPage], [totalCount] and the [rowsPerPage] selected to check
                           ///  if the page to pass in the request will be greater than the [totalPage] of our data.
                           /// If it is greater than the actual total page, then reset it to 1.
-                          if (state.data.totalCount! <= value ||
-                              state.data.totalPages! + 1 >
-                                  ((state.data.totalCount! + (_rowsPerPage - 1)) / _rowsPerPage)) {
+                          if (state.data.totalCount <= value ||
+                              state.data.totalPages + 1 >
+                                  ((state.data.totalCount + (_rowsPerPage - 1)) / _rowsPerPage)) {
                             context.read<SupplierListCubit>().getSuppliers(
                                   page: 1,
                                   size: _rowsPerPage,
@@ -146,7 +145,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
                                 );
                           } else {
                             context.read<SupplierListCubit>().getSuppliers(
-                                  page: state.data.currentPage!,
+                                  page: state.data.currentPage,
                                   size: _rowsPerPage,
                                   search: context.read<SupplierListFilterCubit>().state.search,
                                 );
@@ -158,7 +157,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
                     ),
                     const UIHorizontalSpace(16),
                     UIText.labelMedium(
-                      'Viewing ${(state.data.currentPage! - 1) * _rowsPerPage + 1} - ${state.data.currentPage! * _rowsPerPage > state.data.totalCount! ? state.data.totalCount! : state.data.currentPage! * _rowsPerPage} of ${state.data.totalCount} records',
+                      'Viewing ${(state.data.currentPage - 1) * _rowsPerPage + 1} - ${state.data.currentPage * _rowsPerPage > state.data.totalCount ? state.data.totalCount : state.data.currentPage * _rowsPerPage} of ${state.data.totalCount} records',
                       color: UIColors.textLight,
                     ),
                     const Spacer(),
@@ -186,7 +185,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
                       onPressed: () {
                         if (state.data.currentPage != 1) {
                           context.read<SupplierListCubit>().getSuppliers(
-                                page: state.data.currentPage! - 1,
+                                page: state.data.currentPage - 1,
                                 size: _rowsPerPage,
                                 search: context.read<SupplierListFilterCubit>().state.search,
                               );
@@ -201,7 +200,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
                       onPressed: () {
                         if (state.data.currentPage != state.data.totalPages) {
                           context.read<SupplierListCubit>().getSuppliers(
-                                page: state.data.currentPage! + 1,
+                                page: state.data.currentPage + 1,
                                 size: _rowsPerPage,
                                 search: context.read<SupplierListFilterCubit>().state.search,
                               );
@@ -218,7 +217,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
                       onPressed: () {
                         if (state.data.currentPage != state.data.totalPages) {
                           context.read<SupplierListCubit>().getSuppliers(
-                                page: state.data.totalPages!,
+                                page: state.data.totalPages,
                                 size: _rowsPerPage,
                                 search: context.read<SupplierListFilterCubit>().state.search,
                               );

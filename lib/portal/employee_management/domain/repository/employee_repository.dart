@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/portal/employee_management/domain/entitie
 
 abstract class EmployeeRepository {
   /// Retrieves a list of all employees
-  Future<Either<Failure, PaginatedList<Employee>>> getEmployees({required FilterList filters});
+  Future<Either<Failure, PaginatedList<Employee>>> getEmployees({required PageQuery filters});
 
   /// Retrieves a employee by id
   Future<Either<Failure, Employee>> getEmployee(int id);

@@ -1,36 +1,30 @@
-import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/core/enums/enums.dart';
+import 'package:medglobal_admin_portal/core/utils/datetime_converter.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-part 'report.g.dart';
+part 'report.freezed.dart';
 
-@JsonSerializable()
-class Report {
-  final int? id;
-  final ReportType? type;
-  final ReportStatus? status;
-  final String? fileUrl;
-  final int? userId;
-  @DateTimeConverter()
-  final DateTime? createdAt;
-  @DateTimeConverter()
-  final DateTime? updatedAt;
+@freezed
+class Report with _$Report {
+  const factory Report({
+    required int id,
+    required ReportType type,
+    required ReportStatus status,
+    String? fileUrl,
+    required String fileName,
+    int? userId,
+    @DateTimeConverter() DateTime? createdAt,
+    @DateTimeConverter() DateTime? updatedAt,
+  }) = _Report;
+}
 
-  const Report({
-    this.id,
-    this.type,
-    this.status,
-    this.fileUrl,
-    this.userId,
-    this.createdAt,
-    this.updatedAt,
-  });
-
-  factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ReportToJson(this);
-
-  @override
-  String toString() {
-    return 'Report{id: $id, type: $type, status: $status, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt}';
-  }
+extension ReportExt on Report {
+  DataGridRow toProductPerformanceDataGridRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'name', value: fileName),
+          DataGridCell<ReportStatus>(columnName: 'action', value: status),
+        ],
+      );
 }

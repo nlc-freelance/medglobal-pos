@@ -77,7 +77,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
               navigationDirection: DateRangePickerNavigationDirection.horizontal,
               viewSpacing: 20,
               headerHeight: 60,
-              allowViewNavigation: false,
+              allowViewNavigation: true,
               showActionButtons: true,
               backgroundColor: UIColors.background,
               selectionColor: UIColors.primary,

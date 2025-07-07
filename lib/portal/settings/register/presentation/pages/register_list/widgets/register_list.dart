@@ -4,7 +4,7 @@ import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/presentation/bloc/register_bloc/register_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/presentation/pages/register_list/widgets/data_grid/register_data_grid.dart';
@@ -37,9 +37,9 @@ class RegisterList extends StatelessWidget with DialogMixin {
     context.read<PaginatedListBloc<Register>>().add(const PaginatedListEvent.fetch());
 
     // Reload lazy list for register dropdown
-    context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.refresh());
+    context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(forceRefresh: true));
 
-    ToastNotification.success(context, message);
+    SnackbarUtil.success(context, message);
     PageLoader.close();
   }
 
@@ -50,6 +50,6 @@ class RegisterList extends StatelessWidget with DialogMixin {
 
   void _onFailure(BuildContext context, String message) {
     PageLoader.close();
-    ToastNotification.error(context, message);
+    SnackbarUtil.error(context, message);
   }
 }

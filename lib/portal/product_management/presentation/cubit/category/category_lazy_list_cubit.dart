@@ -38,13 +38,13 @@ class CategoryLazyListCubit extends Cubit<CategoryLazyListState> {
           (error) => emit(state.copyWith(isInitLoading: false, isLoadingMore: false, error: error.message)),
           (data) {
             _currentPage++;
-            _categories = {..._categories, ...?data.categories};
-            _totalCount = data.totalCount!;
+            _categories = {..._categories, ...data.items};
+            _totalCount = data.totalCount;
             emit(state.copyWith(
               isInitLoading: false,
               isLoadingMore: false,
               categories: _categories.toList(),
-              hasNoData: data.totalCount == 0 && data.categories?.isEmpty == true,
+              hasNoData: data.totalCount == 0 && data.items.isEmpty == true,
               hasReachedMax: data.currentPage == data.totalPages,
             ));
           },

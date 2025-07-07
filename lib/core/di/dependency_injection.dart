@@ -18,6 +18,9 @@ import 'package:medglobal_admin_portal/portal/employee_management/data/repositor
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/repository/employee_repository.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/bloc/employee_bloc/employee_bloc.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch_api.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/repository/branch_repository_impl.dart';
@@ -47,36 +50,33 @@ import 'package:medglobal_admin_portal/portal/product_management/presentation/cu
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/bloc/reports_bloc.dart';
-import 'package:medglobal_admin_portal/portal/reports/data/api/reports_api.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/api/report_api_service.dart';
 import 'package:medglobal_admin_portal/portal/reports/data/repositories/report_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/repositories/report_repository.dart';
-import 'package:medglobal_admin_portal/portal/reports/domain/usecases/create_report_usecase.dart';
-import 'package:medglobal_admin_portal/portal/reports/domain/usecases/get_report_by_id_usecase.dart';
-import 'package:medglobal_admin_portal/portal/reports/product_history/data/api/product_history_api.dart';
-import 'package:medglobal_admin_portal/portal/reports/product_history/data/repositories/product_history_repository_impl.dart';
-import 'package:medglobal_admin_portal/portal/reports/product_history/domain/repositories/product_history_repository.dart';
-import 'package:medglobal_admin_portal/portal/reports/product_history/domain/usecases/get_product_history_usecase.dart';
-import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/cubit/product_history_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/cubit/product_history_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/data/api/sales_per_category_api.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/data/repositories/sales_per_category_repository_impl.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/domain/repositories/sales_per_category_repository.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/domain/usecases/get_sales_per_category_usecase.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/cubit/sales_category_filter/sales_category_filter_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/cubit/sales_category_group_by/sales_category_groupby_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/cubit/sales_category_period/sales_category_period_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/cubit/sales_per_category/sales_per_category_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/data/api/sales_per_shift_api.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/data/repositories/sales_per_shift_repository_impl.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/domain/repositories/sales_per_shift_repository.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/domain/usecases/get_sales_per_shift_by_id_usecase.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/domain/usecases/get_sales_per_shift_usecase.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/sales_per_shift/sales_per_shift_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/sales_per_shift_filter/sales_per_shift_filter_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/sales_per_shift_list/sales_per_shift_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transaction_page_size_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/cubit/shift_transactions/shift_transactions_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/data/api/product_history_api.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/data/repositories/product_history_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/domain/repositories/product_history_repository.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/domain/usecases/get_product_history_usecase.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/cubit/product_history_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/cubit/product_history_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/data/api/sales_per_category_api.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/data/repositories/sales_per_category_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/repositories/sales_per_category_repository.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/usecases/get_sales_per_category_usecase.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/cubit/sales_category_filter/sales_category_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/cubit/sales_category_group_by/sales_category_groupby_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/cubit/sales_category_period/sales_category_period_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/cubit/sales_per_category/sales_per_category_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/data/api/sales_per_shift_api.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/data/repositories/sales_per_shift_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/domain/repositories/sales_per_shift_repository.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/domain/usecases/get_sales_per_shift_by_id_usecase.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/domain/usecases/get_sales_per_shift_usecase.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/cubit/sales_per_shift/sales_per_shift_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/cubit/sales_per_shift_filter/sales_per_shift_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/cubit/sales_per_shift_list/sales_per_shift_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/cubit/shift_transactions/shift_transaction_page_size_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/cubit/shift_transactions/shift_transactions_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/branch_bloc/branch_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/api/receipt_template_api.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/repository/receipt_template_repository_impl.dart';
@@ -225,28 +225,13 @@ void initDependencyInjection() {
   initRegisterDependencies();
   initReceiptTemplateDependencies();
   initEmployeeDependencies();
+  initReportDependencies();
 }
 
 void initCoreDependencies() {
   inject
     ..registerSingleton(DioServiceNew())
     ..registerSingleton(BaseApiService(inject<DioServiceNew>()));
-}
-
-void initEmployeeDependencies() {
-  inject
-    ..registerLazySingleton<EmployeeApi>(
-      () => EmployeeApi(inject<BaseApiService>()),
-    )
-    ..registerLazySingleton<EmployeeRepository>(
-      () => EmployeeRepositoryImpl(inject<EmployeeApi>()),
-    )
-    ..registerFactory<PaginatedListBloc<Employee>>(
-      () => PaginatedListBloc<Employee>(inject<EmployeeRepository>().getEmployees),
-    )
-    ..registerFactory<EmployeeBloc>(
-      () => EmployeeBloc(inject<EmployeeRepository>()),
-    );
 }
 
 void initTaxDependencies() {
@@ -334,6 +319,42 @@ void initReceiptTemplateDependencies() {
     );
 }
 
+void initEmployeeDependencies() {
+  inject
+    ..registerLazySingleton<EmployeeApi>(
+      () => EmployeeApi(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<EmployeeRepository>(
+      () => EmployeeRepositoryImpl(inject<EmployeeApi>()),
+    )
+    ..registerFactory<PaginatedListBloc<Employee>>(
+      () => PaginatedListBloc<Employee>(inject<EmployeeRepository>().getEmployees),
+    )
+    ..registerFactory<EmployeeBloc>(
+      () => EmployeeBloc(inject<EmployeeRepository>()),
+    );
+}
+
+void initReportDependencies() {
+  inject
+    ..registerLazySingleton<ReportApiService>(
+      () => ReportApiService(api: inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<ReportRepository>(
+      () => ReportRepositoryImpl(api: inject<ReportApiService>()),
+    )
+    // Move to Product dependencies
+    ..registerFactory<LazyListBloc<Category>>(
+      () => LazyListBloc<Category>(inject<CategoryRepository>().getCategories),
+    )
+    ..registerFactory<ReportManagerCubit>(
+      () => ReportManagerCubit(repository: inject<ReportRepository>()),
+    )
+    ..registerFactory<ProductPerformanceListBloc>(
+      () => ProductPerformanceListBloc(repository: inject<ReportRepository>()),
+    );
+}
+
 // TODO: Break down into smaller init methods
 void initAll() {
   inject
@@ -348,8 +369,14 @@ void initAll() {
     /// API
     /// Portal
     ..registerLazySingleton<AuthApi>(() => AuthApiImpl(inject()))
-    ..registerLazySingleton<SupplierApi>(() => SupplierApiImpl(inject()))
-    ..registerLazySingleton<CategoryApi>(() => CategoryApiImpl(inject()))
+    ..registerLazySingleton<SupplierApi>(
+      () => SupplierApi(inject<BaseApiService>()),
+    )
+    // ..registerLazySingleton<SupplierApi>(() => SupplierApiImpl(inject()))
+    // ..registerLazySingleton<CategoryApi>(() => CategoryApiImpl(inject()))
+    ..registerLazySingleton<CategoryApi>(
+      () => CategoryApi(inject<BaseApiService>()),
+    )
     ..registerLazySingleton<ProductApi>(() => ProductApiImpl(inject()))
     ..registerLazySingleton<ProductVariantApi>(() => ProductVariantApiImpl(inject()))
     ..registerLazySingleton<SupplyNeedsApi>(() => SupplyNeedsApiImpl(inject()))
@@ -360,7 +387,7 @@ void initAll() {
     ..registerLazySingleton<TransactionApi>(() => TransactionApiImpl(inject()))
     ..registerLazySingleton<ReturnApi>(() => ReturnApiImpl(inject()))
     ..registerLazySingleton<ProductHistoryApi>(() => ProductHistoryApiImpl(inject()))
-    ..registerLazySingleton<ReportsApi>(() => ReportsApiImpl(inject()))
+    // ..registerLazySingleton<ReportsApi>(() => ReportsApiImpl(inject()))
     ..registerLazySingleton<SalesPerCategoryApi>(() => SalesPerCategoryApiImpl(inject()))
     ..registerLazySingleton<SalesPerShiftApi>(() => SalesPerShiftApiImpl(inject()))
 
@@ -383,7 +410,6 @@ void initAll() {
     ..registerLazySingleton<TransactionRepository>(() => TransactionRepositoryImpl(inject()))
     ..registerLazySingleton<ReturnRepository>(() => ReturnRepositoryImpl(inject()))
     ..registerLazySingleton<ProductHistoryRepository>(() => ProductHistoryRepositoryImpl(inject()))
-    ..registerLazySingleton<ReportRepository>(() => ReportRepositoryImpl(inject()))
     ..registerLazySingleton<SalesPerCategoryRepository>(() => SalesPerCategoryRepositoryImpl(inject()))
     ..registerLazySingleton<SalesPerShiftRepository>(() => SalesPerShiftRepositoryImpl(inject()))
 
@@ -461,8 +487,8 @@ void initAll() {
 
     /// Reports
     ..registerLazySingleton(() => GetProductHistoryUseCase(inject()))
-    ..registerLazySingleton(() => GetReportByIdUseCase(inject()))
-    ..registerLazySingleton(() => CreateReportUseCase(inject()))
+    // ..registerLazySingleton(() => GetReportByIdUseCase(inject()))
+    // ..registerLazySingleton(() => CreateReportUseCase(inject()))
     ..registerLazySingleton(() => GetSalesPerCategoryUseCase(inject()))
     ..registerLazySingleton(() => GetSalesPerShiftUseCase(inject()))
     ..registerLazySingleton(() => GetSalesPerShiftByIdUseCase(inject()))
@@ -536,7 +562,8 @@ void initAll() {
     ..registerFactory(() => SupplierLazyListCubit(inject()))
     ..registerFactory(() => ProductHistoryListCubit(inject()))
     ..registerFactory(() => ProductHistoryListFilterCubit())
-    ..registerFactory(() => ReportsBloc(inject(), inject()))
+    // ..registerFactory(() => ReportBloc(inject<ReportRepository>())) //
+    // ..registerFactory(() => ReportsBloc(inject(), inject()))
     ..registerFactory(() => SalesCategoryFilterCubit())
     ..registerFactory(() => SalesCategoryGroupByCubit())
     ..registerFactory(() => SalesCategoryPeriodCubit())

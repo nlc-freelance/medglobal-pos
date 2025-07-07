@@ -14,15 +14,15 @@ class TaxRepositoryImpl implements TaxRepository {
   TaxRepositoryImpl(this._taxApi);
 
   @override
-  Future<Either<Failure, PaginatedList<Tax>>> getTaxCodes({required FilterList filters}) async {
+  Future<Either<Failure, PaginatedList<Tax>>> getTaxCodes({required PageQuery filters}) async {
     try {
       final responseDto = await _taxApi.getTaxCodes(filters: filters);
 
       return Right(responseDto.convert((item) => item.toDomain()));
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -33,9 +33,9 @@ class TaxRepositoryImpl implements TaxRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -47,9 +47,9 @@ class TaxRepositoryImpl implements TaxRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -61,9 +61,9 @@ class TaxRepositoryImpl implements TaxRepository {
 
       return Right(responseDto.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -72,9 +72,9 @@ class TaxRepositoryImpl implements TaxRepository {
     try {
       return Right(await _taxApi.deleteTaxCode(id));
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 
@@ -85,9 +85,9 @@ class TaxRepositoryImpl implements TaxRepository {
 
       return Right(responseDto?.toDomain());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.messsage));
+      return Left(ServerFailure(e.message));
     } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.messsage));
+      return Left(UnexpectedFailure(e.message));
     }
   }
 }

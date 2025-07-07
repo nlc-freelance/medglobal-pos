@@ -9,10 +9,10 @@ class EmployeeApi {
 
   EmployeeApi(this._api);
 
-  Future<PaginatedList<EmployeeDto>> getEmployees({required FilterList filters}) async {
+  Future<PaginatedList<EmployeeDto>> getEmployees(PageQuery query) async {
     final response = await _api.getPaginated<EmployeeDto>(
       ApiEndpoints.employees,
-      queryParams: filters.toJson(),
+      queryParams: query.toJson(),
       fromJson: EmployeeDto.fromJson,
     );
 

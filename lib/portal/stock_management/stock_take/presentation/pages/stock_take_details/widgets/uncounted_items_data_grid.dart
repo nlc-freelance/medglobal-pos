@@ -7,7 +7,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/uncounted_items_draft/uncounted_items_draft_cubit.dart';
@@ -200,7 +200,7 @@ class _UncountedItemsDataGridState extends State<UncountedItemsDataGrid> with Si
       listener: (context, state) {
         if (state is StockTakeItemsSuccess) {
           _searchController.text = Strings.empty;
-          ToastNotification.success(context, 'The stock item has been successfully updated!');
+          SnackbarUtil.success(context, 'The stock item has been successfully updated!');
           context.read<UncountedItemsListCubit>().getItems(id: context.read<StockTakeCubit>().state.stockTake.id!);
           context.read<CountedItemsListCubit>().getItems(id: context.read<StockTakeCubit>().state.stockTake.id!);
 

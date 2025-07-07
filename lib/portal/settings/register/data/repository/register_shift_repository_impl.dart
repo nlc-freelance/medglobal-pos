@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:medglobal_admin_portal/core/enums/register_shift.dart';
+import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_shift_api.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/dto/request/create_register_shift_dto.dart';

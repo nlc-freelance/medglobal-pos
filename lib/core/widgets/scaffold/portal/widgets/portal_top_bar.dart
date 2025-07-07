@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_lazy_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_lazy_list/supplier_lazy_list_cubit.dart';
@@ -66,6 +67,8 @@ class PortalTopbar extends StatelessWidget implements PreferredSizeWidget {
                       // context.read<BranchLazyListCubit>().reset();
                       context.read<CategoryLazyListCubit>().reset();
                       context.read<SupplierLazyListCubit>().reset();
+
+                      context.read<ReportManagerCubit>().reset();
 
                       context.read<AuthBloc>().add(const LogoutEvent());
                     }

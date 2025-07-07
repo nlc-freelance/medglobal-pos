@@ -69,7 +69,7 @@ class _RegisterDataGridState extends State<RegisterDataGrid> {
                     paginatedData,
                     onPageChanged: ({required page, required size}) =>
                         context.read<PaginatedListBloc<Register>>().add(PaginatedListEvent<Register>.fetch(
-                              filters: FilterList(
+                              filters: PageQuery(
                                 page: page,
                                 size: size,
                               ),

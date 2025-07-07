@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/enums/reports_enum.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
@@ -162,7 +163,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrdersPage> with SingleTick
           selector: (state) => state,
           builder: (context, filters) {
             return DataGridToolbar(
-              reportType: ReportType.PURCHASE_ORDER_CSV,
+              reportType: ReportType.purchaseOrder,
               reportFilters: {
                 'status': filters.status?.label.toLowerCase(),
                 'branch': filters.branchId,

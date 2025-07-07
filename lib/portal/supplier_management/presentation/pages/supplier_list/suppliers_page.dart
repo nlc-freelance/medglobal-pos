@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list_filter/supplier_list_filter_cubit.dart';
@@ -42,9 +42,9 @@ class _SuppliersPageState extends State<SuppliersPage> {
         listener: (_, state) {
           if (state is SupplierSuccess) {
             _supplierListCubit.getSuppliers();
-            ToastNotification.success(context, state.message);
+            SnackbarUtil.success(context, state.message);
           }
-          if (state is SupplierError) ToastNotification.error(context, state.message);
+          if (state is SupplierError) SnackbarUtil.error(context, state.message);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
