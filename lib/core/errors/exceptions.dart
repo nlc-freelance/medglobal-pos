@@ -1,16 +1,16 @@
 abstract class AppException implements Exception {
-  final String messsage;
-  const AppException(this.messsage);
+  final String message;
+  const AppException(this.message);
 }
 
 class ServerException extends AppException {
-  ServerException(super.messsage);
+  ServerException(super.message);
 }
 
 class NetworkException extends AppException {
-  NetworkException(super.messsage);
+  NetworkException(super.message);
 }
 
 class UnexpectedException extends AppException {
-  UnexpectedException(super.messsage);
+  UnexpectedException(super.message);
 }

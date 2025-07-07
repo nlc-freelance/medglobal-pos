@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/print_receipt/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/sale_remote/sale_remote_cubit.dart';
@@ -107,13 +107,12 @@ class PaymentConfirmed extends StatelessWidget {
                     orElse: () => BlocListener<PrintReceiptCubit, PrintReceiptState>(
                       listener: (context, state) {
                         if (state is PrintReceiptSuccess) {
-                          ToastNotification.success(
+                          SnackbarUtil.success(
                             context,
                             'Receipt successfully generated.',
-                            duration: 5000,
                           );
                         }
-                        if (state is PrintReceiptError) ToastNotification.error(context, state.message);
+                        if (state is PrintReceiptError) SnackbarUtil.error(context, state.message);
                       },
                       child: FilledButton.icon(
                         label: state.maybeWhen(

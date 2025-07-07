@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/re
 
 abstract class RegisterRepository {
   /// Retrieves a list of all POS registers
-  Future<Either<Failure, PaginatedList<Register>>> getRegisters({required FilterList filters});
+  Future<Either<Failure, PaginatedList<Register>>> getRegisters({required PageQuery filters});
 
   /// Retrieves a POS register by id
   Future<Either<Failure, Register>> getRegister(int id);

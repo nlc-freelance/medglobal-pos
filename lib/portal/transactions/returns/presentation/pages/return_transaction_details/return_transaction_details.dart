@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
@@ -19,7 +19,7 @@ class ReturnTransactionDetails extends StatelessWidget {
       listener: (context, state) {
         if (state is ReturnSuccess) {
           context.read<ReturnCubit>().setReturn(state.transaction);
-          ToastNotification.success(context, 'Return has been successfully completed.');
+          SnackbarUtil.success(context, 'Return has been successfully completed.');
 
           context.read<ReturnTransactionListCubit>().getTransactions();
         }

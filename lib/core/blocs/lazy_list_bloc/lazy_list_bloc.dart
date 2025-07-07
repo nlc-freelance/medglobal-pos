@@ -9,100 +9,74 @@ part 'lazy_list_state.dart';
 part 'lazy_list_bloc.freezed.dart';
 
 class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
-  final int _pageSize = 10;
-  int _currentPage = 1;
-
-  final Future<Either<Failure, PaginatedList<T>>> Function({required FilterList filters}) _fetch;
+  final Future<Either<Failure, PaginatedList<T>>> Function({required PageQuery filters}) _fetch;
 
   LazyListBloc(this._fetch) : super(LazyListState<T>.initial()) {
-    on<_Fetch<T>>(_onFetch);
-    on<_Refresh<T>>(_onRefresh);
-    on<_Reset<T>>(_onReset);
+    on<LazyListEvent<T>>(_onEvent);
   }
 
-  Future<void> _onFetch(event, Emitter<LazyListState<T>> emit) async {
-    // If is loading, or already reached max, do nothing
-    if (state.isLoadingInitial || state.isLoadingMore || state.hasReachedMax) return;
+  int _currentPage = 1;
+  int _totalCount = -1;
+  final List<T> _cachedItems = [];
 
-    if (state.items.isEmpty) {
-      emit(state.copyWith(isLoadingInitial: true));
-    } else {
-      emit(state.copyWith(isLoadingMore: true));
-    }
+  Future<void> _onEvent(event, Emitter<LazyListState<T>> emit) async {
+    await event.when(
+      fetch: (forceRefresh) async {
+        if (forceRefresh) {
+          _currentPage = 1;
+          _totalCount = -1;
+          _cachedItems.clear();
+        }
 
-    try {
-      final result = await _fetch(filters: FilterList(page: _currentPage, size: _pageSize));
+        // If is loading, or already reached max, do nothing
+        if (state.hasReachedMax || state.isLoadingInitial || state.isLoadingMore) return;
 
-      result.fold(
-        (failure) => emit(state.copyWith(
-          isLoadingInitial: false,
-          isLoadingMore: false,
-          error: failure.message,
-        )),
-        (data) {
-          final allItems = [...state.items, ...data.items];
+        emit(state.copyWith(
+          isLoadingInitial: _currentPage == 1,
+          isLoadingMore: _currentPage > 1,
+        ));
+
+        try {
+          final result = await _fetch(filters: PageQuery(page: _currentPage, size: 10));
+
+          result.fold(
+            (error) => emit(state.copyWith(
+              isLoadingInitial: false,
+              isLoadingMore: false,
+              error: error.message,
+            )),
+            (data) {
+              _cachedItems.addAll(data.items);
+              _totalCount = data.totalCount;
+
+              final hasReachedMax = _cachedItems.length >= _totalCount;
+
+              emit(state.copyWith(
+                items: List.unmodifiable(_cachedItems),
+                isLoadingInitial: false,
+                isLoadingMore: false,
+                hasReachedMax: hasReachedMax,
+                hasNoData: data.hasNoItems,
+                error: null,
+              ));
+
+              if (!hasReachedMax) _currentPage++;
+            },
+          );
+        } catch (e) {
           emit(state.copyWith(
-            items: allItems,
             isLoadingInitial: false,
             isLoadingMore: false,
-            hasReachedMax: data.hasReachedMax,
-            hasNoData: data.hasNoItems,
-            error: null,
+            error: e.toString(),
           ));
-        },
-      );
-      _currentPage++;
-    } catch (e) {
-      emit(state.copyWith(
-        isLoadingInitial: false,
-        isLoadingMore: false,
-        error: e.toString(),
-      ));
-    }
+        }
+      },
+      reset: () {
+        _currentPage = 1;
+        _totalCount = -1;
+        _cachedItems.clear();
+        emit(LazyListState<T>.initial());
+      },
+    );
   }
-
-  Future<void> _onRefresh(event, Emitter<LazyListState<T>> emit) async {
-    emit(state.copyWith(
-      items: [],
-      isLoadingInitial: true,
-      isLoadingMore: false,
-      hasReachedMax: false,
-      hasNoData: false,
-      error: null,
-    ));
-
-    try {
-      _currentPage = 1;
-
-      final result = await _fetch(filters: FilterList(page: _currentPage, size: _pageSize));
-
-      result.fold(
-        (failure) => emit(state.copyWith(
-          isLoadingInitial: false,
-          isLoadingMore: false,
-          error: failure.message,
-        )),
-        (data) {
-          emit(state.copyWith(
-            items: data.items,
-            isLoadingInitial: false,
-            isLoadingMore: false,
-            hasReachedMax: data.hasReachedMax,
-            hasNoData: data.hasNoItems,
-            error: null,
-          ));
-        },
-      );
-
-      _currentPage = 1;
-    } catch (e) {
-      emit(state.copyWith(
-        isLoadingInitial: false,
-        isLoadingMore: false,
-        error: e.toString(),
-      ));
-    }
-  }
-
-  void _onReset(event, Emitter<LazyListState<T>> emit) => emit(LazyListState<T>.initial());
 }

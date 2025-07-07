@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier_paginated_list.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecases/get_suppliers_usecase.dart';
 
 part 'supplier_list_state.dart';
@@ -19,7 +20,7 @@ class SupplierListCubit extends Cubit<SupplierListState> {
       result.fold(
         (error) => emit(SupplierListError(message: error.message)),
         (data) {
-          if (search != null && data.totalCount == 0 && data.suppliers?.isEmpty == true) {
+          if (search != null && data.totalCount == 0 && data.items.isEmpty == true) {
             emit(SupplierSearchNoResult(message: 'No results found for \'$search\''));
           } else {
             emit(SupplierListLoaded(data: data));

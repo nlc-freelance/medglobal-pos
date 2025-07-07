@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
@@ -72,13 +72,13 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
         }
         if (state is StockTakeSuccess) {
           context.read<StockTakeCubit>().setStockTake(state.stockTake);
-          ToastNotification.success(context, 'Stock Take updated successfully.');
+          SnackbarUtil.success(context, 'Stock Take updated successfully.');
         }
         if (state is StockTakeMarkAsCompletedSuccess) {
           context.read<StockTakeCubit>().setStockTake(state.stockTake);
         }
         if (state is StockTakeError) {
-          ToastNotification.error(context, state.message);
+          SnackbarUtil.error(context, state.message);
         }
       },
       builder: (context, state) {

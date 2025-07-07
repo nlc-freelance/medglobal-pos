@@ -6,7 +6,7 @@ import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/rece
 
 abstract class BranchRepository {
   /// Retrieves a list of all branches
-  Future<Either<Failure, PaginatedList<Branch>>> getBranches({required FilterList filters});
+  Future<Either<Failure, PaginatedList<Branch>>> getBranches({required PageQuery filters});
 
   /// Retrieves a branch by id
   Future<Either<Failure, Branch>> getBranch(int id);

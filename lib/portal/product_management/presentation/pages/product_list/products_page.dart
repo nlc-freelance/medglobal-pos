@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_bulk_action/product_bulk_action_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list/product_list_filter_cubit.dart';
@@ -40,10 +40,10 @@ class _ProductsPageState extends State<ProductsPage> {
   Widget build(BuildContext context) {
     return BlocListener<ProductBulkActionCubit, ProductBulkActionState>(
       listener: (context, state) {
-        if (state is ProductBulkActionError) ToastNotification.error(context, state.message);
+        if (state is ProductBulkActionError) SnackbarUtil.error(context, state.message);
         if (state is ProductBulkActionSuccess) {
           context.read<ProductListCubit>().getProducts();
-          ToastNotification.success(context, state.message);
+          SnackbarUtil.success(context, state.message);
         }
       },
       child: Column(
@@ -62,7 +62,7 @@ class _ProductsPageState extends State<ProductsPage> {
           ),
           const UIVerticalSpace(20),
           DataGridToolbar(
-            reportType: ReportType.PRODUCT_DATA_CSV,
+            reportType: ReportType.products,
             search: UISearchField(
               fieldWidth: 500.0,
               hint: 'Search product name',

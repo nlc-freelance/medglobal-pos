@@ -6,7 +6,7 @@ import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/bloc/branch_bloc/branch_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/pages/branch_form/widgets/branch_form_view.dart';
@@ -80,9 +80,9 @@ class _BranchFormState extends State<BranchForm> with DialogMixin {
     context.read<PaginatedListBloc<Branch>>().add(const PaginatedListEvent<Branch>.fetch());
 
     // Reload lazy list for branch dropdown
-    context.read<LazyListBloc<Branch>>().add(const LazyListEvent<Branch>.refresh());
+    context.read<LazyListBloc<Branch>>().add(const LazyListEvent<Branch>.fetch(forceRefresh: true));
 
-    ToastNotification.success(context, message);
+    SnackbarUtil.success(context, message);
     PageLoader.close();
 
     context.goNamed(SideMenuTreeItem.branch.name);
@@ -90,6 +90,6 @@ class _BranchFormState extends State<BranchForm> with DialogMixin {
 
   void _onFailure(BuildContext context, String message) {
     PageLoader.close();
-    ToastNotification.error(context, message);
+    SnackbarUtil.error(context, message);
   }
 }

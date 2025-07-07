@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/presentation/bloc/tax_bloc/tax_bloc.dart';
@@ -69,9 +69,9 @@ class TaxList extends StatelessWidget with DialogMixin {
     context.read<PaginatedListBloc<Tax>>().add(const PaginatedListEvent.fetch());
 
     // Reload lazy list for tax dropdown
-    context.read<LazyListBloc<Tax>>().add(const LazyListEvent<Tax>.refresh());
+    context.read<LazyListBloc<Tax>>().add(const LazyListEvent<Tax>.fetch(forceRefresh: true));
 
-    ToastNotification.success(context, message);
+    SnackbarUtil.success(context, message);
     PageLoader.close();
   }
 
@@ -82,7 +82,7 @@ class TaxList extends StatelessWidget with DialogMixin {
 
   void _onFailure(BuildContext context, String message) {
     PageLoader.close();
-    ToastNotification.error(context, message);
+    SnackbarUtil.error(context, message);
   }
 }
 

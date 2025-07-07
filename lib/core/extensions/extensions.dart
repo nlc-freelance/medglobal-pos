@@ -50,6 +50,11 @@ extension PathTransformExt on String {
 
     return transformedText;
   }
+
+  String get capitalized {
+    if (isEmpty) return this;
+    return '${this[0].toUpperCase()}${substring(1)}';
+  }
 }
 
 extension DataGridRowExt on DataGridRow {
@@ -76,5 +81,16 @@ extension SafeFirstWhereExtension<T> on Iterable<T> {
       if (test(item)) return item;
     }
     return null;
+  }
+}
+
+extension NullableMapNullRemover on Map<String, dynamic>? {
+  ///  Returns a new [Map<String, dynamic>] with all entries that have `null` values removed.
+  Map<String, dynamic> removeNullValues() {
+    if (this == null) return {};
+
+    return Map.fromEntries(
+      this!.entries.where((entry) => entry.value != null),
+    );
   }
 }

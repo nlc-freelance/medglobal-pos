@@ -7,11 +7,13 @@ class AppCustomDialog extends StatelessWidget {
     super.key,
     required this.title,
     required this.content,
+    required this.actions,
     this.onClose,
   });
 
   final String title;
   final Widget content;
+  final Widget actions;
   final VoidCallback? onClose;
 
   @override
@@ -20,7 +22,7 @@ class AppCustomDialog extends StatelessWidget {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
       backgroundColor: UIColors.background,
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 500),
+        constraints: const BoxConstraints(maxWidth: 500, maxHeight: 600),
         padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,6 +45,8 @@ class AppCustomDialog extends StatelessWidget {
             const Divider(color: UIColors.borderMuted),
             const UIVerticalSpace(16),
             content,
+            const UIVerticalSpace(16),
+            actions,
           ],
         ),
       ),

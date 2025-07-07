@@ -67,7 +67,7 @@ class _BranchBusinessSectionState extends State<BranchBusinessSection> with Dial
                               initializingNewBranch: () => true,
                               orElse: () => false,
                             ),
-                            child: AppDropdownFormField<ReceiptTemplate>.labelTop(
+                            child: AppDropdownFormField<ReceiptTemplate>.lazy(
                               label: 'Receipt Template',
                               hint: state.maybeWhen(
                                 initializingNewBranch: () => 'Loading Default...',

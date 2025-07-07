@@ -31,7 +31,7 @@ final class SupplierSearchNoResult extends SupplierListState {
 }
 
 class SupplierListLoaded extends SupplierListState {
-  final SupplierPaginatedList data;
+  final PaginatedList<Supplier> data;
   const SupplierListLoaded({required this.data});
 
   @override

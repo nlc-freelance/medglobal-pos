@@ -47,7 +47,7 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
           selector: (state) => state,
           builder: (context, filters) {
             return DataGridToolbar(
-              reportType: ReportType.SALES_CSV,
+              reportType: ReportType.sales,
               reportFilters: {
                 'transactionType': TransactionType.SALE.name.toLowerCase(),
                 'isAllBranches': filters.branchId == null,

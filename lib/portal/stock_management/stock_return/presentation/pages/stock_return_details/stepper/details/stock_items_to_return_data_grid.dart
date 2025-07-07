@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/typeahead_search/typeahead_search.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
@@ -59,7 +59,7 @@ class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid>
               branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
               onSelected: (value) {
                 if (_stockItemsToReturnDataSource._itemsToReturn.any((item) => item.variantId == value.id) == true) {
-                  ToastNotification.duplicate(context, 'Item was already added.');
+                  SnackbarUtil.duplicate(context, 'Item was already added.');
                   return;
                 }
                 final purchaseOrderItem = value.toStockReturnItem();
@@ -119,7 +119,7 @@ class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid>
                                     if (_stockItemsToReturnDataSource._itemsToReturn
                                             .any((item) => item.variantId == value.id) ==
                                         true) {
-                                      ToastNotification.duplicate(context, 'Item was already added.');
+                                      SnackbarUtil.duplicate(context, 'Item was already added.');
                                       return;
                                     }
                                     final purchaseOrderItem = value.toStockReturnItem();

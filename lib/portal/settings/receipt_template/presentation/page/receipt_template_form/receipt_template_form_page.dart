@@ -6,7 +6,7 @@ import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/repository/receipt_template_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/presentation/bloc/receipt_template_bloc/receipt_template_bloc.dart';
@@ -79,9 +79,9 @@ class _ReceiptTemplateFormState extends State<ReceiptTemplateForm> with DialogMi
     context.read<PaginatedListBloc<ReceiptTemplate>>().add(const PaginatedListEvent.fetch());
 
     // Reload lazy list for receipt template dropdown
-    context.read<LazyListBloc<ReceiptTemplate>>().add(const LazyListEvent<ReceiptTemplate>.refresh());
+    context.read<LazyListBloc<ReceiptTemplate>>().add(const LazyListEvent<ReceiptTemplate>.fetch(forceRefresh: true));
 
-    ToastNotification.success(context, message);
+    SnackbarUtil.success(context, message);
     PageLoader.close();
 
     context.goNamed(SideMenuTreeItem.receiptTemplate.name);
@@ -89,6 +89,6 @@ class _ReceiptTemplateFormState extends State<ReceiptTemplateForm> with DialogMi
 
   void _onFailure(BuildContext context, String message) {
     PageLoader.close();
-    ToastNotification.error(context, message);
+    SnackbarUtil.error(context, message);
   }
 }

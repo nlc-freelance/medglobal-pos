@@ -9,7 +9,7 @@ class RegisterApi {
 
   RegisterApi(this._api);
 
-  Future<PaginatedList<RegisterDto>> getRegisters({required FilterList filters}) async {
+  Future<PaginatedList<RegisterDto>> getRegisters({required PageQuery filters}) async {
     final response = await _api.getPaginated<RegisterDto>(
       ApiEndpoints.registers,
       queryParams: filters.toJson(),

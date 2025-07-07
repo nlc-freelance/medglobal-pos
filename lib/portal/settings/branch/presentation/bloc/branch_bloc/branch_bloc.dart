@@ -30,7 +30,7 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
     emit(const BranchState.initializingNewBranch());
 
     try {
-      final result = await _receiptTemplateRepository.getReceiptTemplates(filters: const FilterList());
+      final result = await _receiptTemplateRepository.getReceiptTemplates(filters: const PageQuery());
 
       result.fold(
         (failure) => emit(BranchState.failure(failure.message)),

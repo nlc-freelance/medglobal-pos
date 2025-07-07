@@ -167,7 +167,7 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
           selector: (state) => state,
           builder: (context, filters) {
             return DataGridToolbar(
-              reportType: ReportType.STOCK_TRANSFER_CSV,
+              reportType: ReportType.stockTransfer,
               reportFilters: {
                 'status': filters.status?.label.toLowerCase(),
                 'fromBranch': filters.sourceBranch?.id,

@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/portal/authentication/data/api/auth_service.dart';
-
-import '../../../api_endpoint.dart';
 
 class RequestInterceptor extends Interceptor {
   @override

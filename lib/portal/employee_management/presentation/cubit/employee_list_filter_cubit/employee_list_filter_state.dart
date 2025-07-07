@@ -8,14 +8,14 @@ class EmployeeListFilterState with _$EmployeeListFilterState {
     String? search,
     String? role,
     int? branchId,
-    // @Default(FilterList()) FilterList filters,
+    // @Default(PageQuery()) PageQuery filters,
   }) = _EmployeeListFilterState;
 
   const EmployeeListFilterState._();
 
   factory EmployeeListFilterState.initial() => const EmployeeListFilterState();
 
-  FilterList get filters => FilterList(
+  PageQuery get filters => PageQuery(
         page: page,
         size: size,
         search: search,

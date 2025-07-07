@@ -1,11 +1,10 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
-import 'package:medglobal_admin_portal/core/widgets/dropdowns/dropdown.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/app_dropdown.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/cubit/employee_list_filter_cubit/employee_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_form/widgets/sections/access_control/role_section.dart';
@@ -50,7 +49,7 @@ class _EmployeeFiltersState extends State<EmployeeFilters> {
       ),
       filters: [
         const UIHorizontalSpace(8),
-        Dropdown<EmployeeRole>.list(
+        AppDropdown<EmployeeRole>.static(
           items: EmployeeRole.values,
           hint: 'All Roles',
           getName: (item) => item.name.capitalized,

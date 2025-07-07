@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/typeahead_search/typeahead_search.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
@@ -59,7 +59,7 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
               branchId: context.read<PurchaseOrderCubit>().state.purchaseOrder.branch?.id,
               onSelected: (value) {
                 if (_purchaseItemsDataSource._itemsToOrder.any((item) => item.variantId == value.id) == true) {
-                  ToastNotification.duplicate(context, 'Item was already added.');
+                  SnackbarUtil.duplicate(context, 'Item was already added.');
                   return;
                 }
 
@@ -120,7 +120,7 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
                                     if (_purchaseItemsDataSource._itemsToOrder
                                             .any((item) => item.variantId == value.id) ==
                                         true) {
-                                      ToastNotification.duplicate(context, 'Item was already added.');
+                                      SnackbarUtil.duplicate(context, 'Item was already added.');
                                       return;
                                     }
                                     final purchaseOrderItem = value.toPurchaseOrderItem();

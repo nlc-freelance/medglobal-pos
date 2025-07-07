@@ -6,6 +6,7 @@ import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/route_guard.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/pos_scaffold.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
@@ -13,10 +14,13 @@ import 'package:medglobal_admin_portal/portal/employee_management/presentation/p
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_list/employee_list_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/products_page.dart';
-import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/product_history_page.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/sales_per_category_page.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_details/sales_per_shift_details_page.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_list/sales_per_shift_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/product_performance_list_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/sales_per_category_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/presentation/sales_per_shift_details/sales_per_shift_details_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/presentation/sales_per_shift_list/sales_per_shift_page.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/pages/branch_form/branch_form_page.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/presentation/pages/branch_list/branch_list_page.dart';
@@ -45,6 +49,7 @@ import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pa
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/billing/billing_page.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/pos/point_of_sale_page.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transactions_page.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
 
 abstract class AppRouter {
   static final GoRouter router = GoRouter(
@@ -57,9 +62,47 @@ abstract class AppRouter {
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) => RouteGuard(
           allowedTypes: const [UserType.ADMIN, UserType.STORE_MANAGER],
-          child: PortalScaffold(
-            routerState: state,
-            navigationShell: navigationShell,
+          child: BlocListener<ReportManagerCubit, ReportManagerState>(
+            listener: (context, state) {
+              /// Displays a snackbar for every task that has failed.
+              ///
+              /// After showing the toast, the failed tasks are removed from the current state,
+              /// *except* for those tasks that require source data input.
+              /// Tasks requiring source data are retained in the state so that they can
+              /// continue to be managed and possibly corrected within the form or UI.
+              final failedTasks = state.tasks.failed;
+              if (failedTasks.isNotEmpty) {
+                for (ReportTask task in state.productPerformanceTasks) {
+                  SnackbarUtil.error(context, task.error!);
+
+                  if (task.type.requiresSourceData && task.isInCreationState) return;
+                  context.read<ReportManagerCubit>().removeTask(task.key);
+                }
+              }
+
+              /// Displays a snackbar for every product performance task that is locally ready for download.
+              /// Each toast includes an actionable button that allows the user to download the report directly.
+              final localReadyProductPerformanceTasks = state.productPerformanceTasks.local.ready;
+
+              if (localReadyProductPerformanceTasks.isNotEmpty) {
+                for (ReportTask task in state.productPerformanceTasks) {
+                  SnackbarUtil.success(
+                    context,
+                    '${task.fileName} is ready to download.',
+                    action: UIButton.text(
+                      'Download',
+                      onClick: () => context
+                          .read<ReportManagerCubit>()
+                          .manualDownloadReport(task.toReport(ReportStatus.completed)),
+                    ),
+                  );
+                }
+              }
+            },
+            child: PortalScaffold(
+              routerState: state,
+              navigationShell: navigationShell,
+            ),
           ),
         ),
         branches: [
@@ -228,6 +271,11 @@ abstract class AppRouter {
                     name: SideMenuTreeItem.PRODUCT_HISTORY.name,
                     path: SideMenuTreeItem.PRODUCT_HISTORY.path,
                     pageBuilder: (context, state) => const NoTransitionPage(child: ProductHistoryPage()),
+                  ),
+                  GoRoute(
+                    name: SideMenuTreeItem.productPerformance.name,
+                    path: SideMenuTreeItem.productPerformance.path,
+                    pageBuilder: (context, state) => const NoTransitionPage(child: ProductPerformanceListPage()),
                   ),
                   GoRoute(
                     name: SideMenuTreeItem.SALES_REPORT.name,

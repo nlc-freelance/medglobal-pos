@@ -1,4 +1,3 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -66,7 +65,7 @@ class _EmployeeDataGridState extends State<EmployeeDataGrid> {
                 ),
                 const UIVerticalSpace(12),
                 if (paginatedData.hasItems)
-                  BlocSelector<EmployeeListFilterCubit, EmployeeListFilterState, FilterList>(
+                  BlocSelector<EmployeeListFilterCubit, EmployeeListFilterState, PageQuery>(
                     selector: (state) => state.filters,
                     builder: (context, filters) {
                       return DataGridPagination<Employee>(

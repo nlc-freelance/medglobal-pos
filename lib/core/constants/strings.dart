@@ -34,7 +34,7 @@ class Strings {
   static const posRegisterEmptySubtitle =
       'You haven\'t added any POS registers yet. Start by creating one to manage point-of-sale operations.';
 
-// Branch Settings
+  // Branch Settings
   static const branchTitle = 'Branch';
   static const branchSubtitle = 'View and manage branches. Edit branch information and assign receipt templates.';
   static const branchCreate = 'New Branch';
@@ -43,4 +43,13 @@ class Strings {
       'You haven\'t added any branches yet. Create your first branch to begin managing store locations.';
   static const branchAdd = 'Add Branch';
   static const branchEdit = 'Edit Branch';
+
+  // Product Performance Reports
+  static const productPerformanceTitle = 'Product Performance';
+  static const productPerformanceSubtitle = 'Generate and download reports on product performance insights.';
+  static const productPerformanceCreate = 'Generate Report';
+
+  static const productPerformanceEmptyTitle = 'No product performance reports available';
+  static const productPerformanceEmptySubtitle =
+      'You haven\'t generated any product performance reports yet. Start by generating one to analyze product performance.';
 }

@@ -69,7 +69,7 @@ class _TaxDataGridState extends State<TaxDataGrid> {
                     paginatedData,
                     onPageChanged: ({required page, required size}) =>
                         context.read<PaginatedListBloc<Tax>>().add(PaginatedListEvent<Tax>.fetch(
-                              filters: FilterList(
+                              filters: PageQuery(
                                 page: page,
                                 size: size,
                               ),

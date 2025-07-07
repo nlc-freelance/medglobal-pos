@@ -101,8 +101,9 @@ class RegisterDropdownState extends State<RegisterDropdown> {
                       children: [
                         UIText.labelMedium(state.error!, align: TextAlign.center),
                         UIButton.text('Reload',
-                            onClick: () =>
-                                context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.refresh()))
+                            onClick: () => context
+                                .read<LazyListBloc<Register>>()
+                                .add(const LazyListEvent<Register>.fetch(forceRefresh: true)))
                         // UIButton.text('Reload', onClick: () => context.read<RegisterLazyListCubit>().getRegisters())
                       ],
                     ),
