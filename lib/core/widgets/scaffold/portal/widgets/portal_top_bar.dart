@@ -3,9 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_lazy_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_lazy_list/supplier_lazy_list_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -62,12 +66,18 @@ class PortalTopbar extends StatelessWidget implements PreferredSizeWidget {
                   menuAsString: (item) => item.title,
                   onSelect: (menu) {
                     if (ProfileMenu.LOGOUT == menu) {
-                      /// Dropdowns
-                      context.read<LazyListBloc<Branch>>().add(const LazyListEvent.reset());
-                      // context.read<BranchLazyListCubit>().reset();
-                      context.read<CategoryLazyListCubit>().reset();
+                      // TODO: To remove once all SupplierDropdown are replaced with the reusable lazy list dropdown
                       context.read<SupplierLazyListCubit>().reset();
 
+                      /// Reset lazy loaded list used in dropdowns
+                      context.read<LazyListBloc<Category>>().add(const LazyListEvent.reset());
+                      context.read<LazyListBloc<Supplier>>().add(const LazyListEvent.reset());
+                      context.read<LazyListBloc<Branch>>().add(const LazyListEvent.reset());
+                      context.read<LazyListBloc<Tax>>().add(const LazyListEvent.reset());
+                      context.read<LazyListBloc<Register>>().add(const LazyListEvent.reset());
+                      context.read<LazyListBloc<ReceiptTemplate>>().add(const LazyListEvent.reset());
+
+                      /// Reset the report manager used in tracking report generation
                       context.read<ReportManagerCubit>().reset();
 
                       context.read<AuthBloc>().add(const LogoutEvent());

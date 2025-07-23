@@ -16,12 +16,12 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$TransactionItem {
-  int get id => throw _privateConstructorUsedError;
-  int get itemId => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  String get sku => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError;
+  int? get itemId => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
+  String? get sku => throw _privateConstructorUsedError;
   double? get price => throw _privateConstructorUsedError;
-  int get quantity => throw _privateConstructorUsedError;
+  int? get quantity => throw _privateConstructorUsedError;
   DiscountType? get discountType => throw _privateConstructorUsedError;
   double? get discountValue => throw _privateConstructorUsedError;
   double? get discountAmount => throw _privateConstructorUsedError;
@@ -43,12 +43,12 @@ abstract class $TransactionItemCopyWith<$Res> {
       _$TransactionItemCopyWithImpl<$Res, TransactionItem>;
   @useResult
   $Res call(
-      {int id,
-      int itemId,
-      String name,
-      String sku,
+      {int? id,
+      int? itemId,
+      String? name,
+      String? sku,
       double? price,
-      int quantity,
+      int? quantity,
       DiscountType? discountType,
       double? discountValue,
       double? discountAmount,
@@ -72,12 +72,12 @@ class _$TransactionItemCopyWithImpl<$Res, $Val extends TransactionItem>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? itemId = null,
-    Object? name = null,
-    Object? sku = null,
+    Object? id = freezed,
+    Object? itemId = freezed,
+    Object? name = freezed,
+    Object? sku = freezed,
     Object? price = freezed,
-    Object? quantity = null,
+    Object? quantity = freezed,
     Object? discountType = freezed,
     Object? discountValue = freezed,
     Object? discountAmount = freezed,
@@ -88,30 +88,30 @@ class _$TransactionItemCopyWithImpl<$Res, $Val extends TransactionItem>
     Object? writeOffQty = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      itemId: null == itemId
+              as int?,
+      itemId: freezed == itemId
           ? _value.itemId
           : itemId // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
+              as int?,
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      sku: null == sku
+              as String?,
+      sku: freezed == sku
           ? _value.sku
           : sku // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
               as double?,
-      quantity: null == quantity
+      quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       discountType: freezed == discountType
           ? _value.discountType
           : discountType // ignore: cast_nullable_to_non_nullable
@@ -157,12 +157,12 @@ abstract class _$$TransactionItemImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
-      int itemId,
-      String name,
-      String sku,
+      {int? id,
+      int? itemId,
+      String? name,
+      String? sku,
       double? price,
-      int quantity,
+      int? quantity,
       DiscountType? discountType,
       double? discountValue,
       double? discountAmount,
@@ -184,12 +184,12 @@ class __$$TransactionItemImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? itemId = null,
-    Object? name = null,
-    Object? sku = null,
+    Object? id = freezed,
+    Object? itemId = freezed,
+    Object? name = freezed,
+    Object? sku = freezed,
     Object? price = freezed,
-    Object? quantity = null,
+    Object? quantity = freezed,
     Object? discountType = freezed,
     Object? discountValue = freezed,
     Object? discountAmount = freezed,
@@ -200,30 +200,30 @@ class __$$TransactionItemImplCopyWithImpl<$Res>
     Object? writeOffQty = freezed,
   }) {
     return _then(_$TransactionItemImpl(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      itemId: null == itemId
+              as int?,
+      itemId: freezed == itemId
           ? _value.itemId
           : itemId // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
+              as int?,
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      sku: null == sku
+              as String?,
+      sku: freezed == sku
           ? _value.sku
           : sku // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
               as double?,
-      quantity: null == quantity
+      quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       discountType: freezed == discountType
           ? _value.discountType
           : discountType // ignore: cast_nullable_to_non_nullable
@@ -264,12 +264,12 @@ class __$$TransactionItemImplCopyWithImpl<$Res>
 
 class _$TransactionItemImpl extends _TransactionItem {
   const _$TransactionItemImpl(
-      {required this.id,
-      required this.itemId,
-      required this.name,
-      required this.sku,
+      {this.id,
+      this.itemId,
+      this.name,
+      this.sku,
       this.price,
-      required this.quantity,
+      this.quantity,
       this.discountType,
       this.discountValue,
       this.discountAmount,
@@ -281,17 +281,17 @@ class _$TransactionItemImpl extends _TransactionItem {
       : super._();
 
   @override
-  final int id;
+  final int? id;
   @override
-  final int itemId;
+  final int? itemId;
   @override
-  final String name;
+  final String? name;
   @override
-  final String sku;
+  final String? sku;
   @override
   final double? price;
   @override
-  final int quantity;
+  final int? quantity;
   @override
   final DiscountType? discountType;
   @override
@@ -370,12 +370,12 @@ class _$TransactionItemImpl extends _TransactionItem {
 
 abstract class _TransactionItem extends TransactionItem {
   const factory _TransactionItem(
-      {required final int id,
-      required final int itemId,
-      required final String name,
-      required final String sku,
+      {final int? id,
+      final int? itemId,
+      final String? name,
+      final String? sku,
       final double? price,
-      required final int quantity,
+      final int? quantity,
       final DiscountType? discountType,
       final double? discountValue,
       final double? discountAmount,
@@ -387,17 +387,17 @@ abstract class _TransactionItem extends TransactionItem {
   const _TransactionItem._() : super._();
 
   @override
-  int get id;
+  int? get id;
   @override
-  int get itemId;
+  int? get itemId;
   @override
-  String get name;
+  String? get name;
   @override
-  String get sku;
+  String? get sku;
   @override
   double? get price;
   @override
-  int get quantity;
+  int? get quantity;
   @override
   DiscountType? get discountType;
   @override

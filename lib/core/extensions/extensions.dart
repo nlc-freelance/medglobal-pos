@@ -55,6 +55,10 @@ extension PathTransformExt on String {
     if (isEmpty) return this;
     return '${this[0].toUpperCase()}${substring(1)}';
   }
+
+  int? toInt() => int.tryParse(trim());
+
+  double? toDouble() => double.tryParse(trim());
 }
 
 extension DataGridRowExt on DataGridRow {
@@ -73,9 +77,9 @@ extension DoubleAsCurrency on double? {
   double roundToTwoDecimalPlaces() => this != null ? (this! * 100).round() / 100 : 0.00;
 }
 
-/// Extension to safely get the first element that matches a condition
-/// Returns null if no item is found (instead of throwing an error)
 extension SafeFirstWhereExtension<T> on Iterable<T> {
+  /// Safely get the first element that matches a condition.
+  /// Returns null if no item is found.
   T? firstWhereOrNull(bool Function(T) test) {
     for (final item in this) {
       if (test(item)) return item;

@@ -2,7 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/dto/response/purchase_order_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
@@ -15,7 +16,7 @@ import 'package:medglobal_admin_portal/portal/supplier_management/domain/entitie
 // class PurchaseOrderDto extends Equatable {
 //   final int? id;
 //   @JsonKey(name: 'store')
-//   final BranchLiteDto? branch;
+//   final BranchDto? branch;
 //   final Supplier? supplier;
 //   final String? status;
 //   final double? totalAmount;
@@ -87,7 +88,7 @@ part 'purchase_order_dto.g.dart';
 class PurchaseOrderDto with _$PurchaseOrderDto {
   const factory PurchaseOrderDto({
     required int id,
-    BranchLiteDto? store,
+    BranchDto? store,
     SupplierDto? supplier,
     String? status,
     double? totalAmount,
@@ -106,7 +107,7 @@ class PurchaseOrderDto with _$PurchaseOrderDto {
 
   PurchaseOrder toDomain() => PurchaseOrder(
         id: id,
-        branch: store?.toDomain(),
+        branch: store == null ? null : BranchMapper.fromDto(store!),
         supplier: supplier?.toDomain(),
         status: StatusMapper.status(status),
         totalAmount: totalAmount,

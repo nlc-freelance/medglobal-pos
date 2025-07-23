@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$RegisterFormState {
   int? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
-  BranchLite? get assignedBranch => throw _privateConstructorUsedError;
+  Branch? get assignedBranch => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $RegisterFormStateCopyWith<RegisterFormState> get copyWith =>
@@ -31,9 +31,9 @@ abstract class $RegisterFormStateCopyWith<$Res> {
           RegisterFormState value, $Res Function(RegisterFormState) then) =
       _$RegisterFormStateCopyWithImpl<$Res, RegisterFormState>;
   @useResult
-  $Res call({int? id, String? name, BranchLite? assignedBranch});
+  $Res call({int? id, String? name, Branch? assignedBranch});
 
-  $BranchLiteCopyWith<$Res>? get assignedBranch;
+  $BranchCopyWith<$Res>? get assignedBranch;
 }
 
 /// @nodoc
@@ -65,18 +65,18 @@ class _$RegisterFormStateCopyWithImpl<$Res, $Val extends RegisterFormState>
       assignedBranch: freezed == assignedBranch
           ? _value.assignedBranch
           : assignedBranch // ignore: cast_nullable_to_non_nullable
-              as BranchLite?,
+              as Branch?,
     ) as $Val);
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchLiteCopyWith<$Res>? get assignedBranch {
+  $BranchCopyWith<$Res>? get assignedBranch {
     if (_value.assignedBranch == null) {
       return null;
     }
 
-    return $BranchLiteCopyWith<$Res>(_value.assignedBranch!, (value) {
+    return $BranchCopyWith<$Res>(_value.assignedBranch!, (value) {
       return _then(_value.copyWith(assignedBranch: value) as $Val);
     });
   }
@@ -90,10 +90,10 @@ abstract class _$$RegisterFormStateImplCopyWith<$Res>
       __$$RegisterFormStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int? id, String? name, BranchLite? assignedBranch});
+  $Res call({int? id, String? name, Branch? assignedBranch});
 
   @override
-  $BranchLiteCopyWith<$Res>? get assignedBranch;
+  $BranchCopyWith<$Res>? get assignedBranch;
 }
 
 /// @nodoc
@@ -123,7 +123,7 @@ class __$$RegisterFormStateImplCopyWithImpl<$Res>
       assignedBranch: freezed == assignedBranch
           ? _value.assignedBranch
           : assignedBranch // ignore: cast_nullable_to_non_nullable
-              as BranchLite?,
+              as Branch?,
     ));
   }
 }
@@ -138,7 +138,7 @@ class _$RegisterFormStateImpl implements _RegisterFormState {
   @override
   final String? name;
   @override
-  final BranchLite? assignedBranch;
+  final Branch? assignedBranch;
 
   @override
   String toString() {
@@ -171,14 +171,14 @@ abstract class _RegisterFormState implements RegisterFormState {
   const factory _RegisterFormState(
       {final int? id,
       final String? name,
-      final BranchLite? assignedBranch}) = _$RegisterFormStateImpl;
+      final Branch? assignedBranch}) = _$RegisterFormStateImpl;
 
   @override
   int? get id;
   @override
   String? get name;
   @override
-  BranchLite? get assignedBranch;
+  Branch? get assignedBranch;
   @override
   @JsonKey(ignore: true)
   _$$RegisterFormStateImplCopyWith<_$RegisterFormStateImpl> get copyWith =>

@@ -13,10 +13,10 @@ class SupplierRepositoryImpl implements SupplierRepository {
   SupplierRepositoryImpl(this.supplierApi);
 
   @override
-  Future<Either<Failure, PaginatedList<Supplier>>> getSuppliers({required PageQuery filters}) async {
+  Future<Either<Failure, PaginatedList<Supplier>>> getSuppliers(PageQuery query) async {
     try {
-      final responseDto = await supplierApi.getSuppliers(filters: filters);
-      return Right(responseDto.convert((item) => item.toEntity()));
+      final responseDto = await supplierApi.getSuppliers(query);
+      return Right(responseDto.convert((item) => item.toDomain()));
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

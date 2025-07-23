@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/tax_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/repository/tax_repository.dart';
 
@@ -18,7 +19,7 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
     on<_Reset>(_onReset);
   }
 
-  Future<void> _onGetDefaultTaxCode(event, emit) async {
+  Future<void> _onGetDefaultTaxCode(_GetDefaultTaxCode event, Emitter<TaxState> emit) async {
     emit(const TaxState.processing());
     try {
       final result = await _repository.getDefaultTaxCode();
@@ -32,10 +33,11 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
     }
   }
 
-  Future<void> _onCreateTaxCode(event, emit) async {
+  Future<void> _onCreateTaxCode(_CreateTaxCode event, Emitter<TaxState> emit) async {
     emit(const TaxState.processing());
     try {
-      final result = await _repository.createTaxCode(event.tax);
+      final payload = TaxPayload.fromTax(event.tax);
+      final result = await _repository.createTaxCode(payload);
 
       result.fold(
         (failure) => emit(TaxState.failure(failure.message)),
@@ -46,10 +48,11 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
     }
   }
 
-  Future<void> _onUpdateTaxCode(event, emit) async {
+  Future<void> _onUpdateTaxCode(_UpdateTaxCode event, Emitter<TaxState> emit) async {
     emit(const TaxState.processing());
     try {
-      final result = await _repository.updateTaxCode(event.tax);
+      final payload = TaxPayload.fromTax(event.tax);
+      final result = await _repository.updateTaxCode(event.id, payload);
 
       result.fold(
         (failure) => emit(TaxState.failure(failure.message)),
@@ -60,10 +63,10 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
     }
   }
 
-  Future<void> _onDeleteTaxCode(event, emit) async {
+  Future<void> _onDeleteTaxCode(_DeleteTaxCode event, Emitter<TaxState> emit) async {
     emit(const TaxState.processing());
     try {
-      final result = await _repository.deleteTaxCode(event.tax.id);
+      final result = await _repository.deleteTaxCode(event.id);
 
       result.fold(
         (failure) => emit(TaxState.failure(failure.message)),

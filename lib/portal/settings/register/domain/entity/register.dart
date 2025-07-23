@@ -37,35 +37,21 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 part 'register.freezed.dart';
 // part 'register.g.dart';
 
-abstract class RegisterBase {
-  int? get id;
-  String get name;
-}
-
-@freezed
-class RegisterLite with _$RegisterLite implements RegisterBase {
-  const factory RegisterLite({
-    required int id,
-    required String name,
-  }) = _RegisterLite;
-}
-
 @freezed
 class Register with _$Register {
-  const Register._();
-
   const factory Register({
     int? id,
     required String name,
-    BranchLite? assignedBranch,
-    // Branch? assignedBranch,
+    Branch? assignedBranch,
     RegisterShift? shiftDetail,
     String? serialNumber,
   }) = _Register;
 
   // For old (MVP) implementations without request DTOs
   // factory Register.fromJson(Map<String, dynamic> json) => _$RegisterFromJson(json);
+}
 
+extension RegisterExt on Register {
   DataGridRow toDataGridRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),

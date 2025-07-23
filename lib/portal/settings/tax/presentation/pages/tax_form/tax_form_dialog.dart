@@ -83,23 +83,28 @@ class _TaxFormDialogState extends State<TaxFormDialog> {
               ),
             ),
             const UIVerticalSpace(16),
-            BlocBuilder<TaxBloc, TaxState>(
-              builder: (context, state) {
-                return state.maybeWhen(
-                  failure: (message) => PageErrorNotice(message: message),
-                  orElse: () => const SizedBox(),
-                );
-              },
-            ),
           ],
         ),
       ),
-      actions: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+      actions: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
-          const UIHorizontalSpace(8),
-          UIButton.filled('Save', onClick: _onSave),
+          BlocBuilder<TaxBloc, TaxState>(
+            builder: (context, state) {
+              return state.maybeWhen(
+                failure: (message) => PageErrorBanner(message: message),
+                orElse: () => const SizedBox(),
+              );
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
+              const UIHorizontalSpace(8),
+              UIButton.filled('Save', onClick: _onSave),
+            ],
+          ),
         ],
       ),
     );
@@ -107,13 +112,14 @@ class _TaxFormDialogState extends State<TaxFormDialog> {
 
   void _onSave() {
     if (_taxFormKey.currentState?.validate() == true) {
-      final tax = _taxFormCubit.toTax();
+      final formState = _taxFormCubit.state;
+      final tax = formState.toTax();
 
       if (tax.isDefault) {
         // If isDefault is true, check if there's already a default tax code
         _taxBloc.add(const TaxEvent.getDefaultTaxCode());
       } else {
-        final event = _taxFormCubit.state.id == null ? TaxEvent.createTaxCode(tax) : TaxEvent.updateTaxCode(tax);
+        final event = tax.id == null ? TaxEvent.createTaxCode(tax) : TaxEvent.updateTaxCode(tax.id!, tax);
         _taxBloc.add(event);
       }
     }

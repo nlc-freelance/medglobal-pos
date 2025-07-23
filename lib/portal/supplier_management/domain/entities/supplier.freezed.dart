@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+Supplier _$SupplierFromJson(Map<String, dynamic> json) {
+  return _Supplier.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Supplier {
   int? get id => throw _privateConstructorUsedError;
@@ -32,6 +36,7 @@ mixin _$Supplier {
   String? get createdAt => throw _privateConstructorUsedError;
   String? get updatedAt => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $SupplierCopyWith<Supplier> get copyWith =>
       throw _privateConstructorUsedError;
@@ -273,7 +278,7 @@ class __$$SupplierImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$SupplierImpl extends _Supplier {
   const _$SupplierImpl(
       {this.id,
@@ -292,6 +297,9 @@ class _$SupplierImpl extends _Supplier {
       this.createdAt,
       this.updatedAt})
       : super._();
+
+  factory _$SupplierImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SupplierImplFromJson(json);
 
   @override
   final int? id;
@@ -354,6 +362,7 @@ class _$SupplierImpl extends _Supplier {
                 other.updatedAt == updatedAt));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -378,6 +387,13 @@ class _$SupplierImpl extends _Supplier {
   @pragma('vm:prefer-inline')
   _$$SupplierImplCopyWith<_$SupplierImpl> get copyWith =>
       __$$SupplierImplCopyWithImpl<_$SupplierImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SupplierImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Supplier extends Supplier {
@@ -398,6 +414,9 @@ abstract class _Supplier extends Supplier {
       final String? createdAt,
       final String? updatedAt}) = _$SupplierImpl;
   const _Supplier._() : super._();
+
+  factory _Supplier.fromJson(Map<String, dynamic> json) =
+      _$SupplierImpl.fromJson;
 
   @override
   int? get id;

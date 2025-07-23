@@ -25,7 +25,7 @@ mixin _$EmployeeDto {
   String get lastName => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
-  List<BranchShortDto> get assignedStores => throw _privateConstructorUsedError;
+  List<BranchDto> get assignedStores => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
   List<String> get systemAccess => throw _privateConstructorUsedError;
   List<AccessControlDto> get accessControls =>
@@ -53,7 +53,7 @@ abstract class $EmployeeDtoCopyWith<$Res> {
       String lastName,
       String email,
       String phone,
-      List<BranchShortDto> assignedStores,
+      List<BranchDto> assignedStores,
       String role,
       List<String> systemAccess,
       List<AccessControlDto> accessControls,
@@ -110,7 +110,7 @@ class _$EmployeeDtoCopyWithImpl<$Res, $Val extends EmployeeDto>
       assignedStores: null == assignedStores
           ? _value.assignedStores
           : assignedStores // ignore: cast_nullable_to_non_nullable
-              as List<BranchShortDto>,
+              as List<BranchDto>,
       role: null == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -149,7 +149,7 @@ abstract class _$$EmployeeDtoImplCopyWith<$Res>
       String lastName,
       String email,
       String phone,
-      List<BranchShortDto> assignedStores,
+      List<BranchDto> assignedStores,
       String role,
       List<String> systemAccess,
       List<AccessControlDto> accessControls,
@@ -204,7 +204,7 @@ class __$$EmployeeDtoImplCopyWithImpl<$Res>
       assignedStores: null == assignedStores
           ? _value._assignedStores
           : assignedStores // ignore: cast_nullable_to_non_nullable
-              as List<BranchShortDto>,
+              as List<BranchDto>,
       role: null == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -238,7 +238,7 @@ class _$EmployeeDtoImpl extends _EmployeeDto {
       required this.lastName,
       required this.email,
       required this.phone,
-      required final List<BranchShortDto> assignedStores,
+      required final List<BranchDto> assignedStores,
       required this.role,
       required final List<String> systemAccess,
       required final List<AccessControlDto> accessControls,
@@ -262,9 +262,9 @@ class _$EmployeeDtoImpl extends _EmployeeDto {
   final String email;
   @override
   final String phone;
-  final List<BranchShortDto> _assignedStores;
+  final List<BranchDto> _assignedStores;
   @override
-  List<BranchShortDto> get assignedStores {
+  List<BranchDto> get assignedStores {
     if (_assignedStores is EqualUnmodifiableListView) return _assignedStores;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_assignedStores);
@@ -362,7 +362,7 @@ abstract class _EmployeeDto extends EmployeeDto {
       required final String lastName,
       required final String email,
       required final String phone,
-      required final List<BranchShortDto> assignedStores,
+      required final List<BranchDto> assignedStores,
       required final String role,
       required final List<String> systemAccess,
       required final List<AccessControlDto> accessControls,
@@ -384,7 +384,7 @@ abstract class _EmployeeDto extends EmployeeDto {
   @override
   String get phone;
   @override
-  List<BranchShortDto> get assignedStores;
+  List<BranchDto> get assignedStores;
   @override
   String get role;
   @override
@@ -400,162 +400,5 @@ abstract class _EmployeeDto extends EmployeeDto {
   @override
   @JsonKey(ignore: true)
   _$$EmployeeDtoImplCopyWith<_$EmployeeDtoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-BranchShortDto _$BranchShortDtoFromJson(Map<String, dynamic> json) {
-  return _BranchShortDto.fromJson(json);
-}
-
-/// @nodoc
-mixin _$BranchShortDto {
-  int get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
-  $BranchShortDtoCopyWith<BranchShortDto> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $BranchShortDtoCopyWith<$Res> {
-  factory $BranchShortDtoCopyWith(
-          BranchShortDto value, $Res Function(BranchShortDto) then) =
-      _$BranchShortDtoCopyWithImpl<$Res, BranchShortDto>;
-  @useResult
-  $Res call({int id, String name});
-}
-
-/// @nodoc
-class _$BranchShortDtoCopyWithImpl<$Res, $Val extends BranchShortDto>
-    implements $BranchShortDtoCopyWith<$Res> {
-  _$BranchShortDtoCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$BranchShortDtoImplCopyWith<$Res>
-    implements $BranchShortDtoCopyWith<$Res> {
-  factory _$$BranchShortDtoImplCopyWith(_$BranchShortDtoImpl value,
-          $Res Function(_$BranchShortDtoImpl) then) =
-      __$$BranchShortDtoImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int id, String name});
-}
-
-/// @nodoc
-class __$$BranchShortDtoImplCopyWithImpl<$Res>
-    extends _$BranchShortDtoCopyWithImpl<$Res, _$BranchShortDtoImpl>
-    implements _$$BranchShortDtoImplCopyWith<$Res> {
-  __$$BranchShortDtoImplCopyWithImpl(
-      _$BranchShortDtoImpl _value, $Res Function(_$BranchShortDtoImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-  }) {
-    return _then(_$BranchShortDtoImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$BranchShortDtoImpl extends _BranchShortDto {
-  const _$BranchShortDtoImpl({required this.id, required this.name})
-      : super._();
-
-  factory _$BranchShortDtoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$BranchShortDtoImplFromJson(json);
-
-  @override
-  final int id;
-  @override
-  final String name;
-
-  @override
-  String toString() {
-    return 'BranchShortDto(id: $id, name: $name)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$BranchShortDtoImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, name);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$BranchShortDtoImplCopyWith<_$BranchShortDtoImpl> get copyWith =>
-      __$$BranchShortDtoImplCopyWithImpl<_$BranchShortDtoImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$BranchShortDtoImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _BranchShortDto extends BranchShortDto {
-  const factory _BranchShortDto(
-      {required final int id,
-      required final String name}) = _$BranchShortDtoImpl;
-  const _BranchShortDto._() : super._();
-
-  factory _BranchShortDto.fromJson(Map<String, dynamic> json) =
-      _$BranchShortDtoImpl.fromJson;
-
-  @override
-  int get id;
-  @override
-  String get name;
-  @override
-  @JsonKey(ignore: true)
-  _$$BranchShortDtoImplCopyWith<_$BranchShortDtoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

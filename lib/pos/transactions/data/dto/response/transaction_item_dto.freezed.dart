@@ -21,9 +21,8 @@ TransactionItemDto _$TransactionItemDtoFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$TransactionItemDto {
   int get id => throw _privateConstructorUsedError;
-  VariantLiteDto get variant => throw _privateConstructorUsedError; // Lite
-// required ProductVariantDto variant, // Lite
-  int get quantity => throw _privateConstructorUsedError;
+  ProductVariantDto? get variant => throw _privateConstructorUsedError; // Lite
+  int? get quantity => throw _privateConstructorUsedError;
   PriceDto? get price =>
       throw _privateConstructorUsedError; // double? discountedPrice,
 // double? discount,
@@ -50,8 +49,8 @@ abstract class $TransactionItemDtoCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
-      VariantLiteDto variant,
-      int quantity,
+      ProductVariantDto? variant,
+      int? quantity,
       PriceDto? price,
       String? discountType,
       double? discountValue,
@@ -61,8 +60,6 @@ abstract class $TransactionItemDtoCopyWith<$Res> {
       String? comment,
       int? restockQuantity,
       int? writeOffQuantity});
-
-  $VariantLiteDtoCopyWith<$Res> get variant;
 }
 
 /// @nodoc
@@ -79,8 +76,8 @@ class _$TransactionItemDtoCopyWithImpl<$Res, $Val extends TransactionItemDto>
   @override
   $Res call({
     Object? id = null,
-    Object? variant = null,
-    Object? quantity = null,
+    Object? variant = freezed,
+    Object? quantity = freezed,
     Object? price = freezed,
     Object? discountType = freezed,
     Object? discountValue = freezed,
@@ -96,14 +93,14 @@ class _$TransactionItemDtoCopyWithImpl<$Res, $Val extends TransactionItemDto>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      variant: null == variant
+      variant: freezed == variant
           ? _value.variant
           : variant // ignore: cast_nullable_to_non_nullable
-              as VariantLiteDto,
-      quantity: null == quantity
+              as ProductVariantDto?,
+      quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -142,14 +139,6 @@ class _$TransactionItemDtoCopyWithImpl<$Res, $Val extends TransactionItemDto>
               as int?,
     ) as $Val);
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $VariantLiteDtoCopyWith<$Res> get variant {
-    return $VariantLiteDtoCopyWith<$Res>(_value.variant, (value) {
-      return _then(_value.copyWith(variant: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -162,8 +151,8 @@ abstract class _$$TransactionItemDtoImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
-      VariantLiteDto variant,
-      int quantity,
+      ProductVariantDto? variant,
+      int? quantity,
       PriceDto? price,
       String? discountType,
       double? discountValue,
@@ -173,9 +162,6 @@ abstract class _$$TransactionItemDtoImplCopyWith<$Res>
       String? comment,
       int? restockQuantity,
       int? writeOffQuantity});
-
-  @override
-  $VariantLiteDtoCopyWith<$Res> get variant;
 }
 
 /// @nodoc
@@ -190,8 +176,8 @@ class __$$TransactionItemDtoImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? variant = null,
-    Object? quantity = null,
+    Object? variant = freezed,
+    Object? quantity = freezed,
     Object? price = freezed,
     Object? discountType = freezed,
     Object? discountValue = freezed,
@@ -207,14 +193,14 @@ class __$$TransactionItemDtoImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      variant: null == variant
+      variant: freezed == variant
           ? _value.variant
           : variant // ignore: cast_nullable_to_non_nullable
-              as VariantLiteDto,
-      quantity: null == quantity
+              as ProductVariantDto?,
+      quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -260,8 +246,8 @@ class __$$TransactionItemDtoImplCopyWithImpl<$Res>
 class _$TransactionItemDtoImpl implements _TransactionItemDto {
   const _$TransactionItemDtoImpl(
       {required this.id,
-      required this.variant,
-      required this.quantity,
+      this.variant,
+      this.quantity,
       this.price,
       this.discountType,
       this.discountValue,
@@ -278,11 +264,10 @@ class _$TransactionItemDtoImpl implements _TransactionItemDto {
   @override
   final int id;
   @override
-  final VariantLiteDto variant;
+  final ProductVariantDto? variant;
 // Lite
-// required ProductVariantDto variant, // Lite
   @override
-  final int quantity;
+  final int? quantity;
   @override
   final PriceDto? price;
 // double? discountedPrice,
@@ -370,8 +355,8 @@ class _$TransactionItemDtoImpl implements _TransactionItemDto {
 abstract class _TransactionItemDto implements TransactionItemDto {
   const factory _TransactionItemDto(
       {required final int id,
-      required final VariantLiteDto variant,
-      required final int quantity,
+      final ProductVariantDto? variant,
+      final int? quantity,
       final PriceDto? price,
       final String? discountType,
       final double? discountValue,
@@ -388,10 +373,9 @@ abstract class _TransactionItemDto implements TransactionItemDto {
   @override
   int get id;
   @override
-  VariantLiteDto get variant;
+  ProductVariantDto? get variant;
   @override // Lite
-// required ProductVariantDto variant, // Lite
-  int get quantity;
+  int? get quantity;
   @override
   PriceDto? get price;
   @override // double? discountedPrice,

@@ -22,7 +22,7 @@ mixin _$BranchEvent {
     required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
-    required TResult Function(Branch branch) deleteBranch,
+    required TResult Function(int id, String name) deleteBranch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -31,7 +31,7 @@ mixin _$BranchEvent {
     TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
-    TResult? Function(Branch branch)? deleteBranch,
+    TResult? Function(int id, String name)? deleteBranch,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -40,7 +40,7 @@ mixin _$BranchEvent {
     TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
-    TResult Function(Branch branch)? deleteBranch,
+    TResult Function(int id, String name)? deleteBranch,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -160,7 +160,7 @@ class _$GetBranchByIdImpl implements _GetBranchById {
     required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
-    required TResult Function(Branch branch) deleteBranch,
+    required TResult Function(int id, String name) deleteBranch,
   }) {
     return getBranchById(id);
   }
@@ -172,7 +172,7 @@ class _$GetBranchByIdImpl implements _GetBranchById {
     TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
-    TResult? Function(Branch branch)? deleteBranch,
+    TResult? Function(int id, String name)? deleteBranch,
   }) {
     return getBranchById?.call(id);
   }
@@ -184,7 +184,7 @@ class _$GetBranchByIdImpl implements _GetBranchById {
     TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
-    TResult Function(Branch branch)? deleteBranch,
+    TResult Function(int id, String name)? deleteBranch,
     required TResult orElse(),
   }) {
     if (getBranchById != null) {
@@ -285,7 +285,7 @@ class _$GetDefaultReceiptImpl implements _GetDefaultReceipt {
     required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
-    required TResult Function(Branch branch) deleteBranch,
+    required TResult Function(int id, String name) deleteBranch,
   }) {
     return getDefaultReceipt();
   }
@@ -297,7 +297,7 @@ class _$GetDefaultReceiptImpl implements _GetDefaultReceipt {
     TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
-    TResult? Function(Branch branch)? deleteBranch,
+    TResult? Function(int id, String name)? deleteBranch,
   }) {
     return getDefaultReceipt?.call();
   }
@@ -309,7 +309,7 @@ class _$GetDefaultReceiptImpl implements _GetDefaultReceipt {
     TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
-    TResult Function(Branch branch)? deleteBranch,
+    TResult Function(int id, String name)? deleteBranch,
     required TResult orElse(),
   }) {
     if (getDefaultReceipt != null) {
@@ -441,7 +441,7 @@ class _$CreateBranchImpl implements _CreateBranch {
     required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
-    required TResult Function(Branch branch) deleteBranch,
+    required TResult Function(int id, String name) deleteBranch,
   }) {
     return createBranch(branch);
   }
@@ -453,7 +453,7 @@ class _$CreateBranchImpl implements _CreateBranch {
     TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
-    TResult? Function(Branch branch)? deleteBranch,
+    TResult? Function(int id, String name)? deleteBranch,
   }) {
     return createBranch?.call(branch);
   }
@@ -465,7 +465,7 @@ class _$CreateBranchImpl implements _CreateBranch {
     TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
-    TResult Function(Branch branch)? deleteBranch,
+    TResult Function(int id, String name)? deleteBranch,
     required TResult orElse(),
   }) {
     if (createBranch != null) {
@@ -602,7 +602,7 @@ class _$UpdateBranchImpl implements _UpdateBranch {
     required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
-    required TResult Function(Branch branch) deleteBranch,
+    required TResult Function(int id, String name) deleteBranch,
   }) {
     return updateBranch(branch);
   }
@@ -614,7 +614,7 @@ class _$UpdateBranchImpl implements _UpdateBranch {
     TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
-    TResult? Function(Branch branch)? deleteBranch,
+    TResult? Function(int id, String name)? deleteBranch,
   }) {
     return updateBranch?.call(branch);
   }
@@ -626,7 +626,7 @@ class _$UpdateBranchImpl implements _UpdateBranch {
     TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
-    TResult Function(Branch branch)? deleteBranch,
+    TResult Function(int id, String name)? deleteBranch,
     required TResult orElse(),
   }) {
     if (updateBranch != null) {
@@ -691,9 +691,7 @@ abstract class _$$DeleteBranchImplCopyWith<$Res> {
           _$DeleteBranchImpl value, $Res Function(_$DeleteBranchImpl) then) =
       __$$DeleteBranchImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Branch branch});
-
-  $BranchCopyWith<$Res> get branch;
+  $Res call({int id, String name});
 }
 
 /// @nodoc
@@ -707,36 +705,35 @@ class __$$DeleteBranchImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? branch = null,
+    Object? id = null,
+    Object? name = null,
   }) {
     return _then(_$DeleteBranchImpl(
-      null == branch
-          ? _value.branch
-          : branch // ignore: cast_nullable_to_non_nullable
-              as Branch,
+      null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $BranchCopyWith<$Res> get branch {
-    return $BranchCopyWith<$Res>(_value.branch, (value) {
-      return _then(_value.copyWith(branch: value));
-    });
   }
 }
 
 /// @nodoc
 
 class _$DeleteBranchImpl implements _DeleteBranch {
-  const _$DeleteBranchImpl(this.branch);
+  const _$DeleteBranchImpl(this.id, this.name);
 
   @override
-  final Branch branch;
+  final int id;
+  @override
+  final String name;
 
   @override
   String toString() {
-    return 'BranchEvent.deleteBranch(branch: $branch)';
+    return 'BranchEvent.deleteBranch(id: $id, name: $name)';
   }
 
   @override
@@ -744,11 +741,12 @@ class _$DeleteBranchImpl implements _DeleteBranch {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DeleteBranchImpl &&
-            (identical(other.branch, branch) || other.branch == branch));
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, branch);
+  int get hashCode => Object.hash(runtimeType, id, name);
 
   @JsonKey(ignore: true)
   @override
@@ -763,9 +761,9 @@ class _$DeleteBranchImpl implements _DeleteBranch {
     required TResult Function() getDefaultReceipt,
     required TResult Function(Branch branch) createBranch,
     required TResult Function(Branch branch) updateBranch,
-    required TResult Function(Branch branch) deleteBranch,
+    required TResult Function(int id, String name) deleteBranch,
   }) {
-    return deleteBranch(branch);
+    return deleteBranch(id, name);
   }
 
   @override
@@ -775,9 +773,9 @@ class _$DeleteBranchImpl implements _DeleteBranch {
     TResult? Function()? getDefaultReceipt,
     TResult? Function(Branch branch)? createBranch,
     TResult? Function(Branch branch)? updateBranch,
-    TResult? Function(Branch branch)? deleteBranch,
+    TResult? Function(int id, String name)? deleteBranch,
   }) {
-    return deleteBranch?.call(branch);
+    return deleteBranch?.call(id, name);
   }
 
   @override
@@ -787,11 +785,11 @@ class _$DeleteBranchImpl implements _DeleteBranch {
     TResult Function()? getDefaultReceipt,
     TResult Function(Branch branch)? createBranch,
     TResult Function(Branch branch)? updateBranch,
-    TResult Function(Branch branch)? deleteBranch,
+    TResult Function(int id, String name)? deleteBranch,
     required TResult orElse(),
   }) {
     if (deleteBranch != null) {
-      return deleteBranch(branch);
+      return deleteBranch(id, name);
     }
     return orElse();
   }
@@ -838,9 +836,11 @@ class _$DeleteBranchImpl implements _DeleteBranch {
 }
 
 abstract class _DeleteBranch implements BranchEvent {
-  const factory _DeleteBranch(final Branch branch) = _$DeleteBranchImpl;
+  const factory _DeleteBranch(final int id, final String name) =
+      _$DeleteBranchImpl;
 
-  Branch get branch;
+  int get id;
+  String get name;
   @JsonKey(ignore: true)
   _$$DeleteBranchImplCopyWith<_$DeleteBranchImpl> get copyWith =>
       throw _privateConstructorUsedError;

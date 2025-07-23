@@ -80,7 +80,7 @@ class DateUtil {
     }
   }
 
-  static DateTime getYearStartDate(int year) => DateTime(year, 12, 1);
+  static DateTime getYearStartDate(int year) => DateTime(year, 1, 1);
 
   static DateTime getYearEndDate(int year) => DateTime(year, 12, 31);
 }

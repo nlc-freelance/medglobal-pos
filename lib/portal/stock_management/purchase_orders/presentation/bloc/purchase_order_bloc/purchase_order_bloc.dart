@@ -40,7 +40,7 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState> {
       final result = await _repository.create(event.po);
       result.fold(
         (error) => emit(PurchaseOrderState.failure(error.message)),
-        (po) => emit(PurchaseOrderState.success(po)),
+        (po) => emit(PurchaseOrderState.created(po)),
       );
     } catch (e) {
       emit(PurchaseOrderState.failure(e.toString()));
@@ -49,7 +49,7 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState> {
 
   Future<void> _onUpdatePurchaseOrder(event, emit) async {
     final status = switch (event.action as UpdatePurchaseOrder) {
-      UpdatePurchaseOrder.save => const PurchaseOrderState.saving(),
+      UpdatePurchaseOrder.save => const PurchaseOrderState.updating(),
       UpdatePurchaseOrder.saveAndMarkAsShippedWithNewItems => const PurchaseOrderState.markingAsShippedWithNewItems(),
       UpdatePurchaseOrder.saveAndMarkAsShipped => const PurchaseOrderState.markingAsShipped(),
       UpdatePurchaseOrder.saveAndReceived => const PurchaseOrderState.markingAsReceived(),
@@ -66,7 +66,7 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState> {
       );
       result.fold(
         (error) => emit(PurchaseOrderState.failure(error.message)),
-        (po) => emit(PurchaseOrderState.success(po)),
+        (po) => emit(PurchaseOrderState.updated(po)),
       );
     } catch (e) {
       emit(PurchaseOrderState.failure(e.toString()));

@@ -8,10 +8,10 @@ class SupplierApi {
   final BaseApiService _api;
   SupplierApi(this._api);
 
-  Future<PaginatedList<SupplierDto>> getSuppliers({required PageQuery filters}) async {
+  Future<PaginatedList<SupplierDto>> getSuppliers(PageQuery query) async {
     final response = await _api.getPaginated<SupplierDto>(
       ApiEndpoint.suppliers(),
-      queryParams: filters.toJson(),
+      queryParams: query.toJson(),
       fromJson: SupplierDto.fromJson,
     );
 

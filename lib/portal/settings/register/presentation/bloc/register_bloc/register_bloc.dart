@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register/register_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
 
@@ -17,10 +18,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<_Reset>(_onReset);
   }
 
-  Future<void> _onCreateRegister(event, emit) async {
+  Future<void> _onCreateRegister(_CreateRegister event, Emitter<RegisterState> emit) async {
     emit(const RegisterState.processing());
     try {
-      final result = await _repository.createRegister(event.register);
+      final payload = RegisterPayload.fromRegister(event.register);
+      final result = await _repository.createRegister(payload);
 
       result.fold(
         (failure) => emit(RegisterState.failure(failure.message)),
@@ -31,10 +33,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
   }
 
-  Future<void> _onUpdateRegister(event, emit) async {
+  Future<void> _onUpdateRegister(_UpdateRegister event, Emitter<RegisterState> emit) async {
     emit(const RegisterState.processing());
     try {
-      final result = await _repository.updateRegister(event.register);
+      final payload = RegisterPayload.fromRegister(event.register);
+      final result = await _repository.updateRegister(event.id, payload);
 
       result.fold(
         (failure) => emit(RegisterState.failure(failure.message)),
@@ -45,10 +48,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
   }
 
-  Future<void> _onDeleteRegister(event, emit) async {
+  Future<void> _onDeleteRegister(_DeleteRegister event, Emitter<RegisterState> emit) async {
     emit(const RegisterState.processing());
     try {
-      final result = await _repository.deleteRegister(event.register.id);
+      final result = await _repository.deleteRegister(event.register.id!);
 
       result.fold(
         (failure) => emit(RegisterState.failure(failure.message)),
@@ -59,5 +62,5 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
   }
 
-  void _onReset(_, emit) => emit(const RegisterState.initial());
+  void _onReset(_, Emitter<RegisterState> emit) => emit(const RegisterState.initial());
 }

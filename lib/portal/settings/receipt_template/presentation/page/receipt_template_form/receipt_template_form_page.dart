@@ -57,7 +57,7 @@ class _ReceiptTemplateFormState extends State<ReceiptTemplateForm> with DialogMi
   Widget build(BuildContext context) {
     return BlocConsumer<ReceiptTemplateBloc, ReceiptTemplateState>(
       listener: (_, state) => state.maybeWhen(
-        loaded: (template) => _receiptTemplateFormCubit.initReceiptTemplate(template),
+        loaded: (template) => _receiptTemplateFormCubit.loadReceiptTemplate(template),
         processing: () => PageLoader.show(context),
         success: (message) => _onSuccess(context, message),
         failure: (message) => _onFailure(context, message),

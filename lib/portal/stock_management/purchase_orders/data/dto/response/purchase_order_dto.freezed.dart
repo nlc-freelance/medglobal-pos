@@ -21,7 +21,7 @@ PurchaseOrderDto _$PurchaseOrderDtoFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PurchaseOrderDto {
   int get id => throw _privateConstructorUsedError;
-  BranchLiteDto? get store => throw _privateConstructorUsedError;
+  BranchDto? get store => throw _privateConstructorUsedError;
   SupplierDto? get supplier => throw _privateConstructorUsedError;
   String? get status => throw _privateConstructorUsedError;
   double? get totalAmount => throw _privateConstructorUsedError;
@@ -50,7 +50,7 @@ abstract class $PurchaseOrderDtoCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
-      BranchLiteDto? store,
+      BranchDto? store,
       SupplierDto? supplier,
       String? status,
       double? totalAmount,
@@ -62,7 +62,7 @@ abstract class $PurchaseOrderDtoCopyWith<$Res> {
       @DateTimeConverter() DateTime? createdAt,
       @DateTimeConverter() DateTime? updatedAt});
 
-  $BranchLiteDtoCopyWith<$Res>? get store;
+  $BranchDtoCopyWith<$Res>? get store;
   $SupplierDtoCopyWith<$Res>? get supplier;
 }
 
@@ -100,7 +100,7 @@ class _$PurchaseOrderDtoCopyWithImpl<$Res, $Val extends PurchaseOrderDto>
       store: freezed == store
           ? _value.store
           : store // ignore: cast_nullable_to_non_nullable
-              as BranchLiteDto?,
+              as BranchDto?,
       supplier: freezed == supplier
           ? _value.supplier
           : supplier // ignore: cast_nullable_to_non_nullable
@@ -146,12 +146,12 @@ class _$PurchaseOrderDtoCopyWithImpl<$Res, $Val extends PurchaseOrderDto>
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchLiteDtoCopyWith<$Res>? get store {
+  $BranchDtoCopyWith<$Res>? get store {
     if (_value.store == null) {
       return null;
     }
 
-    return $BranchLiteDtoCopyWith<$Res>(_value.store!, (value) {
+    return $BranchDtoCopyWith<$Res>(_value.store!, (value) {
       return _then(_value.copyWith(store: value) as $Val);
     });
   }
@@ -179,7 +179,7 @@ abstract class _$$PurchaseOrderDtoImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
-      BranchLiteDto? store,
+      BranchDto? store,
       SupplierDto? supplier,
       String? status,
       double? totalAmount,
@@ -192,7 +192,7 @@ abstract class _$$PurchaseOrderDtoImplCopyWith<$Res>
       @DateTimeConverter() DateTime? updatedAt});
 
   @override
-  $BranchLiteDtoCopyWith<$Res>? get store;
+  $BranchDtoCopyWith<$Res>? get store;
   @override
   $SupplierDtoCopyWith<$Res>? get supplier;
 }
@@ -229,7 +229,7 @@ class __$$PurchaseOrderDtoImplCopyWithImpl<$Res>
       store: freezed == store
           ? _value.store
           : store // ignore: cast_nullable_to_non_nullable
-              as BranchLiteDto?,
+              as BranchDto?,
       supplier: freezed == supplier
           ? _value.supplier
           : supplier // ignore: cast_nullable_to_non_nullable
@@ -299,7 +299,7 @@ class _$PurchaseOrderDtoImpl extends _PurchaseOrderDto {
   @override
   final int id;
   @override
-  final BranchLiteDto? store;
+  final BranchDto? store;
   @override
   final SupplierDto? supplier;
   @override
@@ -397,7 +397,7 @@ class _$PurchaseOrderDtoImpl extends _PurchaseOrderDto {
 abstract class _PurchaseOrderDto extends PurchaseOrderDto {
   const factory _PurchaseOrderDto(
       {required final int id,
-      final BranchLiteDto? store,
+      final BranchDto? store,
       final SupplierDto? supplier,
       final String? status,
       final double? totalAmount,
@@ -416,7 +416,7 @@ abstract class _PurchaseOrderDto extends PurchaseOrderDto {
   @override
   int get id;
   @override
-  BranchLiteDto? get store;
+  BranchDto? get store;
   @override
   SupplierDto? get supplier;
   @override

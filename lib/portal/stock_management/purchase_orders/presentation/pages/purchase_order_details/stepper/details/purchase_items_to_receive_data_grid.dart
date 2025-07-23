@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart' hide FilterType;
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -29,7 +30,7 @@ class _PurchaseItemsToReceiveDataGridState extends State<PurchaseItemsToReceiveD
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
-    final purchaseOrder = context.read<PurchaseOrderCubit>().state.purchaseOrder;
+    final purchaseOrder = context.read<PurchaseOrderFormCubit>().state.purchaseOrder;
     final tax = purchaseOrder.tax ?? 0;
     final discount = purchaseOrder.discount ?? 0;
 
@@ -72,7 +73,7 @@ class _PurchaseItemsToReceiveDataGridState extends State<PurchaseItemsToReceiveD
             _purchaseItemsToReceiveDataSource.updateDataGridSource();
           },
         ),
-        BlocBuilder<PurchaseOrderCubit, PurchaseOrderState>(
+        BlocBuilder<PurchaseOrderFormCubit, PurchaseOrderFormState>(
           builder: (context, state) {
             return ClipRect(
               clipper: HorizontalBorderClipper(),
@@ -274,7 +275,7 @@ class PurchaseItemsToReceiveDataSource extends DataGridSource {
       double newTotalPerItem = (newQtyReceived ?? 0) * (cost);
       dataGridRows[dataRowIndex].getCells()[6] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
-      _context.read<PurchaseOrderCubit>().setQuantityReceivedPerItem(
+      _context.read<PurchaseOrderFormCubit>().setQuantityReceivedPerItem(
             id: _itemsToReceive[dataRowIndex].id!,
             qty: newQtyReceived,
             total: newTotalPerItem,

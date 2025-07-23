@@ -1,80 +1,56 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_api.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/data/dto/request/create_register_dto.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/data/dto/request/update_register_dto.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/data/dto/response/register_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_api_service.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register/register_mapper.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register/register_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
 
-class RegisterRepositoryImpl implements RegisterRepository {
-  final RegisterApi _registerApi;
+/// Concrete implementation of [RegisterRepository] that uses [RegisterApiService] for API calls
+/// and [BaseRepository] to centralize error handling.
+class RegisterRepositoryImpl extends BaseRepository implements RegisterRepository {
+  final RegisterApiService _api;
 
-  RegisterRepositoryImpl(this._registerApi);
+  RegisterRepositoryImpl({required RegisterApiService api}) : _api = api;
 
   @override
-  Future<Either<Failure, PaginatedList<Register>>> getRegisters({required PageQuery filters}) async {
-    try {
-      final responseDto = await _registerApi.getRegisters(filters: filters);
+  Future<Either<Failure, PaginatedList<Register>>> getRegisters(PageQuery query) async {
+    return call(() async {
+      final response = await _api.getRegisters(query);
+      final paginatedRegisters = response.convert((dto) => RegisterMapper.fromDto(dto));
 
-      return Right(responseDto.convert((item) => item.toDomain()));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+      return paginatedRegisters;
+    });
   }
 
   @override
   Future<Either<Failure, Register>> getRegister(int id) async {
-    try {
-      final responseDto = await _registerApi.getRegisterById(id);
-
-      return Right(responseDto.toDomain());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+    return call(() async {
+      final response = await _api.getRegisterById(id);
+      return RegisterMapper.fromDto(response);
+    });
   }
 
   @override
-  Future<Either<Failure, Register>> createRegister(Register register) async {
-    try {
-      final requestDto = CreateRegisterDto.fromDomain(register);
-      final responseDto = await _registerApi.createRegister(requestDto);
-
-      return Right(responseDto.toDomain());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+  Future<Either<Failure, Register>> createRegister(RegisterPayload payload) async {
+    return call(() async {
+      final response = await _api.createRegister(payload);
+      return RegisterMapper.fromDto(response);
+    });
   }
 
   @override
-  Future<Either<Failure, Register>> updateRegister(Register register) async {
-    try {
-      final requestDto = UpdateRegisterDto.fromDomain(register);
-      final responseDto = await _registerApi.updateRegister(requestDto);
-
-      return Right(responseDto.toDomain());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+  Future<Either<Failure, Register>> updateRegister(int id, RegisterPayload payload) async {
+    return call(() async {
+      final response = await _api.updateRegister(id, payload);
+      return RegisterMapper.fromDto(response);
+    });
   }
 
   @override
   Future<Either<Failure, void>> deleteRegister(int id) async {
-    try {
-      return Right(await _registerApi.deleteRegister(id));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+    return call(() async => await _api.deleteRegister(id));
   }
 }

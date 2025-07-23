@@ -4,7 +4,8 @@ import 'package:medglobal_admin_portal/portal/employee_management/data/dto/respo
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_form/widgets/sections/access_control/role_section.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_form/widgets/sections/access_control/system_access_section.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
 
 part 'employee_dto.freezed.dart';
 part 'employee_dto.g.dart';
@@ -17,7 +18,7 @@ class EmployeeDto with _$EmployeeDto {
     required String lastName,
     required String email,
     required String phone,
-    required List<BranchShortDto> assignedStores,
+    required List<BranchDto> assignedStores,
     required String role,
     required List<String> systemAccess,
     required List<AccessControlDto> accessControls,
@@ -35,26 +36,9 @@ class EmployeeDto with _$EmployeeDto {
         lastName: lastName,
         email: email,
         phone: phone,
-        assignedBranches: assignedStores.map((store) => store.toBranch()).toList(),
+        assignedBranches: assignedStores.map((store) => BranchMapper.fromDto(store)).toList(),
         role: EmployeeRole.fromString(role),
         systemAccess: systemAccess.map((system) => SystemAccess.fromString(system)).toList(),
         accessControls: accessControls.map((access) => access.toDomain()).toList(),
-      );
-}
-
-@freezed
-class BranchShortDto with _$BranchShortDto {
-  const factory BranchShortDto({
-    required int id,
-    required String name,
-  }) = _BranchShortDto;
-
-  const BranchShortDto._();
-
-  factory BranchShortDto.fromJson(Map<String, dynamic> json) => _$BranchShortDtoFromJson(json);
-
-  Branch toBranch() => Branch(
-        id: id,
-        name: name,
       );
 }

@@ -34,7 +34,7 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
-    _isAwaitingAction = widget.transaction.status == ReturnStatus.awaiting_action;
+    _isAwaitingAction = widget.transaction.status == ReturnStatus.awaitingAction;
 
     _returnItemsDataSource = ReturnItemsDataSource(_items, context, _isAwaitingAction);
   }

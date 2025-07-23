@@ -9,7 +9,7 @@ part 'branch_form_cubit.freezed.dart';
 class BranchFormCubit extends Cubit<BranchFormState> {
   BranchFormCubit() : super(BranchFormState.initial());
 
-  void initBranch(Branch branch) => emit(BranchFormState.fromBranch(branch));
+  void loadBranch(Branch branch) => emit(BranchFormState.load(branch));
 
   void setName(String name) => emit(state.copyWith(name: name));
 
@@ -29,36 +29,21 @@ class BranchFormCubit extends Cubit<BranchFormState> {
 
   void setCountry(String? country) => emit(state.copyWith(country: country));
 
-  void setBusinessRegistrationNumber(String brnId) => emit(state.copyWith(businessRegistrationNumber: brnId));
+  void setBusinessRegistrationNumber(String businessRegistrationNumberId) {
+    emit(state.copyWith(businessRegistrationNumber: businessRegistrationNumberId));
+  }
 
   void setVatIdNumber(String vatId) => emit(state.copyWith(vatIdNumber: vatId));
 
-  void setReceiptTemplate(ReceiptTemplate? receiptTemplate) => emit(state.copyWith(
-        receiptTemplate: receiptTemplate,
-        isFormValid: receiptTemplate != null,
-      ));
-
-  void validate() {
-    emit(state.copyWith(isFormValid: state.hasValidForm()));
+  void setReceiptTemplate(ReceiptTemplate? receiptTemplate) {
+    emit(state.copyWith(
+      receiptTemplate: receiptTemplate,
+      isReceiptTemplateValid: receiptTemplate != null,
+    ));
   }
 
-  /// Given that the form is validated, map BranchFormState values to a Branch
-  Branch toBranch() {
-    return Branch(
-      id: state.id,
-      accountId: 2, // Default to 1 for MedGlobal account, later add in env variables
-      name: state.name!,
-      phone: state.phone!,
-      email: state.email,
-      street1: state.street1!,
-      street2: state.street2,
-      city: state.city!,
-      state: state.state!,
-      postalCode: state.postalCode,
-      country: state.country,
-      businessRegistrationNumber: state.businessRegistrationNumber!,
-      vatIdNumber: state.vatIdNumber,
-      receiptTemplate: state.receiptTemplate!,
-    );
-  }
+  /// Validates the form fields before passing them to Bloc,
+  /// and updates [isFormValid] in the state so the UI can respond accordingly.
+  /// (e.g., showing a snackbar when the form is invalid)
+  void validate() => emit(state.copyWith(isFormValid: state.validateForm()));
 }

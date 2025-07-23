@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/print_util.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/bloc/purchase_order_bloc/purchase_order_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/update_purchase_order_form_cubit/purchase_order_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_order_details.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/purchase_order_stepper.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -46,12 +46,12 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
 
   void _onSuccess(PurchaseOrder purchaseOrder) {
     context.read<PurchaseOrderFormCubit>().loadPurchaseOrder(purchaseOrder);
-    ToastNotification.success(context, 'Purchase Order updated successfully.');
+    SnackbarUtil.success(context, 'Purchase Order updated successfully.');
   }
 
   void _onDeleted() {
     AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name);
-    ToastNotification.success(context, 'Purchase Order deleted successfully.');
+    SnackbarUtil.success(context, 'Purchase Order deleted successfully.');
   }
 
   @override
@@ -59,7 +59,7 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
     return BlocConsumer<PurchaseOrderBloc, PurchaseOrderState>(
       listener: (context, state) => state.maybeWhen(
         loaded: (po) => context.read<PurchaseOrderFormCubit>().loadPurchaseOrder(po),
-        success: (po) => _onSuccess(po),
+        updated: (po) => _onSuccess(po),
         deleted: () => _onDeleted(),
         orElse: () => {},
       ),

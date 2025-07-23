@@ -77,7 +77,7 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
                 ?.map((item) => UpdatePurchaseOrderItemDto.save(
                       variantId: item.id!,
                       orderedQuantity: item.quantityOrdered,
-                      supplierPrice: item.supplierPrice,
+                      supplierPrice: item.supplierPrice!,
                     ))
                 .toList(),
             estimatedDateOfArrival: po.estimatedDateOfArrival?.toIso8601String(),
@@ -91,7 +91,7 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
                 ?.map((item) => UpdatePurchaseOrderItemDto.saveAndMarkAsShippedWithNewItems(
                       variantId: item.id!,
                       orderedQuantity: item.quantityOrdered!,
-                      supplierPrice: item.supplierPrice,
+                      supplierPrice: item.supplierPrice!,
                     ))
                 .toList(),
             estimatedDateOfArrival: po.estimatedDateOfArrival?.toIso8601String(),
@@ -105,7 +105,7 @@ class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
                 ?.map((item) => UpdatePurchaseOrderItemDto.saveAndMarkAsShipped(
                       id: item.id!,
                       orderedQuantity: item.quantityOrdered!,
-                      supplierPrice: item.supplierPrice,
+                      supplierPrice: item.supplierPrice!,
                     ))
                 .toList(),
             estimatedDateOfArrival: po.estimatedDateOfArrival?.toIso8601String(),

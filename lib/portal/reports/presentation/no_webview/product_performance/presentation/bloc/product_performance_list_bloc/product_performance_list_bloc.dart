@@ -20,11 +20,11 @@ class ProductPerformanceListBloc extends Bloc<ProductPerformanceListEvent, Produ
     on<_RemoveReport>(_onRemoveReport);
   }
 
-  Future<void> _onGetProductPerformances(event, emit) async {
+  Future<void> _onGetProductPerformances(_GetProductPerformanceReports event, emit) async {
     emit(const ProductPerformanceListState.loading());
 
     try {
-      final result = await _repository.getReports(event.filters);
+      final result = await _repository.getReports(event.query);
 
       result.fold(
         (failure) => emit(ProductPerformanceListState.failure(failure.message)),

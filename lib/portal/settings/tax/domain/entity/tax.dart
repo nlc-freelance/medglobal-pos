@@ -11,9 +11,9 @@ class Tax with _$Tax {
     required double rate,
     @Default(false) bool isDefault,
   }) = _Tax;
+}
 
-  const Tax._();
-
+extension TaxExt on Tax {
   DataGridRow toDataGridRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),

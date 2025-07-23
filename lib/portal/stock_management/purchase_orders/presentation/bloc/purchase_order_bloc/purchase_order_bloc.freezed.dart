@@ -943,11 +943,12 @@ mixin _$PurchaseOrderState {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -962,11 +963,12 @@ mixin _$PurchaseOrderState {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -981,11 +983,12 @@ mixin _$PurchaseOrderState {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -1001,12 +1004,13 @@ mixin _$PurchaseOrderState {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -1021,12 +1025,13 @@ mixin _$PurchaseOrderState {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -1041,12 +1046,13 @@ mixin _$PurchaseOrderState {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -1118,11 +1124,12 @@ class _$InitialImpl implements _Initial {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -1140,11 +1147,12 @@ class _$InitialImpl implements _Initial {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -1162,11 +1170,12 @@ class _$InitialImpl implements _Initial {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -1188,12 +1197,13 @@ class _$InitialImpl implements _Initial {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -1211,12 +1221,13 @@ class _$InitialImpl implements _Initial {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -1234,12 +1245,13 @@ class _$InitialImpl implements _Initial {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -1301,11 +1313,12 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -1323,11 +1336,12 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -1345,11 +1359,12 @@ class _$LoadingImpl implements _Loading {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -1371,12 +1386,13 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -1394,12 +1410,13 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -1417,12 +1434,13 @@ class _$LoadingImpl implements _Loading {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -1520,11 +1538,12 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -1542,11 +1561,12 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -1564,11 +1584,12 @@ class _$LoadedImpl implements _Loaded {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -1590,12 +1611,13 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -1613,12 +1635,13 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -1636,12 +1659,13 @@ class _$LoadedImpl implements _Loaded {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -1734,11 +1758,12 @@ class _$LoadFailedImpl implements _LoadFailed {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -1756,11 +1781,12 @@ class _$LoadFailedImpl implements _LoadFailed {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -1778,11 +1804,12 @@ class _$LoadFailedImpl implements _LoadFailed {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -1804,12 +1831,13 @@ class _$LoadFailedImpl implements _LoadFailed {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -1827,12 +1855,13 @@ class _$LoadFailedImpl implements _LoadFailed {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -1850,12 +1879,13 @@ class _$LoadFailedImpl implements _LoadFailed {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -1922,11 +1952,12 @@ class _$CreatingImpl implements _Creating {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -1944,11 +1975,12 @@ class _$CreatingImpl implements _Creating {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -1966,11 +1998,12 @@ class _$CreatingImpl implements _Creating {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -1992,12 +2025,13 @@ class _$CreatingImpl implements _Creating {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -2015,12 +2049,13 @@ class _$CreatingImpl implements _Creating {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -2038,12 +2073,13 @@ class _$CreatingImpl implements _Creating {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -2063,35 +2099,265 @@ abstract class _Creating implements PurchaseOrderState {
 }
 
 /// @nodoc
-abstract class _$$SavingImplCopyWith<$Res> {
-  factory _$$SavingImplCopyWith(
-          _$SavingImpl value, $Res Function(_$SavingImpl) then) =
-      __$$SavingImplCopyWithImpl<$Res>;
+abstract class _$$CreatedImplCopyWith<$Res> {
+  factory _$$CreatedImplCopyWith(
+          _$CreatedImpl value, $Res Function(_$CreatedImpl) then) =
+      __$$CreatedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({PurchaseOrder po});
+
+  $PurchaseOrderCopyWith<$Res> get po;
 }
 
 /// @nodoc
-class __$$SavingImplCopyWithImpl<$Res>
-    extends _$PurchaseOrderStateCopyWithImpl<$Res, _$SavingImpl>
-    implements _$$SavingImplCopyWith<$Res> {
-  __$$SavingImplCopyWithImpl(
-      _$SavingImpl _value, $Res Function(_$SavingImpl) _then)
+class __$$CreatedImplCopyWithImpl<$Res>
+    extends _$PurchaseOrderStateCopyWithImpl<$Res, _$CreatedImpl>
+    implements _$$CreatedImplCopyWith<$Res> {
+  __$$CreatedImplCopyWithImpl(
+      _$CreatedImpl _value, $Res Function(_$CreatedImpl) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? po = null,
+  }) {
+    return _then(_$CreatedImpl(
+      null == po
+          ? _value.po
+          : po // ignore: cast_nullable_to_non_nullable
+              as PurchaseOrder,
+    ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $PurchaseOrderCopyWith<$Res> get po {
+    return $PurchaseOrderCopyWith<$Res>(_value.po, (value) {
+      return _then(_value.copyWith(po: value));
+    });
+  }
 }
 
 /// @nodoc
 
-class _$SavingImpl implements _Saving {
-  const _$SavingImpl();
+class _$CreatedImpl implements _Created {
+  const _$CreatedImpl(this.po);
+
+  @override
+  final PurchaseOrder po;
 
   @override
   String toString() {
-    return 'PurchaseOrderState.saving()';
+    return 'PurchaseOrderState.created(po: $po)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$SavingImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$CreatedImpl &&
+            (identical(other.po, po) || other.po == po));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, po);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$CreatedImplCopyWith<_$CreatedImpl> get copyWith =>
+      __$$CreatedImplCopyWithImpl<_$CreatedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(PurchaseOrder po) loaded,
+    required TResult Function(String message) loadFailed,
+    required TResult Function() creating,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
+    required TResult Function() markingAsShippedWithNewItems,
+    required TResult Function() markingAsShipped,
+    required TResult Function() markingAsReceived,
+    required TResult Function(PurchaseOrder po) updated,
+    required TResult Function() cancelling,
+    required TResult Function() cancelled,
+    required TResult Function() deleting,
+    required TResult Function() deleted,
+    required TResult Function(String message) failure,
+  }) {
+    return created(po);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(PurchaseOrder po)? loaded,
+    TResult? Function(String message)? loadFailed,
+    TResult? Function()? creating,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
+    TResult? Function()? markingAsShippedWithNewItems,
+    TResult? Function()? markingAsShipped,
+    TResult? Function()? markingAsReceived,
+    TResult? Function(PurchaseOrder po)? updated,
+    TResult? Function()? cancelling,
+    TResult? Function()? cancelled,
+    TResult? Function()? deleting,
+    TResult? Function()? deleted,
+    TResult? Function(String message)? failure,
+  }) {
+    return created?.call(po);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(PurchaseOrder po)? loaded,
+    TResult Function(String message)? loadFailed,
+    TResult Function()? creating,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
+    TResult Function()? markingAsShippedWithNewItems,
+    TResult Function()? markingAsShipped,
+    TResult Function()? markingAsReceived,
+    TResult Function(PurchaseOrder po)? updated,
+    TResult Function()? cancelling,
+    TResult Function()? cancelled,
+    TResult Function()? deleting,
+    TResult Function()? deleted,
+    TResult Function(String message)? failure,
+    required TResult orElse(),
+  }) {
+    if (created != null) {
+      return created(po);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_LoadFailed value) loadFailed,
+    required TResult Function(_Creating value) creating,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
+    required TResult Function(_MarkingAsShippedWithNewItems value)
+        markingAsShippedWithNewItems,
+    required TResult Function(_MarkingAsShipped value) markingAsShipped,
+    required TResult Function(_MarkingAsReceived value) markingAsReceived,
+    required TResult Function(_Updated value) updated,
+    required TResult Function(_Cancelling value) cancelling,
+    required TResult Function(_Cancelled value) cancelled,
+    required TResult Function(_Deleting value) deleting,
+    required TResult Function(_Deleted value) deleted,
+    required TResult Function(_Failure value) failure,
+  }) {
+    return created(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_LoadFailed value)? loadFailed,
+    TResult? Function(_Creating value)? creating,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
+    TResult? Function(_MarkingAsShippedWithNewItems value)?
+        markingAsShippedWithNewItems,
+    TResult? Function(_MarkingAsShipped value)? markingAsShipped,
+    TResult? Function(_MarkingAsReceived value)? markingAsReceived,
+    TResult? Function(_Updated value)? updated,
+    TResult? Function(_Cancelling value)? cancelling,
+    TResult? Function(_Cancelled value)? cancelled,
+    TResult? Function(_Deleting value)? deleting,
+    TResult? Function(_Deleted value)? deleted,
+    TResult? Function(_Failure value)? failure,
+  }) {
+    return created?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_LoadFailed value)? loadFailed,
+    TResult Function(_Creating value)? creating,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
+    TResult Function(_MarkingAsShippedWithNewItems value)?
+        markingAsShippedWithNewItems,
+    TResult Function(_MarkingAsShipped value)? markingAsShipped,
+    TResult Function(_MarkingAsReceived value)? markingAsReceived,
+    TResult Function(_Updated value)? updated,
+    TResult Function(_Cancelling value)? cancelling,
+    TResult Function(_Cancelled value)? cancelled,
+    TResult Function(_Deleting value)? deleting,
+    TResult Function(_Deleted value)? deleted,
+    TResult Function(_Failure value)? failure,
+    required TResult orElse(),
+  }) {
+    if (created != null) {
+      return created(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Created implements PurchaseOrderState {
+  const factory _Created(final PurchaseOrder po) = _$CreatedImpl;
+
+  PurchaseOrder get po;
+  @JsonKey(ignore: true)
+  _$$CreatedImplCopyWith<_$CreatedImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$UpdatingImplCopyWith<$Res> {
+  factory _$$UpdatingImplCopyWith(
+          _$UpdatingImpl value, $Res Function(_$UpdatingImpl) then) =
+      __$$UpdatingImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$UpdatingImplCopyWithImpl<$Res>
+    extends _$PurchaseOrderStateCopyWithImpl<$Res, _$UpdatingImpl>
+    implements _$$UpdatingImplCopyWith<$Res> {
+  __$$UpdatingImplCopyWithImpl(
+      _$UpdatingImpl _value, $Res Function(_$UpdatingImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$UpdatingImpl implements _Updating {
+  const _$UpdatingImpl();
+
+  @override
+  String toString() {
+    return 'PurchaseOrderState.updating()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$UpdatingImpl);
   }
 
   @override
@@ -2105,18 +2371,19 @@ class _$SavingImpl implements _Saving {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
     required TResult Function() deleted,
     required TResult Function(String message) failure,
   }) {
-    return saving();
+    return updating();
   }
 
   @override
@@ -2127,18 +2394,19 @@ class _$SavingImpl implements _Saving {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
     TResult? Function()? deleted,
     TResult? Function(String message)? failure,
   }) {
-    return saving?.call();
+    return updating?.call();
   }
 
   @override
@@ -2149,11 +2417,12 @@ class _$SavingImpl implements _Saving {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -2161,8 +2430,8 @@ class _$SavingImpl implements _Saving {
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
-    if (saving != null) {
-      return saving();
+    if (updating != null) {
+      return updating();
     }
     return orElse();
   }
@@ -2175,19 +2444,20 @@ class _$SavingImpl implements _Saving {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
     required TResult Function(_Deleted value) deleted,
     required TResult Function(_Failure value) failure,
   }) {
-    return saving(this);
+    return updating(this);
   }
 
   @override
@@ -2198,19 +2468,20 @@ class _$SavingImpl implements _Saving {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
     TResult? Function(_Deleted value)? deleted,
     TResult? Function(_Failure value)? failure,
   }) {
-    return saving?.call(this);
+    return updating?.call(this);
   }
 
   @override
@@ -2221,12 +2492,13 @@ class _$SavingImpl implements _Saving {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -2234,15 +2506,15 @@ class _$SavingImpl implements _Saving {
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
-    if (saving != null) {
-      return saving(this);
+    if (updating != null) {
+      return updating(this);
     }
     return orElse();
   }
 }
 
-abstract class _Saving implements PurchaseOrderState {
-  const factory _Saving() = _$SavingImpl;
+abstract class _Updating implements PurchaseOrderState {
+  const factory _Updating() = _$UpdatingImpl;
 }
 
 /// @nodoc
@@ -2293,11 +2565,12 @@ class _$MarkingAsShippedWithNewItemsImpl
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -2315,11 +2588,12 @@ class _$MarkingAsShippedWithNewItemsImpl
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -2337,11 +2611,12 @@ class _$MarkingAsShippedWithNewItemsImpl
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -2363,12 +2638,13 @@ class _$MarkingAsShippedWithNewItemsImpl
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -2386,12 +2662,13 @@ class _$MarkingAsShippedWithNewItemsImpl
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -2409,12 +2686,13 @@ class _$MarkingAsShippedWithNewItemsImpl
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -2477,11 +2755,12 @@ class _$MarkingAsShippedImpl implements _MarkingAsShipped {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -2499,11 +2778,12 @@ class _$MarkingAsShippedImpl implements _MarkingAsShipped {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -2521,11 +2801,12 @@ class _$MarkingAsShippedImpl implements _MarkingAsShipped {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -2547,12 +2828,13 @@ class _$MarkingAsShippedImpl implements _MarkingAsShipped {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -2570,12 +2852,13 @@ class _$MarkingAsShippedImpl implements _MarkingAsShipped {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -2593,12 +2876,13 @@ class _$MarkingAsShippedImpl implements _MarkingAsShipped {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -2660,11 +2944,12 @@ class _$MarkingAsReceivedImpl implements _MarkingAsReceived {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -2682,11 +2967,12 @@ class _$MarkingAsReceivedImpl implements _MarkingAsReceived {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -2704,11 +2990,12 @@ class _$MarkingAsReceivedImpl implements _MarkingAsReceived {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -2730,12 +3017,13 @@ class _$MarkingAsReceivedImpl implements _MarkingAsReceived {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -2753,12 +3041,13 @@ class _$MarkingAsReceivedImpl implements _MarkingAsReceived {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -2776,12 +3065,13 @@ class _$MarkingAsReceivedImpl implements _MarkingAsReceived {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -2801,10 +3091,10 @@ abstract class _MarkingAsReceived implements PurchaseOrderState {
 }
 
 /// @nodoc
-abstract class _$$SuccessImplCopyWith<$Res> {
-  factory _$$SuccessImplCopyWith(
-          _$SuccessImpl value, $Res Function(_$SuccessImpl) then) =
-      __$$SuccessImplCopyWithImpl<$Res>;
+abstract class _$$UpdatedImplCopyWith<$Res> {
+  factory _$$UpdatedImplCopyWith(
+          _$UpdatedImpl value, $Res Function(_$UpdatedImpl) then) =
+      __$$UpdatedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({PurchaseOrder po});
 
@@ -2812,11 +3102,11 @@ abstract class _$$SuccessImplCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$SuccessImplCopyWithImpl<$Res>
-    extends _$PurchaseOrderStateCopyWithImpl<$Res, _$SuccessImpl>
-    implements _$$SuccessImplCopyWith<$Res> {
-  __$$SuccessImplCopyWithImpl(
-      _$SuccessImpl _value, $Res Function(_$SuccessImpl) _then)
+class __$$UpdatedImplCopyWithImpl<$Res>
+    extends _$PurchaseOrderStateCopyWithImpl<$Res, _$UpdatedImpl>
+    implements _$$UpdatedImplCopyWith<$Res> {
+  __$$UpdatedImplCopyWithImpl(
+      _$UpdatedImpl _value, $Res Function(_$UpdatedImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -2824,7 +3114,7 @@ class __$$SuccessImplCopyWithImpl<$Res>
   $Res call({
     Object? po = null,
   }) {
-    return _then(_$SuccessImpl(
+    return _then(_$UpdatedImpl(
       null == po
           ? _value.po
           : po // ignore: cast_nullable_to_non_nullable
@@ -2843,22 +3133,22 @@ class __$$SuccessImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$SuccessImpl implements _Success {
-  const _$SuccessImpl(this.po);
+class _$UpdatedImpl implements _Updated {
+  const _$UpdatedImpl(this.po);
 
   @override
   final PurchaseOrder po;
 
   @override
   String toString() {
-    return 'PurchaseOrderState.success(po: $po)';
+    return 'PurchaseOrderState.updated(po: $po)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SuccessImpl &&
+            other is _$UpdatedImpl &&
             (identical(other.po, po) || other.po == po));
   }
 
@@ -2868,8 +3158,8 @@ class _$SuccessImpl implements _Success {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$SuccessImplCopyWith<_$SuccessImpl> get copyWith =>
-      __$$SuccessImplCopyWithImpl<_$SuccessImpl>(this, _$identity);
+  _$$UpdatedImplCopyWith<_$UpdatedImpl> get copyWith =>
+      __$$UpdatedImplCopyWithImpl<_$UpdatedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -2879,18 +3169,19 @@ class _$SuccessImpl implements _Success {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
     required TResult Function() deleted,
     required TResult Function(String message) failure,
   }) {
-    return success(po);
+    return updated(po);
   }
 
   @override
@@ -2901,18 +3192,19 @@ class _$SuccessImpl implements _Success {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
     TResult? Function()? deleted,
     TResult? Function(String message)? failure,
   }) {
-    return success?.call(po);
+    return updated?.call(po);
   }
 
   @override
@@ -2923,11 +3215,12 @@ class _$SuccessImpl implements _Success {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -2935,8 +3228,8 @@ class _$SuccessImpl implements _Success {
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
-    if (success != null) {
-      return success(po);
+    if (updated != null) {
+      return updated(po);
     }
     return orElse();
   }
@@ -2949,19 +3242,20 @@ class _$SuccessImpl implements _Success {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
     required TResult Function(_Deleted value) deleted,
     required TResult Function(_Failure value) failure,
   }) {
-    return success(this);
+    return updated(this);
   }
 
   @override
@@ -2972,19 +3266,20 @@ class _$SuccessImpl implements _Success {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
     TResult? Function(_Deleted value)? deleted,
     TResult? Function(_Failure value)? failure,
   }) {
-    return success?.call(this);
+    return updated?.call(this);
   }
 
   @override
@@ -2995,12 +3290,13 @@ class _$SuccessImpl implements _Success {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -3008,19 +3304,19 @@ class _$SuccessImpl implements _Success {
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
-    if (success != null) {
-      return success(this);
+    if (updated != null) {
+      return updated(this);
     }
     return orElse();
   }
 }
 
-abstract class _Success implements PurchaseOrderState {
-  const factory _Success(final PurchaseOrder po) = _$SuccessImpl;
+abstract class _Updated implements PurchaseOrderState {
+  const factory _Updated(final PurchaseOrder po) = _$UpdatedImpl;
 
   PurchaseOrder get po;
   @JsonKey(ignore: true)
-  _$$SuccessImplCopyWith<_$SuccessImpl> get copyWith =>
+  _$$UpdatedImplCopyWith<_$UpdatedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -3067,11 +3363,12 @@ class _$CancellingImpl implements _Cancelling {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -3089,11 +3386,12 @@ class _$CancellingImpl implements _Cancelling {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -3111,11 +3409,12 @@ class _$CancellingImpl implements _Cancelling {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -3137,12 +3436,13 @@ class _$CancellingImpl implements _Cancelling {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -3160,12 +3460,13 @@ class _$CancellingImpl implements _Cancelling {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -3183,12 +3484,13 @@ class _$CancellingImpl implements _Cancelling {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -3250,11 +3552,12 @@ class _$CancelledImpl implements _Cancelled {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -3272,11 +3575,12 @@ class _$CancelledImpl implements _Cancelled {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -3294,11 +3598,12 @@ class _$CancelledImpl implements _Cancelled {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -3320,12 +3625,13 @@ class _$CancelledImpl implements _Cancelled {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -3343,12 +3649,13 @@ class _$CancelledImpl implements _Cancelled {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -3366,12 +3673,13 @@ class _$CancelledImpl implements _Cancelled {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -3433,11 +3741,12 @@ class _$DeletingImpl implements _Deleting {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -3455,11 +3764,12 @@ class _$DeletingImpl implements _Deleting {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -3477,11 +3787,12 @@ class _$DeletingImpl implements _Deleting {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -3503,12 +3814,13 @@ class _$DeletingImpl implements _Deleting {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -3526,12 +3838,13 @@ class _$DeletingImpl implements _Deleting {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -3549,12 +3862,13 @@ class _$DeletingImpl implements _Deleting {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -3616,11 +3930,12 @@ class _$DeletedImpl implements _Deleted {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -3638,11 +3953,12 @@ class _$DeletedImpl implements _Deleted {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -3660,11 +3976,12 @@ class _$DeletedImpl implements _Deleted {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -3686,12 +4003,13 @@ class _$DeletedImpl implements _Deleted {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -3709,12 +4027,13 @@ class _$DeletedImpl implements _Deleted {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -3732,12 +4051,13 @@ class _$DeletedImpl implements _Deleted {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,
@@ -3825,11 +4145,12 @@ class _$FailureImpl implements _Failure {
     required TResult Function(PurchaseOrder po) loaded,
     required TResult Function(String message) loadFailed,
     required TResult Function() creating,
-    required TResult Function() saving,
+    required TResult Function(PurchaseOrder po) created,
+    required TResult Function() updating,
     required TResult Function() markingAsShippedWithNewItems,
     required TResult Function() markingAsShipped,
     required TResult Function() markingAsReceived,
-    required TResult Function(PurchaseOrder po) success,
+    required TResult Function(PurchaseOrder po) updated,
     required TResult Function() cancelling,
     required TResult Function() cancelled,
     required TResult Function() deleting,
@@ -3847,11 +4168,12 @@ class _$FailureImpl implements _Failure {
     TResult? Function(PurchaseOrder po)? loaded,
     TResult? Function(String message)? loadFailed,
     TResult? Function()? creating,
-    TResult? Function()? saving,
+    TResult? Function(PurchaseOrder po)? created,
+    TResult? Function()? updating,
     TResult? Function()? markingAsShippedWithNewItems,
     TResult? Function()? markingAsShipped,
     TResult? Function()? markingAsReceived,
-    TResult? Function(PurchaseOrder po)? success,
+    TResult? Function(PurchaseOrder po)? updated,
     TResult? Function()? cancelling,
     TResult? Function()? cancelled,
     TResult? Function()? deleting,
@@ -3869,11 +4191,12 @@ class _$FailureImpl implements _Failure {
     TResult Function(PurchaseOrder po)? loaded,
     TResult Function(String message)? loadFailed,
     TResult Function()? creating,
-    TResult Function()? saving,
+    TResult Function(PurchaseOrder po)? created,
+    TResult Function()? updating,
     TResult Function()? markingAsShippedWithNewItems,
     TResult Function()? markingAsShipped,
     TResult Function()? markingAsReceived,
-    TResult Function(PurchaseOrder po)? success,
+    TResult Function(PurchaseOrder po)? updated,
     TResult Function()? cancelling,
     TResult Function()? cancelled,
     TResult Function()? deleting,
@@ -3895,12 +4218,13 @@ class _$FailureImpl implements _Failure {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_LoadFailed value) loadFailed,
     required TResult Function(_Creating value) creating,
-    required TResult Function(_Saving value) saving,
+    required TResult Function(_Created value) created,
+    required TResult Function(_Updating value) updating,
     required TResult Function(_MarkingAsShippedWithNewItems value)
         markingAsShippedWithNewItems,
     required TResult Function(_MarkingAsShipped value) markingAsShipped,
     required TResult Function(_MarkingAsReceived value) markingAsReceived,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Updated value) updated,
     required TResult Function(_Cancelling value) cancelling,
     required TResult Function(_Cancelled value) cancelled,
     required TResult Function(_Deleting value) deleting,
@@ -3918,12 +4242,13 @@ class _$FailureImpl implements _Failure {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_LoadFailed value)? loadFailed,
     TResult? Function(_Creating value)? creating,
-    TResult? Function(_Saving value)? saving,
+    TResult? Function(_Created value)? created,
+    TResult? Function(_Updating value)? updating,
     TResult? Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult? Function(_MarkingAsShipped value)? markingAsShipped,
     TResult? Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Updated value)? updated,
     TResult? Function(_Cancelling value)? cancelling,
     TResult? Function(_Cancelled value)? cancelled,
     TResult? Function(_Deleting value)? deleting,
@@ -3941,12 +4266,13 @@ class _$FailureImpl implements _Failure {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_LoadFailed value)? loadFailed,
     TResult Function(_Creating value)? creating,
-    TResult Function(_Saving value)? saving,
+    TResult Function(_Created value)? created,
+    TResult Function(_Updating value)? updating,
     TResult Function(_MarkingAsShippedWithNewItems value)?
         markingAsShippedWithNewItems,
     TResult Function(_MarkingAsShipped value)? markingAsShipped,
     TResult Function(_MarkingAsReceived value)? markingAsReceived,
-    TResult Function(_Success value)? success,
+    TResult Function(_Updated value)? updated,
     TResult Function(_Cancelling value)? cancelling,
     TResult Function(_Cancelled value)? cancelled,
     TResult Function(_Deleting value)? deleting,

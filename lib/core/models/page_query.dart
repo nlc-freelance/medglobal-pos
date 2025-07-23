@@ -19,7 +19,7 @@ extension PageQueryExt on PageQuery {
     return {
       'page': page,
       'size': size,
-      if (search?.isNotEmpty == true) 'search': search,
+      if (search?.trim().isNotEmpty == true) 'search': search,
       ...filteredExtra,
     };
   }

@@ -26,8 +26,8 @@ mixin _$TransactionDto {
   String? get saleTransactionReceiptId => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
   String? get status => throw _privateConstructorUsedError;
-  RegisterLiteDto get register => throw _privateConstructorUsedError;
-  BranchLiteDto get store => throw _privateConstructorUsedError;
+  RegisterDto get register => throw _privateConstructorUsedError;
+  BranchDto get store => throw _privateConstructorUsedError;
   EmployeeDto get user => throw _privateConstructorUsedError;
   List<TransactionItemDto> get items => throw _privateConstructorUsedError;
   double? get subTotal => throw _privateConstructorUsedError;
@@ -61,8 +61,8 @@ abstract class $TransactionDtoCopyWith<$Res> {
       String? saleTransactionReceiptId,
       String type,
       String? status,
-      RegisterLiteDto register,
-      BranchLiteDto store,
+      RegisterDto register,
+      BranchDto store,
       EmployeeDto user,
       List<TransactionItemDto> items,
       double? subTotal,
@@ -76,8 +76,9 @@ abstract class $TransactionDtoCopyWith<$Res> {
       String? notes,
       @DateTimeConverter() DateTime createdAt});
 
-  $RegisterLiteDtoCopyWith<$Res> get register;
-  $BranchLiteDtoCopyWith<$Res> get store;
+  $RegisterDtoCopyWith<$Res> get register;
+  $BranchDtoCopyWith<$Res> get store;
+  $EmployeeDtoCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -142,11 +143,11 @@ class _$TransactionDtoCopyWithImpl<$Res, $Val extends TransactionDto>
       register: null == register
           ? _value.register
           : register // ignore: cast_nullable_to_non_nullable
-              as RegisterLiteDto,
+              as RegisterDto,
       store: null == store
           ? _value.store
           : store // ignore: cast_nullable_to_non_nullable
-              as BranchLiteDto,
+              as BranchDto,
       user: null == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -200,17 +201,25 @@ class _$TransactionDtoCopyWithImpl<$Res, $Val extends TransactionDto>
 
   @override
   @pragma('vm:prefer-inline')
-  $RegisterLiteDtoCopyWith<$Res> get register {
-    return $RegisterLiteDtoCopyWith<$Res>(_value.register, (value) {
+  $RegisterDtoCopyWith<$Res> get register {
+    return $RegisterDtoCopyWith<$Res>(_value.register, (value) {
       return _then(_value.copyWith(register: value) as $Val);
     });
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchLiteDtoCopyWith<$Res> get store {
-    return $BranchLiteDtoCopyWith<$Res>(_value.store, (value) {
+  $BranchDtoCopyWith<$Res> get store {
+    return $BranchDtoCopyWith<$Res>(_value.store, (value) {
       return _then(_value.copyWith(store: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $EmployeeDtoCopyWith<$Res> get user {
+    return $EmployeeDtoCopyWith<$Res>(_value.user, (value) {
+      return _then(_value.copyWith(user: value) as $Val);
     });
   }
 }
@@ -230,8 +239,8 @@ abstract class _$$TransactionDtoImplCopyWith<$Res>
       String? saleTransactionReceiptId,
       String type,
       String? status,
-      RegisterLiteDto register,
-      BranchLiteDto store,
+      RegisterDto register,
+      BranchDto store,
       EmployeeDto user,
       List<TransactionItemDto> items,
       double? subTotal,
@@ -246,9 +255,11 @@ abstract class _$$TransactionDtoImplCopyWith<$Res>
       @DateTimeConverter() DateTime createdAt});
 
   @override
-  $RegisterLiteDtoCopyWith<$Res> get register;
+  $RegisterDtoCopyWith<$Res> get register;
   @override
-  $BranchLiteDtoCopyWith<$Res> get store;
+  $BranchDtoCopyWith<$Res> get store;
+  @override
+  $EmployeeDtoCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -311,11 +322,11 @@ class __$$TransactionDtoImplCopyWithImpl<$Res>
       register: null == register
           ? _value.register
           : register // ignore: cast_nullable_to_non_nullable
-              as RegisterLiteDto,
+              as RegisterDto,
       store: null == store
           ? _value.store
           : store // ignore: cast_nullable_to_non_nullable
-              as BranchLiteDto,
+              as BranchDto,
       user: null == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -410,9 +421,9 @@ class _$TransactionDtoImpl implements _TransactionDto {
   @override
   final String? status;
   @override
-  final RegisterLiteDto register;
+  final RegisterDto register;
   @override
-  final BranchLiteDto store;
+  final BranchDto store;
   @override
   final EmployeeDto user;
   final List<TransactionItemDto> _items;
@@ -538,8 +549,8 @@ abstract class _TransactionDto implements TransactionDto {
           final String? saleTransactionReceiptId,
           required final String type,
           final String? status,
-          required final RegisterLiteDto register,
-          required final BranchLiteDto store,
+          required final RegisterDto register,
+          required final BranchDto store,
           required final EmployeeDto user,
           required final List<TransactionItemDto> items,
           final double? subTotal,
@@ -570,9 +581,9 @@ abstract class _TransactionDto implements TransactionDto {
   @override
   String? get status;
   @override
-  RegisterLiteDto get register;
+  RegisterDto get register;
   @override
-  BranchLiteDto get store;
+  BranchDto get store;
   @override
   EmployeeDto get user;
   @override

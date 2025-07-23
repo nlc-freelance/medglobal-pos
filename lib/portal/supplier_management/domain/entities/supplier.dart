@@ -3,6 +3,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'supplier.freezed.dart';
+part 'supplier.g.dart';
 
 @freezed
 class Supplier with _$Supplier {
@@ -25,6 +26,8 @@ class Supplier with _$Supplier {
   }) = _Supplier;
 
   const Supplier._();
+
+  factory Supplier.fromJson(Map<String, dynamic> json) => _$SupplierFromJson(json);
 
   DataGridRow toDataGridRow() => DataGridRow(
         cells: [

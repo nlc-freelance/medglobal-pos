@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/form/form.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/cubit/product_performance_form_cubit/product_performance_form_cubit.dart';
@@ -34,10 +33,10 @@ class PerformanceProductPNLSourceDataState extends State<ProductPNLSourceData> {
             label: 'Category',
             hint: 'Select category',
             isRequired: true,
-            getName: (category) => category.name ?? Strings.noValue,
-            onChanged: (category) => context.read<ProductPerformanceFormCubit>().toggleCategory(category),
+            getName: (category) => category.name,
             isMultiSelect: true,
             selectedItems: state.productPNLParams?.categories,
+            onChanged: (category) => context.read<ProductPerformanceFormCubit>().toggleCategory(category),
             onRemoveFromMultiSelect: (category) => context.read<ProductPerformanceFormCubit>().removeCategory(category),
             isSelectedInMultiSelect: (category) =>
                 context.read<ProductPerformanceFormCubit>().isCategorySelected(category),

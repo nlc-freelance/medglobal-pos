@@ -109,13 +109,13 @@ part 'purchase_order_item.freezed.dart';
 class PurchaseOrderItem with _$PurchaseOrderItem {
   const factory PurchaseOrderItem({
     int? id,
-    required int variantId,
-    required String name,
+    int? variantId,
+    String? name,
     String? sku,
     int? quantityOnHand,
     int? quantityOrdered,
     int? quantityReceived,
-    required double supplierPrice,
+    double? supplierPrice,
     double? sellingPrice,
     double? total,
   }) = _PurchaseOrderItem;

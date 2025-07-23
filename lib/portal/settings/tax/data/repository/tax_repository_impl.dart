@@ -1,93 +1,65 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/data/api/tax_api.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/request/create_tax_dto.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/request/update_tax_dto.dart';
-import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/response/tax_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/data/api/tax_api_service.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/tax_payload.dart';
+import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/tax_mapper.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/repository/tax_repository.dart';
 
-class TaxRepositoryImpl implements TaxRepository {
-  final TaxApi _taxApi;
+/// Concrete implementation of [TaxRepository] that uses [TaxApiService] for API calls
+/// and [BaseRepository] to centralize error handling.
+class TaxRepositoryImpl extends BaseRepository implements TaxRepository {
+  final TaxApiService _api;
 
-  TaxRepositoryImpl(this._taxApi);
+  TaxRepositoryImpl({required TaxApiService api}) : _api = api;
 
   @override
-  Future<Either<Failure, PaginatedList<Tax>>> getTaxCodes({required PageQuery filters}) async {
-    try {
-      final responseDto = await _taxApi.getTaxCodes(filters: filters);
+  Future<Either<Failure, PaginatedList<Tax>>> getTaxCodes(PageQuery query) async {
+    return call(() async {
+      final response = await _api.getTaxCodes(query);
+      final paginatedTax = response.convert((dto) => TaxMapper.fromDto(dto));
 
-      return Right(responseDto.convert((item) => item.toDomain()));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+      return paginatedTax;
+    });
   }
 
   @override
   Future<Either<Failure, Tax>> getTaxCode(int id) async {
-    try {
-      final responseDto = await _taxApi.getTaxCodeById(id);
-
-      return Right(responseDto.toDomain());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+    return call(() async {
+      final response = await _api.getTaxCodeById(id);
+      return TaxMapper.fromDto(response);
+    });
   }
 
   @override
-  Future<Either<Failure, Tax>> createTaxCode(Tax tax) async {
-    try {
-      final requestDto = CreateTaxDto.fromDomain(tax);
-      final responseDto = await _taxApi.createTaxCode(requestDto);
-
-      return Right(responseDto.toDomain());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+  Future<Either<Failure, Tax>> createTaxCode(TaxPayload payload) async {
+    return call(() async {
+      final response = await _api.createTaxCode(payload);
+      return TaxMapper.fromDto(response);
+    });
   }
 
   @override
-  Future<Either<Failure, Tax>> updateTaxCode(Tax tax) async {
-    try {
-      final requestDto = UpdateTaxDto.fromDomain(tax);
-      final responseDto = await _taxApi.updateTaxCode(requestDto);
-
-      return Right(responseDto.toDomain());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+  Future<Either<Failure, Tax>> updateTaxCode(int id, TaxPayload payload) async {
+    return call(() async {
+      final response = await _api.updateTaxCode(id, payload);
+      return TaxMapper.fromDto(response);
+    });
   }
 
   @override
   Future<Either<Failure, void>> deleteTaxCode(int id) async {
-    try {
-      return Right(await _taxApi.deleteTaxCode(id));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+    return call(() async => await _api.deleteTaxCode(id));
   }
 
   @override
   Future<Either<Failure, Tax?>> getDefaultTaxCode() async {
-    try {
-      final responseDto = await _taxApi.getDefaultTaxCode();
-
-      return Right(responseDto?.toDomain());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+    return call(() async {
+      final response = await _api.getDefaultTaxCode();
+      if (response == null) return null;
+      return TaxMapper.fromDto(response);
+    });
   }
 }

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/payload/product_payload.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/repositories/product_repository.dart';
 
@@ -17,7 +18,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<_DeleteProduct>(_onDeleteProduct);
   }
 
-  Future<void> _onGetProductById(event, emit) async {
+  Future<void> _onGetProductById(_GetProductById event, Emitter<ProductState> emit) async {
     emit(const ProductState.loading());
     try {
       final result = await _repository.getProductById(event.id);
@@ -31,10 +32,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     }
   }
 
-  Future<void> _onCreateProduct(event, emit) async {
+  Future<void> _onCreateProduct(_CreateProduct event, Emitter<ProductState> emit) async {
     emit(const ProductState.processing());
     try {
-      final result = await _repository.create(event.product);
+      final payload = ProductPayload.fromProduct(event.product);
+
+      final result = await _repository.createProduct(payload);
 
       result.fold(
         (failure) => emit(ProductState.failure(failure.message)),
@@ -45,10 +48,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     }
   }
 
-  Future<void> _onUpdateProduct(event, emit) async {
+  Future<void> _onUpdateProduct(_UpdateProduct event, Emitter<ProductState> emit) async {
     emit(const ProductState.processing());
     try {
-      final result = await _repository.update(event.id, event.product);
+      final product = event.product;
+      final payload = ProductPayload.fromProduct(event.product, isUpdate: true);
+
+      final result = await _repository.updateProduct(product.id!, payload);
 
       result.fold(
         (failure) => emit(ProductState.failure(failure.message)),
@@ -59,14 +65,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     }
   }
 
-  Future<void> _onDeleteProduct(event, emit) async {
+  Future<void> _onDeleteProduct(_DeleteProduct event, Emitter<ProductState> emit) async {
     emit(const ProductState.processing());
     try {
-      final result = await _repository.delete(event.product.id);
+      final result = await _repository.deleteProduct(event.productId);
 
       result.fold(
         (failure) => emit(ProductState.failure(failure.message)),
-        (_) => emit(ProductState.success('${event.product.name} successfully deleted.')),
+        (_) => emit(ProductState.success('${event.productName} successfully deleted.')),
       );
     } catch (e) {
       emit(ProductState.failure(e.toString()));

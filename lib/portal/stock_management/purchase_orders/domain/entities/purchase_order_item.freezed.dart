@@ -17,13 +17,13 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$PurchaseOrderItem {
   int? get id => throw _privateConstructorUsedError;
-  int get variantId => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+  int? get variantId => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
   String? get sku => throw _privateConstructorUsedError;
   int? get quantityOnHand => throw _privateConstructorUsedError;
   int? get quantityOrdered => throw _privateConstructorUsedError;
   int? get quantityReceived => throw _privateConstructorUsedError;
-  double get supplierPrice => throw _privateConstructorUsedError;
+  double? get supplierPrice => throw _privateConstructorUsedError;
   double? get sellingPrice => throw _privateConstructorUsedError;
   double? get total => throw _privateConstructorUsedError;
 
@@ -40,13 +40,13 @@ abstract class $PurchaseOrderItemCopyWith<$Res> {
   @useResult
   $Res call(
       {int? id,
-      int variantId,
-      String name,
+      int? variantId,
+      String? name,
       String? sku,
       int? quantityOnHand,
       int? quantityOrdered,
       int? quantityReceived,
-      double supplierPrice,
+      double? supplierPrice,
       double? sellingPrice,
       double? total});
 }
@@ -65,13 +65,13 @@ class _$PurchaseOrderItemCopyWithImpl<$Res, $Val extends PurchaseOrderItem>
   @override
   $Res call({
     Object? id = freezed,
-    Object? variantId = null,
-    Object? name = null,
+    Object? variantId = freezed,
+    Object? name = freezed,
     Object? sku = freezed,
     Object? quantityOnHand = freezed,
     Object? quantityOrdered = freezed,
     Object? quantityReceived = freezed,
-    Object? supplierPrice = null,
+    Object? supplierPrice = freezed,
     Object? sellingPrice = freezed,
     Object? total = freezed,
   }) {
@@ -80,14 +80,14 @@ class _$PurchaseOrderItemCopyWithImpl<$Res, $Val extends PurchaseOrderItem>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      variantId: null == variantId
+      variantId: freezed == variantId
           ? _value.variantId
           : variantId // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
+              as int?,
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       sku: freezed == sku
           ? _value.sku
           : sku // ignore: cast_nullable_to_non_nullable
@@ -104,10 +104,10 @@ class _$PurchaseOrderItemCopyWithImpl<$Res, $Val extends PurchaseOrderItem>
           ? _value.quantityReceived
           : quantityReceived // ignore: cast_nullable_to_non_nullable
               as int?,
-      supplierPrice: null == supplierPrice
+      supplierPrice: freezed == supplierPrice
           ? _value.supplierPrice
           : supplierPrice // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       sellingPrice: freezed == sellingPrice
           ? _value.sellingPrice
           : sellingPrice // ignore: cast_nullable_to_non_nullable
@@ -130,13 +130,13 @@ abstract class _$$PurchaseOrderItemImplCopyWith<$Res>
   @useResult
   $Res call(
       {int? id,
-      int variantId,
-      String name,
+      int? variantId,
+      String? name,
       String? sku,
       int? quantityOnHand,
       int? quantityOrdered,
       int? quantityReceived,
-      double supplierPrice,
+      double? supplierPrice,
       double? sellingPrice,
       double? total});
 }
@@ -153,13 +153,13 @@ class __$$PurchaseOrderItemImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? variantId = null,
-    Object? name = null,
+    Object? variantId = freezed,
+    Object? name = freezed,
     Object? sku = freezed,
     Object? quantityOnHand = freezed,
     Object? quantityOrdered = freezed,
     Object? quantityReceived = freezed,
-    Object? supplierPrice = null,
+    Object? supplierPrice = freezed,
     Object? sellingPrice = freezed,
     Object? total = freezed,
   }) {
@@ -168,14 +168,14 @@ class __$$PurchaseOrderItemImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      variantId: null == variantId
+      variantId: freezed == variantId
           ? _value.variantId
           : variantId // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
+              as int?,
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       sku: freezed == sku
           ? _value.sku
           : sku // ignore: cast_nullable_to_non_nullable
@@ -192,10 +192,10 @@ class __$$PurchaseOrderItemImplCopyWithImpl<$Res>
           ? _value.quantityReceived
           : quantityReceived // ignore: cast_nullable_to_non_nullable
               as int?,
-      supplierPrice: null == supplierPrice
+      supplierPrice: freezed == supplierPrice
           ? _value.supplierPrice
           : supplierPrice // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
       sellingPrice: freezed == sellingPrice
           ? _value.sellingPrice
           : sellingPrice // ignore: cast_nullable_to_non_nullable
@@ -213,13 +213,13 @@ class __$$PurchaseOrderItemImplCopyWithImpl<$Res>
 class _$PurchaseOrderItemImpl extends _PurchaseOrderItem {
   const _$PurchaseOrderItemImpl(
       {this.id,
-      required this.variantId,
-      required this.name,
+      this.variantId,
+      this.name,
       this.sku,
       this.quantityOnHand,
       this.quantityOrdered,
       this.quantityReceived,
-      required this.supplierPrice,
+      this.supplierPrice,
       this.sellingPrice,
       this.total})
       : super._();
@@ -227,9 +227,9 @@ class _$PurchaseOrderItemImpl extends _PurchaseOrderItem {
   @override
   final int? id;
   @override
-  final int variantId;
+  final int? variantId;
   @override
-  final String name;
+  final String? name;
   @override
   final String? sku;
   @override
@@ -239,7 +239,7 @@ class _$PurchaseOrderItemImpl extends _PurchaseOrderItem {
   @override
   final int? quantityReceived;
   @override
-  final double supplierPrice;
+  final double? supplierPrice;
   @override
   final double? sellingPrice;
   @override
@@ -298,13 +298,13 @@ class _$PurchaseOrderItemImpl extends _PurchaseOrderItem {
 abstract class _PurchaseOrderItem extends PurchaseOrderItem {
   const factory _PurchaseOrderItem(
       {final int? id,
-      required final int variantId,
-      required final String name,
+      final int? variantId,
+      final String? name,
       final String? sku,
       final int? quantityOnHand,
       final int? quantityOrdered,
       final int? quantityReceived,
-      required final double supplierPrice,
+      final double? supplierPrice,
       final double? sellingPrice,
       final double? total}) = _$PurchaseOrderItemImpl;
   const _PurchaseOrderItem._() : super._();
@@ -312,9 +312,9 @@ abstract class _PurchaseOrderItem extends PurchaseOrderItem {
   @override
   int? get id;
   @override
-  int get variantId;
+  int? get variantId;
   @override
-  String get name;
+  String? get name;
   @override
   String? get sku;
   @override
@@ -324,7 +324,7 @@ abstract class _PurchaseOrderItem extends PurchaseOrderItem {
   @override
   int? get quantityReceived;
   @override
-  double get supplierPrice;
+  double? get supplierPrice;
   @override
   double? get sellingPrice;
   @override

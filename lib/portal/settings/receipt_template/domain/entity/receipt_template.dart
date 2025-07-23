@@ -23,10 +23,10 @@ class ReceiptTemplate with _$ReceiptTemplate {
     String? footerMessage,
   }) = _ReceiptTemplate;
 
-  const ReceiptTemplate._();
-
   factory ReceiptTemplate.fromJson(Map<String, dynamic> json) => _$ReceiptTemplateFromJson(json);
+}
 
+extension ReceiptTemplateExt on ReceiptTemplate {
   DataGridRow toDataGridRow() => DataGridRow(
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),

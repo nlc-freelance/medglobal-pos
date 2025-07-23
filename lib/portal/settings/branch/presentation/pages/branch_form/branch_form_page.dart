@@ -56,19 +56,24 @@ class _BranchFormState extends State<BranchForm> with DialogMixin {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<BranchBloc, BranchState>(
-      listener: (_, state) => state.maybeWhen(
-        loaded: (branch) => _branchFormCubit.initBranch(branch),
-        processing: () => PageLoader.show(context),
-        success: (message) => _onSuccess(context, message),
-        failure: (message) => _onFailure(context, message),
-        orElse: () => {},
-      ),
-      builder: (context, state) => state.maybeWhen(
-        initial: () => _isEditMode ? const LoadingView() : const BranchFormView(),
-        loading: () => const LoadingView(),
-        loadFailed: (message) => FailureView(message),
-        orElse: () => BranchFormView(isEditMode: _isEditMode),
+    return BlocListener<BranchFormCubit, BranchFormState>(
+      listener: (context, state) {
+        if (!state.isFormValid) SnackbarUtil.invalid(context);
+      },
+      child: BlocConsumer<BranchBloc, BranchState>(
+        listener: (_, state) => state.maybeWhen(
+          loaded: (branch) => _branchFormCubit.loadBranch(branch),
+          processing: () => PageLoader.show(context),
+          success: (message) => _onSuccess(context, message),
+          failure: (message) => _onFailure(context, message),
+          orElse: () => {},
+        ),
+        builder: (context, state) => state.maybeWhen(
+          initial: () => _isEditMode ? const LoadingView() : const BranchFormView(),
+          loading: () => const LoadingView(),
+          loadFailed: (message) => FailureView(message),
+          orElse: () => BranchFormView(isEditMode: _isEditMode),
+        ),
       ),
     );
   }

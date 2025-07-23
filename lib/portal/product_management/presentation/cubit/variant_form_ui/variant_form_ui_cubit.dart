@@ -1,7 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-
-part 'variant_form_ui_state.dart';
 
 class VariantFormUiCubit extends Cubit<bool> {
   VariantFormUiCubit() : super(false);

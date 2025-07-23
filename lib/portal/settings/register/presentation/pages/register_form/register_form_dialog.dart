@@ -54,19 +54,11 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
                 hint: 'Enter POS register name',
                 controller: _nameController,
                 isRequired: true,
-                validator: FormValidators.required('Please enter a tax code name.'),
+                validator: FormValidators.required('Please enter register name.'),
                 onChanged: (value) => _registerFormCubit.setName(value),
               ),
               const UIVerticalSpace(16),
-              // BranchDropdown.input_top(
-              //   hint: 'Select branch',
-              //   label: 'Assigned Branch',
-              //   // selectedItem: _registerFormCubit.state.assignedBranch,
-              //   required: true,
-              //   onSelectItem: (value) => _registerFormCubit.setAssignedBranch(value),
-              //   isReadOnly: _registerFormCubit.state.assignedBranch != null,
-              // ),
-              AppDropdownFormField<BranchLite>.labelTop(
+              AppDropdownFormField<Branch>.lazy(
                 label: 'Assigned Branch',
                 hint: 'Select branch',
                 isRequired: true,
@@ -75,30 +67,36 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
                 getName: (branch) => branch.name,
                 onChanged: (branch) => _registerFormCubit.setAssignedBranch(branch),
               ),
+              const UIVerticalSpace(8),
               Text(
                 _hasAssignedBranch
                     ? 'This branch was assigned when the register was created and can no longer be changed.'
                     : 'You can only assign a branch when creating the register — it can\'t be changed afterward.',
                 style: UIStyleText.hint.copyWith(color: UIColors.textMuted),
               ),
-              const UIVerticalSpace(24),
-              BlocBuilder<RegisterBloc, RegisterState>(
-                builder: (context, state) {
-                  return state.maybeWhen(
-                    failure: (message) => PageErrorNotice(message: message),
-                    orElse: () => const SizedBox(),
-                  );
-                },
-              ),
+              const UIVerticalSpace(16),
             ],
           ),
         ),
-        actions: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+        actions: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
-            const UIHorizontalSpace(8),
-            UIButton.filled('Save', onClick: _onSave),
+            BlocBuilder<RegisterBloc, RegisterState>(
+              builder: (context, state) {
+                return state.maybeWhen(
+                  failure: (message) => PageErrorBanner(message: message),
+                  orElse: () => const SizedBox(),
+                );
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
+                const UIHorizontalSpace(8),
+                UIButton.filled('Save', onClick: _onSave),
+              ],
+            ),
           ],
         ),
       ),
@@ -109,11 +107,11 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
 
   void _onSave() {
     if (_registerFormKey.currentState?.validate() == true) {
-      final register = _registerFormCubit.toRegister();
+      final register = _registerFormCubit.state.toRegister();
 
-      final event = _registerFormCubit.state.id == null
+      final event = register.id == null
           ? RegisterEvent.createRegister(register)
-          : RegisterEvent.updateRegister(register);
+          : RegisterEvent.updateRegister(register.id!, register);
 
       _registerBloc.add(event);
     }

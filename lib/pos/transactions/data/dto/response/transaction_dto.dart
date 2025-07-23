@@ -1,8 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/data/dto/response/employee_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/data/dto/employee_dto.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/data/dto/response/register_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/receipt_template_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register/register_mapper.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register/register_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/dto/response/transaction_item_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 
@@ -124,8 +128,8 @@ class TransactionDto with _$TransactionDto {
     String? saleTransactionReceiptId,
     required String type,
     String? status,
-    required RegisterLiteDto register,
-    required BranchLiteDto store,
+    required RegisterDto register,
+    required BranchDto store,
     required EmployeeDto user,
     required List<TransactionItemDto> items,
     double? subTotal,
@@ -147,12 +151,33 @@ class TransactionDto with _$TransactionDto {
         transactionId: transaction.receiptId,
         saleTransactionId: transaction.saleTransactionId,
         saleTransactionReceiptId: transaction.saleTransactionReceiptId,
-        status: (transaction.status == ReturnStatus.completed ? ReturnStatus.completed : ReturnStatus.awaiting_action)
-            .label,
+        status:
+            (transaction.status == ReturnStatus.completed ? ReturnStatus.completed : ReturnStatus.awaitingAction).label,
         type: (transaction.type == TransactionType.sale ? TransactionType.sale : TransactionType.refund).name,
-        register: RegisterLiteDto.fromDomain(transaction.register),
-        store: BranchLiteDto.fromDomain(transaction.branch),
-        user: EmployeeDto.fromDomain(transaction.employee),
+        register: RegisterDto(id: 1, name: ''),
+        store: BranchDto(
+            id: 1,
+            name: '',
+            accountId: 1,
+            street1: '',
+            city: 'city',
+            state: 'state',
+            phone: 'phone',
+            businessRegistrationNo: 'businessRegistrationNo',
+            receiptTemplate: ReceiptTemplateDto(id: 1, accountId: 1, name: '')),
+        user: EmployeeDto(
+            id: 1,
+            firstName: '',
+            lastName: 'lastName',
+            email: 'email',
+            phone: 'phone',
+            assignedStores: [],
+            role: 'role',
+            systemAccess: [],
+            accessControls: []),
+        // register: RegisterDto.fromDomain(transaction.register),
+        // store: BranchDto.fromDomain(transaction.branch),
+        // user: EmployeeDto.fromDomain(transaction.employee),
         items: transaction.items.map((item) => TransactionItemDto.fromDomain(item)).toList(),
         subTotal: transaction.subtotal,
         // discount: transaction.discount,
@@ -174,11 +199,11 @@ extension TransactionDtoExt on TransactionDto {
         receiptId: transactionId,
         saleTransactionId: saleTransactionId,
         saleTransactionReceiptId: saleTransactionReceiptId,
-        status: status == 'completed' ? ReturnStatus.completed : ReturnStatus.awaiting_action,
+        status: status == 'completed' ? ReturnStatus.completed : ReturnStatus.awaitingAction,
         type: type == 'sale' ? TransactionType.sale : TransactionType.refund,
-        register: register.toDomain(),
-        branch: store.toDomain(),
-        employee: user.toEntity(),
+        register: RegisterMapper.fromDto(register),
+        branch: BranchMapper.fromDto(store),
+        employee: user.toDomain(),
         items: items.map((item) => item.toDomain()).toList(),
         subtotal: subTotal,
         // discount: discount,

@@ -18,11 +18,9 @@ class ReceiptTemplateFormState with _$ReceiptTemplateFormState {
     @Default(true) bool isConfigurationValid,
   }) = _ReceiptTemplateFormState;
 
-  const ReceiptTemplateFormState._();
-
   factory ReceiptTemplateFormState.initial() => const ReceiptTemplateFormState();
 
-  factory ReceiptTemplateFormState.fromReceiptTemplate(ReceiptTemplate template) => ReceiptTemplateFormState(
+  factory ReceiptTemplateFormState.load(ReceiptTemplate template) => ReceiptTemplateFormState(
         id: template.id,
         name: template.name,
         description: template.description,
@@ -36,7 +34,26 @@ class ReceiptTemplateFormState with _$ReceiptTemplateFormState {
         footerTitle: template.footerTitle,
         footerMessage: template.footerMessage,
       );
+}
 
+extension ReceiptTemplateFormStateExt on ReceiptTemplateFormState {
   bool hasValidConfiguration() =>
       showCompanyName || showBranchName || showBranchAddress || showBranchContact || showFooterMessage;
+
+  ReceiptTemplate toReceiptTemplate() {
+    return ReceiptTemplate(
+      id: id,
+      accountId: 2, // Default to 2 for MedGlobal account, later add in env variables
+      name: name!,
+      description: description,
+      isDefault: isDefault,
+      showCompanyName: showCompanyName,
+      showBranchName: showBranchName,
+      showBranchAddress: showBranchAddress,
+      showBranchContact: showBranchContact,
+      showFooterMessage: showFooterMessage,
+      footerTitle: footerTitle,
+      footerMessage: footerMessage,
+    );
+  }
 }

@@ -1,30 +1,14 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 
-import 'package:medglobal_admin_portal/core/utils/datetime_converter.dart';
+part 'category.freezed.dart';
 
-part 'category.g.dart';
-
-@JsonSerializable()
-class Category extends Equatable {
-  final int? id;
-  final String? name;
-  @DateTimeConverter()
-  final DateTime? createdAt;
-  @DateTimeConverter()
-  final DateTime? updatedAt;
-
-  const Category({
-    this.id,
-    required this.name,
-    this.createdAt,
-    this.updatedAt,
-  });
-
-  @override
-  List<Object?> get props => [id, name, createdAt, updatedAt];
-
-  factory Category.fromJson(Map<String, dynamic> json) => _$CategoryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CategoryToJson(this);
+@freezed
+class Category with _$Category {
+  const factory Category({
+    int? id,
+    required String name,
+    @DateTimeConverter() DateTime? createdAt,
+    @DateTimeConverter() DateTime? updatedAt,
+  }) = _Category;
 }

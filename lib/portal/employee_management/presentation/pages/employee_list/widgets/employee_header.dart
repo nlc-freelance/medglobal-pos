@@ -15,7 +15,7 @@ class EmployeeHeader extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 20),
       child: PageHeader(
         title: 'Employees',
-        subtitle: '',
+        subtitle: 'Lorem ipsum dolor',
         actions: [
           UIButton.filled(
             'New Employee',

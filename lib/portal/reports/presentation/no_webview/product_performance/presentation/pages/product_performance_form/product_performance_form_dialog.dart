@@ -23,6 +23,7 @@ class _GenerateProductPerformanceDialogState extends State<GenerateProductPerfor
 
   late ProductPerformanceFormCubit formCubit;
   late ReportManagerCubit reportCubit;
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -37,54 +38,56 @@ class _GenerateProductPerformanceDialogState extends State<GenerateProductPerfor
     return Portal(
       child: AppCustomDialog(
         title: 'Generate Product Performance Report',
-        content: Flexible(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            currentStep == 0 ? const ProductPerformanceSelection() : const ProductPerformanceForm(),
+            const UIVerticalSpace(16),
+            BlocSelector<ProductPerformanceFormCubit, ProductPerformanceFormState, bool>(
+              selector: (state) => state.isTypeSelected,
+              builder: (context, isTypeSelected) => isTypeSelected
+                  ? const SizedBox.shrink()
+                  : const PageErrorBanner(message: 'Please select a report type.'),
+            ),
+          ],
+        ),
+        actions: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BlocSelector<ProductPerformanceFormCubit, ProductPerformanceFormState, bool>(
+              selector: (state) => state.isFormValid,
+              builder: (context, isFormValid) => isFormValid
+                  ? const SizedBox.shrink()
+                  : const PageErrorBanner(message: 'Please fill in all required fields.'),
+            ),
+            BlocConsumer<ReportManagerCubit, ReportManagerState>(
+              listener: (context, state) {
+                final failedCreationTasks = state.productPerformanceTasks.failedCreation;
+
+                setState(() {
+                  currentReportTask = failedCreationTasks.isNotEmpty ? failedCreationTasks.first : null;
+                });
+              },
+              builder: (context, state) {
+                if (currentReportTask == null) return const SizedBox();
+
+                return PageErrorBanner(message: currentReportTask!.error!);
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                currentStep == 0 ? const ProductPerformanceSelection() : const ProductPerformanceForm(),
-                const UIVerticalSpace(16),
-                BlocSelector<ProductPerformanceFormCubit, ProductPerformanceFormState, bool>(
-                  selector: (state) => state.isTypeSelected,
-                  builder: (context, isTypeSelected) => isTypeSelected
-                      ? const SizedBox.shrink()
-                      : Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: UIText.labelMedium(
-                            'Please select a report type.',
-                            color: UIColors.buttonDanger,
-                          ),
-                        ),
-                ),
-                BlocConsumer<ReportManagerCubit, ReportManagerState>(
-                  listener: (context, state) {
-                    final failedCreationTasks = state.productPerformanceTasks.failedCreation;
-
-                    setState(() {
-                      currentReportTask = failedCreationTasks.isNotEmpty ? failedCreationTasks.first : null;
-                    });
-                  },
-                  builder: (context, state) {
-                    if (currentReportTask == null) return const SizedBox();
-
-                    return PageErrorNotice(message: currentReportTask!.error!);
-                  },
-                ),
+                currentStep == 0
+                    ? UIButton.outlined('Cancel', onClick: () => Navigator.pop(context))
+                    : UIButton.outlined('Back', onClick: _onBack),
+                const UIHorizontalSpace(8),
+                currentStep == 0
+                    ? UIButton.filled('Next', onClick: _onTypeSelected)
+                    : UIButton.filled('Generate', onClick: _onGenerate),
               ],
             ),
-          ),
-        ),
-        actions: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            currentStep == 0
-                ? UIButton.outlined('Cancel', onClick: () => Navigator.pop(context))
-                : UIButton.outlined('Back', onClick: _onBack),
-            const UIHorizontalSpace(8),
-            currentStep == 0
-                ? UIButton.filled('Next', onClick: _onTypeSelected)
-                : UIButton.filled('Generate', onClick: _onGenerate),
           ],
         ),
       ),

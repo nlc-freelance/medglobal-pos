@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$ProductPerformanceListEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(PageQuery filters) getReports,
+    required TResult Function(PageQuery query) getReports,
     required TResult Function(Report report) addReport,
     required TResult Function(int id, Report Function(Report) update)
         updateReport,
@@ -27,7 +27,7 @@ mixin _$ProductPerformanceListEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(PageQuery filters)? getReports,
+    TResult? Function(PageQuery query)? getReports,
     TResult? Function(Report report)? addReport,
     TResult? Function(int id, Report Function(Report) update)? updateReport,
     TResult? Function(int id)? removeReport,
@@ -35,7 +35,7 @@ mixin _$ProductPerformanceListEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PageQuery filters)? getReports,
+    TResult Function(PageQuery query)? getReports,
     TResult Function(Report report)? addReport,
     TResult Function(int id, Report Function(Report) update)? updateReport,
     TResult Function(int id)? removeReport,
@@ -97,9 +97,9 @@ abstract class _$$GetProductPerformanceReportsImplCopyWith<$Res> {
           $Res Function(_$GetProductPerformanceReportsImpl) then) =
       __$$GetProductPerformanceReportsImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({PageQuery filters});
+  $Res call({PageQuery query});
 
-  $PageQueryCopyWith<$Res> get filters;
+  $PageQueryCopyWith<$Res> get query;
 }
 
 /// @nodoc
@@ -115,21 +115,21 @@ class __$$GetProductPerformanceReportsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? filters = null,
+    Object? query = null,
   }) {
     return _then(_$GetProductPerformanceReportsImpl(
-      filters: null == filters
-          ? _value.filters
-          : filters // ignore: cast_nullable_to_non_nullable
+      query: null == query
+          ? _value.query
+          : query // ignore: cast_nullable_to_non_nullable
               as PageQuery,
     ));
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $PageQueryCopyWith<$Res> get filters {
-    return $PageQueryCopyWith<$Res>(_value.filters, (value) {
-      return _then(_value.copyWith(filters: value));
+  $PageQueryCopyWith<$Res> get query {
+    return $PageQueryCopyWith<$Res>(_value.query, (value) {
+      return _then(_value.copyWith(query: value));
     });
   }
 }
@@ -138,14 +138,14 @@ class __$$GetProductPerformanceReportsImplCopyWithImpl<$Res>
 
 class _$GetProductPerformanceReportsImpl
     implements _GetProductPerformanceReports {
-  const _$GetProductPerformanceReportsImpl({required this.filters});
+  const _$GetProductPerformanceReportsImpl({required this.query});
 
   @override
-  final PageQuery filters;
+  final PageQuery query;
 
   @override
   String toString() {
-    return 'ProductPerformanceListEvent.getReports(filters: $filters)';
+    return 'ProductPerformanceListEvent.getReports(query: $query)';
   }
 
   @override
@@ -153,11 +153,11 @@ class _$GetProductPerformanceReportsImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$GetProductPerformanceReportsImpl &&
-            (identical(other.filters, filters) || other.filters == filters));
+            (identical(other.query, query) || other.query == query));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, filters);
+  int get hashCode => Object.hash(runtimeType, query);
 
   @JsonKey(ignore: true)
   @override
@@ -170,37 +170,37 @@ class _$GetProductPerformanceReportsImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(PageQuery filters) getReports,
+    required TResult Function(PageQuery query) getReports,
     required TResult Function(Report report) addReport,
     required TResult Function(int id, Report Function(Report) update)
         updateReport,
     required TResult Function(int id) removeReport,
   }) {
-    return getReports(filters);
+    return getReports(query);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(PageQuery filters)? getReports,
+    TResult? Function(PageQuery query)? getReports,
     TResult? Function(Report report)? addReport,
     TResult? Function(int id, Report Function(Report) update)? updateReport,
     TResult? Function(int id)? removeReport,
   }) {
-    return getReports?.call(filters);
+    return getReports?.call(query);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PageQuery filters)? getReports,
+    TResult Function(PageQuery query)? getReports,
     TResult Function(Report report)? addReport,
     TResult Function(int id, Report Function(Report) update)? updateReport,
     TResult Function(int id)? removeReport,
     required TResult orElse(),
   }) {
     if (getReports != null) {
-      return getReports(filters);
+      return getReports(query);
     }
     return orElse();
   }
@@ -246,9 +246,9 @@ class _$GetProductPerformanceReportsImpl
 abstract class _GetProductPerformanceReports
     implements ProductPerformanceListEvent {
   const factory _GetProductPerformanceReports(
-      {required final PageQuery filters}) = _$GetProductPerformanceReportsImpl;
+      {required final PageQuery query}) = _$GetProductPerformanceReportsImpl;
 
-  PageQuery get filters;
+  PageQuery get query;
   @JsonKey(ignore: true)
   _$$GetProductPerformanceReportsImplCopyWith<
           _$GetProductPerformanceReportsImpl>
@@ -329,7 +329,7 @@ class _$AddReportImpl implements _AddReport {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(PageQuery filters) getReports,
+    required TResult Function(PageQuery query) getReports,
     required TResult Function(Report report) addReport,
     required TResult Function(int id, Report Function(Report) update)
         updateReport,
@@ -341,7 +341,7 @@ class _$AddReportImpl implements _AddReport {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(PageQuery filters)? getReports,
+    TResult? Function(PageQuery query)? getReports,
     TResult? Function(Report report)? addReport,
     TResult? Function(int id, Report Function(Report) update)? updateReport,
     TResult? Function(int id)? removeReport,
@@ -352,7 +352,7 @@ class _$AddReportImpl implements _AddReport {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PageQuery filters)? getReports,
+    TResult Function(PageQuery query)? getReports,
     TResult Function(Report report)? addReport,
     TResult Function(int id, Report Function(Report) update)? updateReport,
     TResult Function(int id)? removeReport,
@@ -483,7 +483,7 @@ class _$UpdateReportImpl implements _UpdateReport {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(PageQuery filters) getReports,
+    required TResult Function(PageQuery query) getReports,
     required TResult Function(Report report) addReport,
     required TResult Function(int id, Report Function(Report) update)
         updateReport,
@@ -495,7 +495,7 @@ class _$UpdateReportImpl implements _UpdateReport {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(PageQuery filters)? getReports,
+    TResult? Function(PageQuery query)? getReports,
     TResult? Function(Report report)? addReport,
     TResult? Function(int id, Report Function(Report) update)? updateReport,
     TResult? Function(int id)? removeReport,
@@ -506,7 +506,7 @@ class _$UpdateReportImpl implements _UpdateReport {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PageQuery filters)? getReports,
+    TResult Function(PageQuery query)? getReports,
     TResult Function(Report report)? addReport,
     TResult Function(int id, Report Function(Report) update)? updateReport,
     TResult Function(int id)? removeReport,
@@ -631,7 +631,7 @@ class _$RemoveReportImpl implements _RemoveReport {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(PageQuery filters) getReports,
+    required TResult Function(PageQuery query) getReports,
     required TResult Function(Report report) addReport,
     required TResult Function(int id, Report Function(Report) update)
         updateReport,
@@ -643,7 +643,7 @@ class _$RemoveReportImpl implements _RemoveReport {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(PageQuery filters)? getReports,
+    TResult? Function(PageQuery query)? getReports,
     TResult? Function(Report report)? addReport,
     TResult? Function(int id, Report Function(Report) update)? updateReport,
     TResult? Function(int id)? removeReport,
@@ -654,7 +654,7 @@ class _$RemoveReportImpl implements _RemoveReport {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PageQuery filters)? getReports,
+    TResult Function(PageQuery query)? getReports,
     TResult Function(Report report)? addReport,
     TResult Function(int id, Report Function(Report) update)? updateReport,
     TResult Function(int id)? removeReport,

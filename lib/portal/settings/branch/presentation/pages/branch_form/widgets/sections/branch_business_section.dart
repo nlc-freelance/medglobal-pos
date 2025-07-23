@@ -87,7 +87,7 @@ class _BranchBusinessSectionState extends State<BranchBusinessSection> with Dial
                             ),
                           ),
                           BlocBuilder<BranchFormCubit, BranchFormState>(
-                            builder: (context, state) => !state.isFormValid
+                            builder: (context, state) => !state.isReceiptTemplateValid
                                 ? UIText.dataGridText(
                                     'Please select a receipt template.',
                                     color: UIColors.buttonDanger,

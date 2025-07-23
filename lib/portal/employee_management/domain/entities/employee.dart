@@ -16,7 +16,7 @@ class Employee with _$Employee {
     required String lastName,
     required String email,
     required String phone,
-    required List<Branch> assignedBranches, // BranchLite
+    required List<Branch> assignedBranches, // Branch
     required EmployeeRole role,
     required List<SystemAccess> systemAccess,
     required List<AccessControl> accessControls,

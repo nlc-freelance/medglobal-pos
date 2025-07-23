@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/data/dto/stock_take_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take.dart';
@@ -13,7 +14,7 @@ part 'stock_take_dto.g.dart';
 class StockTakeDto extends Equatable {
   final int? id;
   @JsonKey(name: 'store')
-  final BranchLiteDto? branch;
+  final BranchDto? branch;
   final Supplier? supplier;
   final bool? isAllSupplier;
   final String? status;
@@ -67,7 +68,7 @@ class StockTakeDto extends Equatable {
 
   StockTake toEntity() => StockTake(
         id: id,
-        branch: branch,
+        branch: branch == null ? null : BranchMapper.fromDto(branch!),
         supplier: supplier,
         isAllSupplier: isAllSupplier,
         status: StatusMapper.status(status),

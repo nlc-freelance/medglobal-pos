@@ -20,8 +20,8 @@ mixin _$TaxEvent {
   TResult when<TResult extends Object?>({
     required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
-    required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(Tax tax) deleteTaxCode,
+    required TResult Function(int id, Tax tax) updateTaxCode,
+    required TResult Function(int id, Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) =>
       throw _privateConstructorUsedError;
@@ -29,8 +29,8 @@ mixin _$TaxEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
-    TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(Tax tax)? deleteTaxCode,
+    TResult? Function(int id, Tax tax)? updateTaxCode,
+    TResult? Function(int id, Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) =>
       throw _privateConstructorUsedError;
@@ -38,8 +38,8 @@ mixin _$TaxEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
-    TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(Tax tax)? deleteTaxCode,
+    TResult Function(int id, Tax tax)? updateTaxCode,
+    TResult Function(int id, Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) =>
@@ -131,8 +131,8 @@ class _$GetDefaultTaxCodeImpl implements _GetDefaultTaxCode {
   TResult when<TResult extends Object?>({
     required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
-    required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(Tax tax) deleteTaxCode,
+    required TResult Function(int id, Tax tax) updateTaxCode,
+    required TResult Function(int id, Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) {
     return getDefaultTaxCode();
@@ -143,8 +143,8 @@ class _$GetDefaultTaxCodeImpl implements _GetDefaultTaxCode {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
-    TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(Tax tax)? deleteTaxCode,
+    TResult? Function(int id, Tax tax)? updateTaxCode,
+    TResult? Function(int id, Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) {
     return getDefaultTaxCode?.call();
@@ -155,8 +155,8 @@ class _$GetDefaultTaxCodeImpl implements _GetDefaultTaxCode {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
-    TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(Tax tax)? deleteTaxCode,
+    TResult Function(int id, Tax tax)? updateTaxCode,
+    TResult Function(int id, Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
@@ -287,8 +287,8 @@ class _$CreateTaxCodeImpl implements _CreateTaxCode {
   TResult when<TResult extends Object?>({
     required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
-    required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(Tax tax) deleteTaxCode,
+    required TResult Function(int id, Tax tax) updateTaxCode,
+    required TResult Function(int id, Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) {
     return createTaxCode(tax);
@@ -299,8 +299,8 @@ class _$CreateTaxCodeImpl implements _CreateTaxCode {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
-    TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(Tax tax)? deleteTaxCode,
+    TResult? Function(int id, Tax tax)? updateTaxCode,
+    TResult? Function(int id, Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) {
     return createTaxCode?.call(tax);
@@ -311,8 +311,8 @@ class _$CreateTaxCodeImpl implements _CreateTaxCode {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
-    TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(Tax tax)? deleteTaxCode,
+    TResult Function(int id, Tax tax)? updateTaxCode,
+    TResult Function(int id, Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
@@ -378,7 +378,7 @@ abstract class _$$UpdateTaxCodeImplCopyWith<$Res> {
           _$UpdateTaxCodeImpl value, $Res Function(_$UpdateTaxCodeImpl) then) =
       __$$UpdateTaxCodeImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Tax tax});
+  $Res call({int id, Tax tax});
 
   $TaxCopyWith<$Res> get tax;
 }
@@ -394,9 +394,14 @@ class __$$UpdateTaxCodeImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? tax = null,
   }) {
     return _then(_$UpdateTaxCodeImpl(
+      null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       null == tax
           ? _value.tax
           : tax // ignore: cast_nullable_to_non_nullable
@@ -416,14 +421,16 @@ class __$$UpdateTaxCodeImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
-  const _$UpdateTaxCodeImpl(this.tax);
+  const _$UpdateTaxCodeImpl(this.id, this.tax);
 
+  @override
+  final int id;
   @override
   final Tax tax;
 
   @override
   String toString() {
-    return 'TaxEvent.updateTaxCode(tax: $tax)';
+    return 'TaxEvent.updateTaxCode(id: $id, tax: $tax)';
   }
 
   @override
@@ -431,11 +438,12 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$UpdateTaxCodeImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.tax, tax) || other.tax == tax));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, tax);
+  int get hashCode => Object.hash(runtimeType, id, tax);
 
   @JsonKey(ignore: true)
   @override
@@ -448,11 +456,11 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
   TResult when<TResult extends Object?>({
     required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
-    required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(Tax tax) deleteTaxCode,
+    required TResult Function(int id, Tax tax) updateTaxCode,
+    required TResult Function(int id, Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) {
-    return updateTaxCode(tax);
+    return updateTaxCode(id, tax);
   }
 
   @override
@@ -460,11 +468,11 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
-    TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(Tax tax)? deleteTaxCode,
+    TResult? Function(int id, Tax tax)? updateTaxCode,
+    TResult? Function(int id, Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) {
-    return updateTaxCode?.call(tax);
+    return updateTaxCode?.call(id, tax);
   }
 
   @override
@@ -472,13 +480,13 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
-    TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(Tax tax)? deleteTaxCode,
+    TResult Function(int id, Tax tax)? updateTaxCode,
+    TResult Function(int id, Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
     if (updateTaxCode != null) {
-      return updateTaxCode(tax);
+      return updateTaxCode(id, tax);
     }
     return orElse();
   }
@@ -525,8 +533,10 @@ class _$UpdateTaxCodeImpl implements _UpdateTaxCode {
 }
 
 abstract class _UpdateTaxCode implements TaxEvent {
-  const factory _UpdateTaxCode(final Tax tax) = _$UpdateTaxCodeImpl;
+  const factory _UpdateTaxCode(final int id, final Tax tax) =
+      _$UpdateTaxCodeImpl;
 
+  int get id;
   Tax get tax;
   @JsonKey(ignore: true)
   _$$UpdateTaxCodeImplCopyWith<_$UpdateTaxCodeImpl> get copyWith =>
@@ -539,7 +549,7 @@ abstract class _$$DeleteTaxCodeImplCopyWith<$Res> {
           _$DeleteTaxCodeImpl value, $Res Function(_$DeleteTaxCodeImpl) then) =
       __$$DeleteTaxCodeImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Tax tax});
+  $Res call({int id, Tax tax});
 
   $TaxCopyWith<$Res> get tax;
 }
@@ -555,9 +565,14 @@ class __$$DeleteTaxCodeImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? tax = null,
   }) {
     return _then(_$DeleteTaxCodeImpl(
+      null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       null == tax
           ? _value.tax
           : tax // ignore: cast_nullable_to_non_nullable
@@ -577,14 +592,16 @@ class __$$DeleteTaxCodeImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
-  const _$DeleteTaxCodeImpl(this.tax);
+  const _$DeleteTaxCodeImpl(this.id, this.tax);
 
+  @override
+  final int id;
   @override
   final Tax tax;
 
   @override
   String toString() {
-    return 'TaxEvent.deleteTaxCode(tax: $tax)';
+    return 'TaxEvent.deleteTaxCode(id: $id, tax: $tax)';
   }
 
   @override
@@ -592,11 +609,12 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DeleteTaxCodeImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.tax, tax) || other.tax == tax));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, tax);
+  int get hashCode => Object.hash(runtimeType, id, tax);
 
   @JsonKey(ignore: true)
   @override
@@ -609,11 +627,11 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
   TResult when<TResult extends Object?>({
     required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
-    required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(Tax tax) deleteTaxCode,
+    required TResult Function(int id, Tax tax) updateTaxCode,
+    required TResult Function(int id, Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) {
-    return deleteTaxCode(tax);
+    return deleteTaxCode(id, tax);
   }
 
   @override
@@ -621,11 +639,11 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
-    TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(Tax tax)? deleteTaxCode,
+    TResult? Function(int id, Tax tax)? updateTaxCode,
+    TResult? Function(int id, Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) {
-    return deleteTaxCode?.call(tax);
+    return deleteTaxCode?.call(id, tax);
   }
 
   @override
@@ -633,13 +651,13 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
-    TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(Tax tax)? deleteTaxCode,
+    TResult Function(int id, Tax tax)? updateTaxCode,
+    TResult Function(int id, Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
     if (deleteTaxCode != null) {
-      return deleteTaxCode(tax);
+      return deleteTaxCode(id, tax);
     }
     return orElse();
   }
@@ -686,8 +704,10 @@ class _$DeleteTaxCodeImpl implements _DeleteTaxCode {
 }
 
 abstract class _DeleteTaxCode implements TaxEvent {
-  const factory _DeleteTaxCode(final Tax tax) = _$DeleteTaxCodeImpl;
+  const factory _DeleteTaxCode(final int id, final Tax tax) =
+      _$DeleteTaxCodeImpl;
 
+  int get id;
   Tax get tax;
   @JsonKey(ignore: true)
   _$$DeleteTaxCodeImplCopyWith<_$DeleteTaxCodeImpl> get copyWith =>
@@ -734,8 +754,8 @@ class _$ResetImpl implements _Reset {
   TResult when<TResult extends Object?>({
     required TResult Function() getDefaultTaxCode,
     required TResult Function(Tax tax) createTaxCode,
-    required TResult Function(Tax tax) updateTaxCode,
-    required TResult Function(Tax tax) deleteTaxCode,
+    required TResult Function(int id, Tax tax) updateTaxCode,
+    required TResult Function(int id, Tax tax) deleteTaxCode,
     required TResult Function() reset,
   }) {
     return reset();
@@ -746,8 +766,8 @@ class _$ResetImpl implements _Reset {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? getDefaultTaxCode,
     TResult? Function(Tax tax)? createTaxCode,
-    TResult? Function(Tax tax)? updateTaxCode,
-    TResult? Function(Tax tax)? deleteTaxCode,
+    TResult? Function(int id, Tax tax)? updateTaxCode,
+    TResult? Function(int id, Tax tax)? deleteTaxCode,
     TResult? Function()? reset,
   }) {
     return reset?.call();
@@ -758,8 +778,8 @@ class _$ResetImpl implements _Reset {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? getDefaultTaxCode,
     TResult Function(Tax tax)? createTaxCode,
-    TResult Function(Tax tax)? updateTaxCode,
-    TResult Function(Tax tax)? deleteTaxCode,
+    TResult Function(int id, Tax tax)? updateTaxCode,
+    TResult Function(int id, Tax tax)? deleteTaxCode,
     TResult Function()? reset,
     required TResult orElse(),
   }) {

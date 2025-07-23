@@ -13,7 +13,7 @@
 // @JsonSerializable()
 // class PurchaseOrder extends Equatable {
 //   final int? id;
-//   final BranchLite? branch;
+//   final Branch? branch;
 //   final Supplier? supplier;
 //   final StockOrderStatus? status;
 //   final double? subtotal;
@@ -194,7 +194,7 @@ part 'purchase_order.freezed.dart';
 class PurchaseOrder with _$PurchaseOrder {
   const factory PurchaseOrder({
     int? id,
-    BranchLite? branch,
+    Branch? branch,
     Supplier? supplier,
     StockOrderStatus? status,
     double? subtotal,

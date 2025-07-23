@@ -1,79 +1,56 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
-import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/api/receipt_template_api.dart';
-import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/request/create_receipt_template_dto.dart';
-import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/request/update_receipt_template_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/api/receipt_template_api_service.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/receipt_template_mapper.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/receipt_template_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/repository/receipt_template_repository.dart';
 
-class ReceiptTemplateRepositoryImpl implements ReceiptTemplateRepository {
-  final ReceiptTemplateApi _registerApi;
+/// Concrete implementation of [ReceiptTemplateRepository] that uses [ReceiptTemplateApiService] for API calls
+/// and [BaseRepository] to centralize error handling.
+class ReceiptTemplateRepositoryImpl extends BaseRepository implements ReceiptTemplateRepository {
+  final ReceiptTemplateApiService _api;
 
-  ReceiptTemplateRepositoryImpl(this._registerApi);
+  ReceiptTemplateRepositoryImpl({required ReceiptTemplateApiService api}) : _api = api;
 
   @override
-  Future<Either<Failure, PaginatedList<ReceiptTemplate>>> getReceiptTemplates({required PageQuery filters}) async {
-    try {
-      final responseDto = await _registerApi.getReceiptTemplates(filters: filters);
+  Future<Either<Failure, PaginatedList<ReceiptTemplate>>> getReceiptTemplates(PageQuery query) async {
+    return call(() async {
+      final data = await _api.getReceiptTemplates(query);
+      final paginatedReceiptTemplates = data.convert((dto) => ReceiptTemplateMapper.fromDto(dto));
 
-      return Right(responseDto.convert((item) => item.toDomain()));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+      return paginatedReceiptTemplates;
+    });
   }
 
   @override
   Future<Either<Failure, ReceiptTemplate>> getReceiptTemplate(int id) async {
-    try {
-      final responseDto = await _registerApi.getReceiptTemplateById(id);
-
-      return Right(responseDto.toDomain());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+    return call(() async {
+      final data = await _api.getReceiptTemplateById(id);
+      return ReceiptTemplateMapper.fromDto(data);
+    });
   }
 
   @override
-  Future<Either<Failure, ReceiptTemplate>> createReceiptTemplate(ReceiptTemplate register) async {
-    try {
-      final requestDto = CreateReceiptTemplateDto.fromDomain(register);
-      final responseDto = await _registerApi.createReceiptTemplate(requestDto);
-
-      return Right(responseDto.toDomain());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+  Future<Either<Failure, ReceiptTemplate>> createReceiptTemplate(ReceiptTemplatePayload payload) async {
+    return call(() async {
+      final data = await _api.createReceiptTemplate(payload);
+      return ReceiptTemplateMapper.fromDto(data);
+    });
   }
 
   @override
-  Future<Either<Failure, ReceiptTemplate>> updateReceiptTemplate(ReceiptTemplate register) async {
-    try {
-      final requestDto = UpdateReceiptTemplateDto.fromDomain(register);
-      final responseDto = await _registerApi.updateReceiptTemplate(requestDto);
-
-      return Right(responseDto.toDomain());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+  Future<Either<Failure, ReceiptTemplate>> updateReceiptTemplate(int id, ReceiptTemplatePayload payload) async {
+    return call(() async {
+      final data = await _api.updateReceiptTemplate(id, payload);
+      return ReceiptTemplateMapper.fromDto(data);
+    });
   }
 
   @override
   Future<Either<Failure, void>> deleteReceiptTemplate(int id) async {
-    try {
-      return Right(await _registerApi.deleteReceiptTemplate(id));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+    return call(() async => await _api.deleteReceiptTemplate(id));
   }
 }

@@ -57,7 +57,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
         if (state is SupplierSearchNoResult) {
           return DataGridNoData.custom(
             message: state.message,
-            columns: DataGridUtil.getColumns(DataGridColumn.PRODUCTS),
+            columns: DataGridUtil.getColumns(DataGridColumn.suppliers),
             source: _supplierDataSource,
           );
         }
@@ -73,7 +73,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
                       data: DataGridUtil.rowNavigationStyle,
                       child: SfDataGrid(
                         source: _supplierDataSource,
-                        columns: DataGridUtil.getColumns(DataGridColumn.SUPPLIERS),
+                        columns: DataGridUtil.getColumns(DataGridColumn.suppliers),
                         controller: _dataGridController,
                         shrinkWrapRows: true,
                         navigationMode: GridNavigationMode.row,
@@ -236,7 +236,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierPaginatedDataGrid> {
           );
         }
         return DataGridLoading(
-          columns: DataGridUtil.getColumns(DataGridColumn.SUPPLIERS),
+          columns: DataGridUtil.getColumns(DataGridColumn.suppliers),
           source: _supplierDataSource = SupplierDataSource([]),
         );
       },

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/product_management/data/dto/product_dto.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/product_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
@@ -56,7 +56,7 @@ class ProductVariantDto extends Equatable {
         sku: sku,
         sellingPrice: price,
         supplierPrice: cost,
-        qtyOnHand: qtyOnHand,
+        quantityOnHand: qtyOnHand,
       );
 
   StockReturnItem toStockReturnItem() => StockReturnItem(

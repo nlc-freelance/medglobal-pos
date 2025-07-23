@@ -18,14 +18,14 @@ class EmployeeFilters extends StatefulWidget {
 }
 
 class _EmployeeFiltersState extends State<EmployeeFilters> {
-  late final EmployeeListFilterCubit _employeeListFilterCubit;
+  late final EmployeeListFilterCubit _filterCubit;
   final _debouncer = Debouncer(milliseconds: 500);
 
   @override
   void initState() {
     super.initState();
-    _employeeListFilterCubit = context.read<EmployeeListFilterCubit>();
-    _employeeListFilterCubit.reset();
+    _filterCubit = context.read<EmployeeListFilterCubit>();
+    _filterCubit.reset();
   }
 
   @override
@@ -40,10 +40,8 @@ class _EmployeeFiltersState extends State<EmployeeFilters> {
         ),
         onChanged: (value) => _debouncer.run(
           (() {
-            _employeeListFilterCubit.setSearch(value);
-            context
-                .read<PaginatedListBloc<Employee>>()
-                .add(PaginatedListEvent.fetch(filters: _employeeListFilterCubit.state.filters));
+            _filterCubit.setSearch(value);
+            _fetchWithAppliedFilters();
           }),
         ),
       ),
@@ -55,34 +53,31 @@ class _EmployeeFiltersState extends State<EmployeeFilters> {
           getName: (item) => item.name.capitalized,
           onSelectItem: (item) {
             context.read<EmployeeListFilterCubit>().setRole(item.name);
-            context
-                .read<PaginatedListBloc<Employee>>()
-                .add(PaginatedListEvent.fetch(filters: _employeeListFilterCubit.state.filters));
+            _fetchWithAppliedFilters();
           },
           onRemoveSelectedItem: () {
             context.read<EmployeeListFilterCubit>().setRole(null);
-            context
-                .read<PaginatedListBloc<Employee>>()
-                .add(PaginatedListEvent.fetch(filters: _employeeListFilterCubit.state.filters));
+            _fetchWithAppliedFilters();
           },
         ),
         const UIHorizontalSpace(8),
         BranchDropdown.select(
           onRemoveSelectedItem: () {
             context.read<EmployeeListFilterCubit>().setBranch(null);
-            context
-                .read<PaginatedListBloc<Employee>>()
-                .add(PaginatedListEvent.fetch(filters: _employeeListFilterCubit.state.filters));
+            _fetchWithAppliedFilters();
           },
           onSelectItem: (branch) {
             context.read<EmployeeListFilterCubit>().setBranch(branch.id);
-            context
-                .read<PaginatedListBloc<Employee>>()
-                .add(PaginatedListEvent.fetch(filters: _employeeListFilterCubit.state.filters));
+            _fetchWithAppliedFilters();
           },
         ),
       ],
     );
+  }
+
+  void _fetchWithAppliedFilters() {
+    final query = _filterCubit.state.toPageQuery;
+    context.read<PaginatedListBloc<Employee>>().add(PaginatedListEvent.fetch(query: query));
   }
 
   @override

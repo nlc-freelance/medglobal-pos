@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/purchase_order_stepper.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -18,11 +19,11 @@ class _NewPurchaseOrderPageState extends State<NewPurchaseOrderPage> {
   @override
   void initState() {
     super.initState();
-    context.read<PurchaseOrderRemoteCubit>().reset();
+    // context.read<PurchaseOrderRemoteCubit>().reset();
     context.read<NewPurchaseOrderCubit>().reset();
 
     /// TODO: Can be removed if the initState is always triggered when navigating to [PurchaseOrdersPage]
-    context.read<PurchaseOrderCubit>().reset();
+    // context.read<PurchaseOrderFormCubit>().reset();
   }
 
   @override

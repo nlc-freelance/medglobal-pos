@@ -16,42 +16,43 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$CategoryEvent {
-  String get name => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String name) createCategory,
+    required TResult Function() reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String name)? createCategory,
+    TResult? Function()? reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String name)? createCategory,
+    TResult Function()? reset,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_CreateCategory value) createCategory,
+    required TResult Function(_Reset value) reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_CreateCategory value)? createCategory,
+    TResult? Function(_Reset value)? reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_CreateCategory value)? createCategory,
+    TResult Function(_Reset value)? reset,
     required TResult orElse(),
   }) =>
-      throw _privateConstructorUsedError;
-
-  @JsonKey(ignore: true)
-  $CategoryEventCopyWith<CategoryEvent> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -60,8 +61,6 @@ abstract class $CategoryEventCopyWith<$Res> {
   factory $CategoryEventCopyWith(
           CategoryEvent value, $Res Function(CategoryEvent) then) =
       _$CategoryEventCopyWithImpl<$Res, CategoryEvent>;
-  @useResult
-  $Res call({String name});
 }
 
 /// @nodoc
@@ -73,28 +72,13 @@ class _$CategoryEventCopyWithImpl<$Res, $Val extends CategoryEvent>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
 }
 
 /// @nodoc
-abstract class _$$CreateCategoryImplCopyWith<$Res>
-    implements $CategoryEventCopyWith<$Res> {
+abstract class _$$CreateCategoryImplCopyWith<$Res> {
   factory _$$CreateCategoryImplCopyWith(_$CreateCategoryImpl value,
           $Res Function(_$CreateCategoryImpl) then) =
       __$$CreateCategoryImplCopyWithImpl<$Res>;
-  @override
   @useResult
   $Res call({String name});
 }
@@ -156,6 +140,7 @@ class _$CreateCategoryImpl implements _CreateCategory {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String name) createCategory,
+    required TResult Function() reset,
   }) {
     return createCategory(name);
   }
@@ -164,6 +149,7 @@ class _$CreateCategoryImpl implements _CreateCategory {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String name)? createCategory,
+    TResult? Function()? reset,
   }) {
     return createCategory?.call(name);
   }
@@ -172,6 +158,7 @@ class _$CreateCategoryImpl implements _CreateCategory {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String name)? createCategory,
+    TResult Function()? reset,
     required TResult orElse(),
   }) {
     if (createCategory != null) {
@@ -184,6 +171,7 @@ class _$CreateCategoryImpl implements _CreateCategory {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_CreateCategory value) createCategory,
+    required TResult Function(_Reset value) reset,
   }) {
     return createCategory(this);
   }
@@ -192,6 +180,7 @@ class _$CreateCategoryImpl implements _CreateCategory {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_CreateCategory value)? createCategory,
+    TResult? Function(_Reset value)? reset,
   }) {
     return createCategory?.call(this);
   }
@@ -200,6 +189,7 @@ class _$CreateCategoryImpl implements _CreateCategory {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_CreateCategory value)? createCategory,
+    TResult Function(_Reset value)? reset,
     required TResult orElse(),
   }) {
     if (createCategory != null) {
@@ -212,12 +202,112 @@ class _$CreateCategoryImpl implements _CreateCategory {
 abstract class _CreateCategory implements CategoryEvent {
   const factory _CreateCategory(final String name) = _$CreateCategoryImpl;
 
-  @override
   String get name;
-  @override
   @JsonKey(ignore: true)
   _$$CreateCategoryImplCopyWith<_$CreateCategoryImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ResetImplCopyWith<$Res> {
+  factory _$$ResetImplCopyWith(
+          _$ResetImpl value, $Res Function(_$ResetImpl) then) =
+      __$$ResetImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$ResetImplCopyWithImpl<$Res>
+    extends _$CategoryEventCopyWithImpl<$Res, _$ResetImpl>
+    implements _$$ResetImplCopyWith<$Res> {
+  __$$ResetImplCopyWithImpl(
+      _$ResetImpl _value, $Res Function(_$ResetImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$ResetImpl implements _Reset {
+  const _$ResetImpl();
+
+  @override
+  String toString() {
+    return 'CategoryEvent.reset()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$ResetImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String name) createCategory,
+    required TResult Function() reset,
+  }) {
+    return reset();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String name)? createCategory,
+    TResult? Function()? reset,
+  }) {
+    return reset?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String name)? createCategory,
+    TResult Function()? reset,
+    required TResult orElse(),
+  }) {
+    if (reset != null) {
+      return reset();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_CreateCategory value) createCategory,
+    required TResult Function(_Reset value) reset,
+  }) {
+    return reset(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_CreateCategory value)? createCategory,
+    TResult? Function(_Reset value)? reset,
+  }) {
+    return reset?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_CreateCategory value)? createCategory,
+    TResult Function(_Reset value)? reset,
+    required TResult orElse(),
+  }) {
+    if (reset != null) {
+      return reset(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Reset implements CategoryEvent {
+  const factory _Reset() = _$ResetImpl;
 }
 
 /// @nodoc
@@ -527,6 +617,8 @@ abstract class _$$SuccessImplCopyWith<$Res> {
       __$$SuccessImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Category category});
+
+  $CategoryCopyWith<$Res> get category;
 }
 
 /// @nodoc
@@ -548,6 +640,14 @@ class __$$SuccessImplCopyWithImpl<$Res>
           : category // ignore: cast_nullable_to_non_nullable
               as Category,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $CategoryCopyWith<$Res> get category {
+    return $CategoryCopyWith<$Res>(_value.category, (value) {
+      return _then(_value.copyWith(category: value));
+    });
   }
 }
 

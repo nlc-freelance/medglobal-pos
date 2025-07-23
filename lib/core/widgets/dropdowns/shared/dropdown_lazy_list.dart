@@ -99,6 +99,7 @@ class _DropdownLazyListState<T> extends State<DropdownLazyList<T>> {
                               Expanded(child: UIText.labelMedium(widget.getName(item))),
                               if (widget.isMultiSelect)
                                 Checkbox(
+                                  visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                                   value: widget.isSelected!(item),
                                   onChanged: null,
                                 ),

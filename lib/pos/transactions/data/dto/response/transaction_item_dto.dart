@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/product_management/data/dto/variant_dto.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/variant.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/variant/variant_dto.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/variant/variant.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/dto/response/price_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
@@ -91,9 +91,8 @@ part 'transaction_item_dto.g.dart';
 class TransactionItemDto with _$TransactionItemDto {
   const factory TransactionItemDto({
     required int id,
-    required VariantLiteDto variant, // Lite
-    // required ProductVariantDto variant, // Lite
-    required int quantity,
+    ProductVariantDto? variant, // Lite
+    int? quantity,
     PriceDto? price,
     // double? discountedPrice,
     // double? discount,
@@ -111,7 +110,7 @@ class TransactionItemDto with _$TransactionItemDto {
 
   factory TransactionItemDto.fromDomain(TransactionItem item) => TransactionItemDto(
         id: item.id!,
-        variant: VariantLiteDto(id: item.itemId, displayName: item.name, sku: item.sku),
+        variant: ProductVariantDto(id: item.itemId, displayName: item.name, sku: item.sku),
         quantity: item.quantity,
         price: PriceDto(price: item.price),
         discountType: item.discountType?.name,
@@ -128,12 +127,12 @@ class TransactionItemDto with _$TransactionItemDto {
 extension TransactionItemDtoExt on TransactionItemDto {
   TransactionItem toDomain() => TransactionItem(
         id: id,
-        itemId: variant.id,
-        name: variant.displayName,
-        sku: variant.sku,
+        itemId: variant?.id,
+        name: variant?.displayName,
+        sku: variant?.sku,
         price: price?.price,
         quantity: quantity,
-        discountType: discountType == 'fixed' ? DiscountType.fixed : DiscountType.percentage,
+        discountType: discountType == 'fixed' ? DiscountType.peso : DiscountType.percentage,
         discountValue: discountValue,
         discountAmount: discountInPeso,
         subtotal: subTotal,

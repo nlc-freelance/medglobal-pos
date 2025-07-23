@@ -16,14 +16,13 @@ class BranchFormState with _$BranchFormState {
     String? businessRegistrationNumber,
     String? vatIdNumber,
     ReceiptTemplate? receiptTemplate,
+    @Default(true) bool isReceiptTemplateValid,
     @Default(true) bool isFormValid,
   }) = _BranchFormState;
 
-  const BranchFormState._();
-
   factory BranchFormState.initial() => const BranchFormState();
 
-  factory BranchFormState.fromBranch(Branch branch) => BranchFormState(
+  factory BranchFormState.load(Branch branch) => BranchFormState(
         id: branch.id,
         name: branch.name,
         phone: branch.phone,
@@ -38,6 +37,32 @@ class BranchFormState with _$BranchFormState {
         vatIdNumber: branch.vatIdNumber,
         receiptTemplate: branch.receiptTemplate,
       );
+}
 
-  bool hasValidForm() => receiptTemplate != null;
+extension BranchFormStateExt on BranchFormState {
+  bool validateForm() =>
+      name?.isNotEmpty == true &&
+      phone?.isNotEmpty == true &&
+      street1?.isNotEmpty == true &&
+      city?.isNotEmpty == true &&
+      state?.isNotEmpty == true &&
+      businessRegistrationNumber?.isNotEmpty == true &&
+      receiptTemplate != null;
+
+  Branch toBranch() => Branch(
+        id: id,
+        accountId: 2, // Default to 2 for MedGlobal account, later add in env variables
+        name: name!,
+        phone: phone!,
+        email: email,
+        street1: street1!,
+        street2: street2,
+        city: city!,
+        state: state!,
+        postalCode: postalCode,
+        country: country,
+        businessRegistrationNumber: businessRegistrationNumber!,
+        vatIdNumber: vatIdNumber,
+        receiptTemplate: receiptTemplate!,
+      );
 }

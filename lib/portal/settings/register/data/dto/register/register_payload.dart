@@ -1,0 +1,22 @@
+import 'package:json_annotation/json_annotation.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
+
+part 'register_payload.g.dart';
+
+@JsonSerializable()
+class RegisterPayload {
+  final String? name;
+  final int? storeId;
+
+  RegisterPayload({
+    this.name,
+    this.storeId,
+  });
+
+  Map<String, dynamic> toJson() => _$RegisterPayloadToJson(this);
+
+  factory RegisterPayload.fromRegister(Register register) => RegisterPayload(
+        name: register.name,
+        storeId: register.assignedBranch?.id,
+      );
+}

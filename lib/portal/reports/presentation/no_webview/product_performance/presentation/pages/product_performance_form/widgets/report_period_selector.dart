@@ -31,8 +31,8 @@ class ReportPeriodSelector extends StatelessWidget {
               getName: (period) => period.label,
               onChanged: (period) => cubit.setPeriod(period),
             ),
-            const UIVerticalSpace(16),
             if (state.period != null) ...[
+              const UIVerticalSpace(16),
               if (state.period == Period.custom)
                 SizedBox(
                   height: 40,
@@ -103,7 +103,6 @@ class ReportPeriodSelector extends StatelessWidget {
                       ),
                   ],
                 ),
-              const UIVerticalSpace(16),
             ],
           ],
         );

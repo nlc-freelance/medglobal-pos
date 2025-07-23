@@ -27,7 +27,7 @@ class ReceiptTemplateActions extends StatelessWidget with DialogMixin {
         children: [
           BlocBuilder<ReceiptTemplateBloc, ReceiptTemplateState>(
             builder: (builderContext, state) => state.maybeWhen(
-              failure: (message) => PageErrorNotice(message: message),
+              failure: (message) => PageErrorBanner(message: message),
               orElse: () => const SizedBox(),
             ),
           ),
@@ -51,15 +51,15 @@ class ReceiptTemplateActions extends StatelessWidget with DialogMixin {
   }
 
   void _onDelete(BuildContext context) {
-    final formCubit = context.read<ReceiptTemplateFormCubit>();
+    final formState = context.read<ReceiptTemplateFormCubit>().state;
 
     showDeleteDialog(
       context,
       subject: 'Receipt Template',
-      item: formCubit.state.name!,
+      item: formState.name!,
       onDelete: () => context
           .read<ReceiptTemplateBloc>()
-          .add(ReceiptTemplateEvent.deleteReceiptTemplate(formCubit.toReceiptTemplate())),
+          .add(ReceiptTemplateEvent.deleteReceiptTemplate(formState.toReceiptTemplate())),
     );
   }
 
@@ -67,12 +67,14 @@ class ReceiptTemplateActions extends StatelessWidget with DialogMixin {
 
   void _onSave(BuildContext context) {
     final formCubit = context.read<ReceiptTemplateFormCubit>();
+    final formState = formCubit.state;
+
     formCubit.validateConfiguration();
 
-    if (formKey.currentState?.validate() == true && formCubit.state.isConfigurationValid) {
-      final template = formCubit.toReceiptTemplate();
+    if (formKey.currentState?.validate() == true && formState.isConfigurationValid) {
+      final template = formState.toReceiptTemplate();
 
-      if (formCubit.state.id == null) {
+      if (template.id == null) {
         context.read<ReceiptTemplateBloc>().add(ReceiptTemplateEvent.createReceiptTemplate(template));
       } else {
         context.read<ReceiptTemplateBloc>().add(ReceiptTemplateEvent.updateReceiptTemplate(template));

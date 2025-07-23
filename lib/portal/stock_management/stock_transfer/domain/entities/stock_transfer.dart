@@ -11,8 +11,8 @@ part 'stock_transfer.g.dart';
 @JsonSerializable()
 class StockTransfer extends Equatable {
   final int? id;
-  final BranchLite? sourceBranch;
-  final BranchLite? destinationBranch;
+  final Branch? sourceBranch;
+  final Branch? destinationBranch;
   final StockOrderStatus? status;
   final List<StockTransferItem>? items;
   final String? notes;

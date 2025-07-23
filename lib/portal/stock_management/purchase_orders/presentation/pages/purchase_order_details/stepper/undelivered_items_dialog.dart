@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/enums/purchase_order_enum.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/bloc/purchase_order_bloc/purchase_order_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -15,9 +18,10 @@ class UndeliveredItemsDialog extends StatefulWidget {
 
 class _UndeliveredItemsDialogState extends State<UndeliveredItemsDialog> {
   @override
-  Widget build(BuildContext context) => BlocBuilder<PurchaseOrderCubit, PurchaseOrderState>(
+  Widget build(BuildContext context) => BlocBuilder<PurchaseOrderFormCubit, PurchaseOrderFormState>(
         builder: (_, state) {
-          final undeliveredItems = (state.purchaseOrder.items ?? []).where((item) => item.qtyReceived == null).toList();
+          final undeliveredItems =
+              (state.purchaseOrder.items ?? []).where((item) => item.quantityReceived == null).toList();
           return Dialog(
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
             backgroundColor: UIColors.background,
@@ -67,14 +71,23 @@ class _UndeliveredItemsDialogState extends State<UndeliveredItemsDialog> {
                     onCancel: () => Navigator.pop(context),
                     onAction: () {
                       Navigator.pop(context);
-                      context.read<PurchaseOrderRemoteCubit>().update(
-                            StockOrderUpdate.SAVE_AND_RECEIVED,
-                            id: state.purchaseOrder.id!,
-                            purchaseOrder: state.purchaseOrder.copyWith(
-                              items: state.purchaseOrder.items
-                                  ?.map((item) => item.qtyReceived == null ? item.copyWith(qtyReceived: 0) : item)
-                                  .toList(),
-                            ),
+                      context.read<PurchaseOrderBloc>().add(
+                            PurchaseOrderEvent.updatePurchaseOrder(
+                                action: UpdatePurchaseOrder.saveAndReceived,
+                                id: state.purchaseOrder.id!,
+                                purchaseOrder: state.purchaseOrder.copyWith(
+                                    items: state.purchaseOrder.items
+                                        ?.map((item) =>
+                                            item.quantityReceived == null ? item.copyWith(quantityReceived: 0) : item)
+                                        .toList())
+                                // StockOrderUpdate.SAVE_AND_RECEIVED,
+                                // id: state.purchaseOrder.id!,
+                                // purchaseOrder: state.purchaseOrder.copyWith(
+                                //   items: state.purchaseOrder.items
+                                //       ?.map((item) =>
+                                //           item.quantityReceived == null ? item.copyWith(quantityReceived: 0) : item)
+                                //       .toList(),
+                                ),
                           );
                     },
                   ),

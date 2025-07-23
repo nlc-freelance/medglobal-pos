@@ -9,19 +9,11 @@ part 'register_form_cubit.freezed.dart';
 class RegisterFormCubit extends Cubit<RegisterFormState> {
   RegisterFormCubit() : super(RegisterFormState.initial());
 
-  void initRegister(Register register) => emit(RegisterFormState.fromRegister(register));
+  void loadRegister(Register register) => emit(RegisterFormState.load(register));
 
   void setName(String name) => emit(state.copyWith(name: name));
 
-  void setAssignedBranch(BranchLite branch) => emit(state.copyWith(assignedBranch: branch));
-
-  Register toRegister() {
-    return Register(
-      id: state.id,
-      name: state.name!,
-      assignedBranch: state.assignedBranch!,
-    );
-  }
+  void setAssignedBranch(Branch branch) => emit(state.copyWith(assignedBranch: branch));
 
   void reset() => emit(RegisterFormState.initial());
 }

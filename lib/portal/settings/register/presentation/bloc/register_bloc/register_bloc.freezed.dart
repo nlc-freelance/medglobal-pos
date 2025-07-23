@@ -19,7 +19,7 @@ mixin _$RegisterEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(Register register) createRegister,
-    required TResult Function(Register register) updateRegister,
+    required TResult Function(int id, Register register) updateRegister,
     required TResult Function(Register register) deleteRegister,
     required TResult Function() reset,
   }) =>
@@ -27,7 +27,7 @@ mixin _$RegisterEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Register register)? createRegister,
-    TResult? Function(Register register)? updateRegister,
+    TResult? Function(int id, Register register)? updateRegister,
     TResult? Function(Register register)? deleteRegister,
     TResult? Function()? reset,
   }) =>
@@ -35,7 +35,7 @@ mixin _$RegisterEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Register register)? createRegister,
-    TResult Function(Register register)? updateRegister,
+    TResult Function(int id, Register register)? updateRegister,
     TResult Function(Register register)? deleteRegister,
     TResult Function()? reset,
     required TResult orElse(),
@@ -163,7 +163,7 @@ class _$CreateRegisterImpl implements _CreateRegister {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(Register register) createRegister,
-    required TResult Function(Register register) updateRegister,
+    required TResult Function(int id, Register register) updateRegister,
     required TResult Function(Register register) deleteRegister,
     required TResult Function() reset,
   }) {
@@ -174,7 +174,7 @@ class _$CreateRegisterImpl implements _CreateRegister {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Register register)? createRegister,
-    TResult? Function(Register register)? updateRegister,
+    TResult? Function(int id, Register register)? updateRegister,
     TResult? Function(Register register)? deleteRegister,
     TResult? Function()? reset,
   }) {
@@ -185,7 +185,7 @@ class _$CreateRegisterImpl implements _CreateRegister {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Register register)? createRegister,
-    TResult Function(Register register)? updateRegister,
+    TResult Function(int id, Register register)? updateRegister,
     TResult Function(Register register)? deleteRegister,
     TResult Function()? reset,
     required TResult orElse(),
@@ -249,7 +249,7 @@ abstract class _$$UpdateRegisterImplCopyWith<$Res> {
           $Res Function(_$UpdateRegisterImpl) then) =
       __$$UpdateRegisterImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Register register});
+  $Res call({int id, Register register});
 
   $RegisterCopyWith<$Res> get register;
 }
@@ -265,9 +265,14 @@ class __$$UpdateRegisterImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? register = null,
   }) {
     return _then(_$UpdateRegisterImpl(
+      null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       null == register
           ? _value.register
           : register // ignore: cast_nullable_to_non_nullable
@@ -287,14 +292,16 @@ class __$$UpdateRegisterImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$UpdateRegisterImpl implements _UpdateRegister {
-  const _$UpdateRegisterImpl(this.register);
+  const _$UpdateRegisterImpl(this.id, this.register);
 
+  @override
+  final int id;
   @override
   final Register register;
 
   @override
   String toString() {
-    return 'RegisterEvent.updateRegister(register: $register)';
+    return 'RegisterEvent.updateRegister(id: $id, register: $register)';
   }
 
   @override
@@ -302,12 +309,13 @@ class _$UpdateRegisterImpl implements _UpdateRegister {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$UpdateRegisterImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.register, register) ||
                 other.register == register));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, register);
+  int get hashCode => Object.hash(runtimeType, id, register);
 
   @JsonKey(ignore: true)
   @override
@@ -320,35 +328,35 @@ class _$UpdateRegisterImpl implements _UpdateRegister {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(Register register) createRegister,
-    required TResult Function(Register register) updateRegister,
+    required TResult Function(int id, Register register) updateRegister,
     required TResult Function(Register register) deleteRegister,
     required TResult Function() reset,
   }) {
-    return updateRegister(register);
+    return updateRegister(id, register);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Register register)? createRegister,
-    TResult? Function(Register register)? updateRegister,
+    TResult? Function(int id, Register register)? updateRegister,
     TResult? Function(Register register)? deleteRegister,
     TResult? Function()? reset,
   }) {
-    return updateRegister?.call(register);
+    return updateRegister?.call(id, register);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Register register)? createRegister,
-    TResult Function(Register register)? updateRegister,
+    TResult Function(int id, Register register)? updateRegister,
     TResult Function(Register register)? deleteRegister,
     TResult Function()? reset,
     required TResult orElse(),
   }) {
     if (updateRegister != null) {
-      return updateRegister(register);
+      return updateRegister(id, register);
     }
     return orElse();
   }
@@ -392,8 +400,10 @@ class _$UpdateRegisterImpl implements _UpdateRegister {
 }
 
 abstract class _UpdateRegister implements RegisterEvent {
-  const factory _UpdateRegister(final Register register) = _$UpdateRegisterImpl;
+  const factory _UpdateRegister(final int id, final Register register) =
+      _$UpdateRegisterImpl;
 
+  int get id;
   Register get register;
   @JsonKey(ignore: true)
   _$$UpdateRegisterImplCopyWith<_$UpdateRegisterImpl> get copyWith =>
@@ -477,7 +487,7 @@ class _$DeleteRegisterImpl implements _DeleteRegister {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(Register register) createRegister,
-    required TResult Function(Register register) updateRegister,
+    required TResult Function(int id, Register register) updateRegister,
     required TResult Function(Register register) deleteRegister,
     required TResult Function() reset,
   }) {
@@ -488,7 +498,7 @@ class _$DeleteRegisterImpl implements _DeleteRegister {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Register register)? createRegister,
-    TResult? Function(Register register)? updateRegister,
+    TResult? Function(int id, Register register)? updateRegister,
     TResult? Function(Register register)? deleteRegister,
     TResult? Function()? reset,
   }) {
@@ -499,7 +509,7 @@ class _$DeleteRegisterImpl implements _DeleteRegister {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Register register)? createRegister,
-    TResult Function(Register register)? updateRegister,
+    TResult Function(int id, Register register)? updateRegister,
     TResult Function(Register register)? deleteRegister,
     TResult Function()? reset,
     required TResult orElse(),
@@ -596,7 +606,7 @@ class _$ResetImpl implements _Reset {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(Register register) createRegister,
-    required TResult Function(Register register) updateRegister,
+    required TResult Function(int id, Register register) updateRegister,
     required TResult Function(Register register) deleteRegister,
     required TResult Function() reset,
   }) {
@@ -607,7 +617,7 @@ class _$ResetImpl implements _Reset {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Register register)? createRegister,
-    TResult? Function(Register register)? updateRegister,
+    TResult? Function(int id, Register register)? updateRegister,
     TResult? Function(Register register)? deleteRegister,
     TResult? Function()? reset,
   }) {
@@ -618,7 +628,7 @@ class _$ResetImpl implements _Reset {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Register register)? createRegister,
-    TResult Function(Register register)? updateRegister,
+    TResult Function(int id, Register register)? updateRegister,
     TResult Function(Register register)? deleteRegister,
     TResult Function()? reset,
     required TResult orElse(),

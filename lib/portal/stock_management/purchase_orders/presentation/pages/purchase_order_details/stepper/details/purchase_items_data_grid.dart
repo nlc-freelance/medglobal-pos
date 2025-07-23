@@ -7,6 +7,7 @@ import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/typeahead_search/typeahead_search.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -31,7 +32,7 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
-    final purchaseOrder = context.read<PurchaseOrderCubit>().state.purchaseOrder;
+    final purchaseOrder = context.read<PurchaseOrderFormCubit>().state.purchaseOrder;
     final tax = purchaseOrder.tax ?? 0;
     final discount = purchaseOrder.discount ?? 0;
 
@@ -55,8 +56,8 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
           search: SizedBox(
             width: MediaQuery.sizeOf(context).width * 0.3,
             child: TypeAheadSearch(
-              supplierId: context.read<PurchaseOrderCubit>().state.purchaseOrder.supplier?.id,
-              branchId: context.read<PurchaseOrderCubit>().state.purchaseOrder.branch?.id,
+              supplierId: context.read<PurchaseOrderFormCubit>().state.purchaseOrder.supplier?.id,
+              branchId: context.read<PurchaseOrderFormCubit>().state.purchaseOrder.branch?.id,
               onSelected: (value) {
                 if (_purchaseItemsDataSource._itemsToOrder.any((item) => item.variantId == value.id) == true) {
                   SnackbarUtil.duplicate(context, 'Item was already added.');
@@ -66,12 +67,12 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
                 final purchaseOrderItem = value.toPurchaseOrderItem();
 
                 /// Add newly added items to the current PO in state
-                context.read<PurchaseOrderCubit>().addItem(purchaseOrderItem);
+                context.read<PurchaseOrderFormCubit>().addItem(purchaseOrderItem);
               },
             ),
           ),
         ),
-        BlocConsumer<PurchaseOrderCubit, PurchaseOrderState>(
+        BlocConsumer<PurchaseOrderFormCubit, PurchaseOrderFormState>(
           listenWhen: (previous, current) =>
               previous.purchaseOrder.items != current.purchaseOrder.items ||
               previous.purchaseOrder.totalAmount != current.purchaseOrder.totalAmount,
@@ -114,8 +115,8 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
                               SizedBox(
                                 width: MediaQuery.sizeOf(context).width * 0.3,
                                 child: TypeAheadSearch(
-                                  supplierId: context.read<PurchaseOrderCubit>().state.purchaseOrder.supplier?.id,
-                                  branchId: context.read<PurchaseOrderCubit>().state.purchaseOrder.branch?.id,
+                                  supplierId: context.read<PurchaseOrderFormCubit>().state.purchaseOrder.supplier?.id,
+                                  branchId: context.read<PurchaseOrderFormCubit>().state.purchaseOrder.branch?.id,
                                   onSelected: (value) {
                                     if (_purchaseItemsDataSource._itemsToOrder
                                             .any((item) => item.variantId == value.id) ==
@@ -126,7 +127,7 @@ class _PurchaseItemsDataGridState extends State<PurchaseItemsDataGrid> {
                                     final purchaseOrderItem = value.toPurchaseOrderItem();
 
                                     /// Add newly added items to the current PO in state
-                                    context.read<PurchaseOrderCubit>().addItem(purchaseOrderItem);
+                                    context.read<PurchaseOrderFormCubit>().addItem(purchaseOrderItem);
                                   },
                                 ),
                               ),
@@ -284,7 +285,7 @@ class PurchaseItemsDataSource extends DataGridSource {
             builder: (BuildContext context, BoxConstraints constraints) => UIButton.text(
               'Delete',
               iconBuilder: (isHover) => Assets.icons.trash.setColorOnHover(isHover),
-              onClick: () => context.read<PurchaseOrderCubit>().removeItem(id),
+              onClick: () => context.read<PurchaseOrderFormCubit>().removeItem(id),
             ),
           ),
         _ => UIText.bodyRegular(
@@ -334,7 +335,7 @@ class PurchaseItemsDataSource extends DataGridSource {
       double newTotalPerItem = (newQtyToOrder ?? 0) * (supplierPrice ?? 0);
       dataGridRows[dataRowIndex].getCells()[7] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
-      _context.read<PurchaseOrderCubit>().setQuantityToOrderPerItem(
+      _context.read<PurchaseOrderFormCubit>().setQuantityToOrderPerItem(
             id: _itemsToOrder[dataRowIndex].id!,
             qty: newQtyToOrder,
             total: newTotalPerItem,
@@ -351,7 +352,7 @@ class PurchaseItemsDataSource extends DataGridSource {
       double newTotalPerItem = (newSupplierPrice ?? 0) * (qtyToOrder ?? 0);
       dataGridRows[dataRowIndex].getCells()[7] = DataGridCell<double>(columnName: 'total', value: newTotalPerItem);
 
-      _context.read<PurchaseOrderCubit>().setSupplierPricePerItem(
+      _context.read<PurchaseOrderFormCubit>().setSupplierPricePerItem(
             id: _itemsToOrder[dataRowIndex].id!,
             price: newSupplierPrice,
             total: newTotalPerItem,
@@ -433,7 +434,7 @@ class PurchaseItemsDataSource extends DataGridSource {
         onFocusChange: (value) {
           if (value == false) {
             _context
-                .read<PurchaseOrderCubit>()
+                .read<PurchaseOrderFormCubit>()
                 .setTotal(((double.parse(summaryValue)) - (double.tryParse(discountController.text) ?? 0)));
             // ((double.parse(summaryValue) + (double.tryParse(taxController.text) ?? 0)) -
             //         (double.tryParse(discountController.text) ?? 0)));
@@ -446,8 +447,8 @@ class PurchaseItemsDataSource extends DataGridSource {
           //     : (discountController..text = discount.toString()),
           cursorHeight: 10.0,
           onChanged: (value) {
-            // if (title == 'Tax') _context.read<PurchaseOrderCubit>().setTax(double.tryParse(value) ?? 0);
-            if (title == 'Discount') _context.read<PurchaseOrderCubit>().setDiscount((double.tryParse(value) ?? 0));
+            // if (title == 'Tax') _context.read<PurchaseOrderFormCubit>().setTax(double.tryParse(value) ?? 0);
+            if (title == 'Discount') _context.read<PurchaseOrderFormCubit>().setDiscount((double.tryParse(value) ?? 0));
           },
           style: UIStyleText.labelSemiBold,
           inputFormatters: [CurrencyInputFormatter()],

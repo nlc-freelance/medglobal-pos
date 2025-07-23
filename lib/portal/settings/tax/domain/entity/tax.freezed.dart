@@ -117,10 +117,12 @@ class __$$TaxImplCopyWithImpl<$Res> extends _$TaxCopyWithImpl<$Res, _$TaxImpl>
 
 /// @nodoc
 
-class _$TaxImpl extends _Tax {
+class _$TaxImpl implements _Tax {
   const _$TaxImpl(
-      {this.id, required this.code, required this.rate, this.isDefault = false})
-      : super._();
+      {this.id,
+      required this.code,
+      required this.rate,
+      this.isDefault = false});
 
   @override
   final int? id;
@@ -159,13 +161,12 @@ class _$TaxImpl extends _Tax {
       __$$TaxImplCopyWithImpl<_$TaxImpl>(this, _$identity);
 }
 
-abstract class _Tax extends Tax {
+abstract class _Tax implements Tax {
   const factory _Tax(
       {final int? id,
       required final String code,
       required final double rate,
       final bool isDefault}) = _$TaxImpl;
-  const _Tax._() : super._();
 
   @override
   int? get id;

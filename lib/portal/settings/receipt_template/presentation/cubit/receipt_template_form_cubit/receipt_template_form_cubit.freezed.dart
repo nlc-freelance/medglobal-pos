@@ -253,7 +253,7 @@ class __$$ReceiptTemplateFormStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ReceiptTemplateFormStateImpl extends _ReceiptTemplateFormState {
+class _$ReceiptTemplateFormStateImpl implements _ReceiptTemplateFormState {
   const _$ReceiptTemplateFormStateImpl(
       {this.id,
       this.name,
@@ -267,8 +267,7 @@ class _$ReceiptTemplateFormStateImpl extends _ReceiptTemplateFormState {
       this.showFooterMessage = false,
       this.footerTitle,
       this.footerMessage,
-      this.isConfigurationValid = true})
-      : super._();
+      this.isConfigurationValid = true});
 
   @override
   final int? id;
@@ -366,7 +365,7 @@ class _$ReceiptTemplateFormStateImpl extends _ReceiptTemplateFormState {
           _$ReceiptTemplateFormStateImpl>(this, _$identity);
 }
 
-abstract class _ReceiptTemplateFormState extends ReceiptTemplateFormState {
+abstract class _ReceiptTemplateFormState implements ReceiptTemplateFormState {
   const factory _ReceiptTemplateFormState(
       {final int? id,
       final String? name,
@@ -381,7 +380,6 @@ abstract class _ReceiptTemplateFormState extends ReceiptTemplateFormState {
       final String? footerTitle,
       final String? footerMessage,
       final bool isConfigurationValid}) = _$ReceiptTemplateFormStateImpl;
-  const _ReceiptTemplateFormState._() : super._();
 
   @override
   int? get id;

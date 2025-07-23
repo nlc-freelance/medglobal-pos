@@ -9,7 +9,7 @@ part 'lazy_list_state.dart';
 part 'lazy_list_bloc.freezed.dart';
 
 class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
-  final Future<Either<Failure, PaginatedList<T>>> Function({required PageQuery filters}) _fetch;
+  final Future<Either<Failure, PaginatedList<T>>> Function(PageQuery query) _fetch;
 
   LazyListBloc(this._fetch) : super(LazyListState<T>.initial()) {
     on<LazyListEvent<T>>(_onEvent);
@@ -37,7 +37,7 @@ class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
         ));
 
         try {
-          final result = await _fetch(filters: PageQuery(page: _currentPage, size: 10));
+          final result = await _fetch(PageQuery(page: _currentPage, size: 10));
 
           result.fold(
             (error) => emit(state.copyWith(

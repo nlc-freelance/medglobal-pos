@@ -14,7 +14,7 @@ class SnackbarUtil {
   ) =>
       _show(
         context,
-        type: ToastType.ERROR,
+        type: SnackbarType.ERROR,
         message: message,
       );
 
@@ -26,20 +26,20 @@ class SnackbarUtil {
   }) =>
       _show(
         context,
-        type: ToastType.SUCCESS,
+        type: SnackbarType.SUCCESS,
         message: message,
         action: action,
       );
 
-  /// Displays an invalid input snackbar with a warning theme.
+  /// Displays a validation message with a warning theme.
   static void invalid(
-    BuildContext context,
-    String message,
-  ) =>
+    BuildContext context, {
+    String? message,
+  }) =>
       _show(
         context,
-        type: ToastType.INVALID,
-        message: message,
+        type: SnackbarType.INVALID,
+        message: message ?? 'Please complete all required fields.',
       );
 
   /// Displays a duplicate entry snackbar with a warning theme.
@@ -49,11 +49,11 @@ class SnackbarUtil {
   ) =>
       _show(
         context,
-        type: ToastType.DUPLICATE,
+        type: SnackbarType.DUPLICATE,
         message: message,
       );
 
-  static void _show(BuildContext context, {required ToastType type, required String message, Widget? action}) {
+  static void _show(BuildContext context, {required SnackbarType type, required String message, Widget? action}) {
     const duration = Duration(milliseconds: 5000);
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -91,13 +91,13 @@ class SnackbarUtil {
     );
   }
 
-  static Widget _buildSnackbarContent(BuildContext context, ToastType type, String message, Widget? action) {
+  static Widget _buildSnackbarContent(BuildContext context, SnackbarType type, String message, Widget? action) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 8, top: 4),
-          child: type == ToastType.SUCCESS
+          child: type == SnackbarType.SUCCESS
               ? Assets.icons.checkCircle.svg(
                   width: 18,
                   colorFilter: _color(type).toColorFilter,
@@ -134,11 +134,11 @@ class SnackbarUtil {
     );
   }
 
-  static Color _color(ToastType type) {
+  static Color _color(SnackbarType type) {
     return switch (type) {
-      ToastType.SUCCESS => UIColors.success,
-      ToastType.ERROR => UIColors.error,
-      ToastType.INVALID || ToastType.DUPLICATE => UIColors.warning,
+      SnackbarType.SUCCESS => UIColors.success,
+      SnackbarType.ERROR => UIColors.error,
+      SnackbarType.INVALID || SnackbarType.DUPLICATE => UIColors.warning,
     };
   }
 }

@@ -22,8 +22,8 @@ mixin _$Transaction {
   String? get saleTransactionReceiptId => throw _privateConstructorUsedError;
   TransactionType get type => throw _privateConstructorUsedError;
   ReturnStatus? get status => throw _privateConstructorUsedError;
-  RegisterLite get register => throw _privateConstructorUsedError;
-  BranchLite get branch => throw _privateConstructorUsedError;
+  Register get register => throw _privateConstructorUsedError;
+  Branch get branch => throw _privateConstructorUsedError;
   Employee get employee => throw _privateConstructorUsedError;
   List<TransactionItem> get items => throw _privateConstructorUsedError;
   double? get subtotal => throw _privateConstructorUsedError;
@@ -57,8 +57,8 @@ abstract class $TransactionCopyWith<$Res> {
       String? saleTransactionReceiptId,
       TransactionType type,
       ReturnStatus? status,
-      RegisterLite register,
-      BranchLite branch,
+      Register register,
+      Branch branch,
       Employee employee,
       List<TransactionItem> items,
       double? subtotal,
@@ -69,8 +69,9 @@ abstract class $TransactionCopyWith<$Res> {
       double? totalDiscountAmount,
       double? amountPaid});
 
-  $RegisterLiteCopyWith<$Res> get register;
-  $BranchLiteCopyWith<$Res> get branch;
+  $RegisterCopyWith<$Res> get register;
+  $BranchCopyWith<$Res> get branch;
+  $EmployeeCopyWith<$Res> get employee;
 }
 
 /// @nodoc
@@ -132,11 +133,11 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
       register: null == register
           ? _value.register
           : register // ignore: cast_nullable_to_non_nullable
-              as RegisterLite,
+              as Register,
       branch: null == branch
           ? _value.branch
           : branch // ignore: cast_nullable_to_non_nullable
-              as BranchLite,
+              as Branch,
       employee: null == employee
           ? _value.employee
           : employee // ignore: cast_nullable_to_non_nullable
@@ -178,17 +179,25 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
 
   @override
   @pragma('vm:prefer-inline')
-  $RegisterLiteCopyWith<$Res> get register {
-    return $RegisterLiteCopyWith<$Res>(_value.register, (value) {
+  $RegisterCopyWith<$Res> get register {
+    return $RegisterCopyWith<$Res>(_value.register, (value) {
       return _then(_value.copyWith(register: value) as $Val);
     });
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchLiteCopyWith<$Res> get branch {
-    return $BranchLiteCopyWith<$Res>(_value.branch, (value) {
+  $BranchCopyWith<$Res> get branch {
+    return $BranchCopyWith<$Res>(_value.branch, (value) {
       return _then(_value.copyWith(branch: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $EmployeeCopyWith<$Res> get employee {
+    return $EmployeeCopyWith<$Res>(_value.employee, (value) {
+      return _then(_value.copyWith(employee: value) as $Val);
     });
   }
 }
@@ -208,8 +217,8 @@ abstract class _$$TransactionImplCopyWith<$Res>
       String? saleTransactionReceiptId,
       TransactionType type,
       ReturnStatus? status,
-      RegisterLite register,
-      BranchLite branch,
+      Register register,
+      Branch branch,
       Employee employee,
       List<TransactionItem> items,
       double? subtotal,
@@ -221,9 +230,11 @@ abstract class _$$TransactionImplCopyWith<$Res>
       double? amountPaid});
 
   @override
-  $RegisterLiteCopyWith<$Res> get register;
+  $RegisterCopyWith<$Res> get register;
   @override
-  $BranchLiteCopyWith<$Res> get branch;
+  $BranchCopyWith<$Res> get branch;
+  @override
+  $EmployeeCopyWith<$Res> get employee;
 }
 
 /// @nodoc
@@ -283,11 +294,11 @@ class __$$TransactionImplCopyWithImpl<$Res>
       register: null == register
           ? _value.register
           : register // ignore: cast_nullable_to_non_nullable
-              as RegisterLite,
+              as Register,
       branch: null == branch
           ? _value.branch
           : branch // ignore: cast_nullable_to_non_nullable
-              as BranchLite,
+              as Branch,
       employee: null == employee
           ? _value.employee
           : employee // ignore: cast_nullable_to_non_nullable
@@ -365,9 +376,9 @@ class _$TransactionImpl extends _Transaction {
   @override
   final ReturnStatus? status;
   @override
-  final RegisterLite register;
+  final Register register;
   @override
-  final BranchLite branch;
+  final Branch branch;
   @override
   final Employee employee;
   final List<TransactionItem> _items;
@@ -474,8 +485,8 @@ abstract class _Transaction extends Transaction {
       final String? saleTransactionReceiptId,
       required final TransactionType type,
       final ReturnStatus? status,
-      required final RegisterLite register,
-      required final BranchLite branch,
+      required final Register register,
+      required final Branch branch,
       required final Employee employee,
       required final List<TransactionItem> items,
       final double? subtotal,
@@ -500,9 +511,9 @@ abstract class _Transaction extends Transaction {
   @override
   ReturnStatus? get status;
   @override
-  RegisterLite get register;
+  Register get register;
   @override
-  BranchLite get branch;
+  Branch get branch;
   @override
   Employee get employee;
   @override

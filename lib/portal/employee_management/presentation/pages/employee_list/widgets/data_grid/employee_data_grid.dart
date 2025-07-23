@@ -66,14 +66,14 @@ class _EmployeeDataGridState extends State<EmployeeDataGrid> {
                 const UIVerticalSpace(12),
                 if (paginatedData.hasItems)
                   BlocSelector<EmployeeListFilterCubit, EmployeeListFilterState, PageQuery>(
-                    selector: (state) => state.filters,
-                    builder: (context, filters) {
+                    selector: (state) => state.toPageQuery,
+                    builder: (context, query) {
                       return DataGridPagination<Employee>(
                         paginatedData,
                         onPageChanged: ({required page, required size}) {
                           context.read<EmployeeListFilterCubit>().setPageAndSize(page, size);
                           context.read<PaginatedListBloc<Employee>>().add(PaginatedListEvent<Employee>.fetch(
-                                filters: filters,
+                                query: query,
                               ));
                         },
                       );

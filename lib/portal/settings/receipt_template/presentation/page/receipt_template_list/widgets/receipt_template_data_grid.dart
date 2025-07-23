@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/utils/null_check_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
@@ -65,7 +66,7 @@ class _ReceiptTemplateDataGridState extends State<ReceiptTemplateDataGrid> {
                     onPageChanged: ({required page, required size}) => context
                         .read<PaginatedListBloc<ReceiptTemplate>>()
                         .add(PaginatedListEvent<ReceiptTemplate>.fetch(
-                          filters: PageQuery(
+                          query: PageQuery(
                             page: page,
                             size: size,
                           ),
@@ -125,7 +126,7 @@ class ReceiptTemplateDataGridSource extends DataGridSource with DialogMixin {
           child: cellBuilder(
             colName: cell.columnName,
             cell: cell,
-            receiptTemplate: _templates.firstWhere((tax) => tax.id == row.getCells().first.value),
+            receiptTemplate: _templates.firstWhereOrNull((receipt) => receipt.id == row.getCells().first.value),
           ),
         );
       }).toList(),
@@ -135,12 +136,12 @@ class ReceiptTemplateDataGridSource extends DataGridSource with DialogMixin {
   Widget cellBuilder({
     required String colName,
     required DataGridCell cell,
-    required ReceiptTemplate receiptTemplate,
+    ReceiptTemplate? receiptTemplate,
   }) =>
       switch (colName) {
         'receipt_template_name' => HoverBuilder(
             builder: (isHover) => InkWell(
-              onTap: () => _onEditReceiptTemplate(receiptTemplate.id),
+              onTap: () => _onEditReceiptTemplate(receiptTemplate),
               hoverColor: UIColors.transparent,
               child: Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
@@ -152,10 +153,10 @@ class ReceiptTemplateDataGridSource extends DataGridSource with DialogMixin {
                       color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
                       decoration: TextDecoration.underline,
                       decorationThickness: 0.8,
-                      fontStyle: receiptTemplate.isSystemDefault ? FontStyle.italic : FontStyle.normal,
+                      fontStyle: receiptTemplate?.isSystemDefault == true ? FontStyle.italic : FontStyle.normal,
                     ),
                   ),
-                  if (receiptTemplate.isDefault) ...[
+                  if (receiptTemplate?.isDefault == true) ...[
                     const UIHorizontalSpace(8),
                     UIText.dataGridHeader('(DEFAULT)'),
                   ],
@@ -167,15 +168,21 @@ class ReceiptTemplateDataGridSource extends DataGridSource with DialogMixin {
             cell.value.toString(),
             style: UIStyleText.chip.copyWith(
               fontSize: 13,
-              fontStyle: receiptTemplate.isSystemDefault ? FontStyle.italic : FontStyle.normal,
+              fontStyle: receiptTemplate?.isSystemDefault == true ? FontStyle.italic : FontStyle.normal,
             ),
           ),
       };
 
-  void _onEditReceiptTemplate(receiptTemplateId) {
-    _context.goNamed(
-      SideMenuTreeItem.receiptTemplateDetails.name,
-      pathParameters: {'id': receiptTemplateId.toString()},
+  void _onEditReceiptTemplate(ReceiptTemplate? receiptTemplate) {
+    NullCheckUtil.checkAndCall<ReceiptTemplate>(
+      _context,
+      value: receiptTemplate,
+      onValid: (receiptTemplate) {
+        _context.goNamed(
+          SideMenuTreeItem.receiptTemplateDetails.name,
+          pathParameters: {'id': receiptTemplate.id.toString()},
+        );
+      },
     );
   }
 }

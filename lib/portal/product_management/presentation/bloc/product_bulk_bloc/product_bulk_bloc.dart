@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/payload/product_bulk_delete_payload.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/payload/product_bulk_update_payload.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/repositories/product_repository.dart';
 
@@ -15,28 +17,34 @@ class ProductBulkBloc extends Bloc<ProductBulkEvent, ProductBulkState> {
     on<_BulkDeleteProduct>(_onBulkDeleteProduct);
   }
 
-  Future<void> _onBulkUpdateProduct(event, emit) async {
+  Future<void> _onBulkUpdateProduct(_BulkUpdateProduct event, Emitter<ProductBulkState> emit) async {
     emit(const ProductBulkState.processing());
     try {
-      final result = await _repository.bulkUpdate(event.ids, event.category);
+      final ids = event.ids;
+      final payload = ProductBulkUpdatePayload(productList: ids, category: event.category);
+
+      final result = await _repository.bulkUpdateProducts(payload);
 
       result.fold(
         (failure) => emit(ProductBulkState.failure(failure.message)),
-        (_) => emit(ProductBulkState.success('${event.ids.length} Product(s) successfully deleted.')),
+        (_) => emit(ProductBulkState.success('Category for all ${ids.length} product(s) successfully updated.')),
       );
     } catch (e) {
       emit(ProductBulkState.failure(e.toString()));
     }
   }
 
-  Future<void> _onBulkDeleteProduct(event, emit) async {
+  Future<void> _onBulkDeleteProduct(_BulkDeleteProduct event, Emitter<ProductBulkState> emit) async {
     emit(const ProductBulkState.processing());
     try {
-      final result = await _repository.bulkDelete(event.ids);
+      final ids = event.ids;
+      final payload = ProductBulkDeletePayload(ids: ids);
+
+      final result = await _repository.bulkDeleteProducts(payload);
 
       result.fold(
         (failure) => emit(ProductBulkState.failure(failure.message)),
-        (_) => emit(ProductBulkState.success('Category for all ${event.ids.length} product(s) successfully updated.')),
+        (_) => emit(ProductBulkState.success('${ids.length} Product(s) successfully deleted.')),
       );
     } catch (e) {
       emit(ProductBulkState.failure(e.toString()));

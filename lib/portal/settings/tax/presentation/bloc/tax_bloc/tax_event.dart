@@ -4,7 +4,7 @@ part of 'tax_bloc.dart';
 class TaxEvent with _$TaxEvent {
   const factory TaxEvent.getDefaultTaxCode() = _GetDefaultTaxCode;
   const factory TaxEvent.createTaxCode(Tax tax) = _CreateTaxCode;
-  const factory TaxEvent.updateTaxCode(Tax tax) = _UpdateTaxCode;
-  const factory TaxEvent.deleteTaxCode(Tax tax) = _DeleteTaxCode;
+  const factory TaxEvent.updateTaxCode(int id, Tax tax) = _UpdateTaxCode;
+  const factory TaxEvent.deleteTaxCode(int id, Tax tax) = _DeleteTaxCode;
   const factory TaxEvent.reset() = _Reset;
 }

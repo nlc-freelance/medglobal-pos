@@ -14,177 +14,8 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-/// @nodoc
-mixin _$BranchLite {
-  int get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  String get address => throw _privateConstructorUsedError;
-  String? get phone => throw _privateConstructorUsedError;
-
-  @JsonKey(ignore: true)
-  $BranchLiteCopyWith<BranchLite> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $BranchLiteCopyWith<$Res> {
-  factory $BranchLiteCopyWith(
-          BranchLite value, $Res Function(BranchLite) then) =
-      _$BranchLiteCopyWithImpl<$Res, BranchLite>;
-  @useResult
-  $Res call({int id, String name, String address, String? phone});
-}
-
-/// @nodoc
-class _$BranchLiteCopyWithImpl<$Res, $Val extends BranchLite>
-    implements $BranchLiteCopyWith<$Res> {
-  _$BranchLiteCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? address = null,
-    Object? phone = freezed,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$BranchLiteImplCopyWith<$Res>
-    implements $BranchLiteCopyWith<$Res> {
-  factory _$$BranchLiteImplCopyWith(
-          _$BranchLiteImpl value, $Res Function(_$BranchLiteImpl) then) =
-      __$$BranchLiteImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int id, String name, String address, String? phone});
-}
-
-/// @nodoc
-class __$$BranchLiteImplCopyWithImpl<$Res>
-    extends _$BranchLiteCopyWithImpl<$Res, _$BranchLiteImpl>
-    implements _$$BranchLiteImplCopyWith<$Res> {
-  __$$BranchLiteImplCopyWithImpl(
-      _$BranchLiteImpl _value, $Res Function(_$BranchLiteImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? address = null,
-    Object? phone = freezed,
-  }) {
-    return _then(_$BranchLiteImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$BranchLiteImpl implements _BranchLite {
-  const _$BranchLiteImpl(
-      {required this.id,
-      required this.name,
-      required this.address,
-      this.phone});
-
-  @override
-  final int id;
-  @override
-  final String name;
-  @override
-  final String address;
-  @override
-  final String? phone;
-
-  @override
-  String toString() {
-    return 'BranchLite(id: $id, name: $name, address: $address, phone: $phone)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$BranchLiteImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.address, address) || other.address == address) &&
-            (identical(other.phone, phone) || other.phone == phone));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, id, name, address, phone);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$BranchLiteImplCopyWith<_$BranchLiteImpl> get copyWith =>
-      __$$BranchLiteImplCopyWithImpl<_$BranchLiteImpl>(this, _$identity);
-}
-
-abstract class _BranchLite implements BranchLite {
-  const factory _BranchLite(
-      {required final int id,
-      required final String name,
-      required final String address,
-      final String? phone}) = _$BranchLiteImpl;
-
-  @override
-  int get id;
-  @override
-  String get name;
-  @override
-  String get address;
-  @override
-  String? get phone;
-  @override
-  @JsonKey(ignore: true)
-  _$$BranchLiteImplCopyWith<_$BranchLiteImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+Branch _$BranchFromJson(Map<String, dynamic> json) {
+  return _Branch.fromJson(json);
 }
 
 /// @nodoc
@@ -205,6 +36,7 @@ mixin _$Branch {
   String? get vatIdNumber => throw _privateConstructorUsedError;
   ReceiptTemplate get receiptTemplate => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $BranchCopyWith<Branch> get copyWith => throw _privateConstructorUsedError;
 }
@@ -457,8 +289,8 @@ class __$$BranchImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$BranchImpl extends _Branch {
+@JsonSerializable()
+class _$BranchImpl implements _Branch {
   const _$BranchImpl(
       {this.id,
       required this.name,
@@ -474,8 +306,10 @@ class _$BranchImpl extends _Branch {
       this.country,
       required this.businessRegistrationNumber,
       this.vatIdNumber,
-      required this.receiptTemplate})
-      : super._();
+      required this.receiptTemplate});
+
+  factory _$BranchImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BranchImplFromJson(json);
 
   @override
   final int? id;
@@ -542,6 +376,7 @@ class _$BranchImpl extends _Branch {
                 other.receiptTemplate == receiptTemplate));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -566,9 +401,16 @@ class _$BranchImpl extends _Branch {
   @pragma('vm:prefer-inline')
   _$$BranchImplCopyWith<_$BranchImpl> get copyWith =>
       __$$BranchImplCopyWithImpl<_$BranchImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$BranchImplToJson(
+      this,
+    );
+  }
 }
 
-abstract class _Branch extends Branch {
+abstract class _Branch implements Branch {
   const factory _Branch(
       {final int? id,
       required final String name,
@@ -585,7 +427,8 @@ abstract class _Branch extends Branch {
       required final String businessRegistrationNumber,
       final String? vatIdNumber,
       required final ReceiptTemplate receiptTemplate}) = _$BranchImpl;
-  const _Branch._() : super._();
+
+  factory _Branch.fromJson(Map<String, dynamic> json) = _$BranchImpl.fromJson;
 
   @override
   int? get id;

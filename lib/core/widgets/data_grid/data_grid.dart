@@ -4,3 +4,4 @@ export 'data_grid_no_data.dart';
 export 'data_grid_pagination.dart';
 export 'data_grid_toolbar/data_grid_toolbar.dart';
 export 'data_grid_toolbar/export_button.dart';
+export 'data_grid_text_field.dart';

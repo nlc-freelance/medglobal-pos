@@ -13,7 +13,7 @@ class FormValidators {
   }
 
   /// Validates if the value is greater than zero
-  static FieldValidator number(String message) {
+  static FieldValidator isGreaterThanZero(String message) {
     return (value) {
       if (value == null || value.trim().isEmpty) return null;
 

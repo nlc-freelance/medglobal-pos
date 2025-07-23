@@ -139,10 +139,9 @@ class __$$EmployeeListFilterStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$EmployeeListFilterStateImpl extends _EmployeeListFilterState {
+class _$EmployeeListFilterStateImpl implements _EmployeeListFilterState {
   const _$EmployeeListFilterStateImpl(
-      {this.page = 1, this.size = 20, this.search, this.role, this.branchId})
-      : super._();
+      {this.page = 1, this.size = 20, this.search, this.role, this.branchId});
 
   @override
   @JsonKey()
@@ -187,14 +186,13 @@ class _$EmployeeListFilterStateImpl extends _EmployeeListFilterState {
           _$EmployeeListFilterStateImpl>(this, _$identity);
 }
 
-abstract class _EmployeeListFilterState extends EmployeeListFilterState {
+abstract class _EmployeeListFilterState implements EmployeeListFilterState {
   const factory _EmployeeListFilterState(
       {final int page,
       final int size,
       final String? search,
       final String? role,
       final int? branchId}) = _$EmployeeListFilterStateImpl;
-  const _EmployeeListFilterState._() : super._();
 
   @override
   int get page;

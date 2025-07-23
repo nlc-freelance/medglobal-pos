@@ -17,7 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$PurchaseOrder {
   int? get id => throw _privateConstructorUsedError;
-  BranchLite? get branch => throw _privateConstructorUsedError;
+  Branch? get branch => throw _privateConstructorUsedError;
   Supplier? get supplier => throw _privateConstructorUsedError;
   StockOrderStatus? get status => throw _privateConstructorUsedError;
   double? get subtotal => throw _privateConstructorUsedError;
@@ -46,7 +46,7 @@ abstract class $PurchaseOrderCopyWith<$Res> {
   @useResult
   $Res call(
       {int? id,
-      BranchLite? branch,
+      Branch? branch,
       Supplier? supplier,
       StockOrderStatus? status,
       double? subtotal,
@@ -59,7 +59,7 @@ abstract class $PurchaseOrderCopyWith<$Res> {
       @DateTimeConverter() DateTime? createdAt,
       @DateTimeConverter() DateTime? updatedAt});
 
-  $BranchLiteCopyWith<$Res>? get branch;
+  $BranchCopyWith<$Res>? get branch;
   $SupplierCopyWith<$Res>? get supplier;
 }
 
@@ -98,7 +98,7 @@ class _$PurchaseOrderCopyWithImpl<$Res, $Val extends PurchaseOrder>
       branch: freezed == branch
           ? _value.branch
           : branch // ignore: cast_nullable_to_non_nullable
-              as BranchLite?,
+              as Branch?,
       supplier: freezed == supplier
           ? _value.supplier
           : supplier // ignore: cast_nullable_to_non_nullable
@@ -148,12 +148,12 @@ class _$PurchaseOrderCopyWithImpl<$Res, $Val extends PurchaseOrder>
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchLiteCopyWith<$Res>? get branch {
+  $BranchCopyWith<$Res>? get branch {
     if (_value.branch == null) {
       return null;
     }
 
-    return $BranchLiteCopyWith<$Res>(_value.branch!, (value) {
+    return $BranchCopyWith<$Res>(_value.branch!, (value) {
       return _then(_value.copyWith(branch: value) as $Val);
     });
   }
@@ -181,7 +181,7 @@ abstract class _$$PurchaseOrderImplCopyWith<$Res>
   @useResult
   $Res call(
       {int? id,
-      BranchLite? branch,
+      Branch? branch,
       Supplier? supplier,
       StockOrderStatus? status,
       double? subtotal,
@@ -195,7 +195,7 @@ abstract class _$$PurchaseOrderImplCopyWith<$Res>
       @DateTimeConverter() DateTime? updatedAt});
 
   @override
-  $BranchLiteCopyWith<$Res>? get branch;
+  $BranchCopyWith<$Res>? get branch;
   @override
   $SupplierCopyWith<$Res>? get supplier;
 }
@@ -233,7 +233,7 @@ class __$$PurchaseOrderImplCopyWithImpl<$Res>
       branch: freezed == branch
           ? _value.branch
           : branch // ignore: cast_nullable_to_non_nullable
-              as BranchLite?,
+              as Branch?,
       supplier: freezed == supplier
           ? _value.supplier
           : supplier // ignore: cast_nullable_to_non_nullable
@@ -305,7 +305,7 @@ class _$PurchaseOrderImpl extends _PurchaseOrder {
   @override
   final int? id;
   @override
-  final BranchLite? branch;
+  final Branch? branch;
   @override
   final Supplier? supplier;
   @override
@@ -399,7 +399,7 @@ class _$PurchaseOrderImpl extends _PurchaseOrder {
 abstract class _PurchaseOrder extends PurchaseOrder {
   const factory _PurchaseOrder(
       {final int? id,
-      final BranchLite? branch,
+      final Branch? branch,
       final Supplier? supplier,
       final StockOrderStatus? status,
       final double? subtotal,
@@ -416,7 +416,7 @@ abstract class _PurchaseOrder extends PurchaseOrder {
   @override
   int? get id;
   @override
-  BranchLite? get branch;
+  Branch? get branch;
   @override
   Supplier? get supplier;
   @override

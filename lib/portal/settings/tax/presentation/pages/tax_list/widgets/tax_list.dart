@@ -41,8 +41,9 @@ class TaxList extends StatelessWidget with DialogMixin {
     final taxFormCubit = context.read<TaxFormCubit>();
     final taxBloc = context.read<TaxBloc>();
 
-    final tax = taxFormCubit.toTax();
-    final event = taxFormCubit.state.id == null ? TaxEvent.createTaxCode(tax) : TaxEvent.updateTaxCode(tax);
+    final tax = taxFormCubit.state.toTax();
+
+    final event = tax.id == null ? TaxEvent.createTaxCode(tax) : TaxEvent.updateTaxCode(tax.id!, tax);
 
     // When no default tax code is set
     if (defaultTax == null) {

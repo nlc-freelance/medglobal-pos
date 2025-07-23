@@ -39,19 +39,19 @@ class BranchLiteDropdown extends StatelessWidget {
   final bool isSelectInputType;
   final bool isMultiSelect;
   final bool showSelectedItems;
-  final Function(BranchLite value)? onSelectItem;
-  final BranchLite? selectedItem;
-  final List<BranchLite>? selectedItems;
+  final Function(Branch value)? onSelectItem;
+  final Branch? selectedItem;
+  final List<Branch>? selectedItems;
   final Function(int value)? onDeleteItem;
   final VoidCallback? onRemoveSelectedItem;
 
   factory BranchLiteDropdown.select({
-    required Function(BranchLite value)? onSelectItem,
+    required Function(Branch value)? onSelectItem,
     VoidCallback? onRemoveSelectedItem,
     String? hint,
     bool isInlineHint = false,
     bool isSelectInputType = false,
-    BranchLite? selectedItem,
+    Branch? selectedItem,
     Key? key,
   }) =>
       BranchLiteDropdown._(
@@ -72,9 +72,9 @@ class BranchLiteDropdown extends StatelessWidget {
     bool isReadOnly = false,
     bool isMultiSelect = false,
     bool showSelectedItems = false,
-    required Function(BranchLite value) onSelectItem,
-    List<BranchLite>? selectedItems,
-    BranchLite? selectedItem,
+    required Function(Branch value) onSelectItem,
+    List<Branch>? selectedItems,
+    Branch? selectedItem,
     Function(int value)? onDeleteItem,
     Key? key,
   }) =>
@@ -98,8 +98,8 @@ class BranchLiteDropdown extends StatelessWidget {
     required String label,
     bool required = false,
     bool isReadOnly = false,
-    Function(BranchLite value)? onSelectItem,
-    BranchLite? selectedItem,
+    Function(Branch value)? onSelectItem,
+    Branch? selectedItem,
     Key? key,
   }) =>
       BranchLiteDropdown._(
@@ -242,9 +242,9 @@ class _BranchLiteDropdownOverlay extends StatefulWidget {
   final bool isReadOnly;
   final String? hint;
   final bool? isInlineHint;
-  final Function(BranchLite value)? onSelectItem;
-  final List<BranchLite>? selectedItems;
-  final BranchLite? selectedItem;
+  final Function(Branch value)? onSelectItem;
+  final List<Branch>? selectedItems;
+  final Branch? selectedItem;
   final Function(int value)? onDeleteItem;
   final VoidCallback? onRemoveSelectedItem;
 
@@ -257,24 +257,24 @@ class _BranchLiteDropdownOverlayState extends State<_BranchLiteDropdownOverlay> 
   late ScrollController _scrollController;
 
   bool _isVisible = false;
-  BranchLite? _selectedItem;
+  Branch? _selectedItem;
 
   @override
   void initState() {
     super.initState();
     if (widget.selectedItem != null) setState(() => _selectedItem = widget.selectedItem);
     _scrollController = ScrollController()..addListener(_scrollListener);
-    context.read<LazyListBloc<BranchLite>>().add(const LazyListEvent<BranchLite>.fetch());
+    context.read<LazyListBloc<Branch>>().add(const LazyListEvent<Branch>.fetch());
     // context.read<BranchLiteLazyListCubit>().getBranchLitees();
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
-        !context.read<LazyListBloc<BranchLite>>().state.isLoadingMore &&
-        !context.read<LazyListBloc<BranchLite>>().state.hasReachedMax) {
+        !context.read<LazyListBloc<Branch>>().state.isLoadingMore &&
+        !context.read<LazyListBloc<Branch>>().state.hasReachedMax) {
       // !context.read<BranchLiteLazyListCubit>().state.isLoadingMore &&
       // !context.read<BranchLiteLazyListCubit>().state.hasReachedMax) {
-      context.read<LazyListBloc<BranchLite>>().add(const LazyListEvent<BranchLite>.fetch());
+      context.read<LazyListBloc<Branch>>().add(const LazyListEvent<Branch>.fetch());
 
       // context.read<BranchLiteLazyListCubit>().getBranchLitees();
     }
@@ -399,7 +399,7 @@ class _BranchLiteDropdownOverlayState extends State<_BranchLiteDropdownOverlay> 
                 ),
               ),
       ),
-      body: BlocBuilder<LazyListBloc<BranchLite>, LazyListState<BranchLite>>(
+      body: BlocBuilder<LazyListBloc<Branch>, LazyListState<Branch>>(
         // body: BlocBuilder<BranchLiteLazyListCubit, BranchLiteLazyListState>(
         builder: (context, state) {
           final branchList = state.items;
@@ -435,7 +435,7 @@ class _BranchLiteDropdownOverlayState extends State<_BranchLiteDropdownOverlay> 
                       children: [
                         UIText.labelMedium(state.error!, align: TextAlign.center),
                         UIButton.text('Reload',
-                            onClick: () => context.read<LazyListBloc<BranchLite>>().add(const LazyListEvent.fetch()))
+                            onClick: () => context.read<LazyListBloc<Branch>>().add(const LazyListEvent.fetch()))
                         // UIButton.text('Reload', onClick: () => context.read<BranchLiteLazyListCubit>().getBranchLitees())
                       ],
                     ),

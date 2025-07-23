@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/page/page_error_notice.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
+import 'package:medglobal_admin_portal/core/widgets/page/page_error_banner.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_list_bloc/pos_transaction_list_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/refund_bloc/refund_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/cubit/refund_form_cubit.dart';
@@ -31,7 +31,7 @@ class IssueRefundView extends StatelessWidget {
             RefundableItemsDataGrid(transaction),
             const ReasonForRefundDetails(),
             state.maybeWhen(
-              failure: (message) => PageErrorNotice(message: message),
+              failure: (message) => PageErrorBanner(message: message),
               orElse: () => const SizedBox(),
             ),
             BlocSelector<RefundFormCubit, RefundFormState, RefundFormState>(
@@ -40,7 +40,7 @@ class IssueRefundView extends StatelessWidget {
                 return CancelActionButton(
                   onCancel: () => onCancel,
                   onAction: () => context.read<RefundBloc>().add(RefundEvent.createRefund(
-                        registerId: transaction.register.id,
+                        registerId: transaction.register.id!,
                         saleId: transaction.saleTransactionId!,
                         items: state.items,
                         reasonForRefund: state.reasonForRefund,
@@ -57,6 +57,6 @@ class IssueRefundView extends StatelessWidget {
   void _onSuccess(BuildContext context, Transaction refund) {
     // context.read<TransactionListByBranchCubit>().addNewTransactionToList(refund);
     context.read<PosTransactionListBloc>().add(PosTransactionListEvent.addTransactionToList(refund));
-    ToastNotification.success(context, 'A refund has been successfully issued.');
+    SnackbarUtil.success(context, 'A refund has been successfully issued.');
   }
 }

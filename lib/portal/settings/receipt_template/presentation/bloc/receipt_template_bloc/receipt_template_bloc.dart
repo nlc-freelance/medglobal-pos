@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/receipt_template_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/repository/receipt_template_repository.dart';
 
@@ -17,7 +18,7 @@ class ReceiptTemplateBloc extends Bloc<ReceiptTemplateEvent, ReceiptTemplateStat
     on<_DeleteReceiptTemplate>(_onDeleteReceiptTemplate);
   }
 
-  Future<void> _onGetReceiptTemplateById(event, emit) async {
+  Future<void> _onGetReceiptTemplateById(_GetReceiptTemplateById event, Emitter<ReceiptTemplateState> emit) async {
     emit(const ReceiptTemplateState.loading());
     try {
       final result = await _repository.getReceiptTemplate(event.id);
@@ -31,10 +32,11 @@ class ReceiptTemplateBloc extends Bloc<ReceiptTemplateEvent, ReceiptTemplateStat
     }
   }
 
-  Future<void> _onCreateReceiptTemplate(event, emit) async {
+  Future<void> _onCreateReceiptTemplate(_CreateReceiptTemplate event, Emitter<ReceiptTemplateState> emit) async {
     emit(const ReceiptTemplateState.processing());
     try {
-      final result = await _repository.createReceiptTemplate(event.template);
+      final payload = ReceiptTemplatePayload.fromReceiptTemplate(event.template);
+      final result = await _repository.createReceiptTemplate(payload);
 
       result.fold(
         (failure) => emit(ReceiptTemplateState.failure(failure.message)),
@@ -45,10 +47,13 @@ class ReceiptTemplateBloc extends Bloc<ReceiptTemplateEvent, ReceiptTemplateStat
     }
   }
 
-  Future<void> _onUpdateReceiptTemplate(event, emit) async {
+  Future<void> _onUpdateReceiptTemplate(_UpdateReceiptTemplate event, Emitter<ReceiptTemplateState> emit) async {
     emit(const ReceiptTemplateState.processing());
     try {
-      final result = await _repository.updateReceiptTemplate(event.template);
+      final template = event.template;
+      final payload = ReceiptTemplatePayload.fromReceiptTemplate(template);
+
+      final result = await _repository.updateReceiptTemplate(template.id!, payload);
 
       result.fold(
         (failure) => emit(ReceiptTemplateState.failure(failure.message)),
@@ -59,14 +64,16 @@ class ReceiptTemplateBloc extends Bloc<ReceiptTemplateEvent, ReceiptTemplateStat
     }
   }
 
-  Future<void> _onDeleteReceiptTemplate(event, emit) async {
+  Future<void> _onDeleteReceiptTemplate(_DeleteReceiptTemplate event, Emitter<ReceiptTemplateState> emit) async {
     emit(const ReceiptTemplateState.processing());
     try {
-      final result = await _repository.deleteReceiptTemplate(event.template.id);
+      final template = event.template;
+
+      final result = await _repository.deleteReceiptTemplate(template.id!);
 
       result.fold(
         (failure) => emit(ReceiptTemplateState.failure(failure.message)),
-        (_) => emit(ReceiptTemplateState.success('${event.template.name} successfully deleted.')),
+        (_) => emit(ReceiptTemplateState.success('${template.name} successfully deleted.')),
       );
     } catch (e) {
       emit(ReceiptTemplateState.failure(e.toString()));

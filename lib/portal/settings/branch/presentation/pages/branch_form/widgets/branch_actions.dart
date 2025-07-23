@@ -27,7 +27,7 @@ class BranchActions extends StatelessWidget with DialogMixin {
         children: [
           BlocBuilder<BranchBloc, BranchState>(
             builder: (builderContext, state) => state.maybeWhen(
-              failure: (message) => PageErrorNotice(message: message),
+              failure: (message) => PageErrorBanner(message: message),
               orElse: () => const SizedBox(),
             ),
           ),
@@ -51,13 +51,16 @@ class BranchActions extends StatelessWidget with DialogMixin {
   }
 
   void _onDelete(BuildContext context) {
-    final formCubit = context.read<BranchFormCubit>();
+    final formState = context.read<BranchFormCubit>().state;
+
+    final branchId = formState.id!;
+    final branchName = formState.name!;
 
     showDeleteDialog(
       context,
       subject: 'Branch',
-      item: formCubit.state.name!,
-      onDelete: () => context.read<BranchBloc>().add(BranchEvent.deleteBranch(formCubit.toBranch())),
+      item: branchName,
+      onDelete: () => context.read<BranchBloc>().add(BranchEvent.deleteBranch(branchId, branchName)),
     );
   }
 
@@ -65,12 +68,14 @@ class BranchActions extends StatelessWidget with DialogMixin {
 
   void _onSave(BuildContext context) {
     final formCubit = context.read<BranchFormCubit>();
+    final formState = formCubit.state;
+
     formCubit.validate();
 
-    if (formKey.currentState?.validate() == true && formCubit.state.isFormValid) {
-      final branch = formCubit.toBranch();
+    if (formKey.currentState?.validate() == true && formState.isFormValid) {
+      final branch = formState.toBranch();
 
-      if (formCubit.state.id == null) {
+      if (branch.id == null) {
         context.read<BranchBloc>().add(BranchEvent.createBranch(branch));
       } else {
         context.read<BranchBloc>().add(BranchEvent.updateBranch(branch));

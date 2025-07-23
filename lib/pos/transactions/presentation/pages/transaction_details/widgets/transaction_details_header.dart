@@ -55,7 +55,7 @@ class TransactionDetailsHeader extends StatelessWidget {
                       ),
                       onClick: () => context
                           .read<ReceiptConfigBloc>()
-                          .add(ReceiptConfigEvent.getReceiptConfigByBranchId(transaction.branch.id)),
+                          .add(ReceiptConfigEvent.getReceiptConfigByBranchId(transaction.branch.id!)),
                       style: UIStyleButton.filled.style?.copyWith(
                         backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
                         overlayColor: UIStyleUtil.setColor(UIColors.borderMuted),

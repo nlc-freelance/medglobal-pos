@@ -15,6 +15,14 @@ class Strings {
   static const String subtitlePlaceholder =
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend urna ac massa consectetur, vel viverra sem volutpat.';
 
+// Product
+  static const newProduct = 'New Product';
+  static const productEmptyTitle = 'No products available';
+  static const productEmptySubtitle = 'You haven\'t added any products yet.';
+  static const productSearchNotFoundTitle = 'No Results Found';
+  static const productSearchNotFoundSubtitle = 'We couldn\'t find any product matching your search.';
+  static const defaultVariantName = 'default';
+
   // Tax Settings
   static const taxTitle = 'Tax Codes';
   static const taxSubtitle =

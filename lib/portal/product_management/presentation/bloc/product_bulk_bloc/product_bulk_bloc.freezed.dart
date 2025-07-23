@@ -19,20 +19,20 @@ mixin _$ProductBulkEvent {
   List<int> get ids => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<int> ids, Category category)
+    required TResult Function(List<int> ids, Category? category)
         bulkUpdateProduct,
     required TResult Function(List<int> ids) bulkDeleteProduct,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<int> ids, Category category)? bulkUpdateProduct,
+    TResult? Function(List<int> ids, Category? category)? bulkUpdateProduct,
     TResult? Function(List<int> ids)? bulkDeleteProduct,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<int> ids, Category category)? bulkUpdateProduct,
+    TResult Function(List<int> ids, Category? category)? bulkUpdateProduct,
     TResult Function(List<int> ids)? bulkDeleteProduct,
     required TResult orElse(),
   }) =>
@@ -103,7 +103,9 @@ abstract class _$$BulkUpdateProductImplCopyWith<$Res>
       __$$BulkUpdateProductImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<int> ids, Category category});
+  $Res call({List<int> ids, Category? category});
+
+  $CategoryCopyWith<$Res>? get category;
 }
 
 /// @nodoc
@@ -118,26 +120,37 @@ class __$$BulkUpdateProductImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? ids = null,
-    Object? category = null,
+    Object? category = freezed,
   }) {
     return _then(_$BulkUpdateProductImpl(
       ids: null == ids
           ? _value._ids
           : ids // ignore: cast_nullable_to_non_nullable
               as List<int>,
-      category: null == category
+      category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
-              as Category,
+              as Category?,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $CategoryCopyWith<$Res>? get category {
+    if (_value.category == null) {
+      return null;
+    }
+
+    return $CategoryCopyWith<$Res>(_value.category!, (value) {
+      return _then(_value.copyWith(category: value));
+    });
   }
 }
 
 /// @nodoc
 
 class _$BulkUpdateProductImpl implements _BulkUpdateProduct {
-  const _$BulkUpdateProductImpl(
-      {required final List<int> ids, required this.category})
+  const _$BulkUpdateProductImpl({required final List<int> ids, this.category})
       : _ids = ids;
 
   final List<int> _ids;
@@ -149,7 +162,7 @@ class _$BulkUpdateProductImpl implements _BulkUpdateProduct {
   }
 
   @override
-  final Category category;
+  final Category? category;
 
   @override
   String toString() {
@@ -180,7 +193,7 @@ class _$BulkUpdateProductImpl implements _BulkUpdateProduct {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<int> ids, Category category)
+    required TResult Function(List<int> ids, Category? category)
         bulkUpdateProduct,
     required TResult Function(List<int> ids) bulkDeleteProduct,
   }) {
@@ -190,7 +203,7 @@ class _$BulkUpdateProductImpl implements _BulkUpdateProduct {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<int> ids, Category category)? bulkUpdateProduct,
+    TResult? Function(List<int> ids, Category? category)? bulkUpdateProduct,
     TResult? Function(List<int> ids)? bulkDeleteProduct,
   }) {
     return bulkUpdateProduct?.call(ids, category);
@@ -199,7 +212,7 @@ class _$BulkUpdateProductImpl implements _BulkUpdateProduct {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<int> ids, Category category)? bulkUpdateProduct,
+    TResult Function(List<int> ids, Category? category)? bulkUpdateProduct,
     TResult Function(List<int> ids)? bulkDeleteProduct,
     required TResult orElse(),
   }) {
@@ -244,11 +257,11 @@ class _$BulkUpdateProductImpl implements _BulkUpdateProduct {
 abstract class _BulkUpdateProduct implements ProductBulkEvent {
   const factory _BulkUpdateProduct(
       {required final List<int> ids,
-      required final Category category}) = _$BulkUpdateProductImpl;
+      final Category? category}) = _$BulkUpdateProductImpl;
 
   @override
   List<int> get ids;
-  Category get category;
+  Category? get category;
   @override
   @JsonKey(ignore: true)
   _$$BulkUpdateProductImplCopyWith<_$BulkUpdateProductImpl> get copyWith =>
@@ -328,7 +341,7 @@ class _$BulkDeleteProductImpl implements _BulkDeleteProduct {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<int> ids, Category category)
+    required TResult Function(List<int> ids, Category? category)
         bulkUpdateProduct,
     required TResult Function(List<int> ids) bulkDeleteProduct,
   }) {
@@ -338,7 +351,7 @@ class _$BulkDeleteProductImpl implements _BulkDeleteProduct {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<int> ids, Category category)? bulkUpdateProduct,
+    TResult? Function(List<int> ids, Category? category)? bulkUpdateProduct,
     TResult? Function(List<int> ids)? bulkDeleteProduct,
   }) {
     return bulkDeleteProduct?.call(ids);
@@ -347,7 +360,7 @@ class _$BulkDeleteProductImpl implements _BulkDeleteProduct {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<int> ids, Category category)? bulkUpdateProduct,
+    TResult Function(List<int> ids, Category? category)? bulkUpdateProduct,
     TResult Function(List<int> ids)? bulkDeleteProduct,
     required TResult orElse(),
   }) {

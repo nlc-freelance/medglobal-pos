@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/utils/null_check_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/presentation/bloc/register_bloc/register_bloc.dart';
@@ -69,7 +70,7 @@ class _RegisterDataGridState extends State<RegisterDataGrid> {
                     paginatedData,
                     onPageChanged: ({required page, required size}) =>
                         context.read<PaginatedListBloc<Register>>().add(PaginatedListEvent<Register>.fetch(
-                              filters: PageQuery(
+                              query: PageQuery(
                                 page: page,
                                 size: size,
                               ),
@@ -119,7 +120,7 @@ class RegisterDataGridSource extends DataGridSource with DialogMixin {
           child: cellBuilder(
             colName: cell.columnName,
             cell: cell,
-            register: _registers.firstWhere((register) => register.id == row.getCells().first.value),
+            register: _registers.firstWhereOrNull((register) => register.id == row.getCells().first.value),
           ),
         );
       }).toList(),
@@ -129,7 +130,7 @@ class RegisterDataGridSource extends DataGridSource with DialogMixin {
   Widget cellBuilder({
     required String colName,
     required DataGridCell cell,
-    required Register register,
+    Register? register,
   }) =>
       switch (colName) {
         'register_name' => HoverBuilder(
@@ -161,24 +162,38 @@ class RegisterDataGridSource extends DataGridSource with DialogMixin {
         _ => UIText.dataGridText(cell.value.toString()),
       };
 
-  void _onEditRegister(Register register) {
-    _context.read<RegisterFormCubit>().initRegister(register);
-    showCustomDialog(
+  void _onEditRegister(Register? register) {
+    NullCheckUtil.checkAndCall<Register>(
       _context,
-      dialog: MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: _context.read<RegisterFormCubit>()),
-          BlocProvider.value(value: _context.read<RegisterBloc>()),
-        ],
-        child: const RegisterFormDialog(),
-      ),
+      value: register,
+      onValid: (register) {
+        _context.read<RegisterFormCubit>().loadRegister(register);
+        showCustomDialog(
+          _context,
+          dialog: MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: _context.read<RegisterFormCubit>()),
+              BlocProvider.value(value: _context.read<RegisterBloc>()),
+            ],
+            child: const RegisterFormDialog(),
+          ),
+        );
+      },
     );
   }
 
-  void _onDeleteRegister(Register register) => showDeleteDialog(
-        _context,
-        subject: 'POS Register',
-        item: register.name,
-        onDelete: () => _context.read<RegisterBloc>().add(RegisterEvent.deleteRegister(register)),
-      );
+  void _onDeleteRegister(Register? register) {
+    NullCheckUtil.checkAndCall<Register>(
+      _context,
+      value: register,
+      onValid: (register) {
+        showDeleteDialog(
+          _context,
+          subject: 'POS Register',
+          item: register.name,
+          onDelete: () => _context.read<RegisterBloc>().add(RegisterEvent.deleteRegister(register)),
+        );
+      },
+    );
+  }
 }

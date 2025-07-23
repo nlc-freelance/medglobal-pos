@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/receipt_config.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
@@ -107,7 +108,7 @@ class PrintUtil {
                       ),
                       SizedBox(height: 2),
                       Container(margin: const EdgeInsets.symmetric(vertical: 2), height: 0.9, color: PdfColors.black),
-                      ...(transaction.items ?? []).map(
+                      ...(transaction.items).map(
                         (item) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Column(
@@ -169,7 +170,7 @@ class PrintUtil {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          '${(transaction.items ?? []).length.toString()} ITEMS',
+                          '${(transaction.items).length.toString()} ITEMS',
                           style: theme.header3,
                         ),
                       ),

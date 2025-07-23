@@ -109,7 +109,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
       child: HoverBuilder(
         builder: (isHover) => Container(
           constraints: const BoxConstraints(minWidth: 150),
-          padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 16.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: highlight
@@ -156,7 +156,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
                           child: Assets.icons.close.svg(height: 22),
                         ),
                       )
-                    : Assets.icons.arrowDown.svg(height: 10),
+                    : Assets.icons.arrowDown.svg(),
             ],
           ),
         ),

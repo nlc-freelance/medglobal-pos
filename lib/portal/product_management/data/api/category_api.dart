@@ -1,27 +1,28 @@
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
-import 'package:medglobal_admin_portal/portal/product_management/data/dto/category_dto.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/category/category_dto.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/category/category_payload.dart';
 
 class CategoryApi {
   final BaseApiService _api;
 
   CategoryApi(this._api);
 
-  Future<CategoryDto> addNewCategory(String name) async {
+  Future<CategoryDto> createCategory(CategoryPayload payload) async {
     final response = await _api.post<CategoryDto>(
       ApiEndpoint.productCategories,
-      data: CategoryDto(name: name).toJson(),
+      data: payload.toJson(),
       fromJson: CategoryDto.fromJson,
     );
 
     return response.data;
   }
 
-  Future<PaginatedList<CategoryDto>> getCategories({required PageQuery filters}) async {
+  Future<PaginatedList<CategoryDto>> getCategories(PageQuery query) async {
     final response = await _api.getPaginated<CategoryDto>(
       ApiEndpoint.productCategories,
-      queryParams: filters.toJson(),
+      queryParams: query.toJson(),
       fromJson: CategoryDto.fromJson,
     );
 

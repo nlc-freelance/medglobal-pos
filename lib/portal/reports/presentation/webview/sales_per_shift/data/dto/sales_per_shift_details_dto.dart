@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/domain/entities/sales_per_shift_details.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/data/dto/response/register_dto.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/domain/entities/sales_per_shift_details.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register/register_dto.dart';
 
 part 'sales_per_shift_details_dto.g.dart';
 
@@ -14,7 +13,7 @@ class SalesPerShiftDetailsDto extends Equatable {
   @DateTimeConverter()
   final DateTime? closeTime;
   final String? branch;
-  final RegisterLiteDto? register;
+  final RegisterDto? register;
   final String? openedBy;
   final String? closedBy;
   @JsonKey(name: 'totalSalesCount')

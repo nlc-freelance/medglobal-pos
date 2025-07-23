@@ -20,6 +20,7 @@ class AppTextFormField extends StatelessWidget {
   final bool isObscured;
   final bool isRequired;
   final bool isReadOnly;
+  final FocusNode? focusNode;
 
   final String? Function(String?)? validator;
   final void Function(String value)? onChanged;
@@ -36,6 +37,7 @@ class AppTextFormField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.formatter,
+    this.focusNode,
   }) : layout = FieldLabelPosition.top;
 
   const AppTextFormField.left({
@@ -49,6 +51,7 @@ class AppTextFormField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.formatter,
+    this.focusNode,
   }) : layout = FieldLabelPosition.left;
 
   const AppTextFormField.noLabel({
@@ -62,11 +65,13 @@ class AppTextFormField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.formatter,
+    this.focusNode,
   }) : layout = FieldLabelPosition.none;
 
   @override
   Widget build(BuildContext context) {
     final textFormField = TextFormField(
+      focusNode: focusNode,
       enabled: !isReadOnly,
       controller: controller,
       onChanged: onChanged,
@@ -79,8 +84,8 @@ class AppTextFormField extends StatelessWidget {
         ),
         suffixIcon: isReadOnly ? Assets.icons.lock.svg(colorFilter: UIColors.textMuted.toColorFilter) : null,
         suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
-        fillColor: UIColors.borderMuted.withOpacity(0.5),
-        filled: isReadOnly,
+        fillColor: UIColors.borderMuted.withOpacity(isReadOnly ? 0.5 : 0.15),
+        filled: true,
         disabledBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           borderSide: BorderSide(color: UIColors.borderRegular),

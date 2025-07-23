@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/app_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/shared/dropdown_list.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/shared/dropdown_lazy_list.dart';
 import 'package:medglobal_admin_portal/core/widgets/overlay_builder.dart';
-import 'package:medglobal_admin_portal/gen/assets.gen.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 enum LabelPosition { top, left }
@@ -32,6 +32,7 @@ class AppDropdownFormField<T> extends StatefulWidget {
     required this.onChanged,
     required this.getName,
     this.anchor,
+    this.showSelectedItem = true,
     this.isMultiSelect = false,
     this.showSelectedItems = true,
     this.selectedItems,
@@ -51,6 +52,9 @@ class AppDropdownFormField<T> extends StatefulWidget {
   final void Function(T item) onChanged;
   final Anchor? anchor;
 
+  // SingleSelect
+  final bool showSelectedItem;
+
   // MultiSelect
   final bool isMultiSelect;
   final bool showSelectedItems;
@@ -68,6 +72,7 @@ class AppDropdownFormField<T> extends StatefulWidget {
     required String Function(T item) getName,
     required void Function(T item) onChanged,
     Anchor? anchor,
+    bool showSelectedItem = true,
     bool isMultiSelect = false,
     bool showSelectedItems = true,
     List<T>? selectedItems,
@@ -85,6 +90,7 @@ class AppDropdownFormField<T> extends StatefulWidget {
       getName: getName,
       onChanged: onChanged,
       anchor: anchor,
+      showSelectedItem: showSelectedItem,
       isMultiSelect: isMultiSelect,
       showSelectedItems: showSelectedItems,
       selectedItems: selectedItems,
@@ -144,8 +150,12 @@ class _DropdownFormFieldState<T> extends State<AppDropdownFormField<T>> {
   void initState() {
     super.initState();
     if (widget.value != null) _setValue(widget.value);
+
+    /// If the dropdown is lazy-loaded and the items list is empty,
+    /// trigger a fetch event to load the initial data.
     if (widget.type == DropdownListType.lazy) {
-      context.read<LazyListBloc<T>>().add(LazyListEvent<T>.fetch());
+      final lazyListBloc = context.read<LazyListBloc<T>>();
+      if (lazyListBloc.state.items.isEmpty) lazyListBloc.add(LazyListEvent<T>.fetch());
     }
   }
 
@@ -163,7 +173,7 @@ class _DropdownFormFieldState<T> extends State<AppDropdownFormField<T>> {
         label: widget.label,
         labelPosition: widget.labelPosition,
         isRequired: widget.isRequired,
-        onTap: () => setState(() => visible = true),
+        onTap: () => widget.isReadOnly ? {} : setState(() => visible = true),
         child: widget.isMultiSelect
             ? _MutliSelectDropdownContainer<T>(
                 hint: widget.hint,
@@ -172,10 +182,11 @@ class _DropdownFormFieldState<T> extends State<AppDropdownFormField<T>> {
                 onRemove: widget.onRemoveFromMultiSelect,
                 showSelectedItems: widget.showSelectedItems,
               )
-            : _DropdownFormFieldContainer(
+            : _SingleSelectDropdownContainer(
                 value: value == null ? null : widget.getName(value as T),
                 hint: widget.hint,
                 isReadOnly: widget.isReadOnly,
+                showSelectedItem: widget.showSelectedItem,
               ),
       ),
       follower: widget.type == DropdownListType.lazy
@@ -245,7 +256,7 @@ class _DropdownLabelFormField extends StatelessWidget {
       crossAxisAlignment: labelPosition == LabelPosition.top ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 4),
+          padding: const EdgeInsets.only(bottom: 6),
           child: Text.rich(
             TextSpan(
               text: label,
@@ -266,33 +277,37 @@ class _DropdownLabelFormField extends StatelessWidget {
   }
 }
 
-class _DropdownFormFieldContainer extends StatelessWidget {
-  const _DropdownFormFieldContainer({
+class _SingleSelectDropdownContainer extends StatelessWidget {
+  const _SingleSelectDropdownContainer({
     super.key,
     required this.hint,
     required this.isReadOnly,
     required this.value,
+    this.showSelectedItem = true,
   });
 
   final String hint;
   final bool isReadOnly;
   final String? value;
+  final bool showSelectedItem;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       readOnly: true,
       enabled: false,
-      controller: TextEditingController(text: value),
-      mouseCursor: SystemMouseCursors.click,
+      controller: TextEditingController(text: showSelectedItem ? value : null),
+      mouseCursor: isReadOnly ? null : SystemMouseCursors.click,
       showCursor: false,
       style: UIStyleText.chip.copyWith(color: UIColors.textDark),
       decoration: InputDecoration(
         hintText: hint,
-        suffixIcon: Assets.icons.arrowDown.svg(),
+        suffixIcon: isReadOnly
+            ? Assets.icons.lock.svg(colorFilter: UIColors.textMuted.toColorFilter)
+            : Assets.icons.arrowDown.svg(),
         suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
-        fillColor: UIColors.borderMuted.withOpacity(0.5),
-        filled: isReadOnly,
+        fillColor: UIColors.borderMuted.withOpacity(isReadOnly ? 0.5 : 0.15),
+        filled: true,
         disabledBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
           borderSide: BorderSide(color: UIColors.borderRegular),
@@ -321,14 +336,15 @@ class _MutliSelectDropdownContainer<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(minHeight: 40),
+      constraints: const BoxConstraints(minHeight: 42.5),
       width: double.infinity,
       padding: values?.isNotEmpty == true && showSelectedItems
           ? const EdgeInsets.fromLTRB(4, 4, 16, 4)
           : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        border: Border.all(color: UIColors.borderRegular),
-        borderRadius: BorderRadius.circular(12),
+        color: UIColors.borderMuted.withOpacity(0.15),
+        border: Border.all(color: UIColors.borderRegular.withOpacity(0.75)),
+        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

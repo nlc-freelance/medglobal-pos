@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/repository/branch_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
@@ -26,18 +27,17 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
     on<_DeleteBranch>(_onDeleteBranch);
   }
 
-  Future<void> _onGetDefaultReceipt(event, emit) async {
+  Future<void> _onGetDefaultReceipt(_GetDefaultReceipt event, Emitter<BranchState> emit) async {
     emit(const BranchState.initializingNewBranch());
 
     try {
-      final result = await _receiptTemplateRepository.getReceiptTemplates(filters: const PageQuery());
+      final result = await _receiptTemplateRepository.getReceiptTemplates(const PageQuery());
 
       result.fold(
         (failure) => emit(BranchState.failure(failure.message)),
         (data) {
           // Check if there's a user-defined default receipt template
           // If not, use the system default
-          // TODO: Check if BE has an endpoint that returns the default receipt template and the system default
           final userDefault = data.items.firstWhereOrNull((item) => item.isDefault);
           final systemDefault = data.items.firstWhere((item) => item.isSystemDefault);
 
@@ -53,7 +53,7 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
     }
   }
 
-  Future<void> _onGetBranchById(event, emit) async {
+  Future<void> _onGetBranchById(_GetBranchById event, Emitter<BranchState> emit) async {
     emit(const BranchState.loading());
     try {
       final result = await _branchRepository.getBranch(event.id);
@@ -67,42 +67,46 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
     }
   }
 
-  Future<void> _onCreateBranch(event, emit) async {
+  Future<void> _onCreateBranch(_CreateBranch event, Emitter<BranchState> emit) async {
     emit(const BranchState.processing());
     try {
-      final result = await _branchRepository.createBranch(event.branch);
+      final payload = BranchPayload.fromBranch(event.branch);
+      final result = await _branchRepository.createBranch(payload);
 
       result.fold(
         (failure) => emit(BranchState.failure(failure.message)),
-        (_) => emit(BranchState.success('${event.branch.name} successfully created.')),
+        (branch) => emit(BranchState.success('${branch.name} successfully created.')),
       );
     } catch (e) {
       emit(BranchState.failure(e.toString()));
     }
   }
 
-  Future<void> _onUpdateBranch(event, emit) async {
+  Future<void> _onUpdateBranch(_UpdateBranch event, Emitter<BranchState> emit) async {
     emit(const BranchState.processing());
     try {
-      final result = await _branchRepository.updateBranch(event.branch);
+      final branch = event.branch;
+      final payload = BranchPayload.fromBranch(branch);
+
+      final result = await _branchRepository.updateBranch(branch.id!, payload);
 
       result.fold(
         (failure) => emit(BranchState.failure(failure.message)),
-        (_) => emit(BranchState.success('${event.branch.name} successfully updated.')),
+        (branch) => emit(BranchState.success('${branch.name} successfully updated.')),
       );
     } catch (e) {
       emit(BranchState.failure(e.toString()));
     }
   }
 
-  Future<void> _onDeleteBranch(event, emit) async {
+  Future<void> _onDeleteBranch(_DeleteBranch event, Emitter<BranchState> emit) async {
     emit(const BranchState.processing());
     try {
-      final result = await _branchRepository.deleteBranch(event.branch.id);
+      final result = await _branchRepository.deleteBranch(event.id);
 
       result.fold(
         (failure) => emit(BranchState.failure('Deletion failed. ${failure.message}')),
-        (_) => emit(BranchState.success('${event.branch.name} successfully deleted.')),
+        (_) => emit(BranchState.success('${event.name} successfully deleted.')),
       );
     } catch (e) {
       emit(BranchState.failure(e.toString()));

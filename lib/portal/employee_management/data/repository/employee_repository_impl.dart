@@ -13,9 +13,9 @@ class EmployeeRepositoryImpl implements EmployeeRepository {
   EmployeeRepositoryImpl(this._employeeApi);
 
   @override
-  Future<Either<Failure, PaginatedList<Employee>>> getEmployees({required PageQuery filters}) async {
+  Future<Either<Failure, PaginatedList<Employee>>> getEmployees(PageQuery query) async {
     try {
-      final responseDto = await _employeeApi.getEmployees(filters);
+      final responseDto = await _employeeApi.getEmployees(query);
 
       return Right(responseDto.convert((item) => item.toDomain()));
     } on ServerException catch (e) {

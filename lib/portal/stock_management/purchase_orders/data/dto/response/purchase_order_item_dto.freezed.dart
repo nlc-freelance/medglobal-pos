@@ -21,7 +21,7 @@ PurchaseOrderItemDto _$PurchaseOrderItemDtoFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PurchaseOrderItemDto {
   int get id => throw _privateConstructorUsedError;
-  VariantPartialDto get variant => throw _privateConstructorUsedError;
+  ProductVariantDto? get variant => throw _privateConstructorUsedError;
   int? get orderedQuantity => throw _privateConstructorUsedError;
   int? get actualQuantity => throw _privateConstructorUsedError;
   double get supplierPrice => throw _privateConstructorUsedError;
@@ -41,13 +41,11 @@ abstract class $PurchaseOrderItemDtoCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
-      VariantPartialDto variant,
+      ProductVariantDto? variant,
       int? orderedQuantity,
       int? actualQuantity,
       double supplierPrice,
       double? price});
-
-  $VariantPartialDtoCopyWith<$Res> get variant;
 }
 
 /// @nodoc
@@ -65,7 +63,7 @@ class _$PurchaseOrderItemDtoCopyWithImpl<$Res,
   @override
   $Res call({
     Object? id = null,
-    Object? variant = null,
+    Object? variant = freezed,
     Object? orderedQuantity = freezed,
     Object? actualQuantity = freezed,
     Object? supplierPrice = null,
@@ -76,10 +74,10 @@ class _$PurchaseOrderItemDtoCopyWithImpl<$Res,
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      variant: null == variant
+      variant: freezed == variant
           ? _value.variant
           : variant // ignore: cast_nullable_to_non_nullable
-              as VariantPartialDto,
+              as ProductVariantDto?,
       orderedQuantity: freezed == orderedQuantity
           ? _value.orderedQuantity
           : orderedQuantity // ignore: cast_nullable_to_non_nullable
@@ -98,14 +96,6 @@ class _$PurchaseOrderItemDtoCopyWithImpl<$Res,
               as double?,
     ) as $Val);
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $VariantPartialDtoCopyWith<$Res> get variant {
-    return $VariantPartialDtoCopyWith<$Res>(_value.variant, (value) {
-      return _then(_value.copyWith(variant: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -118,14 +108,11 @@ abstract class _$$PurchaseOrderItemDtoImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
-      VariantPartialDto variant,
+      ProductVariantDto? variant,
       int? orderedQuantity,
       int? actualQuantity,
       double supplierPrice,
       double? price});
-
-  @override
-  $VariantPartialDtoCopyWith<$Res> get variant;
 }
 
 /// @nodoc
@@ -140,7 +127,7 @@ class __$$PurchaseOrderItemDtoImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? variant = null,
+    Object? variant = freezed,
     Object? orderedQuantity = freezed,
     Object? actualQuantity = freezed,
     Object? supplierPrice = null,
@@ -151,10 +138,10 @@ class __$$PurchaseOrderItemDtoImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      variant: null == variant
+      variant: freezed == variant
           ? _value.variant
           : variant // ignore: cast_nullable_to_non_nullable
-              as VariantPartialDto,
+              as ProductVariantDto?,
       orderedQuantity: freezed == orderedQuantity
           ? _value.orderedQuantity
           : orderedQuantity // ignore: cast_nullable_to_non_nullable
@@ -180,7 +167,7 @@ class __$$PurchaseOrderItemDtoImplCopyWithImpl<$Res>
 class _$PurchaseOrderItemDtoImpl extends _PurchaseOrderItemDto {
   const _$PurchaseOrderItemDtoImpl(
       {required this.id,
-      required this.variant,
+      this.variant,
       this.orderedQuantity,
       this.actualQuantity,
       required this.supplierPrice,
@@ -193,7 +180,7 @@ class _$PurchaseOrderItemDtoImpl extends _PurchaseOrderItemDto {
   @override
   final int id;
   @override
-  final VariantPartialDto variant;
+  final ProductVariantDto? variant;
   @override
   final int? orderedQuantity;
   @override
@@ -248,7 +235,7 @@ class _$PurchaseOrderItemDtoImpl extends _PurchaseOrderItemDto {
 abstract class _PurchaseOrderItemDto extends PurchaseOrderItemDto {
   const factory _PurchaseOrderItemDto(
       {required final int id,
-      required final VariantPartialDto variant,
+      final ProductVariantDto? variant,
       final int? orderedQuantity,
       final int? actualQuantity,
       required final double supplierPrice,
@@ -261,7 +248,7 @@ abstract class _PurchaseOrderItemDto extends PurchaseOrderItemDto {
   @override
   int get id;
   @override
-  VariantPartialDto get variant;
+  ProductVariantDto? get variant;
   @override
   int? get orderedQuantity;
   @override

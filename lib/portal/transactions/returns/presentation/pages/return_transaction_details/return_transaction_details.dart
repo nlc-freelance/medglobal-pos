@@ -21,7 +21,7 @@ class ReturnTransactionDetails extends StatelessWidget {
     return BlocConsumer<ReturnRemoteCubit, ReturnRemoteState>(
       listener: (context, state) {
         if (state is ReturnSuccess) {
-          context.read<ReturnCubit>().setReturn(state.transaction);
+          context.read<ReturnCubit>().setReturnItems(state.transaction.items);
           SnackbarUtil.success(context, 'Return has been successfully completed.');
 
           context.read<ReturnTransactionListCubit>().getTransactions();
@@ -80,7 +80,7 @@ class ReturnTransactionDetails extends StatelessWidget {
                     const UIVerticalSpace(40),
                     ReturnTransactionItemsDataGrid(transaction),
                     const UIVerticalSpace(40),
-                    if (transaction.status == ReturnStatus.awaiting_action)
+                    if (transaction.status == ReturnStatus.awaitingAction)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

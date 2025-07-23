@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/product_management/data/dto/variant_dto.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/variant/variant_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 
@@ -54,7 +54,7 @@ part 'purchase_order_item_dto.g.dart';
 class PurchaseOrderItemDto with _$PurchaseOrderItemDto {
   const factory PurchaseOrderItemDto({
     required int id,
-    required VariantPartialDto variant,
+    ProductVariantDto? variant,
     int? orderedQuantity,
     int? actualQuantity,
     required double supplierPrice,
@@ -67,10 +67,10 @@ class PurchaseOrderItemDto with _$PurchaseOrderItemDto {
 
   PurchaseOrderItem toDomain() => PurchaseOrderItem(
         id: id,
-        variantId: variant.id!,
-        name: variant.name == 'default' ? variant.product!.name : '${variant.product?.name} ${variant.name}',
-        sku: variant.sku,
-        quantityOnHand: variant.currentStock,
+        variantId: variant?.id,
+        name: variant?.name == 'default' ? variant?.product!.name : '${variant?.product?.name} ${variant?.name}',
+        sku: variant?.sku,
+        quantityOnHand: variant?.qtyOnHand,
         quantityOrdered: orderedQuantity,
         quantityReceived: actualQuantity,
         supplierPrice: supplierPrice,

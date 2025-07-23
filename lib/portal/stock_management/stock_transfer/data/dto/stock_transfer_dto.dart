@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/data/dto/stock_transfer_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
@@ -12,9 +13,9 @@ part 'stock_transfer_dto.g.dart';
 class StockTransferDto extends Equatable {
   final int? id;
   @JsonKey(name: 'fromStore')
-  final BranchLiteDto? sourceBranch;
+  final BranchDto? sourceBranch;
   @JsonKey(name: 'toStore')
-  final BranchLiteDto? destinationBranch;
+  final BranchDto? destinationBranch;
   final String? status;
   @JsonKey(name: 'stockTransferDetails')
   final List<StockTransferItemDto>? items;
@@ -46,8 +47,8 @@ class StockTransferDto extends Equatable {
 
   StockTransfer toEntity() => StockTransfer(
         id: id,
-        sourceBranch: sourceBranch,
-        destinationBranch: destinationBranch,
+        sourceBranch: sourceBranch == null ? null : BranchMapper.fromDto(sourceBranch!),
+        destinationBranch: destinationBranch == null ? null : BranchMapper.fromDto(destinationBranch!),
         status: StatusMapper.status(status),
         items: items?.map((item) => item.toEntity()).toList() ?? [],
         completedAt: completedAt,

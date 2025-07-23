@@ -12,7 +12,7 @@ part 'stock_return.g.dart';
 @JsonSerializable()
 class StockReturn extends Equatable {
   final int? id;
-  final BranchLite? branch;
+  final Branch? branch;
   final Supplier? supplier;
   final StockOrderStatus? status;
   final double? totalAmount;

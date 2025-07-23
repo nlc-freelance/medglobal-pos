@@ -29,6 +29,7 @@ mixin _$BranchFormState {
   String? get businessRegistrationNumber => throw _privateConstructorUsedError;
   String? get vatIdNumber => throw _privateConstructorUsedError;
   ReceiptTemplate? get receiptTemplate => throw _privateConstructorUsedError;
+  bool get isReceiptTemplateValid => throw _privateConstructorUsedError;
   bool get isFormValid => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -56,6 +57,7 @@ abstract class $BranchFormStateCopyWith<$Res> {
       String? businessRegistrationNumber,
       String? vatIdNumber,
       ReceiptTemplate? receiptTemplate,
+      bool isReceiptTemplateValid,
       bool isFormValid});
 
   $ReceiptTemplateCopyWith<$Res>? get receiptTemplate;
@@ -87,6 +89,7 @@ class _$BranchFormStateCopyWithImpl<$Res, $Val extends BranchFormState>
     Object? businessRegistrationNumber = freezed,
     Object? vatIdNumber = freezed,
     Object? receiptTemplate = freezed,
+    Object? isReceiptTemplateValid = null,
     Object? isFormValid = null,
   }) {
     return _then(_value.copyWith(
@@ -142,6 +145,10 @@ class _$BranchFormStateCopyWithImpl<$Res, $Val extends BranchFormState>
           ? _value.receiptTemplate
           : receiptTemplate // ignore: cast_nullable_to_non_nullable
               as ReceiptTemplate?,
+      isReceiptTemplateValid: null == isReceiptTemplateValid
+          ? _value.isReceiptTemplateValid
+          : isReceiptTemplateValid // ignore: cast_nullable_to_non_nullable
+              as bool,
       isFormValid: null == isFormValid
           ? _value.isFormValid
           : isFormValid // ignore: cast_nullable_to_non_nullable
@@ -184,6 +191,7 @@ abstract class _$$BranchFormStateImplCopyWith<$Res>
       String? businessRegistrationNumber,
       String? vatIdNumber,
       ReceiptTemplate? receiptTemplate,
+      bool isReceiptTemplateValid,
       bool isFormValid});
 
   @override
@@ -214,6 +222,7 @@ class __$$BranchFormStateImplCopyWithImpl<$Res>
     Object? businessRegistrationNumber = freezed,
     Object? vatIdNumber = freezed,
     Object? receiptTemplate = freezed,
+    Object? isReceiptTemplateValid = null,
     Object? isFormValid = null,
   }) {
     return _then(_$BranchFormStateImpl(
@@ -269,6 +278,10 @@ class __$$BranchFormStateImplCopyWithImpl<$Res>
           ? _value.receiptTemplate
           : receiptTemplate // ignore: cast_nullable_to_non_nullable
               as ReceiptTemplate?,
+      isReceiptTemplateValid: null == isReceiptTemplateValid
+          ? _value.isReceiptTemplateValid
+          : isReceiptTemplateValid // ignore: cast_nullable_to_non_nullable
+              as bool,
       isFormValid: null == isFormValid
           ? _value.isFormValid
           : isFormValid // ignore: cast_nullable_to_non_nullable
@@ -279,7 +292,7 @@ class __$$BranchFormStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$BranchFormStateImpl extends _BranchFormState {
+class _$BranchFormStateImpl implements _BranchFormState {
   const _$BranchFormStateImpl(
       {this.id,
       this.name,
@@ -294,8 +307,8 @@ class _$BranchFormStateImpl extends _BranchFormState {
       this.businessRegistrationNumber,
       this.vatIdNumber,
       this.receiptTemplate,
-      this.isFormValid = true})
-      : super._();
+      this.isReceiptTemplateValid = true,
+      this.isFormValid = true});
 
   @override
   final int? id;
@@ -325,11 +338,14 @@ class _$BranchFormStateImpl extends _BranchFormState {
   final ReceiptTemplate? receiptTemplate;
   @override
   @JsonKey()
+  final bool isReceiptTemplateValid;
+  @override
+  @JsonKey()
   final bool isFormValid;
 
   @override
   String toString() {
-    return 'BranchFormState(id: $id, name: $name, phone: $phone, email: $email, street1: $street1, street2: $street2, city: $city, state: $state, postalCode: $postalCode, country: $country, businessRegistrationNumber: $businessRegistrationNumber, vatIdNumber: $vatIdNumber, receiptTemplate: $receiptTemplate, isFormValid: $isFormValid)';
+    return 'BranchFormState(id: $id, name: $name, phone: $phone, email: $email, street1: $street1, street2: $street2, city: $city, state: $state, postalCode: $postalCode, country: $country, businessRegistrationNumber: $businessRegistrationNumber, vatIdNumber: $vatIdNumber, receiptTemplate: $receiptTemplate, isReceiptTemplateValid: $isReceiptTemplateValid, isFormValid: $isFormValid)';
   }
 
   @override
@@ -356,6 +372,8 @@ class _$BranchFormStateImpl extends _BranchFormState {
                 other.vatIdNumber == vatIdNumber) &&
             (identical(other.receiptTemplate, receiptTemplate) ||
                 other.receiptTemplate == receiptTemplate) &&
+            (identical(other.isReceiptTemplateValid, isReceiptTemplateValid) ||
+                other.isReceiptTemplateValid == isReceiptTemplateValid) &&
             (identical(other.isFormValid, isFormValid) ||
                 other.isFormValid == isFormValid));
   }
@@ -376,6 +394,7 @@ class _$BranchFormStateImpl extends _BranchFormState {
       businessRegistrationNumber,
       vatIdNumber,
       receiptTemplate,
+      isReceiptTemplateValid,
       isFormValid);
 
   @JsonKey(ignore: true)
@@ -386,7 +405,7 @@ class _$BranchFormStateImpl extends _BranchFormState {
           this, _$identity);
 }
 
-abstract class _BranchFormState extends BranchFormState {
+abstract class _BranchFormState implements BranchFormState {
   const factory _BranchFormState(
       {final int? id,
       final String? name,
@@ -401,8 +420,8 @@ abstract class _BranchFormState extends BranchFormState {
       final String? businessRegistrationNumber,
       final String? vatIdNumber,
       final ReceiptTemplate? receiptTemplate,
+      final bool isReceiptTemplateValid,
       final bool isFormValid}) = _$BranchFormStateImpl;
-  const _BranchFormState._() : super._();
 
   @override
   int? get id;
@@ -430,6 +449,8 @@ abstract class _BranchFormState extends BranchFormState {
   String? get vatIdNumber;
   @override
   ReceiptTemplate? get receiptTemplate;
+  @override
+  bool get isReceiptTemplateValid;
   @override
   bool get isFormValid;
   @override

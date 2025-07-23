@@ -28,7 +28,7 @@ class EmployeeActions extends StatelessWidget with DialogMixin {
         children: [
           BlocBuilder<EmployeeBloc, EmployeeState>(
             builder: (builderContext, state) => state.maybeWhen(
-              failure: (message) => PageErrorNotice(message: message),
+              failure: (message) => PageErrorBanner(message: message),
               orElse: () => const SizedBox(),
             ),
           ),

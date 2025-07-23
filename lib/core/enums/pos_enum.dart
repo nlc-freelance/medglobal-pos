@@ -20,4 +20,4 @@ enum DiscountCategory {
   const DiscountCategory(this.label, this.value);
 }
 
-enum DiscountType { PESO, PERCENT }
+enum DiscountType { peso, percentage }

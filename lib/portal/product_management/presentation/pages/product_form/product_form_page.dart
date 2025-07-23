@@ -4,13 +4,14 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/bloc/product_bloc/product_bloc.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/bloc/product_form_cubit/product_form_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/bloc/variant_form_cubit/variant_form_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_form/widgets/product/product_form_view.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form_cubit/product_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_cubit/variant_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_form/widgets/product_form_view.dart';
 
 class ProductFormPage extends StatelessWidget {
   const ProductFormPage({super.key, this.id});
@@ -23,6 +24,7 @@ class ProductFormPage extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => ProductFormCubit()),
         BlocProvider(create: (context) => VariantFormCubit()),
+        BlocProvider(create: (context) => VariantFormUiCubit()),
         BlocProvider(create: (context) => GetIt.I<ProductBloc>()),
       ],
       child: ProductForm(id: id),
@@ -41,15 +43,25 @@ class ProductForm extends StatefulWidget {
 
 class _ProductFormState extends State<ProductForm> {
   late final ProductFormCubit _productFormCubit;
+  late final VariantFormCubit _variantFormCubit;
 
   @override
   void initState() {
     super.initState();
     _productFormCubit = context.read<ProductFormCubit>();
+    _variantFormCubit = context.read<VariantFormCubit>();
 
     if (_isEditMode) {
       final productId = int.parse(widget.id!);
       context.read<ProductBloc>().add(ProductEvent.getProductById(productId));
+    } else {
+      /// If we are in create mode, we need to initialize a default variant in our VariantFormCubit
+      _variantFormCubit.initDefaultVariant();
+
+      /// Then add the default variant to the product form state.
+      /// This is necessary because a product expects at least one variant (default) to be always present.
+      final defaultVariant = _variantFormCubit.state.variant;
+      _productFormCubit.addVariant(defaultVariant);
     }
   }
 
@@ -75,17 +87,14 @@ class _ProductFormState extends State<ProductForm> {
   bool get _isEditMode => widget.id != null;
 
   void _onSuccess(BuildContext context, String message) {
-    // Reload the list of products
-    context.read<PaginatedListBloc<Product>>().add(const PaginatedListEvent.fetch());
-
-    ToastNotification.success(context, message);
     PageLoader.close();
-
+    SnackbarUtil.success(context, message);
+    context.read<PaginatedListBloc<Product>>().add(const PaginatedListEvent.fetch());
     context.goNamed(SideMenuTreeItem.PRODUCTS.name);
   }
 
   void _onFailure(BuildContext context, String message) {
     PageLoader.close();
-    ToastNotification.error(context, message);
+    SnackbarUtil.error(context, message);
   }
 }

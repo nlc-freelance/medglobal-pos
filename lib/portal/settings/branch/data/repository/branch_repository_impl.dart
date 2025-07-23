@@ -1,91 +1,60 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch_api.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/response/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch_api_service.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/repository/branch_repository.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/request/create_branch_dto.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/request/update_branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/receipt_config.dart';
 
-class BranchRepositoryImpl implements BranchRepository {
-  final BranchApi _branchApi;
+/// Concrete implementation of [BranchRepository] that uses [BranchApiService] for API calls
+/// and [BaseRepository] to centralize error handling.
+class BranchRepositoryImpl extends BaseRepository implements BranchRepository {
+  final BranchApiService _api;
 
-  BranchRepositoryImpl(this._branchApi);
+  BranchRepositoryImpl({required BranchApiService api}) : _api = api;
 
   @override
-  Future<Either<Failure, PaginatedList<Branch>>> getBranches({required PageQuery filters}) async {
-    try {
-      final responseDto = await _branchApi.getBranches(filters: filters);
-      return Right(responseDto.convert((item) => item.toDomain()));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+  Future<Either<Failure, PaginatedList<Branch>>> getBranches(PageQuery query) async {
+    return call(() async {
+      final response = await _api.getBranches(query);
+      return response.convert((dto) => BranchMapper.fromDto(dto));
+    });
   }
 
   @override
   Future<Either<Failure, Branch>> getBranch(int id) async {
-    try {
-      final responseDto = await _branchApi.getBranchById(id);
-
-      return Right(responseDto.toEntity());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+    return call(() async {
+      final response = await _api.getBranchById(id);
+      return BranchMapper.fromDto(response);
+    });
   }
 
   @override
-  Future<Either<Failure, Branch>> createBranch(Branch branch) async {
-    try {
-      final requestDto = CreateBranchDto.fromDomain(branch);
-      final responseDto = await _branchApi.createBranch(requestDto);
-
-      return Right(responseDto.toEntity());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+  Future<Either<Failure, Branch>> createBranch(BranchPayload payload) async {
+    return call(() async {
+      final response = await _api.createBranch(payload);
+      return BranchMapper.fromDto(response);
+    });
   }
 
   @override
-  Future<Either<Failure, Branch>> updateBranch(Branch branch) async {
-    try {
-      final requestDto = UpdateBranchDto.fromDomain(branch);
-      final responseDto = await _branchApi.updateBranch(requestDto);
-
-      return Right(responseDto.toEntity());
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+  Future<Either<Failure, Branch>> updateBranch(int id, BranchPayload payload) async {
+    return call(() async {
+      final response = await _api.updateBranch(id, payload);
+      return BranchMapper.fromDto(response);
+    });
   }
 
   @override
   Future<Either<Failure, void>> deleteBranch(int id) async {
-    try {
-      return Right(await _branchApi.deleteBranch(id));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+    return call(() async => await _api.deleteBranch(id));
   }
 
   @override
   Future<Either<Failure, ReceiptConfig>> getReceiptConfigByBranchId(int id) async {
-    try {
-      return Right(await _branchApi.getReceiptConfigByBranchId(id));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    }
+    return call(() async => await _api.getReceiptConfigByBranchId(id));
   }
 }

@@ -4,8 +4,8 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/cubit/shift_transactions/shift_transaction_page_size_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/cubit/shift_transactions/shift_transactions_cubit.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/bloc/transaction_bloc.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -38,7 +38,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
     return BlocConsumer<ShiftTransactionsCubit, ShiftTransactionsState>(
       listener: (context, state) {
         if (state is ShiftTransactionsLoaded) {
-          transactions = state.data.items ?? [];
+          transactions = state.data.items;
           _shiftTransactions = ShiftTransactionsDataSource(transactions, context);
         }
       },
@@ -82,7 +82,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
                 ),
               ),
               const UIVerticalSpace(16),
-              if (state.data.items?.isNotEmpty == true)
+              if (state.data.items.isNotEmpty == true)
 
                 /// TODO: Extract pager to its own widget
                 Row(
@@ -109,9 +109,9 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
                           /// To avoid, use the [totalPage], [totalCount] and the [rowsPerPage] selected to check
                           ///  if the page to pass in the request will be greater than the [totalPage] of our data.
                           /// If it is greater than the actual total page, then reset it to 1.
-                          if (state.data.totalCount! <= value ||
-                              state.data.totalPages! + 1 >
-                                  ((state.data.totalCount! + (_rowsPerPage - 1)) / _rowsPerPage)) {
+                          if (state.data.totalCount <= value ||
+                              state.data.totalPages + 1 >
+                                  ((state.data.totalCount + (_rowsPerPage - 1)) / _rowsPerPage)) {
                             context.read<ShiftTransactionsCubit>().getTransactions(
                                   page: 1,
                                   size: _rowsPerPage,
@@ -119,7 +119,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
                                 );
                           } else {
                             context.read<ShiftTransactionsCubit>().getTransactions(
-                                  page: state.data.currentPage!,
+                                  page: state.data.currentPage,
                                   size: _rowsPerPage,
                                   shiftId: shiftId,
                                 );
@@ -131,7 +131,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
                     ),
                     const UIHorizontalSpace(16),
                     UIText.labelMedium(
-                      'Viewing ${(state.data.currentPage! - 1) * _rowsPerPage + 1} - ${state.data.currentPage! * _rowsPerPage > state.data.totalCount! ? state.data.totalCount! : state.data.currentPage! * _rowsPerPage} of ${state.data.totalCount} records',
+                      'Viewing ${(state.data.currentPage - 1) * _rowsPerPage + 1} - ${state.data.currentPage * _rowsPerPage > state.data.totalCount ? state.data.totalCount : state.data.currentPage * _rowsPerPage} of ${state.data.totalCount} records',
                       color: UIColors.textLight,
                     ),
                     const Spacer(),
@@ -159,7 +159,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
                       onPressed: () {
                         if (state.data.currentPage != 1) {
                           context.read<ShiftTransactionsCubit>().getTransactions(
-                                page: state.data.currentPage! - 1,
+                                page: state.data.currentPage - 1,
                                 size: _rowsPerPage,
                                 shiftId: shiftId,
                               );
@@ -174,7 +174,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
                       onPressed: () {
                         if (state.data.currentPage != state.data.totalPages) {
                           context.read<ShiftTransactionsCubit>().getTransactions(
-                                page: state.data.currentPage! + 1,
+                                page: state.data.currentPage + 1,
                                 size: _rowsPerPage,
                                 shiftId: shiftId,
                               );
@@ -191,7 +191,7 @@ class _ShiftTransactionPaginatedDataGridState extends State<ShiftTransactionPagi
                       onPressed: () {
                         if (state.data.currentPage != state.data.totalPages) {
                           context.read<ShiftTransactionsCubit>().getTransactions(
-                                page: state.data.totalPages!,
+                                page: state.data.totalPages,
                                 size: _rowsPerPage,
                                 shiftId: shiftId,
                               );

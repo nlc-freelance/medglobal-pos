@@ -21,7 +21,7 @@ mixin _$ProductEvent {
     required TResult Function(int id) getProductById,
     required TResult Function(Product product) createProduct,
     required TResult Function(Product product) updateProduct,
-    required TResult Function(Product product) deleteProduct,
+    required TResult Function(int productId, String productName) deleteProduct,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -29,7 +29,7 @@ mixin _$ProductEvent {
     TResult? Function(int id)? getProductById,
     TResult? Function(Product product)? createProduct,
     TResult? Function(Product product)? updateProduct,
-    TResult? Function(Product product)? deleteProduct,
+    TResult? Function(int productId, String productName)? deleteProduct,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -37,7 +37,7 @@ mixin _$ProductEvent {
     TResult Function(int id)? getProductById,
     TResult Function(Product product)? createProduct,
     TResult Function(Product product)? updateProduct,
-    TResult Function(Product product)? deleteProduct,
+    TResult Function(int productId, String productName)? deleteProduct,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -154,7 +154,7 @@ class _$GetProductByIdImpl implements _GetProductById {
     required TResult Function(int id) getProductById,
     required TResult Function(Product product) createProduct,
     required TResult Function(Product product) updateProduct,
-    required TResult Function(Product product) deleteProduct,
+    required TResult Function(int productId, String productName) deleteProduct,
   }) {
     return getProductById(id);
   }
@@ -165,7 +165,7 @@ class _$GetProductByIdImpl implements _GetProductById {
     TResult? Function(int id)? getProductById,
     TResult? Function(Product product)? createProduct,
     TResult? Function(Product product)? updateProduct,
-    TResult? Function(Product product)? deleteProduct,
+    TResult? Function(int productId, String productName)? deleteProduct,
   }) {
     return getProductById?.call(id);
   }
@@ -176,7 +176,7 @@ class _$GetProductByIdImpl implements _GetProductById {
     TResult Function(int id)? getProductById,
     TResult Function(Product product)? createProduct,
     TResult Function(Product product)? updateProduct,
-    TResult Function(Product product)? deleteProduct,
+    TResult Function(int productId, String productName)? deleteProduct,
     required TResult orElse(),
   }) {
     if (getProductById != null) {
@@ -309,7 +309,7 @@ class _$CreateProductImpl implements _CreateProduct {
     required TResult Function(int id) getProductById,
     required TResult Function(Product product) createProduct,
     required TResult Function(Product product) updateProduct,
-    required TResult Function(Product product) deleteProduct,
+    required TResult Function(int productId, String productName) deleteProduct,
   }) {
     return createProduct(product);
   }
@@ -320,7 +320,7 @@ class _$CreateProductImpl implements _CreateProduct {
     TResult? Function(int id)? getProductById,
     TResult? Function(Product product)? createProduct,
     TResult? Function(Product product)? updateProduct,
-    TResult? Function(Product product)? deleteProduct,
+    TResult? Function(int productId, String productName)? deleteProduct,
   }) {
     return createProduct?.call(product);
   }
@@ -331,7 +331,7 @@ class _$CreateProductImpl implements _CreateProduct {
     TResult Function(int id)? getProductById,
     TResult Function(Product product)? createProduct,
     TResult Function(Product product)? updateProduct,
-    TResult Function(Product product)? deleteProduct,
+    TResult Function(int productId, String productName)? deleteProduct,
     required TResult orElse(),
   }) {
     if (createProduct != null) {
@@ -464,7 +464,7 @@ class _$UpdateProductImpl implements _UpdateProduct {
     required TResult Function(int id) getProductById,
     required TResult Function(Product product) createProduct,
     required TResult Function(Product product) updateProduct,
-    required TResult Function(Product product) deleteProduct,
+    required TResult Function(int productId, String productName) deleteProduct,
   }) {
     return updateProduct(product);
   }
@@ -475,7 +475,7 @@ class _$UpdateProductImpl implements _UpdateProduct {
     TResult? Function(int id)? getProductById,
     TResult? Function(Product product)? createProduct,
     TResult? Function(Product product)? updateProduct,
-    TResult? Function(Product product)? deleteProduct,
+    TResult? Function(int productId, String productName)? deleteProduct,
   }) {
     return updateProduct?.call(product);
   }
@@ -486,7 +486,7 @@ class _$UpdateProductImpl implements _UpdateProduct {
     TResult Function(int id)? getProductById,
     TResult Function(Product product)? createProduct,
     TResult Function(Product product)? updateProduct,
-    TResult Function(Product product)? deleteProduct,
+    TResult Function(int productId, String productName)? deleteProduct,
     required TResult orElse(),
   }) {
     if (updateProduct != null) {
@@ -548,9 +548,7 @@ abstract class _$$DeleteProductImplCopyWith<$Res> {
           _$DeleteProductImpl value, $Res Function(_$DeleteProductImpl) then) =
       __$$DeleteProductImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({Product product});
-
-  $ProductCopyWith<$Res> get product;
+  $Res call({int productId, String productName});
 }
 
 /// @nodoc
@@ -564,36 +562,35 @@ class __$$DeleteProductImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? product = null,
+    Object? productId = null,
+    Object? productName = null,
   }) {
     return _then(_$DeleteProductImpl(
-      null == product
-          ? _value.product
-          : product // ignore: cast_nullable_to_non_nullable
-              as Product,
+      null == productId
+          ? _value.productId
+          : productId // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == productName
+          ? _value.productName
+          : productName // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $ProductCopyWith<$Res> get product {
-    return $ProductCopyWith<$Res>(_value.product, (value) {
-      return _then(_value.copyWith(product: value));
-    });
   }
 }
 
 /// @nodoc
 
 class _$DeleteProductImpl implements _DeleteProduct {
-  const _$DeleteProductImpl(this.product);
+  const _$DeleteProductImpl(this.productId, this.productName);
 
   @override
-  final Product product;
+  final int productId;
+  @override
+  final String productName;
 
   @override
   String toString() {
-    return 'ProductEvent.deleteProduct(product: $product)';
+    return 'ProductEvent.deleteProduct(productId: $productId, productName: $productName)';
   }
 
   @override
@@ -601,11 +598,14 @@ class _$DeleteProductImpl implements _DeleteProduct {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DeleteProductImpl &&
-            (identical(other.product, product) || other.product == product));
+            (identical(other.productId, productId) ||
+                other.productId == productId) &&
+            (identical(other.productName, productName) ||
+                other.productName == productName));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, product);
+  int get hashCode => Object.hash(runtimeType, productId, productName);
 
   @JsonKey(ignore: true)
   @override
@@ -619,9 +619,9 @@ class _$DeleteProductImpl implements _DeleteProduct {
     required TResult Function(int id) getProductById,
     required TResult Function(Product product) createProduct,
     required TResult Function(Product product) updateProduct,
-    required TResult Function(Product product) deleteProduct,
+    required TResult Function(int productId, String productName) deleteProduct,
   }) {
-    return deleteProduct(product);
+    return deleteProduct(productId, productName);
   }
 
   @override
@@ -630,9 +630,9 @@ class _$DeleteProductImpl implements _DeleteProduct {
     TResult? Function(int id)? getProductById,
     TResult? Function(Product product)? createProduct,
     TResult? Function(Product product)? updateProduct,
-    TResult? Function(Product product)? deleteProduct,
+    TResult? Function(int productId, String productName)? deleteProduct,
   }) {
-    return deleteProduct?.call(product);
+    return deleteProduct?.call(productId, productName);
   }
 
   @override
@@ -641,11 +641,11 @@ class _$DeleteProductImpl implements _DeleteProduct {
     TResult Function(int id)? getProductById,
     TResult Function(Product product)? createProduct,
     TResult Function(Product product)? updateProduct,
-    TResult Function(Product product)? deleteProduct,
+    TResult Function(int productId, String productName)? deleteProduct,
     required TResult orElse(),
   }) {
     if (deleteProduct != null) {
-      return deleteProduct(product);
+      return deleteProduct(productId, productName);
     }
     return orElse();
   }
@@ -689,9 +689,11 @@ class _$DeleteProductImpl implements _DeleteProduct {
 }
 
 abstract class _DeleteProduct implements ProductEvent {
-  const factory _DeleteProduct(final Product product) = _$DeleteProductImpl;
+  const factory _DeleteProduct(final int productId, final String productName) =
+      _$DeleteProductImpl;
 
-  Product get product;
+  int get productId;
+  String get productName;
   @JsonKey(ignore: true)
   _$$DeleteProductImplCopyWith<_$DeleteProductImpl> get copyWith =>
       throw _privateConstructorUsedError;

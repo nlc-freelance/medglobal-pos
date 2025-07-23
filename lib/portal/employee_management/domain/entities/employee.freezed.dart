@@ -22,7 +22,7 @@ mixin _$Employee {
   String get email => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
   List<Branch> get assignedBranches =>
-      throw _privateConstructorUsedError; // BranchLite
+      throw _privateConstructorUsedError; // Branch
   EmployeeRole get role => throw _privateConstructorUsedError;
   List<SystemAccess> get systemAccess => throw _privateConstructorUsedError;
   List<AccessControl> get accessControls => throw _privateConstructorUsedError;
@@ -232,7 +232,7 @@ class _$EmployeeImpl extends _Employee {
     return EqualUnmodifiableListView(_assignedBranches);
   }
 
-// BranchLite
+// Branch
   @override
   final EmployeeRole role;
   final List<SystemAccess> _systemAccess;
@@ -322,7 +322,7 @@ abstract class _Employee extends Employee {
   String get phone;
   @override
   List<Branch> get assignedBranches;
-  @override // BranchLite
+  @override // Branch
   EmployeeRole get role;
   @override
   List<SystemAccess> get systemAccess;

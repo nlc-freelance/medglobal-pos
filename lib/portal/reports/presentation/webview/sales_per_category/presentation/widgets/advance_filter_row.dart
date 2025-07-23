@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/app_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/supplier_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/typeahead_search/product_typeahead_search.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/widgets/category_dropdown.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/entities/filter.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/cubit/sales_category_filter/sales_category_filter_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -103,11 +104,17 @@ Widget getFilterValueField(BuildContext context, Filter filter) {
 
   switch (filter.type) {
     case FilterType.PRODUCT_CATEGORY:
-      return CategoryDropdown(
-        isSelectType: true,
-        selectedItem: filter.value,
-        onChanged: (value) => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, value),
+      return AppDropdown<Category>.lazy(
+        hint: 'Select category',
+        getName: (category) => category.name,
+        onSelectItem: (category) => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, category),
+        onRemoveSelectedItem: () => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, null),
       );
+    // return CategoryDropdown(
+    //   isSelectType: true,
+    //   selectedItem: filter.value,
+    //   onChanged: (value) => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, value),
+    // );
     case FilterType.PRODUCT_NAME:
       return SizedBox(
         width: 250,

@@ -1,34 +1,20 @@
-import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
-import 'package:medglobal_admin_portal/portal/product_management/data/dto/product_dto.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/payload/product_bulk_delete_payload.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/payload/product_bulk_update_payload.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/payload/product_payload.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/product_dto.dart';
 
 class ProductApi {
   final BaseApiService _api;
 
   ProductApi(this._api);
 
-  Future<List<ProductDto>> getProductList({String? search}) async {
-    final response = await _api.getList(
-      ApiEndpoint.products(),
-      queryParams: {'size': 10, 'search': search},
-      fromJson: ProductDto.fromJson,
-    );
-
-    return response.data;
-  }
-
-  Future<PaginatedList<ProductDto>> getProducts({int? page, int? size, String? search}) async {
+  Future<PaginatedList<ProductDto>> getProducts(PageQuery query) async {
     final response = await _api.getPaginated<ProductDto>(
       ApiEndpoints.products,
-      queryParams: {
-        if (page != null) 'page': page,
-        'size': size ?? Sizes.defaultPageSize,
-        if (search?.isNotEmpty != true) 'search': search,
-      },
+      queryParams: query.toJson(),
       fromJson: ProductDto.fromJson,
     );
 
@@ -49,20 +35,20 @@ class ProductApi {
     return response.data;
   }
 
-  Future<ProductDto> createProduct(Product product) async {
+  Future<ProductDto> createProduct(ProductPayload payload) async {
     final response = await _api.post(
       ApiEndpoints.products,
-      data: product.toProductPostRequest(),
+      data: payload.toJson(),
       fromJson: ProductDto.fromJson,
     );
 
     return response.data;
   }
 
-  Future<ProductDto> updateProduct(Product product) async {
+  Future<ProductDto> updateProduct(int id, ProductPayload payload) async {
     final response = await _api.update(
-      ApiEndpoints.productById(product.id!),
-      data: product.toProductPostRequest(),
+      ApiEndpoints.productById(id),
+      data: payload.toJson(),
       fromJson: ProductDto.fromJson,
     );
     return response.data;
@@ -72,19 +58,29 @@ class ProductApi {
     return await _api.delete(ApiEndpoints.productById(id));
   }
 
-  Future<void> bulkDelete(List<int> ids) async {
+  Future<void> bulkDeleteProducts(ProductBulkDeletePayload payload) async {
     return await _api.deleteBulk<ProductDto>(
       ApiEndpoints.products,
-      data: {'ids': ids},
+      data: payload.toJson(),
     );
   }
 
-  Future<void> bulkUpdate(List<int> ids, Category? category) async {
+  Future<void> bulkUpdateProducts(ProductBulkUpdatePayload payload) async {
     await _api.update<ProductDto>(
       ApiEndpoint.products(),
-      data: {'category': category?.toJson(), 'productList': ids},
+      data: payload.toJson(),
       fromJson: ProductDto.fromJson,
     );
+  }
+
+  Future<List<ProductDto>> getProductsBy({String? search}) async {
+    final response = await _api.getList(
+      ApiEndpoint.products(),
+      queryParams: {'size': 10, 'search': search},
+      fromJson: ProductDto.fromJson,
+    );
+
+    return response.data;
   }
 }
 

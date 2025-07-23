@@ -8,8 +8,8 @@ part 'receipt_template_form_cubit.freezed.dart';
 class ReceiptTemplateFormCubit extends Cubit<ReceiptTemplateFormState> {
   ReceiptTemplateFormCubit() : super(ReceiptTemplateFormState.initial());
 
-  void initReceiptTemplate(ReceiptTemplate template) {
-    emit(ReceiptTemplateFormState.fromReceiptTemplate(template));
+  void loadReceiptTemplate(ReceiptTemplate template) {
+    emit(ReceiptTemplateFormState.load(template));
   }
 
   void setName(String name) => emit(state.copyWith(name: name));
@@ -22,9 +22,13 @@ class ReceiptTemplateFormCubit extends Cubit<ReceiptTemplateFormState> {
     emit(state.copyWith(isConfigurationValid: state.hasValidConfiguration()));
   }
 
-  void setShowCompanyName(bool showCompanyName) => emitWithValidation(state.copyWith(showCompanyName: showCompanyName));
+  void setShowCompanyName(bool showCompanyName) {
+    emitWithValidation(state.copyWith(showCompanyName: showCompanyName));
+  }
 
-  void setShowBranchName(bool showBranchName) => emitWithValidation(state.copyWith(showBranchName: showBranchName));
+  void setShowBranchName(bool showBranchName) {
+    emitWithValidation(state.copyWith(showBranchName: showBranchName));
+  }
 
   void setShowBranchAddress(bool showBranchAddress) =>
       emitWithValidation(state.copyWith(showBranchAddress: showBranchAddress));
@@ -41,23 +45,5 @@ class ReceiptTemplateFormCubit extends Cubit<ReceiptTemplateFormState> {
 
   void validateConfiguration() {
     emit(state.copyWith(isConfigurationValid: state.hasValidConfiguration()));
-  }
-
-  /// Given that the form is validated, map ReceiptTemplateFormState values to a ReceiptTemplate
-  ReceiptTemplate toReceiptTemplate() {
-    return ReceiptTemplate(
-      id: state.id,
-      accountId: 2,
-      name: state.name!,
-      description: state.description,
-      isDefault: state.isDefault,
-      showCompanyName: state.showCompanyName,
-      showBranchName: state.showBranchName,
-      showBranchAddress: state.showBranchAddress,
-      showBranchContact: state.showBranchContact,
-      showFooterMessage: state.showFooterMessage,
-      footerTitle: state.footerTitle,
-      footerMessage: state.footerMessage,
-    );
   }
 }

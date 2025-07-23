@@ -12,9 +12,13 @@ import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_form/employee_form_page.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_list/employee_list_page.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/products_page.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/bloc/product_bulk_bloc/product_bulk_bloc.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_list_filter_cubit/product_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_form/product_form_page.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/product_list_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/product_performance_list_page.dart';
@@ -71,11 +75,23 @@ abstract class AppRouter {
               /// Tasks requiring source data are retained in the state so that they can
               /// continue to be managed and possibly corrected within the form or UI.
               final failedTasks = state.tasks.failed;
+
               if (failedTasks.isNotEmpty) {
-                for (ReportTask task in state.productPerformanceTasks) {
+                for (ReportTask task in failedTasks) {
                   SnackbarUtil.error(context, task.error!);
 
-                  if (task.type.requiresSourceData && task.isInCreationState) return;
+                  final hasListAndRequiresSourceData = task.type.hasListAndRequiresSourceData;
+
+                  /// If a report requires source data and is in creation state, do nothing
+                  if (hasListAndRequiresSourceData && task.isInCreationState) return;
+
+                  /// If a report requires source data and is already created,
+                  /// but encountered failure during polling/generating/downloading, remove it from the list
+                  if (hasListAndRequiresSourceData) {
+                    context.read<ProductPerformanceListBloc>().add(ProductPerformanceListEvent.removeReport(task.id));
+                  }
+
+                  // Finally, remove from ReportManagerCubit
                   context.read<ReportManagerCubit>().removeTask(task.key);
                 }
               }
@@ -85,7 +101,7 @@ abstract class AppRouter {
               final localReadyProductPerformanceTasks = state.productPerformanceTasks.local.ready;
 
               if (localReadyProductPerformanceTasks.isNotEmpty) {
-                for (ReportTask task in state.productPerformanceTasks) {
+                for (ReportTask task in localReadyProductPerformanceTasks) {
                   SnackbarUtil.success(
                     context,
                     '${task.fileName} is ready to download.',
@@ -121,7 +137,18 @@ abstract class AppRouter {
                   GoRoute(
                     name: SideMenuTreeItem.PRODUCTS.name,
                     path: SideMenuTreeItem.PRODUCTS.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: ProductsPage()),
+                    pageBuilder: (context, state) => NoTransitionPage(
+                      child: MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                              create: (context) => GetIt.I<PaginatedListBloc<Product>>()
+                                ..add(const PaginatedListEvent<Product>.fetch())),
+                          BlocProvider(create: (context) => GetIt.I<ProductBulkBloc>()),
+                          BlocProvider(create: (context) => ProductListFilterCubit()),
+                        ],
+                        child: const ProductListPage(),
+                      ),
+                    ),
                     routes: [
                       GoRoute(
                         name: SideMenuTreeItem.NEW_PRODUCT.name,
@@ -446,20 +473,20 @@ abstract class AppRouter {
           ),
         ),
         branches: [
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                name: 'Register',
-                path: '/point-of-sale/register',
-                pageBuilder: (context, state) => const NoTransitionPage(child: PointOfSalePage()),
-              ),
-              GoRoute(
-                name: 'Billing',
-                path: '/point-of-sale/register/billing',
-                pageBuilder: (context, state) => const NoTransitionPage(child: BillingPage()),
-              ),
-            ],
-          ),
+          // StatefulShellBranch(
+          //   routes: [
+          // GoRoute(
+          //   name: 'Register',
+          //   path: '/point-of-sale/register',
+          //   pageBuilder: (context, state) => const NoTransitionPage(child: PointOfSalePage()),
+          // ),
+          // GoRoute(
+          //   name: 'Billing',
+          //   path: '/point-of-sale/register/billing',
+          //   pageBuilder: (context, state) => const NoTransitionPage(child: BillingPage()),
+          // ),
+          //   ],
+          // ),
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -480,7 +507,8 @@ abstract class AppRouter {
         return LoginPage.route;
       } else if (authState is AuthenticatedState && isLoginRoute) {
         if (authState.user.type == UserType.STORE_MANAGER) return PurchaseOrdersPage.route;
-        return authState.user.type == UserType.CASHIER ? PointOfSalePage.route : ProductsPage.route;
+        return authState.user.type == UserType.CASHIER ? ProductListPage.route : ProductListPage.route;
+        // return authState.user.type == UserType.CASHIER ? PointOfSalePage.route : ProductListPage.route;
       }
 
       return null;

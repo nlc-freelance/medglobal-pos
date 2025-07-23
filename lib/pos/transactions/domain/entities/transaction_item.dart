@@ -218,12 +218,12 @@ part 'transaction_item.freezed.dart';
 @freezed
 class TransactionItem with _$TransactionItem {
   const factory TransactionItem({
-    required int id,
-    required int itemId,
-    required String name,
-    required String sku,
+    int? id,
+    int? itemId,
+    String? name,
+    String? sku,
     double? price,
-    required int quantity,
+    int? quantity,
     DiscountType? discountType,
     double? discountValue,
     double? discountAmount,
@@ -283,10 +283,10 @@ class TransactionItem with _$TransactionItem {
 
   /// Map to RefundItem when issuing a refund
   RefundItem get toRefundItem => RefundItem(
-        id: id,
-        name: name,
-        sku: sku,
-        quantity: quantity,
+        id: id!,
+        name: name!,
+        sku: sku!,
+        quantity: quantity!,
         price: price!,
         discountValue: discountAmount,
         discountType: discountType,

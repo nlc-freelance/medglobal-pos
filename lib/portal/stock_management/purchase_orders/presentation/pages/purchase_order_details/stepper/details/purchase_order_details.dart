@@ -5,6 +5,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_items_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_items_received_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_items_to_receive_data_grid.dart';
@@ -24,10 +25,10 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
   @override
   void initState() {
     super.initState();
-    final purchaseOrder = context.read<PurchaseOrderCubit>().state.purchaseOrder;
+    final purchaseOrder = context.read<PurchaseOrderFormCubit>().state.purchaseOrder;
 
     _notesController = TextEditingController(text: purchaseOrder.notes)
-      ..addListener(() => context.read<PurchaseOrderCubit>().setNotes(_notesController.text));
+      ..addListener(() => context.read<PurchaseOrderFormCubit>().setNotes(_notesController.text));
   }
 
   @override
@@ -38,7 +39,7 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<PurchaseOrderCubit, PurchaseOrderState, PurchaseOrder>(
+    return BlocSelector<PurchaseOrderFormCubit, PurchaseOrderFormState, PurchaseOrder>(
       selector: (state) => state.purchaseOrder,
       builder: (context, purchaseOrder) {
         return Column(
@@ -95,7 +96,7 @@ class _PurchaseOrderDetailsState extends State<PurchaseOrderDetails> {
                       isInput: true,
                       selectionMode: DateRangePickerSelectionMode.single,
                       selectedDate: purchaseOrder.estimatedDateOfArrival,
-                      onSelect: (date) => context.read<PurchaseOrderCubit>().setEstimatedDateOfArrival(date),
+                      onSelect: (date) => context.read<PurchaseOrderFormCubit>().setEstimatedDateOfArrival(date),
                     ),
                   )
               ],

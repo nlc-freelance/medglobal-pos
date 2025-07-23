@@ -14,7 +14,7 @@ enum DropdownListType { lazy, static }
 class AppDropdown<T> extends StatefulWidget {
   const AppDropdown._({
     super.key,
-    required this.items,
+    this.items,
     required this.hint,
     required this.getName,
     required this.onSelectItem,
@@ -25,7 +25,7 @@ class AppDropdown<T> extends StatefulWidget {
   });
 
   final DropdownListType type;
-  final List<T> items;
+  final List<T>? items;
   final String hint;
   final String Function(T item) getName;
   final void Function(T item) onSelectItem;
@@ -34,7 +34,6 @@ class AppDropdown<T> extends StatefulWidget {
   final String? inlineLabel;
 
   factory AppDropdown.lazy({
-    required List<T> items,
     required String Function(T item) getName,
     required void Function(T item) onSelectItem,
     required VoidCallback onRemoveSelectedItem,
@@ -46,7 +45,6 @@ class AppDropdown<T> extends StatefulWidget {
       AppDropdown._(
         key: key,
         type: DropdownListType.lazy,
-        items: items,
         hint: hint,
         getName: getName,
         onSelectItem: onSelectItem,
@@ -109,7 +107,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
               getName: widget.getName,
             )
           : DropdownList<T>(
-              items: widget.items,
+              items: widget.items!,
               menuKey: menuKey,
               onChanged: (T item) {
                 widget.onSelectItem(item);

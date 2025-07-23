@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
-import 'package:medglobal_admin_portal/portal/transactions/domain/entities/transaction_paginated_list.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transaction_repository.dart';
 

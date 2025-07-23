@@ -254,7 +254,7 @@ class __$$ReceiptTemplateImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ReceiptTemplateImpl extends _ReceiptTemplate {
+class _$ReceiptTemplateImpl implements _ReceiptTemplate {
   const _$ReceiptTemplateImpl(
       {this.id,
       required this.accountId,
@@ -268,8 +268,7 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
       this.showBranchContact = false,
       this.showFooterMessage = false,
       this.footerTitle,
-      this.footerMessage})
-      : super._();
+      this.footerMessage});
 
   factory _$ReceiptTemplateImpl.fromJson(Map<String, dynamic> json) =>
       _$$ReceiptTemplateImplFromJson(json);
@@ -377,7 +376,7 @@ class _$ReceiptTemplateImpl extends _ReceiptTemplate {
   }
 }
 
-abstract class _ReceiptTemplate extends ReceiptTemplate {
+abstract class _ReceiptTemplate implements ReceiptTemplate {
   const factory _ReceiptTemplate(
       {final int? id,
       required final int accountId,
@@ -392,7 +391,6 @@ abstract class _ReceiptTemplate extends ReceiptTemplate {
       final bool showFooterMessage,
       final String? footerTitle,
       final String? footerMessage}) = _$ReceiptTemplateImpl;
-  const _ReceiptTemplate._() : super._();
 
   factory _ReceiptTemplate.fromJson(Map<String, dynamic> json) =
       _$ReceiptTemplateImpl.fromJson;

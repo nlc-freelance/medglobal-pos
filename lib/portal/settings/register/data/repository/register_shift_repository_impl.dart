@@ -1,46 +1,45 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_shift_api.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/data/dto/request/create_register_shift_dto.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_shift_api_service.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register_shift/register_shift_mapper.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register_shift/register_shift_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register_shift.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_shift_repository.dart';
 
-class RegisterShiftRepositoryImpl implements RegisterShiftRepository {
-  final RegisterShiftApi _registerShiftApi;
+/// Concrete implementation of [RegisterShiftRepository] that uses [RegisterShiftApiService] for API calls
+/// and [BaseRepository] to centralize error handling.
+class RegisterShiftRepositoryImpl extends BaseRepository implements RegisterShiftRepository {
+  final RegisterShiftApiService _api;
 
-  RegisterShiftRepositoryImpl(this._registerShiftApi);
+  RegisterShiftRepositoryImpl({required RegisterShiftApiService api}) : _api = api;
 
   @override
   Future<Either<Failure, RegisterShift>> openShift({required int registerId, required double amount}) async {
-    try {
-      final request = CreateRegisterShiftDto(
+    return call(() async {
+      final payload = RegisterShiftPayload(
         register: registerId,
         status: RegisterShiftStatus.open.name,
         openingAmount: amount,
       );
 
-      final response = await _registerShiftApi.shift(request);
-      return Right(response.toDomain());
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+      final response = await _api.openCloseShift(payload);
+      return RegisterShiftMapper.fromDto(response);
+    });
   }
 
   @override
   Future<Either<Failure, RegisterShift>> closeShift({required int registerId, required double amount}) async {
-    try {
-      final request = CreateRegisterShiftDto(
+    return call(() async {
+      final payload = RegisterShiftPayload(
         register: registerId,
         status: RegisterShiftStatus.close.name,
         closingAmount: amount,
       );
 
-      final response = await _registerShiftApi.shift(request);
-      return Right(response.toDomain());
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+      final response = await _api.openCloseShift(payload);
+      return RegisterShiftMapper.fromDto(response);
+    });
   }
 }

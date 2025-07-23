@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/utils/null_check_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
@@ -69,7 +70,7 @@ class _TaxDataGridState extends State<TaxDataGrid> {
                     paginatedData,
                     onPageChanged: ({required page, required size}) =>
                         context.read<PaginatedListBloc<Tax>>().add(PaginatedListEvent<Tax>.fetch(
-                              filters: PageQuery(
+                              query: PageQuery(
                                 page: page,
                                 size: size,
                               ),
@@ -121,7 +122,7 @@ class TaxDataGridSource extends DataGridSource with DialogMixin {
           child: cellBuilder(
             colName: cell.columnName,
             cell: cell,
-            tax: _taxCodes.firstWhere((tax) => tax.id == row.getCells().first.value),
+            tax: _taxCodes.firstWhereOrNull((tax) => tax.id == row.getCells().first.value),
           ),
         );
       }).toList(),
@@ -131,7 +132,7 @@ class TaxDataGridSource extends DataGridSource with DialogMixin {
   Widget cellBuilder({
     required String colName,
     required DataGridCell cell,
-    required Tax tax,
+    Tax? tax,
   }) =>
       switch (colName) {
         'tax_code' => HoverBuilder(
@@ -146,7 +147,7 @@ class TaxDataGridSource extends DataGridSource with DialogMixin {
                     color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
                     textDecoration: TextDecoration.underline,
                   ),
-                  if (tax.isDefault) ...[
+                  if (tax?.isDefault == true) ...[
                     const UIHorizontalSpace(8),
                     UIText.dataGridHeader('(DEFAULT)'),
                   ],
@@ -172,24 +173,38 @@ class TaxDataGridSource extends DataGridSource with DialogMixin {
         _ => UIText.dataGridText(cell.value.toString()),
       };
 
-  void _onEditTax(Tax tax) {
-    _context.read<TaxFormCubit>().initTax(tax);
-    showCustomDialog(
+  void _onEditTax(Tax? tax) {
+    NullCheckUtil.checkAndCall<Tax>(
       _context,
-      dialog: MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: _context.read<TaxFormCubit>()),
-          BlocProvider.value(value: _context.read<TaxBloc>()),
-        ],
-        child: const TaxFormDialog(),
-      ),
+      value: tax,
+      onValid: (tax) {
+        _context.read<TaxFormCubit>().loadTax(tax);
+        showCustomDialog(
+          _context,
+          dialog: MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: _context.read<TaxFormCubit>()),
+              BlocProvider.value(value: _context.read<TaxBloc>()),
+            ],
+            child: const TaxFormDialog(),
+          ),
+        );
+      },
     );
   }
 
-  void _onDeleteTax(Tax tax) => showDeleteDialog(
-        _context,
-        subject: 'Tax Code',
-        item: tax.code,
-        onDelete: () => _context.read<TaxBloc>().add(TaxEvent.deleteTaxCode(tax)),
-      );
+  void _onDeleteTax(Tax? tax) {
+    NullCheckUtil.checkAndCall<Tax>(
+      _context,
+      value: tax,
+      onValid: (tax) {
+        showDeleteDialog(
+          _context,
+          subject: 'Tax Code',
+          item: tax.code,
+          onDelete: () => _context.read<TaxBloc>().add(TaxEvent.deleteTaxCode(tax.id!, tax)),
+        );
+      },
+    );
+  }
 }
