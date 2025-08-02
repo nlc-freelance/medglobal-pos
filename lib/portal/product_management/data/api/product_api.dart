@@ -66,10 +66,9 @@ class ProductApi {
   }
 
   Future<void> bulkUpdateProducts(ProductBulkUpdatePayload payload) async {
-    await _api.update<ProductDto>(
+    await _api.updateBulk<ProductDto>(
       ApiEndpoint.products(),
       data: payload.toJson(),
-      fromJson: ProductDto.fromJson,
     );
   }
 

@@ -1,14 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/domain/usecases/get_suppliers_usecase.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/domain/repositories/supplier_repository.dart';
 
 part 'supplier_lazy_list_state.dart';
 
 class SupplierLazyListCubit extends Cubit<SupplierLazyListState> {
-  final GetSuppliersUseCase _getSuppliersUseCase;
+  final SupplierRepository _repository;
 
-  SupplierLazyListCubit(this._getSuppliersUseCase) : super(SupplierLazyListState.initial());
+  SupplierLazyListCubit(this._repository) : super(SupplierLazyListState.initial());
 
   int _currentPage = 1;
   int _totalCount = -1;
@@ -34,7 +35,7 @@ class SupplierLazyListCubit extends Cubit<SupplierLazyListState> {
       }
 
       try {
-        final result = await _getSuppliersUseCase.call(GetSuppliersParams(page: _currentPage, size: 10));
+        final result = await _repository.getSuppliers(PageQuery(page: _currentPage, size: 10));
         result.fold(
           (error) => emit(state.copyWith(isInitLoading: false, isLoadingMore: false, error: error.message)),
           (data) {

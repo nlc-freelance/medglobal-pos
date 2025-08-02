@@ -16,14 +16,6 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$VariantFormState {
-// int? id,
-// String? name,
-// String? sku,
-// int? warningStock,
-// int? idealStock,
-// double? cost,
-// @Default([]) List<Supplier> suppliers,
-// @Default([]) List<BranchInventory> branchInventories,
   VariantFormModel get variant => throw _privateConstructorUsedError;
   bool get isValid => throw _privateConstructorUsedError;
 
@@ -126,14 +118,6 @@ class __$$VariantFormStateImplCopyWithImpl<$Res>
 class _$VariantFormStateImpl implements _VariantFormState {
   const _$VariantFormStateImpl({required this.variant, this.isValid = true});
 
-// int? id,
-// String? name,
-// String? sku,
-// int? warningStock,
-// int? idealStock,
-// double? cost,
-// @Default([]) List<Supplier> suppliers,
-// @Default([]) List<BranchInventory> branchInventories,
   @override
   final VariantFormModel variant;
   @override
@@ -170,14 +154,7 @@ abstract class _VariantFormState implements VariantFormState {
       {required final VariantFormModel variant,
       final bool isValid}) = _$VariantFormStateImpl;
 
-  @override // int? id,
-// String? name,
-// String? sku,
-// int? warningStock,
-// int? idealStock,
-// double? cost,
-// @Default([]) List<Supplier> suppliers,
-// @Default([]) List<BranchInventory> branchInventories,
+  @override
   VariantFormModel get variant;
   @override
   bool get isValid;

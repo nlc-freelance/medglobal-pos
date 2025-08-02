@@ -1,14 +1,10 @@
-import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/dto/response/purchase_order_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_dto.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 
 // part 'purchase_order_dto.g.dart';
 

@@ -5,6 +5,7 @@ class RegisterFormState with _$RegisterFormState {
   const factory RegisterFormState({
     int? id,
     String? name,
+    String? serialNo,
     Branch? assignedBranch,
   }) = _RegisterFormState;
 
@@ -13,6 +14,7 @@ class RegisterFormState with _$RegisterFormState {
   factory RegisterFormState.load(Register register) => RegisterFormState(
         id: register.id,
         name: register.name,
+        serialNo: register.serialNumber,
         assignedBranch: register.assignedBranch,
       );
 }
@@ -22,6 +24,7 @@ extension RegisterFormStateExt on RegisterFormState {
     return Register(
       id: id,
       name: name!,
+      serialNumber: serialNo!,
       assignedBranch: assignedBranch!,
     );
   }

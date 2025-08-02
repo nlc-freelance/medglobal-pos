@@ -11,14 +11,14 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class StockTransfersPage extends StatefulWidget {
-  const StockTransfersPage({super.key});
+class StockTransferListPage extends StatefulWidget {
+  const StockTransferListPage({super.key});
 
   @override
-  State<StockTransfersPage> createState() => _StockTransfersPageState();
+  State<StockTransferListPage> createState() => _StockTransfersPageState();
 }
 
-class _StockTransfersPageState extends State<StockTransfersPage> with SingleTickerProviderStateMixin {
+class _StockTransfersPageState extends State<StockTransferListPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -118,7 +118,7 @@ class _StockTransfersPageState extends State<StockTransfersPage> with SingleTick
             UIButton.filled(
               'New Stock Transfer',
               icon: Assets.icons.add.setSize(12.0),
-              onClick: () => AppRouter.router.goNamed(SideMenuTreeItem.NEW_STOCK_TRANSFER.name),
+              onClick: () => AppRouter.router.goNamed('stockTransferCreate'),
             ),
           ],
         ),

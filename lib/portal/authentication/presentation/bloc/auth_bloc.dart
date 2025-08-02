@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,9 +54,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await login.call(LoginParams(event.email, event.password));
       result.fold(
         (error) => emit(AuthErrorState(message: error.message)),
-        (data) => data.isFirstTimeLogin == true
-            ? emit(const FirstTimeLoginState())
-            : emit(AuthenticatedState(user: data.user!)),
+        (data) {
+          final user = data.user;
+
+          if (user == null) {
+            emit(const AuthAccessDeniedState(message: 'Login failed. User data is missing.'));
+            return;
+          }
+
+          final isPortalUserOnly = user.type == UserType.admin;
+          final isPosUserOnly = user.type == UserType.cashier;
+          final isBothUsers = user.type == UserType.supervisor;
+
+          final isAllowed = (kIsWeb && isPortalUserOnly) || (Platform.isWindows && isPosUserOnly) || isBothUsers;
+
+          if (isAllowed) {
+            if (data.isFirstTimeLogin == true) {
+              emit(const FirstTimeLoginState());
+            } else {
+              emit(AuthenticatedState(user: data.user!));
+            }
+          } else {
+            emit(
+              const AuthAccessDeniedState(
+                message:
+                    'Your account is not authorized to use this application. \n Contact your administrator if you believe this is an error.',
+              ),
+            );
+          }
+        },
       );
     } catch (e) {
       emit(AuthErrorState(message: e.toString()));

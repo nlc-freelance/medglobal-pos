@@ -63,6 +63,11 @@ class BaseApiService {
   }) async {
     try {
       final response = await _dioService.dio.post(path, data: data);
+
+      if (response.data == null) {
+        throw UnexpectedException('No data returned.');
+      }
+
       return BaseApiResponse.fromJson(response.data, fromJson);
     } on DioException catch (e) {
       throw ServerException(_mapDioError(e));
@@ -79,6 +84,11 @@ class BaseApiService {
   }) async {
     try {
       final response = await _dioService.dio.put(path, data: data);
+
+      if (response.data == null) {
+        throw UnexpectedException('No data returned.');
+      }
+
       return BaseApiResponse.fromJson(response.data, fromJson);
     } on DioException catch (e) {
       throw ServerException(_mapDioError(e));
@@ -98,13 +108,27 @@ class BaseApiService {
     }
   }
 
+  /// UPDATE bulk request
+  Future<void> updateBulk<T>(
+    String path, {
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      await _dioService.dio.put(path, data: data);
+    } on DioException catch (e) {
+      throw ServerException(_mapDioError(e));
+    } catch (e) {
+      throw UnexpectedException(e.toString());
+    }
+  }
+
   /// DELETE bulk request
   Future<void> deleteBulk<T>(
     String path, {
     required Map<String, dynamic> data,
   }) async {
     try {
-      await _dioService.dio.post(path, data: data);
+      await _dioService.dio.delete(path, data: data);
     } on DioException catch (e) {
       throw ServerException(_mapDioError(e));
     } catch (e) {

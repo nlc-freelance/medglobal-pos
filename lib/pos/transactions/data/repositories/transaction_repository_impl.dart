@@ -1,17 +1,17 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
-import 'package:medglobal_admin_portal/portal/transactions/domain/entities/transaction_paginated_list.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/api/transaction_api.dart';
-import 'package:medglobal_admin_portal/pos/transactions/data/dto/response/transaction_dto.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction/transaction_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transaction_repository.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
-  final TransactionApi _transactionApi;
+  final TransactionApi _api;
 
-  TransactionRepositoryImpl(this._transactionApi);
+  TransactionRepositoryImpl({required TransactionApi api}) : _api = api;
 
   @override
   Future<Either<Failure, PaginatedList<Transaction>>> getBranchTransactions({
@@ -20,7 +20,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
     String? search,
   }) async {
     try {
-      final responseDto = await _transactionApi.getTransactions(
+      final responseDto = await _api.getTransactions(
         page: page,
         size: size,
         search: search,
@@ -35,10 +35,17 @@ class TransactionRepositoryImpl implements TransactionRepository {
   @override
   Future<Either<Failure, Transaction>> getTransactionById(int id) async {
     try {
-      final response = await _transactionApi.getTransactionById(id);
+      final response = await _api.getTransactionById(id);
       return Right(response.toDomain());
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
+      // } on DioException catch (e) {
+      //   return Left(ServerFailure(e.message!));
+      // }
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on UnexpectedException catch (e) {
+      return Left(UnexpectedFailure(e.message));
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
     }
   }
 
@@ -55,7 +62,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
     String? endDate,
   }) async {
     try {
-      final responseDto = await _transactionApi.getTransactions(
+      final responseDto = await _api.getTransactions(
         type: type,
         page: page,
         size: size,

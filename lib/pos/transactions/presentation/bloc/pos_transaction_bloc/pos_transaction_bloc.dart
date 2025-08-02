@@ -9,6 +9,7 @@ part 'pos_transaction_bloc.freezed.dart';
 
 class PosTransactionBloc extends Bloc<PosTransactionEvent, PosTransactionState> {
   final TransactionRepository _repository;
+
   PosTransactionBloc(this._repository) : super(const PosTransactionState.initial()) {
     on<_GetTransactionById>(_onGetTransactionById);
   }

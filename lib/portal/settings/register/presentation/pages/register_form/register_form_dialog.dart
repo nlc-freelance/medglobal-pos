@@ -24,6 +24,7 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
   late RegisterBloc _registerBloc;
 
   late TextEditingController _nameController;
+  late TextEditingController _serialNumberController;
 
   @override
   void initState() {
@@ -37,6 +38,7 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
     _registerBloc.add(const RegisterEvent.reset());
 
     _nameController = TextEditingController(text: _registerFormCubit.state.name);
+    _serialNumberController = TextEditingController(text: _registerFormCubit.state.serialNo);
   }
 
   @override
@@ -56,6 +58,15 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
                 isRequired: true,
                 validator: FormValidators.required('Please enter register name.'),
                 onChanged: (value) => _registerFormCubit.setName(value),
+              ),
+              const UIVerticalSpace(16),
+              AppTextFormField.top(
+                label: 'Serial Number',
+                hint: 'Enter serial number',
+                controller: _serialNumberController,
+                isRequired: true,
+                validator: FormValidators.required('Please enter serial number.'),
+                onChanged: (value) => _registerFormCubit.setSerialNo(value),
               ),
               const UIVerticalSpace(16),
               AppDropdownFormField<Branch>.lazy(

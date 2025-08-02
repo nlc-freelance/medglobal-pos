@@ -7,38 +7,37 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_items_paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_paginated_list.dart';
 
-abstract class StockTakeApi {
-  Future<StockTakePaginatedList> getStockTakes({
-    required int page,
-    required int size,
-    StockOrderStatus? status,
-    String? startDate,
-    String? endDate,
-  });
-  Future<StockTakeDto> getStockTakeById(int id);
-  Future<StockTakeItemsPaginatedList> getItemsById(
-    int id, {
-    required int page,
-    required int size,
-    required bool isCounted,
-    String? search,
-  });
-  Future<StockTakeDto> create(NewStockTake payload);
-  Future<void> updateStockTakeItemsById({required int id, required Map<int, int?> items});
-  Future<StockTakeDto> update(
-    StockOrderUpdate type, {
-    required int id,
-    required StockTake stockTake,
-    int? uncountedItemsValue,
-  });
-}
+// abstract class StockTakeApi {
+//   Future<StockTakePaginatedList> getStockTakes({
+//     required int page,
+//     required int size,
+//     StockOrderStatus? status,
+//     String? startDate,
+//     String? endDate,
+//   });
+//   Future<StockTakeDto> getStockTakeById(int id);
+//   Future<StockTakeItemsPaginatedList> getItemsById(
+//     int id, {
+//     required int page,
+//     required int size,
+//     required bool isCounted,
+//     String? search,
+//   });
+//   Future<StockTakeDto> create(NewStockTake payload);
+//   Future<void> updateStockTakeItemsById({required int id, required Map<int, int?> items});
+//   Future<StockTakeDto> update(
+//     StockOrderUpdate type, {
+//     required int id,
+//     required StockTake stockTake,
+//     int? uncountedItemsValue,
+//   });
+// }
 
-class StockTakeApiImpl implements StockTakeApi {
+class StockTakeApi {
   final ApiService _apiService;
 
-  StockTakeApiImpl(this._apiService);
+  StockTakeApi(this._apiService);
 
-  @override
   Future<StockTakePaginatedList> getStockTakes({
     required int page,
     required int size,
@@ -70,7 +69,6 @@ class StockTakeApiImpl implements StockTakeApi {
     }
   }
 
-  @override
   Future<StockTakeDto> getStockTakeById(int id) async {
     try {
       return await _apiService.get<StockTakeDto>(
@@ -82,7 +80,6 @@ class StockTakeApiImpl implements StockTakeApi {
     }
   }
 
-  @override
   Future<StockTakeDto> create(NewStockTake payload) async {
     try {
       return await _apiService.post<StockTakeDto>(
@@ -95,7 +92,6 @@ class StockTakeApiImpl implements StockTakeApi {
     }
   }
 
-  @override
   Future<StockTakeDto> update(
     StockOrderUpdate type, {
     required int id,
@@ -115,7 +111,6 @@ class StockTakeApiImpl implements StockTakeApi {
     }
   }
 
-  @override
   Future<StockTakeItemsPaginatedList> getItemsById(
     int id, {
     required int page,
@@ -141,7 +136,6 @@ class StockTakeApiImpl implements StockTakeApi {
     }
   }
 
-  @override
   Future<void> updateStockTakeItemsById({required int id, required Map<int, int?> items}) async {
     try {
       await _apiService.update<StockTakeItemDto>(

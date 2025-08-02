@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
@@ -11,20 +12,33 @@ import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/pres
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/pages/supply_needs_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class SupplyNeedsPage extends StatefulWidget {
-  const SupplyNeedsPage({super.key});
+class SupplyNeedListPage extends StatelessWidget {
+  const SupplyNeedListPage({super.key});
 
   @override
-  State<SupplyNeedsPage> createState() => _SupplyNeedsPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      // TODO: Convert to SupplyNeedBloc
+      create: (context) => GetIt.I<SupplyNeedsCubit>()..getSupplyNeeds(),
+      child: const SupplyNeedList(),
+    );
+  }
 }
 
-class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
+class SupplyNeedList extends StatefulWidget {
+  const SupplyNeedList({super.key});
+
+  @override
+  State<SupplyNeedList> createState() => _SupplyNeedsListState();
+}
+
+class _SupplyNeedsListState extends State<SupplyNeedList> {
   // int? _downloadingSupplyNeedPerBranch;
 
   @override
   void initState() {
     super.initState();
-    context.read<SupplyNeedsCubit>().getSupplyNeeds();
+    // context.read<SupplyNeedsCubit>().getSupplyNeeds();
   }
 
   @override

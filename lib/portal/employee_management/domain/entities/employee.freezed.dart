@@ -21,8 +21,8 @@ mixin _$Employee {
   String get lastName => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
-  List<Branch> get assignedBranches =>
-      throw _privateConstructorUsedError; // Branch
+  List<BranchPartial> get assignedBranches =>
+      throw _privateConstructorUsedError;
   EmployeeRole get role => throw _privateConstructorUsedError;
   List<SystemAccess> get systemAccess => throw _privateConstructorUsedError;
   List<AccessControl> get accessControls => throw _privateConstructorUsedError;
@@ -43,7 +43,7 @@ abstract class $EmployeeCopyWith<$Res> {
       String lastName,
       String email,
       String phone,
-      List<Branch> assignedBranches,
+      List<BranchPartial> assignedBranches,
       EmployeeRole role,
       List<SystemAccess> systemAccess,
       List<AccessControl> accessControls});
@@ -96,7 +96,7 @@ class _$EmployeeCopyWithImpl<$Res, $Val extends Employee>
       assignedBranches: null == assignedBranches
           ? _value.assignedBranches
           : assignedBranches // ignore: cast_nullable_to_non_nullable
-              as List<Branch>,
+              as List<BranchPartial>,
       role: null == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -127,7 +127,7 @@ abstract class _$$EmployeeImplCopyWith<$Res>
       String lastName,
       String email,
       String phone,
-      List<Branch> assignedBranches,
+      List<BranchPartial> assignedBranches,
       EmployeeRole role,
       List<SystemAccess> systemAccess,
       List<AccessControl> accessControls});
@@ -178,7 +178,7 @@ class __$$EmployeeImplCopyWithImpl<$Res>
       assignedBranches: null == assignedBranches
           ? _value._assignedBranches
           : assignedBranches // ignore: cast_nullable_to_non_nullable
-              as List<Branch>,
+              as List<BranchPartial>,
       role: null == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -204,7 +204,7 @@ class _$EmployeeImpl extends _Employee {
       required this.lastName,
       required this.email,
       required this.phone,
-      required final List<Branch> assignedBranches,
+      required final List<BranchPartial> assignedBranches,
       required this.role,
       required final List<SystemAccess> systemAccess,
       required final List<AccessControl> accessControls})
@@ -223,16 +223,15 @@ class _$EmployeeImpl extends _Employee {
   final String email;
   @override
   final String phone;
-  final List<Branch> _assignedBranches;
+  final List<BranchPartial> _assignedBranches;
   @override
-  List<Branch> get assignedBranches {
+  List<BranchPartial> get assignedBranches {
     if (_assignedBranches is EqualUnmodifiableListView)
       return _assignedBranches;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_assignedBranches);
   }
 
-// Branch
   @override
   final EmployeeRole role;
   final List<SystemAccess> _systemAccess;
@@ -304,7 +303,7 @@ abstract class _Employee extends Employee {
       required final String lastName,
       required final String email,
       required final String phone,
-      required final List<Branch> assignedBranches,
+      required final List<BranchPartial> assignedBranches,
       required final EmployeeRole role,
       required final List<SystemAccess> systemAccess,
       required final List<AccessControl> accessControls}) = _$EmployeeImpl;
@@ -321,8 +320,8 @@ abstract class _Employee extends Employee {
   @override
   String get phone;
   @override
-  List<Branch> get assignedBranches;
-  @override // Branch
+  List<BranchPartial> get assignedBranches;
+  @override
   EmployeeRole get role;
   @override
   List<SystemAccess> get systemAccess;
@@ -331,5 +330,161 @@ abstract class _Employee extends Employee {
   @override
   @JsonKey(ignore: true)
   _$$EmployeeImplCopyWith<_$EmployeeImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$EmployeePartial {
+  int get id => throw _privateConstructorUsedError;
+  String get firstName => throw _privateConstructorUsedError;
+  String get lastName => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $EmployeePartialCopyWith<EmployeePartial> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $EmployeePartialCopyWith<$Res> {
+  factory $EmployeePartialCopyWith(
+          EmployeePartial value, $Res Function(EmployeePartial) then) =
+      _$EmployeePartialCopyWithImpl<$Res, EmployeePartial>;
+  @useResult
+  $Res call({int id, String firstName, String lastName});
+}
+
+/// @nodoc
+class _$EmployeePartialCopyWithImpl<$Res, $Val extends EmployeePartial>
+    implements $EmployeePartialCopyWith<$Res> {
+  _$EmployeePartialCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? firstName = null,
+    Object? lastName = null,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      firstName: null == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastName: null == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$EmployeePartialImplCopyWith<$Res>
+    implements $EmployeePartialCopyWith<$Res> {
+  factory _$$EmployeePartialImplCopyWith(_$EmployeePartialImpl value,
+          $Res Function(_$EmployeePartialImpl) then) =
+      __$$EmployeePartialImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int id, String firstName, String lastName});
+}
+
+/// @nodoc
+class __$$EmployeePartialImplCopyWithImpl<$Res>
+    extends _$EmployeePartialCopyWithImpl<$Res, _$EmployeePartialImpl>
+    implements _$$EmployeePartialImplCopyWith<$Res> {
+  __$$EmployeePartialImplCopyWithImpl(
+      _$EmployeePartialImpl _value, $Res Function(_$EmployeePartialImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? firstName = null,
+    Object? lastName = null,
+  }) {
+    return _then(_$EmployeePartialImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      firstName: null == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastName: null == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$EmployeePartialImpl implements _EmployeePartial {
+  const _$EmployeePartialImpl(
+      {required this.id, required this.firstName, required this.lastName});
+
+  @override
+  final int id;
+  @override
+  final String firstName;
+  @override
+  final String lastName;
+
+  @override
+  String toString() {
+    return 'EmployeePartial(id: $id, firstName: $firstName, lastName: $lastName)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$EmployeePartialImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.firstName, firstName) ||
+                other.firstName == firstName) &&
+            (identical(other.lastName, lastName) ||
+                other.lastName == lastName));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, id, firstName, lastName);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$EmployeePartialImplCopyWith<_$EmployeePartialImpl> get copyWith =>
+      __$$EmployeePartialImplCopyWithImpl<_$EmployeePartialImpl>(
+          this, _$identity);
+}
+
+abstract class _EmployeePartial implements EmployeePartial {
+  const factory _EmployeePartial(
+      {required final int id,
+      required final String firstName,
+      required final String lastName}) = _$EmployeePartialImpl;
+
+  @override
+  int get id;
+  @override
+  String get firstName;
+  @override
+  String get lastName;
+  @override
+  @JsonKey(ignore: true)
+  _$$EmployeePartialImplCopyWith<_$EmployeePartialImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

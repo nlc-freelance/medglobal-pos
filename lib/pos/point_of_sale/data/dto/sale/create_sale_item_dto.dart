@@ -22,7 +22,7 @@ class CreateSaleItemDto {
   Map<String, dynamic> toJson() => _$CreateSaleItemDtoToJson(this);
 
   factory CreateSaleItemDto.fromDomain(OrderItem item) => CreateSaleItemDto(
-        variantId: item.id,
+        variantId: item.itemId,
         quantity: item.quantity,
         discount: item.discount?.value,
         discountType: item.discountType?.name,

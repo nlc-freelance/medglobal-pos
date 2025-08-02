@@ -2,7 +2,7 @@ import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_dto.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_request_dto.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_payload.dart';
 
 class SupplierApi {
   final BaseApiService _api;
@@ -32,20 +32,20 @@ class SupplierApi {
     return response.data;
   }
 
-  Future<SupplierDto> create(SupplierRequestDto dto) async {
+  Future<SupplierDto> create(SupplierPayload payload) async {
     final response = await _api.post<SupplierDto>(
       ApiEndpoint.suppliers(),
-      data: dto.toJson(),
+      data: payload.toJson(),
       fromJson: SupplierDto.fromJson,
     );
 
     return response.data;
   }
 
-  Future<SupplierDto> update(int id, SupplierRequestDto dto) async {
+  Future<SupplierDto> update(int id, SupplierPayload payload) async {
     final response = await _api.update<SupplierDto>(
       ApiEndpoint.suppliers(id),
-      data: dto.toJson(),
+      data: payload.toJson(),
       fromJson: SupplierDto.fromJson,
     );
 

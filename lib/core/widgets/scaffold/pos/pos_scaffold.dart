@@ -12,12 +12,14 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 class PosScaffold extends StatefulWidget {
   const PosScaffold({
     super.key,
-    required this.routerState,
-    required this.navigationShell,
+    required this.route,
+    required this.child,
   });
 
-  final GoRouterState routerState;
-  final StatefulNavigationShell navigationShell;
+  // final GoRouterState routerState;
+  // final StatefulNavigationShell navigationShell;
+  final Widget child;
+  final GoRouterState route;
 
   @override
   State<PosScaffold> createState() => _PosScaffoldState();
@@ -33,12 +35,15 @@ class _PosScaffoldState extends State<PosScaffold> {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (BuildContext context) => RegisterSelectionDialog(
-            onConfirm: (register) {
-              context.read<ActiveRegisterCubit>().saveRegister(register);
-              if (register.shiftDetail?.status == 'open') context.read<PosProductListCubit>().getPOSProducts();
-              Navigator.pop(context);
-            },
+          builder: (BuildContext context) => BlocProvider.value(
+            value: context.read<PosProductListCubit>(),
+            child: RegisterSelectionDialog(
+              onConfirm: (register) {
+                context.read<ActiveRegisterCubit>().saveRegister(register);
+                if (register.shiftDetail?.status == 'open') context.read<PosProductListCubit>().getPOSProducts();
+                Navigator.pop(context);
+              },
+            ),
           ),
         );
       }
@@ -52,17 +57,17 @@ class _PosScaffoldState extends State<PosScaffold> {
     return Portal(
       child: Scaffold(
         drawerScrimColor: UIColors.transparent,
-        drawer: PosDrawer(routerState: widget.routerState),
+        drawer: PosDrawer(routerState: widget.route),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(80),
           child: Container(
             margin: const EdgeInsets.all(16),
-            child: PosHeader(widget.routerState),
+            child: PosHeader(widget.route),
           ),
         ),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 20.0),
-          child: widget.navigationShell,
+          child: widget.child,
         ),
       ),
     );

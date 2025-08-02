@@ -21,7 +21,8 @@ mixin _$EmployeeFormState {
   String? get lastName => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
-  List<Branch> get assignedBranches => throw _privateConstructorUsedError;
+  List<BranchPartial> get assignedBranches =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $EmployeeFormStateCopyWith<EmployeeFormState> get copyWith =>
@@ -40,7 +41,7 @@ abstract class $EmployeeFormStateCopyWith<$Res> {
       String? lastName,
       String? email,
       String? phone,
-      List<Branch> assignedBranches});
+      List<BranchPartial> assignedBranches});
 }
 
 /// @nodoc
@@ -87,7 +88,7 @@ class _$EmployeeFormStateCopyWithImpl<$Res, $Val extends EmployeeFormState>
       assignedBranches: null == assignedBranches
           ? _value.assignedBranches
           : assignedBranches // ignore: cast_nullable_to_non_nullable
-              as List<Branch>,
+              as List<BranchPartial>,
     ) as $Val);
   }
 }
@@ -106,7 +107,7 @@ abstract class _$$RoleAccessStateImplCopyWith<$Res>
       String? lastName,
       String? email,
       String? phone,
-      List<Branch> assignedBranches});
+      List<BranchPartial> assignedBranches});
 }
 
 /// @nodoc
@@ -151,7 +152,7 @@ class __$$RoleAccessStateImplCopyWithImpl<$Res>
       assignedBranches: null == assignedBranches
           ? _value._assignedBranches
           : assignedBranches // ignore: cast_nullable_to_non_nullable
-              as List<Branch>,
+              as List<BranchPartial>,
     ));
   }
 }
@@ -165,7 +166,7 @@ class _$RoleAccessStateImpl extends _RoleAccessState {
       this.lastName,
       this.email,
       this.phone,
-      final List<Branch> assignedBranches = const []})
+      final List<BranchPartial> assignedBranches = const []})
       : _assignedBranches = assignedBranches,
         super._();
 
@@ -179,10 +180,10 @@ class _$RoleAccessStateImpl extends _RoleAccessState {
   final String? email;
   @override
   final String? phone;
-  final List<Branch> _assignedBranches;
+  final List<BranchPartial> _assignedBranches;
   @override
   @JsonKey()
-  List<Branch> get assignedBranches {
+  List<BranchPartial> get assignedBranches {
     if (_assignedBranches is EqualUnmodifiableListView)
       return _assignedBranches;
     // ignore: implicit_dynamic_type
@@ -229,7 +230,7 @@ abstract class _RoleAccessState extends EmployeeFormState {
       final String? lastName,
       final String? email,
       final String? phone,
-      final List<Branch> assignedBranches}) = _$RoleAccessStateImpl;
+      final List<BranchPartial> assignedBranches}) = _$RoleAccessStateImpl;
   const _RoleAccessState._() : super._();
 
   @override
@@ -243,7 +244,7 @@ abstract class _RoleAccessState extends EmployeeFormState {
   @override
   String? get phone;
   @override
-  List<Branch> get assignedBranches;
+  List<BranchPartial> get assignedBranches;
   @override
   @JsonKey(ignore: true)
   _$$RoleAccessStateImplCopyWith<_$RoleAccessStateImpl> get copyWith =>

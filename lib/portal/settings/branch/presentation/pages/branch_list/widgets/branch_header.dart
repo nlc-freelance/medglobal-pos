@@ -17,7 +17,7 @@ class BranchHeader extends StatelessWidget {
           UIButton.filled(
             Strings.branchCreate,
             icon: Assets.icons.add.setSize(12.0),
-            onClick: () => context.goNamed(SideMenuTreeItem.newBranch.name),
+            onClick: () => context.goNamed('branchCreate'),
           )
         ],
       ),

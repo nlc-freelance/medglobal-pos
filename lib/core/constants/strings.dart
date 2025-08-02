@@ -50,7 +50,7 @@ class Strings {
   static const branchEmptySubtitle =
       'You haven\'t added any branches yet. Create your first branch to begin managing store locations.';
   static const branchAdd = 'Add Branch';
-  static const branchEdit = 'Edit Branch';
+  static const branchDetails = 'Edit Branch';
 
   // Product Performance Reports
   static const productPerformanceTitle = 'Product Performance';

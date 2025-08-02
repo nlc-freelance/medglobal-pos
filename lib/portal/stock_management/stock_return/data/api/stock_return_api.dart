@@ -5,26 +5,25 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_return/doma
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_paginated_list.dart';
 
-abstract class StockReturnApi {
-  Future<StockReturnPaginatedList> getStockReturns({
-    required int page,
-    required int size,
-    StockOrderStatus? status,
-    int? branchId,
-    String? startDate,
-    String? endDate,
-  });
-  Future<StockReturnDto> getStockReturnById(int id);
-  Future<StockReturnDto> create(NewStockReturn payload);
-  Future<StockReturnDto> update(StockOrderUpdate type, {required int id, required StockReturn stockReturn});
-}
+// abstract class StockReturnApi {
+//   Future<StockReturnPaginatedList> getStockReturns({
+//     required int page,
+//     required int size,
+//     StockOrderStatus? status,
+//     int? branchId,
+//     String? startDate,
+//     String? endDate,
+//   });
+//   Future<StockReturnDto> getStockReturnById(int id);
+//   Future<StockReturnDto> create(NewStockReturn payload);
+//   Future<StockReturnDto> update(StockOrderUpdate type, {required int id, required StockReturn stockReturn});
+// }
 
-class StockReturnApiImpl implements StockReturnApi {
+class StockReturnApi {
   final ApiService _apiService;
 
-  StockReturnApiImpl(this._apiService);
+  StockReturnApi(this._apiService);
 
-  @override
   Future<StockReturnPaginatedList> getStockReturns({
     required int page,
     required int size,
@@ -58,7 +57,6 @@ class StockReturnApiImpl implements StockReturnApi {
     }
   }
 
-  @override
   Future<StockReturnDto> getStockReturnById(int id) async {
     try {
       return await _apiService.get<StockReturnDto>(
@@ -70,7 +68,6 @@ class StockReturnApiImpl implements StockReturnApi {
     }
   }
 
-  @override
   Future<StockReturnDto> create(NewStockReturn payload) async {
     try {
       return await _apiService.post<StockReturnDto>(
@@ -83,7 +80,6 @@ class StockReturnApiImpl implements StockReturnApi {
     }
   }
 
-  @override
   Future<StockReturnDto> update(StockOrderUpdate type, {required int id, required StockReturn stockReturn}) async {
     try {
       JSON payload = {};

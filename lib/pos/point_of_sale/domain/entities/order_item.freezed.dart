@@ -21,6 +21,7 @@ OrderItem _$OrderItemFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$OrderItem {
   int get id => throw _privateConstructorUsedError;
+  int get itemId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get sku => throw _privateConstructorUsedError;
   int get quantity => throw _privateConstructorUsedError;
@@ -50,6 +51,7 @@ abstract class $OrderItemCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
+      int itemId,
       String name,
       String sku,
       int quantity,
@@ -73,6 +75,7 @@ class _$OrderItemCopyWithImpl<$Res, $Val extends OrderItem>
   @override
   $Res call({
     Object? id = null,
+    Object? itemId = null,
     Object? name = null,
     Object? sku = null,
     Object? quantity = null,
@@ -85,6 +88,10 @@ class _$OrderItemCopyWithImpl<$Res, $Val extends OrderItem>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      itemId: null == itemId
+          ? _value.itemId
+          : itemId // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
           ? _value.name
@@ -128,6 +135,7 @@ abstract class _$$OrderItemImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
+      int itemId,
       String name,
       String sku,
       int quantity,
@@ -149,6 +157,7 @@ class __$$OrderItemImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
+    Object? itemId = null,
     Object? name = null,
     Object? sku = null,
     Object? quantity = null,
@@ -161,6 +170,10 @@ class __$$OrderItemImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      itemId: null == itemId
+          ? _value.itemId
+          : itemId // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
           ? _value.name
@@ -199,6 +212,7 @@ class __$$OrderItemImplCopyWithImpl<$Res>
 class _$OrderItemImpl implements _OrderItem {
   const _$OrderItemImpl(
       {required this.id,
+      required this.itemId,
       required this.name,
       required this.sku,
       this.quantity = 1,
@@ -212,6 +226,8 @@ class _$OrderItemImpl implements _OrderItem {
 
   @override
   final int id;
+  @override
+  final int itemId;
   @override
   final String name;
   @override
@@ -239,7 +255,7 @@ class _$OrderItemImpl implements _OrderItem {
 
   @override
   String toString() {
-    return 'OrderItem(id: $id, name: $name, sku: $sku, quantity: $quantity, price: $price, discountedPrice: $discountedPrice, discountType: $discountType, discount: $discount)';
+    return 'OrderItem(id: $id, itemId: $itemId, name: $name, sku: $sku, quantity: $quantity, price: $price, discountedPrice: $discountedPrice, discountType: $discountType, discount: $discount)';
   }
 
   @override
@@ -248,6 +264,7 @@ class _$OrderItemImpl implements _OrderItem {
         (other.runtimeType == runtimeType &&
             other is _$OrderItemImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.itemId, itemId) || other.itemId == itemId) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.sku, sku) || other.sku == sku) &&
             (identical(other.quantity, quantity) ||
@@ -263,8 +280,8 @@ class _$OrderItemImpl implements _OrderItem {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, sku, quantity, price,
-      discountedPrice, discountType, discount);
+  int get hashCode => Object.hash(runtimeType, id, itemId, name, sku, quantity,
+      price, discountedPrice, discountType, discount);
 
   @JsonKey(ignore: true)
   @override
@@ -283,6 +300,7 @@ class _$OrderItemImpl implements _OrderItem {
 abstract class _OrderItem implements OrderItem {
   const factory _OrderItem(
       {required final int id,
+      required final int itemId,
       required final String name,
       required final String sku,
       final int quantity,
@@ -296,6 +314,8 @@ abstract class _OrderItem implements OrderItem {
 
   @override
   int get id;
+  @override
+  int get itemId;
   @override
   String get name;
   @override

@@ -4,11 +4,12 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 
 class SidePeekModal extends StatelessWidget {
   final Widget child;
+  final BuildContext context;
 
-  const SidePeekModal({super.key, required this.child});
+  const SidePeekModal(this.context, {super.key, required this.child});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(_) {
     return Align(
       alignment: Alignment.centerRight,
       child: Material(

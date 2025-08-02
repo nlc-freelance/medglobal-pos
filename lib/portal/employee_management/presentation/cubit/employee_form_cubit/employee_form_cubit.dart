@@ -20,14 +20,21 @@ class EmployeeFormCubit extends Cubit<EmployeeFormState> {
 
   void setPhone(String phone) => emit(state.copyWith(phone: phone));
 
-  void addAssignedBranch(Branch branch) {
-    if (state.assignedBranches.contains(branch) == true) return;
-    final updatedAssignedBranches = [...state.assignedBranches, branch];
+  void toggleAssignedBranch(BranchPartial branch) {
+    final branches = state.assignedBranches;
+    final exists = branches.any((b) => b.id == branch.id);
+
+    if (exists) {
+      removeAssignedBranch(branch);
+      return;
+    }
+
+    final updatedAssignedBranches = [...branches, branch];
     emit(state.copyWith(assignedBranches: updatedAssignedBranches));
   }
 
-  void removeAssignedBranch(int id) {
-    final updatedAssignedBranches = state.assignedBranches.where((branch) => branch.id != id).toList();
+  void removeAssignedBranch(BranchPartial branch) {
+    final updatedAssignedBranches = state.assignedBranches.where((b) => b.id != branch.id).toList();
     emit(state.copyWith(assignedBranches: updatedAssignedBranches));
   }
 

@@ -8,7 +8,7 @@ class EmployeeFormState with _$EmployeeFormState {
     String? lastName,
     String? email,
     String? phone,
-    @Default([]) List<Branch> assignedBranches,
+    @Default([]) List<BranchPartial> assignedBranches,
   }) = _RoleAccessState;
 
   const EmployeeFormState._();
@@ -25,4 +25,8 @@ class EmployeeFormState with _$EmployeeFormState {
       );
 
   String get name => '$firstName $lastName';
+
+  bool isBranchSelected(BranchPartial branch) {
+    return assignedBranches.where((b) => b.id == branch.id).isNotEmpty;
+  }
 }

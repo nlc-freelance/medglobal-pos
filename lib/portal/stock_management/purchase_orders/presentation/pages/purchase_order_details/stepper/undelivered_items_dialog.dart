@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/enums/purchase_order_enum.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/bloc/purchase_order_bloc/purchase_order_bloc.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -75,7 +73,7 @@ class _UndeliveredItemsDialogState extends State<UndeliveredItemsDialog> {
                             PurchaseOrderEvent.updatePurchaseOrder(
                                 action: UpdatePurchaseOrder.saveAndReceived,
                                 id: state.purchaseOrder.id!,
-                                purchaseOrder: state.purchaseOrder.copyWith(
+                                po: state.purchaseOrder.copyWith(
                                     items: state.purchaseOrder.items
                                         ?.map((item) =>
                                             item.quantityReceived == null ? item.copyWith(quantityReceived: 0) : item)

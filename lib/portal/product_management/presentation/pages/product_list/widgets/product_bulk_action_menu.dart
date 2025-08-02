@@ -5,7 +5,6 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/form/app_dropdown_form_field.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/bloc/product_bulk_bloc/product_bulk_bloc.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form_cubit/product_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_shared/extensions.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -59,9 +58,8 @@ class _ProductBulkActionMenuState extends State<ProductBulkActionMenu> {
                         label: 'Category',
                         hint: 'Select category',
                         getName: (category) => category.name,
-                        onChanged: (category) => context.read<ProductFormCubit>().setCategory(category),
+                        onChanged: (category) => setState(() => _category = category),
                       ),
-                      // content: CategoryDropdown(onChanged: (value) => setState(() => _category = value)),
                       onAction: () => context.read<ProductBulkBloc>().add(ProductBulkEvent.bulkUpdateProduct(
                             ids: ids,
                             category: _category,
@@ -130,47 +128,50 @@ class _ProductBulkActionMenuState extends State<ProductBulkActionMenu> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => BlocConsumer<ProductBulkBloc, ProductBulkState>(
-          listener: (context, state) {
-            final shouldPop = state.maybeWhen(
-              success: (_) => true,
-              failure: (_) => true,
-              orElse: () => false,
-            );
+        builder: (_) => BlocProvider.value(
+          value: context.read<ProductBulkBloc>(),
+          child: BlocConsumer<ProductBulkBloc, ProductBulkState>(
+            listener: (context, state) {
+              final shouldPop = state.maybeWhen(
+                success: (_) => true,
+                failure: (_) => true,
+                orElse: () => false,
+              );
 
-            if (shouldPop) Navigator.pop(context);
-          },
-          builder: (context, state) => Portal(
-            child: Dialog(
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-              backgroundColor: UIColors.background,
-              child: Container(
-                width: MediaQuery.sizeOf(context).width * 0.35,
-                padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    UIText.heading6(title),
-                    if (subtitle != null) UIText.subtitle(subtitle),
-                    const Divider(color: UIColors.borderMuted),
-                    const UIVerticalSpace(16),
-                    if (message != null) UIText.bodyRegular(message),
-                    if (content != null) content,
-                    const UIVerticalSpace(30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
-                        const UIHorizontalSpace(8),
-                        UIButton.filled(
-                          message != null ? 'Confirm' : 'Save',
-                          onClick: onAction,
-                          style: message != null ? UIStyleButton.danger : null,
-                        ),
-                      ],
-                    ),
-                  ],
+              if (shouldPop) Navigator.pop(context);
+            },
+            builder: (context, state) => Portal(
+              child: Dialog(
+                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                backgroundColor: UIColors.background,
+                child: Container(
+                  width: MediaQuery.sizeOf(context).width * 0.35,
+                  padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      UIText.heading6(title),
+                      if (subtitle != null) UIText.subtitle(subtitle),
+                      const Divider(color: UIColors.borderMuted),
+                      const UIVerticalSpace(16),
+                      if (message != null) UIText.bodyRegular(message),
+                      if (content != null) content,
+                      const UIVerticalSpace(30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
+                          const UIHorizontalSpace(8),
+                          UIButton.filled(
+                            message != null ? 'Confirm' : 'Save',
+                            onClick: onAction,
+                            style: message != null ? UIStyleButton.danger : null,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

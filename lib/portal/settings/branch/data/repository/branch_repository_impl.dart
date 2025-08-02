@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
-import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
+import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch_api_service.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
@@ -56,5 +56,13 @@ class BranchRepositoryImpl extends BaseRepository implements BranchRepository {
   @override
   Future<Either<Failure, ReceiptConfig>> getReceiptConfigByBranchId(int id) async {
     return call(() async => await _api.getReceiptConfigByBranchId(id));
+  }
+
+  @override
+  Future<Either<Failure, PaginatedList<BranchPartial>>> getBranchesPartial(PageQuery query) {
+    return call(() async {
+      final response = await _api.getBranchesPartial(query);
+      return response.convert((dto) => BranchPartialMapper.fromDto(dto));
+    });
   }
 }

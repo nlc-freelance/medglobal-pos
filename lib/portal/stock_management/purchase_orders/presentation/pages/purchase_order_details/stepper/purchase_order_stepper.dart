@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/enums/purchase_order_enum.dart';
+import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/bloc/purchase_order_bloc/purchase_order_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_order_details.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_form.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/undelivered_items_dialog.dart';
@@ -62,8 +62,8 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
               // return BlocConsumer<PurchaseOrderRemoteCubit, PurchaseOrderRemoteState>(
               listener: (context, state) {
                 state.maybeWhen(
-                  created: (po) => AppRouter.router.goNamed(
-                    SideMenuTreeItem.PURCHASE_ORDER_DETAILS.name,
+                  created: (po) => context.goNamed(
+                    'purchaseOrderDetails',
                     pathParameters: {'id': po.id.toString()},
                   ),
                   updated: (po) => context.read<PurchaseOrderFormCubit>().loadPurchaseOrder(po),
@@ -87,28 +87,9 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         state.maybeWhen(
-                          failure: (message) => Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Assets.icons.infoCircle.svg(),
-                              const UIHorizontalSpace(8),
-                              UIText.labelSemiBold('Something went wrong. $message', color: UIColors.buttonDanger),
-                            ],
-                          ),
+                          failure: (message) => PageErrorBanner(message: message),
                           orElse: () => const SizedBox(),
                         ),
-                        // if (state is PurchaseOrderError) ...[
-                        //   Row(
-                        //     mainAxisSize: MainAxisSize.min,
-                        //     children: [
-                        //       Assets.icons.infoCircle.svg(),
-                        //       const UIHorizontalSpace(8),
-                        //       UIText.labelSemiBold('Something went wrong. ${state.message}',
-                        //           color: UIColors.buttonDanger),
-                        //     ],
-                        //   ),
-                        //   const UIVerticalSpace(16),
-                        // ],
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -118,8 +99,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                                 padding: const EdgeInsets.only(right: 8),
                                 child: UIButton.outlined(
                                   'Cancel',
-                                  onClick: () =>
-                                      AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name),
+                                  onClick: () => context.pushReplacementNamed('purchaseOrderList'),
                                 ),
                               ),
                             if (_currentStep == 0)
@@ -146,7 +126,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                                       PurchaseOrderEvent.updatePurchaseOrder(
                                         action: UpdatePurchaseOrder.save,
                                         id: localState.purchaseOrder.id!,
-                                        purchaseOrder: localState.purchaseOrder,
+                                        po: localState.purchaseOrder,
                                       ),
                                     ),
                               ),
@@ -168,7 +148,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                                               ? UpdatePurchaseOrder.saveAndMarkAsShippedWithNewItems
                                               : UpdatePurchaseOrder.saveAndMarkAsShipped,
                                           id: localState.purchaseOrder.id!,
-                                          purchaseOrder: localState.purchaseOrder,
+                                          po: localState.purchaseOrder,
                                         ),
 
                                         // localState.purchaseOrder.items?.any((item) => item.id! < 0) == true
@@ -195,7 +175,7 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                                           PurchaseOrderEvent.updatePurchaseOrder(
                                             action: UpdatePurchaseOrder.saveAndReceived,
                                             id: localState.purchaseOrder.id!,
-                                            purchaseOrder: localState.purchaseOrder,
+                                            po: localState.purchaseOrder,
                                           ),
                                           // StockOrderUpdate.SAVE_AND_RECEIVED,
                                           // id: localState.purchaseOrder.id!,

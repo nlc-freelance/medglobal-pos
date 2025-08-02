@@ -30,6 +30,8 @@ class PaginatedList<T> with _$PaginatedList<T> {
 
   bool get hasNoItems => !hasItems;
 
+  bool get hasMore => totalPages > currentPage;
+
   bool get hasReachedMax => currentPage == totalPages;
 
   bool get isOnFirstPage => currentPage == 1;

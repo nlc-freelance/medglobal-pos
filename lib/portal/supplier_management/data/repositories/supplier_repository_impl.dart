@@ -3,19 +3,19 @@ import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/data/api/supplier_api.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_request_dto.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_payload.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/repositories/supplier_repository.dart';
 
 class SupplierRepositoryImpl implements SupplierRepository {
-  final SupplierApi supplierApi;
+  final SupplierApi _api;
 
-  SupplierRepositoryImpl(this.supplierApi);
+  SupplierRepositoryImpl({required SupplierApi api}) : _api = api;
 
   @override
   Future<Either<Failure, PaginatedList<Supplier>>> getSuppliers(PageQuery query) async {
     try {
-      final responseDto = await supplierApi.getSuppliers(query);
+      final responseDto = await _api.getSuppliers(query);
       return Right(responseDto.convert((item) => item.toDomain()));
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
@@ -25,7 +25,7 @@ class SupplierRepositoryImpl implements SupplierRepository {
   @override
   Future<Either<Failure, Supplier>> getSupplierById(int id) async {
     try {
-      final supplier = await supplierApi.getSupplier(id);
+      final supplier = await _api.getSupplier(id);
       return Right(supplier.toDomain());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
@@ -33,29 +33,29 @@ class SupplierRepositoryImpl implements SupplierRepository {
   }
 
   @override
-  Future<Either<Failure, void>> create(Supplier supplier) async {
+  Future<Either<Failure, Supplier>> createSupplier(SupplierPayload payload) async {
     try {
-      final requestDto = SupplierRequestDto.fromDomain(supplier);
-      return Right(await supplierApi.create(requestDto));
+      final response = await _api.create(payload);
+      return Right(response.toDomain());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
   }
 
   @override
-  Future<Either<Failure, void>> update(int id, Supplier supplier) async {
+  Future<Either<Failure, Supplier>> updateSupplier(int id, SupplierPayload payload) async {
     try {
-      final requestDto = SupplierRequestDto.fromDomain(supplier);
-      return Right(await supplierApi.update(id, requestDto));
+      final response = await _api.update(id, payload);
+      return Right(response.toDomain());
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }
   }
 
   @override
-  Future<Either<Failure, void>> delete(int id) async {
+  Future<Either<Failure, void>> deleteSupplier(int id) async {
     try {
-      return Right(await supplierApi.delete(id));
+      return Right(await _api.delete(id));
     } on DioException catch (e) {
       return Left(ServerFailure(e.message!));
     }

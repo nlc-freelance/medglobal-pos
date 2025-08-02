@@ -39,8 +39,8 @@ class RegisterList extends StatelessWidget with DialogMixin {
     // Reload lazy list for register dropdown
     context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(forceRefresh: true));
 
-    SnackbarUtil.success(context, message);
     PageLoader.close();
+    SnackbarUtil.success(context, message);
   }
 
   void _onSaveSuccess(BuildContext context, String message) {

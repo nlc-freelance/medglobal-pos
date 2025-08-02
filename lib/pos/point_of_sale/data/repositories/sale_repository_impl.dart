@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/data/api/sale_api.dart'
 import 'package:medglobal_admin_portal/pos/point_of_sale/data/dto/sale/create_sale_dto.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/entities/order.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/repositories/sale_repository.dart';
-import 'package:medglobal_admin_portal/pos/transactions/data/dto/response/transaction_dto.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction/transaction_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 
 class SaleRepositoryImpl implements SaleRepository {
@@ -16,7 +16,7 @@ class SaleRepositoryImpl implements SaleRepository {
   @override
   Future<Either<Failure, Transaction>> createSale({required int registerId, required Order order}) async {
     try {
-      final requestDto = CreateSaleDto.fromDomain(registerId, order);
+      final requestDto = SalePayload.fromDomain(registerId, order);
       final response = await _saleApi.createSale(requestDto);
       return Right(response.toDomain());
     } on DioException catch (e) {

@@ -179,7 +179,7 @@ class ReceiptTemplateDataGridSource extends DataGridSource with DialogMixin {
       value: receiptTemplate,
       onValid: (receiptTemplate) {
         _context.goNamed(
-          SideMenuTreeItem.receiptTemplateDetails.name,
+          'receiptTemplateDetails',
           pathParameters: {'id': receiptTemplate.id.toString()},
         );
       },

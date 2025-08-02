@@ -10,7 +10,7 @@ import 'package:medglobal_admin_portal/portal/employee_management/domain/entitie
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/bloc/employee_bloc/employee_bloc.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/cubit/employee_form_cubit/employee_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/cubit/role_access_cubit/role_access_cubit.dart';
-import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_form/employee_form_view.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_form/widgets/employee_form_view.dart';
 
 class EmployeeFormPage extends StatelessWidget {
   const EmployeeFormPage({super.key, this.id});
@@ -83,10 +83,10 @@ class _EmployeeFormState extends State<EmployeeForm> {
     // Reload the list of employees
     context.read<PaginatedListBloc<Employee>>().add(const PaginatedListEvent.fetch());
 
-    SnackbarUtil.success(context, message);
     PageLoader.close();
+    SnackbarUtil.success(context, message);
 
-    context.goNamed(SideMenuTreeItem.employee.name);
+    context.goNamed('employeeList');
   }
 
   void _onFailure(BuildContext context, String message) {

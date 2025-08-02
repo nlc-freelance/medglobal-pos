@@ -7,7 +7,7 @@ class PurchaseOrderEvent with _$PurchaseOrderEvent {
   const factory PurchaseOrderEvent.updatePurchaseOrder({
     required UpdatePurchaseOrder action,
     required int id,
-    required PurchaseOrder purchaseOrder,
+    required PurchaseOrder po,
   }) = _UpdatePurchaseOrder;
   const factory PurchaseOrderEvent.cancelPurchaseOrder(int id) = _CancelPurchaseOrder;
   const factory PurchaseOrderEvent.deletePurchaseOrder(int id) = _DeletePurchaseOrder;

@@ -10,14 +10,14 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presen
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class StockTakesPage extends StatefulWidget {
-  const StockTakesPage({super.key});
+class StockTakeListPage extends StatefulWidget {
+  const StockTakeListPage({super.key});
 
   @override
-  State<StockTakesPage> createState() => _StockTakesPageState();
+  State<StockTakeListPage> createState() => _StockTakesPageState();
 }
 
-class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProviderStateMixin {
+class _StockTakesPageState extends State<StockTakeListPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override

@@ -5,28 +5,27 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/do
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_paginated_list.dart';
 
-abstract class StockTransferApi {
-  Future<StockTransferPaginatedList> getStockTransfers({
-    required int page,
-    required int size,
-    StockOrderStatus? status,
-    int? sourceBranchId,
-    int? destinationBranchId,
-    String? startDate,
-    String? endDate,
-  });
-  Future<StockTransferDto> getStockTransferById(int id);
-  Future<StockTransferDto> create(NewStockTransfer payload);
-  Future<StockTransferDto> update(StockOrderUpdate type, {required int id, required StockTransfer stockTransfer});
-  Future<void> delete(int id);
-}
+// abstract class StockTransferApi {
+//   Future<StockTransferPaginatedList> getStockTransfers({
+//     required int page,
+//     required int size,
+//     StockOrderStatus? status,
+//     int? sourceBranchId,
+//     int? destinationBranchId,
+//     String? startDate,
+//     String? endDate,
+//   });
+//   Future<StockTransferDto> getStockTransferById(int id);
+//   Future<StockTransferDto> create(NewStockTransfer payload);
+//   Future<StockTransferDto> update(StockOrderUpdate type, {required int id, required StockTransfer stockTransfer});
+//   Future<void> delete(int id);
+// }
 
-class StockTransferApiImpl implements StockTransferApi {
+class StockTransferApi {
   final ApiService _apiService;
 
-  StockTransferApiImpl(this._apiService);
+  StockTransferApi(this._apiService);
 
-  @override
   Future<StockTransferPaginatedList> getStockTransfers({
     required int page,
     required int size,
@@ -62,7 +61,6 @@ class StockTransferApiImpl implements StockTransferApi {
     }
   }
 
-  @override
   Future<StockTransferDto> getStockTransferById(int id) async {
     try {
       return await _apiService.get<StockTransferDto>(
@@ -74,7 +72,6 @@ class StockTransferApiImpl implements StockTransferApi {
     }
   }
 
-  @override
   Future<StockTransferDto> create(NewStockTransfer payload) async {
     try {
       return await _apiService.post<StockTransferDto>(
@@ -87,7 +84,6 @@ class StockTransferApiImpl implements StockTransferApi {
     }
   }
 
-  @override
   Future<StockTransferDto> update(StockOrderUpdate type,
       {required int id, required StockTransfer stockTransfer}) async {
     try {
@@ -112,7 +108,6 @@ class StockTransferApiImpl implements StockTransferApi {
     }
   }
 
-  @override
   Future<void> delete(int id) async {
     try {
       await _apiService.delete<StockTransferDto>('/stock-transfers/$id');

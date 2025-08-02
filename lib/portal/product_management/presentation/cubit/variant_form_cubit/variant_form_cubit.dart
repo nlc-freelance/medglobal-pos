@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/branch_inventory/branch_inventory.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/form_models/variant_form_model.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/form_models/variant_form_model.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:uuid/uuid.dart';

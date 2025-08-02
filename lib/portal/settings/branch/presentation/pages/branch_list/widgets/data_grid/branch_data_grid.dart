@@ -150,7 +150,7 @@ class BranchDataGridSource extends DataGridSource with DialogMixin {
     // Go to details page
     // In the details page, fetch the branch by the given id and init it in the BranchFormCubit
     _context.goNamed(
-      SideMenuTreeItem.branchDetails.name,
+      'branchDetails',
       pathParameters: {'id': branchId.toString()},
     );
   }

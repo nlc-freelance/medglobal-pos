@@ -19,7 +19,7 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState> {
     on<_DeletePurchaseOrder>(_onDeletePurchaseOrder);
   }
 
-  Future<void> _onGetPurchaseOrderById(event, emit) async {
+  Future<void> _onGetPurchaseOrderById(_GetPurchaseOrderById event, Emitter<PurchaseOrderState> emit) async {
     emit(const PurchaseOrderState.loading());
 
     try {
@@ -33,7 +33,7 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState> {
     }
   }
 
-  Future<void> _onCreatePurchaseOrder(event, emit) async {
+  Future<void> _onCreatePurchaseOrder(_CreatePurchaseOrder event, Emitter<PurchaseOrderState> emit) async {
     emit(const PurchaseOrderState.creating());
 
     try {
@@ -47,8 +47,8 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState> {
     }
   }
 
-  Future<void> _onUpdatePurchaseOrder(event, emit) async {
-    final status = switch (event.action as UpdatePurchaseOrder) {
+  Future<void> _onUpdatePurchaseOrder(_UpdatePurchaseOrder event, Emitter<PurchaseOrderState> emit) async {
+    final status = switch (event.action) {
       UpdatePurchaseOrder.save => const PurchaseOrderState.updating(),
       UpdatePurchaseOrder.saveAndMarkAsShippedWithNewItems => const PurchaseOrderState.markingAsShippedWithNewItems(),
       UpdatePurchaseOrder.saveAndMarkAsShipped => const PurchaseOrderState.markingAsShipped(),
@@ -73,7 +73,7 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState> {
     }
   }
 
-  Future<void> _onDeletePurchaseOrder(event, emit) async {
+  Future<void> _onDeletePurchaseOrder(_DeletePurchaseOrder event, Emitter<PurchaseOrderState> emit) async {
     emit(const PurchaseOrderState.deleting());
 
     try {

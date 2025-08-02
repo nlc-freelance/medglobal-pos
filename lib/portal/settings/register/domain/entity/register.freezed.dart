@@ -234,3 +234,199 @@ abstract class _Register implements Register {
   _$$RegisterImplCopyWith<_$RegisterImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+/// @nodoc
+mixin _$RegisterPartial {
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  Branch? get assignedBranch => throw _privateConstructorUsedError;
+  String? get serialNumber => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $RegisterPartialCopyWith<RegisterPartial> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $RegisterPartialCopyWith<$Res> {
+  factory $RegisterPartialCopyWith(
+          RegisterPartial value, $Res Function(RegisterPartial) then) =
+      _$RegisterPartialCopyWithImpl<$Res, RegisterPartial>;
+  @useResult
+  $Res call(
+      {int id, String name, Branch? assignedBranch, String? serialNumber});
+
+  $BranchCopyWith<$Res>? get assignedBranch;
+}
+
+/// @nodoc
+class _$RegisterPartialCopyWithImpl<$Res, $Val extends RegisterPartial>
+    implements $RegisterPartialCopyWith<$Res> {
+  _$RegisterPartialCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? assignedBranch = freezed,
+    Object? serialNumber = freezed,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      assignedBranch: freezed == assignedBranch
+          ? _value.assignedBranch
+          : assignedBranch // ignore: cast_nullable_to_non_nullable
+              as Branch?,
+      serialNumber: freezed == serialNumber
+          ? _value.serialNumber
+          : serialNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $BranchCopyWith<$Res>? get assignedBranch {
+    if (_value.assignedBranch == null) {
+      return null;
+    }
+
+    return $BranchCopyWith<$Res>(_value.assignedBranch!, (value) {
+      return _then(_value.copyWith(assignedBranch: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$RegisterPartialImplCopyWith<$Res>
+    implements $RegisterPartialCopyWith<$Res> {
+  factory _$$RegisterPartialImplCopyWith(_$RegisterPartialImpl value,
+          $Res Function(_$RegisterPartialImpl) then) =
+      __$$RegisterPartialImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {int id, String name, Branch? assignedBranch, String? serialNumber});
+
+  @override
+  $BranchCopyWith<$Res>? get assignedBranch;
+}
+
+/// @nodoc
+class __$$RegisterPartialImplCopyWithImpl<$Res>
+    extends _$RegisterPartialCopyWithImpl<$Res, _$RegisterPartialImpl>
+    implements _$$RegisterPartialImplCopyWith<$Res> {
+  __$$RegisterPartialImplCopyWithImpl(
+      _$RegisterPartialImpl _value, $Res Function(_$RegisterPartialImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? assignedBranch = freezed,
+    Object? serialNumber = freezed,
+  }) {
+    return _then(_$RegisterPartialImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      assignedBranch: freezed == assignedBranch
+          ? _value.assignedBranch
+          : assignedBranch // ignore: cast_nullable_to_non_nullable
+              as Branch?,
+      serialNumber: freezed == serialNumber
+          ? _value.serialNumber
+          : serialNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$RegisterPartialImpl implements _RegisterPartial {
+  const _$RegisterPartialImpl(
+      {required this.id,
+      required this.name,
+      this.assignedBranch,
+      this.serialNumber});
+
+  @override
+  final int id;
+  @override
+  final String name;
+  @override
+  final Branch? assignedBranch;
+  @override
+  final String? serialNumber;
+
+  @override
+  String toString() {
+    return 'RegisterPartial(id: $id, name: $name, assignedBranch: $assignedBranch, serialNumber: $serialNumber)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RegisterPartialImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.assignedBranch, assignedBranch) ||
+                other.assignedBranch == assignedBranch) &&
+            (identical(other.serialNumber, serialNumber) ||
+                other.serialNumber == serialNumber));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, assignedBranch, serialNumber);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$RegisterPartialImplCopyWith<_$RegisterPartialImpl> get copyWith =>
+      __$$RegisterPartialImplCopyWithImpl<_$RegisterPartialImpl>(
+          this, _$identity);
+}
+
+abstract class _RegisterPartial implements RegisterPartial {
+  const factory _RegisterPartial(
+      {required final int id,
+      required final String name,
+      final Branch? assignedBranch,
+      final String? serialNumber}) = _$RegisterPartialImpl;
+
+  @override
+  int get id;
+  @override
+  String get name;
+  @override
+  Branch? get assignedBranch;
+  @override
+  String? get serialNumber;
+  @override
+  @JsonKey(ignore: true)
+  _$$RegisterPartialImplCopyWith<_$RegisterPartialImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

@@ -44,7 +44,7 @@ class DataGridColumn {
     ColumnData('suppliers', 'Suppliers'),
   ];
 
-  static List<ColumnData> PURCHASE_ORDERS = [
+  static List<ColumnData> purchaseOrders = [
     ColumnData('id', 'ID'),
     ColumnData('date', 'Date'),
     ColumnData('est_date_arrival', 'Estimated Date of Arrival'),

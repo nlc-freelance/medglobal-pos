@@ -214,6 +214,7 @@ import 'package:medglobal_admin_portal/pos/transactions/domain/entities/refund_i
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'transaction_item.freezed.dart';
+part 'transaction_item.g.dart';
 
 @freezed
 class TransactionItem with _$TransactionItem {
@@ -233,6 +234,8 @@ class TransactionItem with _$TransactionItem {
     int? restockQty,
     int? writeOffQty,
   }) = _TransactionItem;
+
+  factory TransactionItem.fromJson(Map<String, dynamic> json) => _$TransactionItemFromJson(json);
 
   const TransactionItem._();
 

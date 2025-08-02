@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
@@ -12,7 +11,7 @@ import 'package:medglobal_admin_portal/portal/product_management/presentation/pa
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/product_selection_toolbar.dart';
 
 class ProductListPage extends StatelessWidget {
-  static String route = SideMenuTreeItem.PRODUCTS.route;
+  static String route = '/products';
 
   const ProductListPage({super.key});
 

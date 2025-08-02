@@ -539,3 +539,253 @@ abstract class _BranchDto implements BranchDto {
   _$$BranchDtoImplCopyWith<_$BranchDtoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+BranchPartialDto _$BranchPartialDtoFromJson(Map<String, dynamic> json) {
+  return _BranchPartialDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$BranchPartialDto {
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+  String? get address => throw _privateConstructorUsedError;
+  @DateTimeConverter()
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  @DateTimeConverter()
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $BranchPartialDtoCopyWith<BranchPartialDto> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $BranchPartialDtoCopyWith<$Res> {
+  factory $BranchPartialDtoCopyWith(
+          BranchPartialDto value, $Res Function(BranchPartialDto) then) =
+      _$BranchPartialDtoCopyWithImpl<$Res, BranchPartialDto>;
+  @useResult
+  $Res call(
+      {int id,
+      String name,
+      String? phone,
+      String? address,
+      @DateTimeConverter() DateTime? createdAt,
+      @DateTimeConverter() DateTime? updatedAt});
+}
+
+/// @nodoc
+class _$BranchPartialDtoCopyWithImpl<$Res, $Val extends BranchPartialDto>
+    implements $BranchPartialDtoCopyWith<$Res> {
+  _$BranchPartialDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? phone = freezed,
+    Object? address = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$BranchPartialDtoImplCopyWith<$Res>
+    implements $BranchPartialDtoCopyWith<$Res> {
+  factory _$$BranchPartialDtoImplCopyWith(_$BranchPartialDtoImpl value,
+          $Res Function(_$BranchPartialDtoImpl) then) =
+      __$$BranchPartialDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      String name,
+      String? phone,
+      String? address,
+      @DateTimeConverter() DateTime? createdAt,
+      @DateTimeConverter() DateTime? updatedAt});
+}
+
+/// @nodoc
+class __$$BranchPartialDtoImplCopyWithImpl<$Res>
+    extends _$BranchPartialDtoCopyWithImpl<$Res, _$BranchPartialDtoImpl>
+    implements _$$BranchPartialDtoImplCopyWith<$Res> {
+  __$$BranchPartialDtoImplCopyWithImpl(_$BranchPartialDtoImpl _value,
+      $Res Function(_$BranchPartialDtoImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? phone = freezed,
+    Object? address = freezed,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(_$BranchPartialDtoImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$BranchPartialDtoImpl implements _BranchPartialDto {
+  const _$BranchPartialDtoImpl(
+      {required this.id,
+      required this.name,
+      this.phone,
+      this.address,
+      @DateTimeConverter() this.createdAt,
+      @DateTimeConverter() this.updatedAt});
+
+  factory _$BranchPartialDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BranchPartialDtoImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String name;
+  @override
+  final String? phone;
+  @override
+  final String? address;
+  @override
+  @DateTimeConverter()
+  final DateTime? createdAt;
+  @override
+  @DateTimeConverter()
+  final DateTime? updatedAt;
+
+  @override
+  String toString() {
+    return 'BranchPartialDto(id: $id, name: $name, phone: $phone, address: $address, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$BranchPartialDtoImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, phone, address, createdAt, updatedAt);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$BranchPartialDtoImplCopyWith<_$BranchPartialDtoImpl> get copyWith =>
+      __$$BranchPartialDtoImplCopyWithImpl<_$BranchPartialDtoImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$BranchPartialDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _BranchPartialDto implements BranchPartialDto {
+  const factory _BranchPartialDto(
+      {required final int id,
+      required final String name,
+      final String? phone,
+      final String? address,
+      @DateTimeConverter() final DateTime? createdAt,
+      @DateTimeConverter() final DateTime? updatedAt}) = _$BranchPartialDtoImpl;
+
+  factory _BranchPartialDto.fromJson(Map<String, dynamic> json) =
+      _$BranchPartialDtoImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get name;
+  @override
+  String? get phone;
+  @override
+  String? get address;
+  @override
+  @DateTimeConverter()
+  DateTime? get createdAt;
+  @override
+  @DateTimeConverter()
+  DateTime? get updatedAt;
+  @override
+  @JsonKey(ignore: true)
+  _$$BranchPartialDtoImplCopyWith<_$BranchPartialDtoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

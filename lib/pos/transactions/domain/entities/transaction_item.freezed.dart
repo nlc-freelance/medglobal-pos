@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+TransactionItem _$TransactionItemFromJson(Map<String, dynamic> json) {
+  return _TransactionItem.fromJson(json);
+}
+
 /// @nodoc
 mixin _$TransactionItem {
   int? get id => throw _privateConstructorUsedError;
@@ -31,6 +35,7 @@ mixin _$TransactionItem {
   int? get restockQty => throw _privateConstructorUsedError;
   int? get writeOffQty => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $TransactionItemCopyWith<TransactionItem> get copyWith =>
       throw _privateConstructorUsedError;
@@ -261,7 +266,7 @@ class __$$TransactionItemImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$TransactionItemImpl extends _TransactionItem {
   const _$TransactionItemImpl(
       {this.id,
@@ -279,6 +284,9 @@ class _$TransactionItemImpl extends _TransactionItem {
       this.restockQty,
       this.writeOffQty})
       : super._();
+
+  factory _$TransactionItemImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TransactionItemImplFromJson(json);
 
   @override
   final int? id;
@@ -342,6 +350,7 @@ class _$TransactionItemImpl extends _TransactionItem {
                 other.writeOffQty == writeOffQty));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -366,6 +375,13 @@ class _$TransactionItemImpl extends _TransactionItem {
   _$$TransactionItemImplCopyWith<_$TransactionItemImpl> get copyWith =>
       __$$TransactionItemImplCopyWithImpl<_$TransactionItemImpl>(
           this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$TransactionItemImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _TransactionItem extends TransactionItem {
@@ -385,6 +401,9 @@ abstract class _TransactionItem extends TransactionItem {
       final int? restockQty,
       final int? writeOffQty}) = _$TransactionItemImpl;
   const _TransactionItem._() : super._();
+
+  factory _TransactionItem.fromJson(Map<String, dynamic> json) =
+      _$TransactionItemImpl.fromJson;
 
   @override
   int? get id;

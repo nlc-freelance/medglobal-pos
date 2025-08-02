@@ -21,7 +21,7 @@ mixin _$PurchaseOrderEvent {
     required TResult Function(int id) getPurchaseOrderById,
     required TResult Function(NewPurchaseOrder po) createPurchaseOrder,
     required TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)
+            UpdatePurchaseOrder action, int id, PurchaseOrder po)
         updatePurchaseOrder,
     required TResult Function(int id) cancelPurchaseOrder,
     required TResult Function(int id) deletePurchaseOrder,
@@ -31,8 +31,7 @@ mixin _$PurchaseOrderEvent {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getPurchaseOrderById,
     TResult? Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult? Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult? Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult? Function(int id)? cancelPurchaseOrder,
     TResult? Function(int id)? deletePurchaseOrder,
@@ -42,8 +41,7 @@ mixin _$PurchaseOrderEvent {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getPurchaseOrderById,
     TResult Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult Function(int id)? cancelPurchaseOrder,
     TResult Function(int id)? deletePurchaseOrder,
@@ -167,7 +165,7 @@ class _$GetPurchaseOrderByIdImpl implements _GetPurchaseOrderById {
     required TResult Function(int id) getPurchaseOrderById,
     required TResult Function(NewPurchaseOrder po) createPurchaseOrder,
     required TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)
+            UpdatePurchaseOrder action, int id, PurchaseOrder po)
         updatePurchaseOrder,
     required TResult Function(int id) cancelPurchaseOrder,
     required TResult Function(int id) deletePurchaseOrder,
@@ -180,8 +178,7 @@ class _$GetPurchaseOrderByIdImpl implements _GetPurchaseOrderById {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getPurchaseOrderById,
     TResult? Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult? Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult? Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult? Function(int id)? cancelPurchaseOrder,
     TResult? Function(int id)? deletePurchaseOrder,
@@ -194,8 +191,7 @@ class _$GetPurchaseOrderByIdImpl implements _GetPurchaseOrderById {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getPurchaseOrderById,
     TResult Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult Function(int id)? cancelPurchaseOrder,
     TResult Function(int id)? deletePurchaseOrder,
@@ -336,7 +332,7 @@ class _$CreatePurchaseOrderImpl implements _CreatePurchaseOrder {
     required TResult Function(int id) getPurchaseOrderById,
     required TResult Function(NewPurchaseOrder po) createPurchaseOrder,
     required TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)
+            UpdatePurchaseOrder action, int id, PurchaseOrder po)
         updatePurchaseOrder,
     required TResult Function(int id) cancelPurchaseOrder,
     required TResult Function(int id) deletePurchaseOrder,
@@ -349,8 +345,7 @@ class _$CreatePurchaseOrderImpl implements _CreatePurchaseOrder {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getPurchaseOrderById,
     TResult? Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult? Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult? Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult? Function(int id)? cancelPurchaseOrder,
     TResult? Function(int id)? deletePurchaseOrder,
@@ -363,8 +358,7 @@ class _$CreatePurchaseOrderImpl implements _CreatePurchaseOrder {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getPurchaseOrderById,
     TResult Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult Function(int id)? cancelPurchaseOrder,
     TResult Function(int id)? deletePurchaseOrder,
@@ -433,9 +427,9 @@ abstract class _$$UpdatePurchaseOrderImplCopyWith<$Res> {
           $Res Function(_$UpdatePurchaseOrderImpl) then) =
       __$$UpdatePurchaseOrderImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder});
+  $Res call({UpdatePurchaseOrder action, int id, PurchaseOrder po});
 
-  $PurchaseOrderCopyWith<$Res> get purchaseOrder;
+  $PurchaseOrderCopyWith<$Res> get po;
 }
 
 /// @nodoc
@@ -451,7 +445,7 @@ class __$$UpdatePurchaseOrderImplCopyWithImpl<$Res>
   $Res call({
     Object? action = null,
     Object? id = null,
-    Object? purchaseOrder = null,
+    Object? po = null,
   }) {
     return _then(_$UpdatePurchaseOrderImpl(
       action: null == action
@@ -462,18 +456,18 @@ class __$$UpdatePurchaseOrderImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      purchaseOrder: null == purchaseOrder
-          ? _value.purchaseOrder
-          : purchaseOrder // ignore: cast_nullable_to_non_nullable
+      po: null == po
+          ? _value.po
+          : po // ignore: cast_nullable_to_non_nullable
               as PurchaseOrder,
     ));
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $PurchaseOrderCopyWith<$Res> get purchaseOrder {
-    return $PurchaseOrderCopyWith<$Res>(_value.purchaseOrder, (value) {
-      return _then(_value.copyWith(purchaseOrder: value));
+  $PurchaseOrderCopyWith<$Res> get po {
+    return $PurchaseOrderCopyWith<$Res>(_value.po, (value) {
+      return _then(_value.copyWith(po: value));
     });
   }
 }
@@ -482,18 +476,18 @@ class __$$UpdatePurchaseOrderImplCopyWithImpl<$Res>
 
 class _$UpdatePurchaseOrderImpl implements _UpdatePurchaseOrder {
   const _$UpdatePurchaseOrderImpl(
-      {required this.action, required this.id, required this.purchaseOrder});
+      {required this.action, required this.id, required this.po});
 
   @override
   final UpdatePurchaseOrder action;
   @override
   final int id;
   @override
-  final PurchaseOrder purchaseOrder;
+  final PurchaseOrder po;
 
   @override
   String toString() {
-    return 'PurchaseOrderEvent.updatePurchaseOrder(action: $action, id: $id, purchaseOrder: $purchaseOrder)';
+    return 'PurchaseOrderEvent.updatePurchaseOrder(action: $action, id: $id, po: $po)';
   }
 
   @override
@@ -503,12 +497,11 @@ class _$UpdatePurchaseOrderImpl implements _UpdatePurchaseOrder {
             other is _$UpdatePurchaseOrderImpl &&
             (identical(other.action, action) || other.action == action) &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.purchaseOrder, purchaseOrder) ||
-                other.purchaseOrder == purchaseOrder));
+            (identical(other.po, po) || other.po == po));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, action, id, purchaseOrder);
+  int get hashCode => Object.hash(runtimeType, action, id, po);
 
   @JsonKey(ignore: true)
   @override
@@ -523,12 +516,12 @@ class _$UpdatePurchaseOrderImpl implements _UpdatePurchaseOrder {
     required TResult Function(int id) getPurchaseOrderById,
     required TResult Function(NewPurchaseOrder po) createPurchaseOrder,
     required TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)
+            UpdatePurchaseOrder action, int id, PurchaseOrder po)
         updatePurchaseOrder,
     required TResult Function(int id) cancelPurchaseOrder,
     required TResult Function(int id) deletePurchaseOrder,
   }) {
-    return updatePurchaseOrder(action, id, purchaseOrder);
+    return updatePurchaseOrder(action, id, po);
   }
 
   @override
@@ -536,13 +529,12 @@ class _$UpdatePurchaseOrderImpl implements _UpdatePurchaseOrder {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getPurchaseOrderById,
     TResult? Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult? Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult? Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult? Function(int id)? cancelPurchaseOrder,
     TResult? Function(int id)? deletePurchaseOrder,
   }) {
-    return updatePurchaseOrder?.call(action, id, purchaseOrder);
+    return updatePurchaseOrder?.call(action, id, po);
   }
 
   @override
@@ -550,15 +542,14 @@ class _$UpdatePurchaseOrderImpl implements _UpdatePurchaseOrder {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getPurchaseOrderById,
     TResult Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult Function(int id)? cancelPurchaseOrder,
     TResult Function(int id)? deletePurchaseOrder,
     required TResult orElse(),
   }) {
     if (updatePurchaseOrder != null) {
-      return updatePurchaseOrder(action, id, purchaseOrder);
+      return updatePurchaseOrder(action, id, po);
     }
     return orElse();
   }
@@ -608,11 +599,11 @@ abstract class _UpdatePurchaseOrder implements PurchaseOrderEvent {
   const factory _UpdatePurchaseOrder(
       {required final UpdatePurchaseOrder action,
       required final int id,
-      required final PurchaseOrder purchaseOrder}) = _$UpdatePurchaseOrderImpl;
+      required final PurchaseOrder po}) = _$UpdatePurchaseOrderImpl;
 
   UpdatePurchaseOrder get action;
   int get id;
-  PurchaseOrder get purchaseOrder;
+  PurchaseOrder get po;
   @JsonKey(ignore: true)
   _$$UpdatePurchaseOrderImplCopyWith<_$UpdatePurchaseOrderImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -686,7 +677,7 @@ class _$CancelPurchaseOrderImpl implements _CancelPurchaseOrder {
     required TResult Function(int id) getPurchaseOrderById,
     required TResult Function(NewPurchaseOrder po) createPurchaseOrder,
     required TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)
+            UpdatePurchaseOrder action, int id, PurchaseOrder po)
         updatePurchaseOrder,
     required TResult Function(int id) cancelPurchaseOrder,
     required TResult Function(int id) deletePurchaseOrder,
@@ -699,8 +690,7 @@ class _$CancelPurchaseOrderImpl implements _CancelPurchaseOrder {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getPurchaseOrderById,
     TResult? Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult? Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult? Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult? Function(int id)? cancelPurchaseOrder,
     TResult? Function(int id)? deletePurchaseOrder,
@@ -713,8 +703,7 @@ class _$CancelPurchaseOrderImpl implements _CancelPurchaseOrder {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getPurchaseOrderById,
     TResult Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult Function(int id)? cancelPurchaseOrder,
     TResult Function(int id)? deletePurchaseOrder,
@@ -844,7 +833,7 @@ class _$DeletePurchaseOrderImpl implements _DeletePurchaseOrder {
     required TResult Function(int id) getPurchaseOrderById,
     required TResult Function(NewPurchaseOrder po) createPurchaseOrder,
     required TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)
+            UpdatePurchaseOrder action, int id, PurchaseOrder po)
         updatePurchaseOrder,
     required TResult Function(int id) cancelPurchaseOrder,
     required TResult Function(int id) deletePurchaseOrder,
@@ -857,8 +846,7 @@ class _$DeletePurchaseOrderImpl implements _DeletePurchaseOrder {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(int id)? getPurchaseOrderById,
     TResult? Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult? Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult? Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult? Function(int id)? cancelPurchaseOrder,
     TResult? Function(int id)? deletePurchaseOrder,
@@ -871,8 +859,7 @@ class _$DeletePurchaseOrderImpl implements _DeletePurchaseOrder {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(int id)? getPurchaseOrderById,
     TResult Function(NewPurchaseOrder po)? createPurchaseOrder,
-    TResult Function(
-            UpdatePurchaseOrder action, int id, PurchaseOrder purchaseOrder)?
+    TResult Function(UpdatePurchaseOrder action, int id, PurchaseOrder po)?
         updatePurchaseOrder,
     TResult Function(int id)? cancelPurchaseOrder,
     TResult Function(int id)? deletePurchaseOrder,

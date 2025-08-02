@@ -23,34 +23,38 @@ class OrderBloc extends HydratedBloc<OrderEvent, OrderState> {
   ///
   /// If item already exists, its quantity will be incremented.
   /// Otherwise, it will be added with quantity set to 1.
-  void _onAddItem(event, emit) {
+  void _onAddItem(_AddItem event, emit) {
     final items = List<OrderItem>.from(state.order.items);
 
     List<OrderItem> updatedItems;
 
-    if (items.any((item) => item.id == event.item.id)) {
+    if (items.any((item) => item.itemId == event.item.itemId)) {
       updatedItems = items.map((item) {
-        if (item.id == event.item.id) return item.copyWith(quantity: item.quantity + 1);
+        if (item.itemId == event.item.itemId) return item.copyWith(quantity: item.quantity + 1);
         return item;
       }).toList();
     } else {
       updatedItems = [...items, event.item];
     }
 
-    emit(state.order.copyWith(items: updatedItems));
+    final updatedOrder = state.order.copyWith(items: updatedItems);
+    emit(state.copyWith(order: updatedOrder));
   }
 
   /// Removes an item from the cart.
   ///
-  void _onRemoveItem(event, emit) {
-    emit(state.order.copyWith(items: _removeItemById(event.id)));
+  void _onRemoveItem(_RemoveItem event, emit) {
+    final updatedItems = _removeItemById(event.id);
+
+    final updatedOrder = state.order.copyWith(items: updatedItems);
+    emit(state.copyWith(order: updatedOrder));
   }
 
   /// Updates the quantity of an existing item.
   ///
   /// If the new quantity is 0, the item will be removed.
   /// Otherwise, the item quantity is replaced with new quantity.
-  void _onUpdateItemQuantity(event, emit) {
+  void _onUpdateItemQuantity(_UpdateItemQuantity event, emit) {
     final updatedItems = event.quantity == 0
         ? _removeItemById(event.id)
         : state.order.items.map((item) {
@@ -58,33 +62,36 @@ class OrderBloc extends HydratedBloc<OrderEvent, OrderState> {
             return item;
           }).toList();
 
-    emit(state.order.copyWith(items: updatedItems));
+    final updatedOrder = state.order.copyWith(items: updatedItems);
+    emit(state.copyWith(order: updatedOrder));
   }
 
   /// Sets a discount category on an item.
-  void _onSetItemDiscount(event, emit) {
+  void _onSetItemDiscount(_SetItemDiscount event, emit) {
     final updatedItems = state.order.items.map((item) {
       if (item.id == event.id) return item.copyWith(discount: event.discount);
       return item;
     }).toList();
 
-    emit(state.order.copyWith(items: updatedItems));
+    final updatedOrder = state.order.copyWith(items: updatedItems);
+    emit(state.copyWith(order: updatedOrder));
   }
 
   /// Removes the discount for an item.
   ///
-  void _onRemoveItemDiscount(event, emit) {
+  void _onRemoveItemDiscount(_RemoveItemDiscount event, emit) {
     final updatedItems = state.order.items.map((item) {
       if (item.id == event.id) return item.copyWith(discount: null);
       return item;
     }).toList();
 
-    emit(state.order.copyWith(items: updatedItems));
+    final updatedOrder = state.order.copyWith(items: updatedItems);
+    emit(state.copyWith(order: updatedOrder));
   }
 
   /// Clears all items in the cart.
   ///
-  void _onClearOrder(event, emit) => emit(OrderState.initial());
+  void _onClearOrder(_ClearOrder event, emit) => emit(OrderState.initial());
 
   /// Removes an item from the state by its ID.
   List<OrderItem> _removeItemById(int id) => state.order.items.where((item) => item.id != id).toList();

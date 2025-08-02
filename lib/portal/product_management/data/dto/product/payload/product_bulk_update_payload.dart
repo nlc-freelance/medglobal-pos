@@ -18,6 +18,8 @@ extension ProductBulkUpdatePayloadExt on ProductBulkUpdatePayload {
           ? {
               'id': category!.id,
               'name': category!.name,
+              'createdAt': category!.createdAt!.toIso8601String(),
+              'updatedAt': category!.updatedAt!.toIso8601String(),
             }
           : null,
     };

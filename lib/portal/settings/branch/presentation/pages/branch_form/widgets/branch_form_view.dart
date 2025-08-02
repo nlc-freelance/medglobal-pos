@@ -24,7 +24,7 @@ class _BranchFormViewState extends State<BranchFormView> {
       key: _branchFormKey,
       child: Column(
         children: [
-          PageHeader(title: widget.isEditMode ? Strings.branchEdit : Strings.branchAdd),
+          PageHeader(title: widget.isEditMode ? Strings.branchDetails : Strings.branchAdd),
           const Expanded(
             child: SingleChildScrollView(
               child: Column(

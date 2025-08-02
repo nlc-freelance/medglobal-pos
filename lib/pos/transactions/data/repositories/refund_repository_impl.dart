@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/data/dto/refund/create_refund_dto.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/data/dto/refund/create_refund_item_dto.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/dto/refund/create_refund_dto.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/dto/refund/create_refund_item_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/api/refund_api.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/refund_item.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund_repository.dart';
-import 'package:medglobal_admin_portal/pos/transactions/data/dto/response/transaction_dto.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction/transaction_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 
 class RefundRepositoryImpl implements RefundRepository {

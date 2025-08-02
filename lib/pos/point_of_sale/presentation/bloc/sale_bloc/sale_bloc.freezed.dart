@@ -16,42 +16,43 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SaleEvent {
-  Order get order => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(Order order) createSale,
+    required TResult Function() reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Order order)? createSale,
+    TResult? Function()? reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Order order)? createSale,
+    TResult Function()? reset,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_CreateSale value) createSale,
+    required TResult Function(_Reset value) reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_CreateSale value)? createSale,
+    TResult? Function(_Reset value)? reset,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_CreateSale value)? createSale,
+    TResult Function(_Reset value)? reset,
     required TResult orElse(),
   }) =>
-      throw _privateConstructorUsedError;
-
-  @JsonKey(ignore: true)
-  $SaleEventCopyWith<SaleEvent> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -59,10 +60,6 @@ mixin _$SaleEvent {
 abstract class $SaleEventCopyWith<$Res> {
   factory $SaleEventCopyWith(SaleEvent value, $Res Function(SaleEvent) then) =
       _$SaleEventCopyWithImpl<$Res, SaleEvent>;
-  @useResult
-  $Res call({Order order});
-
-  $OrderCopyWith<$Res> get order;
 }
 
 /// @nodoc
@@ -74,40 +71,16 @@ class _$SaleEventCopyWithImpl<$Res, $Val extends SaleEvent>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? order = null,
-  }) {
-    return _then(_value.copyWith(
-      order: null == order
-          ? _value.order
-          : order // ignore: cast_nullable_to_non_nullable
-              as Order,
-    ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $OrderCopyWith<$Res> get order {
-    return $OrderCopyWith<$Res>(_value.order, (value) {
-      return _then(_value.copyWith(order: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
-abstract class _$$CreateSaleImplCopyWith<$Res>
-    implements $SaleEventCopyWith<$Res> {
+abstract class _$$CreateSaleImplCopyWith<$Res> {
   factory _$$CreateSaleImplCopyWith(
           _$CreateSaleImpl value, $Res Function(_$CreateSaleImpl) then) =
       __$$CreateSaleImplCopyWithImpl<$Res>;
-  @override
   @useResult
   $Res call({Order order});
 
-  @override
   $OrderCopyWith<$Res> get order;
 }
 
@@ -130,6 +103,14 @@ class __$$CreateSaleImplCopyWithImpl<$Res>
           : order // ignore: cast_nullable_to_non_nullable
               as Order,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $OrderCopyWith<$Res> get order {
+    return $OrderCopyWith<$Res>(_value.order, (value) {
+      return _then(_value.copyWith(order: value));
+    });
   }
 }
 
@@ -167,6 +148,7 @@ class _$CreateSaleImpl implements _CreateSale {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(Order order) createSale,
+    required TResult Function() reset,
   }) {
     return createSale(order);
   }
@@ -175,6 +157,7 @@ class _$CreateSaleImpl implements _CreateSale {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Order order)? createSale,
+    TResult? Function()? reset,
   }) {
     return createSale?.call(order);
   }
@@ -183,6 +166,7 @@ class _$CreateSaleImpl implements _CreateSale {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Order order)? createSale,
+    TResult Function()? reset,
     required TResult orElse(),
   }) {
     if (createSale != null) {
@@ -195,6 +179,7 @@ class _$CreateSaleImpl implements _CreateSale {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_CreateSale value) createSale,
+    required TResult Function(_Reset value) reset,
   }) {
     return createSale(this);
   }
@@ -203,6 +188,7 @@ class _$CreateSaleImpl implements _CreateSale {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_CreateSale value)? createSale,
+    TResult? Function(_Reset value)? reset,
   }) {
     return createSale?.call(this);
   }
@@ -211,6 +197,7 @@ class _$CreateSaleImpl implements _CreateSale {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_CreateSale value)? createSale,
+    TResult Function(_Reset value)? reset,
     required TResult orElse(),
   }) {
     if (createSale != null) {
@@ -223,12 +210,112 @@ class _$CreateSaleImpl implements _CreateSale {
 abstract class _CreateSale implements SaleEvent {
   const factory _CreateSale(final Order order) = _$CreateSaleImpl;
 
-  @override
   Order get order;
-  @override
   @JsonKey(ignore: true)
   _$$CreateSaleImplCopyWith<_$CreateSaleImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ResetImplCopyWith<$Res> {
+  factory _$$ResetImplCopyWith(
+          _$ResetImpl value, $Res Function(_$ResetImpl) then) =
+      __$$ResetImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$ResetImplCopyWithImpl<$Res>
+    extends _$SaleEventCopyWithImpl<$Res, _$ResetImpl>
+    implements _$$ResetImplCopyWith<$Res> {
+  __$$ResetImplCopyWithImpl(
+      _$ResetImpl _value, $Res Function(_$ResetImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$ResetImpl implements _Reset {
+  const _$ResetImpl();
+
+  @override
+  String toString() {
+    return 'SaleEvent.reset()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$ResetImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(Order order) createSale,
+    required TResult Function() reset,
+  }) {
+    return reset();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(Order order)? createSale,
+    TResult? Function()? reset,
+  }) {
+    return reset?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(Order order)? createSale,
+    TResult Function()? reset,
+    required TResult orElse(),
+  }) {
+    if (reset != null) {
+      return reset();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_CreateSale value) createSale,
+    required TResult Function(_Reset value) reset,
+  }) {
+    return reset(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_CreateSale value)? createSale,
+    TResult? Function(_Reset value)? reset,
+  }) {
+    return reset?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_CreateSale value)? createSale,
+    TResult Function(_Reset value)? reset,
+    required TResult orElse(),
+  }) {
+    if (reset != null) {
+      return reset(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Reset implements SaleEvent {
+  const factory _Reset() = _$ResetImpl;
 }
 
 /// @nodoc

@@ -3,7 +3,7 @@ import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/transactions/domain/entities/transaction_paginated_list.dart';
-import 'package:medglobal_admin_portal/pos/transactions/data/dto/response/transaction_dto.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction/transaction_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 
 class TransactionApi {

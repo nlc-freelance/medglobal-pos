@@ -279,7 +279,7 @@ class StockTakeDataSource extends DataGridSource {
               onTap: () {
                 // _context.read<StockTakeBloc>().add(GetStockTakeByIdEvent(id));
                 AppRouter.router.goNamed(
-                  SideMenuTreeItem.STOCK_TAKE_DETAILS.name,
+                  'stockTakeDetails',
                   pathParameters: {'id': id.toString()},
                 );
               },

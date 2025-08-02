@@ -72,8 +72,8 @@ class TaxList extends StatelessWidget with DialogMixin {
     // Reload lazy list for tax dropdown
     context.read<LazyListBloc<Tax>>().add(const LazyListEvent<Tax>.fetch(forceRefresh: true));
 
-    SnackbarUtil.success(context, message);
     PageLoader.close();
+    SnackbarUtil.success(context, message);
   }
 
   void _onSaveSuccess(BuildContext context, String message) {

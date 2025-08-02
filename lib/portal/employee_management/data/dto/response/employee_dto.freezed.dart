@@ -25,7 +25,8 @@ mixin _$EmployeeDto {
   String get lastName => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
-  List<BranchDto> get assignedStores => throw _privateConstructorUsedError;
+  List<BranchPartialDto> get assignedStores =>
+      throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
   List<String> get systemAccess => throw _privateConstructorUsedError;
   List<AccessControlDto> get accessControls =>
@@ -53,7 +54,7 @@ abstract class $EmployeeDtoCopyWith<$Res> {
       String lastName,
       String email,
       String phone,
-      List<BranchDto> assignedStores,
+      List<BranchPartialDto> assignedStores,
       String role,
       List<String> systemAccess,
       List<AccessControlDto> accessControls,
@@ -110,7 +111,7 @@ class _$EmployeeDtoCopyWithImpl<$Res, $Val extends EmployeeDto>
       assignedStores: null == assignedStores
           ? _value.assignedStores
           : assignedStores // ignore: cast_nullable_to_non_nullable
-              as List<BranchDto>,
+              as List<BranchPartialDto>,
       role: null == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -149,7 +150,7 @@ abstract class _$$EmployeeDtoImplCopyWith<$Res>
       String lastName,
       String email,
       String phone,
-      List<BranchDto> assignedStores,
+      List<BranchPartialDto> assignedStores,
       String role,
       List<String> systemAccess,
       List<AccessControlDto> accessControls,
@@ -204,7 +205,7 @@ class __$$EmployeeDtoImplCopyWithImpl<$Res>
       assignedStores: null == assignedStores
           ? _value._assignedStores
           : assignedStores // ignore: cast_nullable_to_non_nullable
-              as List<BranchDto>,
+              as List<BranchPartialDto>,
       role: null == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -238,7 +239,7 @@ class _$EmployeeDtoImpl extends _EmployeeDto {
       required this.lastName,
       required this.email,
       required this.phone,
-      required final List<BranchDto> assignedStores,
+      required final List<BranchPartialDto> assignedStores,
       required this.role,
       required final List<String> systemAccess,
       required final List<AccessControlDto> accessControls,
@@ -262,9 +263,9 @@ class _$EmployeeDtoImpl extends _EmployeeDto {
   final String email;
   @override
   final String phone;
-  final List<BranchDto> _assignedStores;
+  final List<BranchPartialDto> _assignedStores;
   @override
-  List<BranchDto> get assignedStores {
+  List<BranchPartialDto> get assignedStores {
     if (_assignedStores is EqualUnmodifiableListView) return _assignedStores;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_assignedStores);
@@ -362,7 +363,7 @@ abstract class _EmployeeDto extends EmployeeDto {
       required final String lastName,
       required final String email,
       required final String phone,
-      required final List<BranchDto> assignedStores,
+      required final List<BranchPartialDto> assignedStores,
       required final String role,
       required final List<String> systemAccess,
       required final List<AccessControlDto> accessControls,
@@ -384,7 +385,7 @@ abstract class _EmployeeDto extends EmployeeDto {
   @override
   String get phone;
   @override
-  List<BranchDto> get assignedStores;
+  List<BranchPartialDto> get assignedStores;
   @override
   String get role;
   @override

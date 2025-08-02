@@ -62,4 +62,20 @@ class BranchApiService {
     );
     return response.data;
   }
+
+  Future<PaginatedList<BranchPartialDto>> getBranchesPartial(PageQuery query) async {
+    final response = await _api.getPaginated<BranchPartialDto>(
+      ApiEndpoints.branches,
+      queryParams: query.toJson(),
+      fromJson: BranchPartialDto.fromJson,
+    );
+
+    return PaginatedList<BranchPartialDto>(
+      items: response.data.items,
+      currentSize: response.data.size,
+      currentPage: response.data.page,
+      totalPages: response.data.totalPages,
+      totalCount: response.data.totalCount,
+    );
+  }
 }

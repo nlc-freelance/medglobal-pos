@@ -174,7 +174,7 @@ class EmployeeDataGridSource extends DataGridSource with DialogMixin {
 
   void _onEditEmployee(employeeId) {
     _context.goNamed(
-      SideMenuTreeItem.employeeDetails.name,
+      'employeeDetails',
       pathParameters: {'id': employeeId.toString()},
     );
   }

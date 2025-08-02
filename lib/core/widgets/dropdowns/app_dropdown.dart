@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/shared/dropdown_list.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/shared/dropdown_lazy_list.dart';
@@ -86,6 +88,18 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
   T? value;
 
   @override
+  void initState() {
+    super.initState();
+
+    /// If the dropdown is lazy-loaded and the items list is empty,
+    /// trigger a fetch event to load the initial data.
+    if (widget.type == DropdownListType.lazy) {
+      final lazyListBloc = context.read<LazyListBloc<T>>();
+      if (lazyListBloc.state.items.isEmpty) lazyListBloc.add(LazyListEvent<T>.fetch());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return OverlayBuilder(
       target: _DropdownButton(
@@ -103,7 +117,11 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
       follower: widget.type == DropdownListType.lazy
           ? DropdownLazyList<T>(
               menuKey: menuKey,
-              onChanged: widget.onSelectItem,
+              onChanged: (T item) {
+                widget.onSelectItem(item);
+                _setValue(item);
+                _hideDropdownList();
+              },
               getName: widget.getName,
             )
           : DropdownList<T>(

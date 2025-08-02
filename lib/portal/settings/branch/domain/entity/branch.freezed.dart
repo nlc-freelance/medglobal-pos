@@ -465,3 +465,192 @@ abstract class _Branch implements Branch {
   _$$BranchImplCopyWith<_$BranchImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+BranchPartial _$BranchPartialFromJson(Map<String, dynamic> json) {
+  return _BranchPartial.fromJson(json);
+}
+
+/// @nodoc
+mixin _$BranchPartial {
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+  String? get address => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $BranchPartialCopyWith<BranchPartial> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $BranchPartialCopyWith<$Res> {
+  factory $BranchPartialCopyWith(
+          BranchPartial value, $Res Function(BranchPartial) then) =
+      _$BranchPartialCopyWithImpl<$Res, BranchPartial>;
+  @useResult
+  $Res call({int id, String name, String? phone, String? address});
+}
+
+/// @nodoc
+class _$BranchPartialCopyWithImpl<$Res, $Val extends BranchPartial>
+    implements $BranchPartialCopyWith<$Res> {
+  _$BranchPartialCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? phone = freezed,
+    Object? address = freezed,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$BranchPartialImplCopyWith<$Res>
+    implements $BranchPartialCopyWith<$Res> {
+  factory _$$BranchPartialImplCopyWith(
+          _$BranchPartialImpl value, $Res Function(_$BranchPartialImpl) then) =
+      __$$BranchPartialImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int id, String name, String? phone, String? address});
+}
+
+/// @nodoc
+class __$$BranchPartialImplCopyWithImpl<$Res>
+    extends _$BranchPartialCopyWithImpl<$Res, _$BranchPartialImpl>
+    implements _$$BranchPartialImplCopyWith<$Res> {
+  __$$BranchPartialImplCopyWithImpl(
+      _$BranchPartialImpl _value, $Res Function(_$BranchPartialImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? phone = freezed,
+    Object? address = freezed,
+  }) {
+    return _then(_$BranchPartialImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$BranchPartialImpl implements _BranchPartial {
+  const _$BranchPartialImpl(
+      {required this.id, required this.name, this.phone, this.address});
+
+  factory _$BranchPartialImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BranchPartialImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String name;
+  @override
+  final String? phone;
+  @override
+  final String? address;
+
+  @override
+  String toString() {
+    return 'BranchPartial(id: $id, name: $name, phone: $phone, address: $address)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$BranchPartialImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.address, address) || other.address == address));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name, phone, address);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$BranchPartialImplCopyWith<_$BranchPartialImpl> get copyWith =>
+      __$$BranchPartialImplCopyWithImpl<_$BranchPartialImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$BranchPartialImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _BranchPartial implements BranchPartial {
+  const factory _BranchPartial(
+      {required final int id,
+      required final String name,
+      final String? phone,
+      final String? address}) = _$BranchPartialImpl;
+
+  factory _BranchPartial.fromJson(Map<String, dynamic> json) =
+      _$BranchPartialImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get name;
+  @override
+  String? get phone;
+  @override
+  String? get address;
+  @override
+  @JsonKey(ignore: true)
+  _$$BranchPartialImplCopyWith<_$BranchPartialImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

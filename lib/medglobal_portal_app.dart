@@ -7,7 +7,6 @@ import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/a
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_selection/product_selection_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/cubit/product_history_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/cubit/product_history_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/cubit/sales_category_filter/sales_category_filter_cubit.dart';
@@ -23,8 +22,6 @@ import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/e
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_filter/purchase_order_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_remote/purchase_order_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/new_stock_return/new_stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_filter/stock_return_list_filter_cubit.dart';
@@ -47,24 +44,17 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_remote/stock_transfer_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_remote/stock_transfer_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_need/supply_need_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_needs/supply_needs_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_lazy_list/supplier_lazy_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list/supplier_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list_filter/supplier_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_remote_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/cubit/return_transaction_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/cubit/sale_transaction_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/print_receipt/print_receipt_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_search/pos_product_search_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_transaction_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sale/presentation/cubit/sale_transaction_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/sale/presentation/cubit/sale_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class MedGlobaPortalApp extends StatelessWidget {
@@ -75,35 +65,30 @@ class MedGlobaPortalApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => GetIt.I<AuthBloc>()..add(const AppInitEvent())),
-        BlocProvider(create: (_) => GetIt.I<LazyListBloc<Category>>()),
-        BlocProvider(create: (_) => GetIt.I<LazyListBloc<Supplier>>()),
-        BlocProvider(create: (_) => GetIt.I<LazyListBloc<Branch>>()),
-        BlocProvider(create: (_) => GetIt.I<LazyListBloc<Tax>>()),
+        BlocProvider(create: (_) => GetIt.I<SyncBloc>()),
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<Register>>()),
-        BlocProvider(create: (_) => GetIt.I<LazyListBloc<ReceiptTemplate>>()),
-        BlocProvider(create: (_) => GetIt.I<ReceiptConfigBloc>()),
-        BlocProvider(create: (_) => GetIt.I<ReportManagerCubit>()),
-        BlocProvider(create: (_) => ActiveRegisterCubit()),
 
-        //
-        BlocProvider(create: (_) => GetIt.I<SidebarCubit>()),
-        BlocProvider(create: (_) => GetIt.I<SupplierListCubit>()),
-        BlocProvider(create: (_) => GetIt.I<SupplierListFilterCubit>()),
-        BlocProvider(create: (_) => GetIt.I<SupplierCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<CategoryCubit>()),
-        BlocProvider(create: (_) => GetIt.I<ProductSelectionCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<ProductBulkActionCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<ProductListCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<ProductListFilterCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<ProductCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<ProductFormCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<VariantFormCubit>()),
-        BlocProvider(create: (_) => GetIt.I<SupplyNeedsCubit>()),
+        if (AppConfig.isPortalApp) ...[
+          // Portal only
+          BlocProvider(create: (_) => GetIt.I<LazyListBloc<Category>>()),
+          BlocProvider(create: (_) => GetIt.I<LazyListBloc<Supplier>>()),
+          BlocProvider(create: (_) => GetIt.I<LazyListBloc<Branch>>()),
+          BlocProvider(create: (_) => GetIt.I<LazyListBloc<BranchPartial>>()),
+          BlocProvider(create: (_) => GetIt.I<LazyListBloc<Tax>>()),
+          BlocProvider(create: (_) => GetIt.I<LazyListBloc<ReceiptTemplate>>()),
+          BlocProvider(create: (_) => GetIt.I<ReportManagerCubit>()),
+          BlocProvider(create: (_) => GetIt.I<SidebarCubit>()),
+        ],
+
+        if (AppConfig.isPOSApp) ...[
+          //  POS only
+          BlocProvider(create: (_) => ActiveRegisterCubit()),
+          BlocProvider(create: (_) => GetIt.I<ReceiptConfigBloc>()),
+        ],
+
+        /// TODOs: Add to portal only
+        // Portal > Stock Management
         BlocProvider(create: (_) => GetIt.I<SupplyNeedCubit>()),
-        BlocProvider(create: (_) => GetIt.I<PurchaseOrderListRemoteCubit>()),
-        BlocProvider(create: (_) => GetIt.I<PurchaseOrderListFilterCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<PurchaseOrderRemoteCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<PurchaseOrderCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewPurchaseOrderCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnListRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnListFilterCubit>()),
@@ -126,29 +111,21 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<StockTakeCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewStockTakeCubit>()),
         BlocProvider(create: (_) => GetIt.I<UncountedItemsDraftCubit>()),
-        BlocProvider(create: (_) => GetIt.I<RegisterShiftBloc>()),
-        BlocProvider(create: (_) => GetIt.I<PosProductListCubit>()),
-        BlocProvider(create: (_) => GetIt.I<PosProductSearchCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<OrderCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<SaleRemoteCubit>()),
+
+        // Portal > Transactions
         BlocProvider(create: (_) => GetIt.I<SaleTransactionListCubit>()),
         BlocProvider(create: (_) => GetIt.I<SaleTransactionListFilterCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<TransactionCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnTransactionListCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnTransactionListFilterCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<TransactionListByBranchCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<RefundCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<RefundRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnRemoteCubit>()),
-        BlocProvider(create: (_) => GetIt.I<PrintReceiptCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<CategoryLazyListCubit>()),
+
+        // Portal > SupplierDropdown
         BlocProvider(create: (_) => GetIt.I<SupplierLazyListCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<BranchLazyListCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<RegisterLazyListCubit>()),
+
+        // Portal > Reports
         BlocProvider(create: (_) => GetIt.I<ProductHistoryListCubit>()),
         BlocProvider(create: (_) => GetIt.I<ProductHistoryListFilterCubit>()),
-        // BlocProvider(create: (_) => GetIt.I<ReportBloc>()),
         BlocProvider(create: (_) => GetIt.I<SalesCategoryFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<SalesCategoryGroupByCubit>()),
         BlocProvider(create: (_) => GetIt.I<SalesCategoryPeriodCubit>()),
@@ -161,8 +138,10 @@ class MedGlobaPortalApp extends StatelessWidget {
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is AuthenticatedState && state.user.type == UserType.CASHIER) {
-            context.read<ActiveRegisterCubit>().loadRegister();
+          if (state is AuthenticatedState) {
+            if (AppConfig.isPOSApp && state.user.type == UserType.cashier) {
+              context.read<ActiveRegisterCubit>().loadRegister();
+            }
           }
           AppRouter.router.refresh();
         },

@@ -5,24 +5,46 @@ import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/a
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class RouteGuard extends StatelessWidget {
-  const RouteGuard({super.key, required this.child, required this.allowedTypes});
+  const RouteGuard({
+    super.key,
+    required this.child,
+    required this.allowedRoles,
+    required this.allowedPlatforms,
+  });
 
   final Widget child;
-  final List<UserType> allowedTypes;
+  final List<UserType> allowedRoles;
+  final List<PlatformType> allowedPlatforms;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        return state is AuthenticatedState && allowedTypes.contains(state.user.type)
-            ? child
-            : Scaffold(
-                body: Center(
-                  child: state is AuthInitialState || state is AuthLoadingState
-                      ? const CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)
-                      : UIText.heading6('Sorry, you do not have the correct role to access this page.'),
-                ),
-              );
+        if (state is AuthInitialState || state is AuthLoadingState) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: UIColors.primary,
+              strokeWidth: 2,
+            ),
+          );
+        }
+
+        if (state is AuthenticatedState) {
+          final isUserAllowed = allowedRoles.contains(state.user.type);
+          final isPlatformAllowed = allowedPlatforms.contains(AppConfig.platform);
+
+          if (isUserAllowed && isPlatformAllowed) return child;
+        }
+
+        return Scaffold(
+          body: Column(
+            children: [
+              Assets.icons.cube.setSize(24),
+              UIText.heading5('Access Denied'),
+              UIText.labelMedium('Sorry, you do not have the permission to access this page.'),
+            ],
+          ),
+        );
       },
     );
   }

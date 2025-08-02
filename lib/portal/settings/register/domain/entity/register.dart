@@ -61,3 +61,13 @@ extension RegisterExt on Register {
         ],
       );
 }
+
+@freezed
+class RegisterPartial with _$RegisterPartial {
+  const factory RegisterPartial({
+    required int id,
+    required String name,
+    Branch? assignedBranch,
+    String? serialNumber,
+  }) = _RegisterPartial;
+}

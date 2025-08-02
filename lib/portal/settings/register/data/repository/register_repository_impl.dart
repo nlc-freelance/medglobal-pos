@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
-import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
+import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_api_service.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register/register_mapper.dart';

@@ -16,7 +16,7 @@ class Employee with _$Employee {
     required String lastName,
     required String email,
     required String phone,
-    required List<Branch> assignedBranches, // Branch
+    required List<BranchPartial> assignedBranches,
     required EmployeeRole role,
     required List<SystemAccess> systemAccess,
     required List<AccessControl> accessControls,
@@ -39,4 +39,17 @@ class Employee with _$Employee {
           DataGridCell<EmployeeRole>(columnName: 'role', value: role),
         ],
       );
+}
+
+@freezed
+class EmployeePartial with _$EmployeePartial {
+  const factory EmployeePartial({
+    required int id,
+    required String firstName,
+    required String lastName,
+  }) = _EmployeePartial;
+}
+
+extension EmployeePartialExt on EmployeePartial {
+  String get name => '$firstName $lastName';
 }

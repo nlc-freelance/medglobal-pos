@@ -1,7 +1,8 @@
 enum SideMenuTree {
   PRODUCTS(
     'Product Management',
-    ['Products', 'Add Product', 'Product Details', 'Suppliers'],
+    ['Products', 'productCreate', 'productDetails', 'Suppliers'],
+    // ['Products', 'Add Product', 'Product Details', 'Suppliers'],
   ),
   STOCKS(
     'Stock Management',
@@ -68,8 +69,10 @@ enum SideMenuTreeItem {
   SUPPLIERS('Suppliers', 'suppliers', '/product-management/suppliers'),
 
   PRODUCTS('Products', 'products', '/product-management/products'),
-  NEW_PRODUCT('Add Product', 'new', '/product-management/new'),
-  PRODUCT_DETAILS('Product Details', 'id=:id', '/product-management/products/:id'),
+  // NEW_PRODUCT('Add Product', 'new', '/product-management/new'),
+  // NEW_PRODUCT('Add Product', 'new', '/product-management/new'),
+  PRODUCT_DETAILS('productForm', 'products/form/:id?', '/product-management/products/:id'),
+  // PRODUCT_DETAILS('Product Details', 'id=:id', '/product-management/products/:id'),
 
   STOCK_MANAGEMENT('Stock Management', '/stock-management', '/stock-management'),
   SUPPLY_NEEDS('Supply Needs', 'supply-needs', '/stock-management/supply-needs'),

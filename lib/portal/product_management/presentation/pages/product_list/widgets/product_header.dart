@@ -16,7 +16,7 @@ class ProductHeader extends StatelessWidget {
           UIButton.filled(
             'New Product',
             icon: Assets.icons.add.setSize(12.0),
-            onClick: () => AppRouter.router.goNamed(SideMenuTreeItem.NEW_PRODUCT.name),
+            onClick: () => AppRouter.router.goNamed('productCreate'),
           ),
         ],
       ),

@@ -3,7 +3,8 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/entities/order.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/repositories/sale_repository.dart';
-import 'package:medglobal_admin_portal/pos/transactions/data/dto/response/transaction_dto.dart';
+import 'package:medglobal_admin_portal/pos/sync/network_service.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction/transaction_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 
 part 'sale_event.dart';
@@ -12,12 +13,17 @@ part 'sale_bloc.freezed.dart';
 
 class SaleBloc extends HydratedBloc<SaleEvent, SaleState> {
   final SaleRepository _repository;
+  final NetworkService _networkService;
 
-  SaleBloc(this._repository) : super(const SaleState.initial()) {
-    on<SaleEvent>(_onCreateSale);
+  SaleBloc({required SaleRepository repository, required NetworkService networkService})
+      : _repository = repository,
+        _networkService = networkService,
+        super(const SaleState.initial()) {
+    on<_CreateSale>(_onCreateSale);
+    on<_Reset>(_onReset);
   }
 
-  Future<void> _onCreateSale(event, emit) async {
+  Future<void> _onCreateSale(_CreateSale event, emit) async {
     final amountPaid = event.order.amountPaid;
 
     if (amountPaid == null || amountPaid == 0) {
@@ -25,7 +31,7 @@ class SaleBloc extends HydratedBloc<SaleEvent, SaleState> {
       return;
     }
 
-    if (amountPaid < event.order.total!) {
+    if (amountPaid < event.order.total) {
       emit(const SaleState.failure('Received amount is less than the total amount due.'));
       return;
     }
@@ -45,6 +51,8 @@ class SaleBloc extends HydratedBloc<SaleEvent, SaleState> {
       emit(SaleState.failure(e.toString()));
     }
   }
+
+  void _onReset(_, emit) => emit(const SaleState.initial());
 
   @override
   SaleState? fromJson(Map<String, dynamic> json) {

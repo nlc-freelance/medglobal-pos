@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$RegisterFormState {
   int? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
+  String? get serialNo => throw _privateConstructorUsedError;
   Branch? get assignedBranch => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -31,7 +32,7 @@ abstract class $RegisterFormStateCopyWith<$Res> {
           RegisterFormState value, $Res Function(RegisterFormState) then) =
       _$RegisterFormStateCopyWithImpl<$Res, RegisterFormState>;
   @useResult
-  $Res call({int? id, String? name, Branch? assignedBranch});
+  $Res call({int? id, String? name, String? serialNo, Branch? assignedBranch});
 
   $BranchCopyWith<$Res>? get assignedBranch;
 }
@@ -51,6 +52,7 @@ class _$RegisterFormStateCopyWithImpl<$Res, $Val extends RegisterFormState>
   $Res call({
     Object? id = freezed,
     Object? name = freezed,
+    Object? serialNo = freezed,
     Object? assignedBranch = freezed,
   }) {
     return _then(_value.copyWith(
@@ -61,6 +63,10 @@ class _$RegisterFormStateCopyWithImpl<$Res, $Val extends RegisterFormState>
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      serialNo: freezed == serialNo
+          ? _value.serialNo
+          : serialNo // ignore: cast_nullable_to_non_nullable
               as String?,
       assignedBranch: freezed == assignedBranch
           ? _value.assignedBranch
@@ -90,7 +96,7 @@ abstract class _$$RegisterFormStateImplCopyWith<$Res>
       __$$RegisterFormStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int? id, String? name, Branch? assignedBranch});
+  $Res call({int? id, String? name, String? serialNo, Branch? assignedBranch});
 
   @override
   $BranchCopyWith<$Res>? get assignedBranch;
@@ -109,6 +115,7 @@ class __$$RegisterFormStateImplCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? name = freezed,
+    Object? serialNo = freezed,
     Object? assignedBranch = freezed,
   }) {
     return _then(_$RegisterFormStateImpl(
@@ -119,6 +126,10 @@ class __$$RegisterFormStateImplCopyWithImpl<$Res>
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      serialNo: freezed == serialNo
+          ? _value.serialNo
+          : serialNo // ignore: cast_nullable_to_non_nullable
               as String?,
       assignedBranch: freezed == assignedBranch
           ? _value.assignedBranch
@@ -131,18 +142,21 @@ class __$$RegisterFormStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$RegisterFormStateImpl implements _RegisterFormState {
-  const _$RegisterFormStateImpl({this.id, this.name, this.assignedBranch});
+  const _$RegisterFormStateImpl(
+      {this.id, this.name, this.serialNo, this.assignedBranch});
 
   @override
   final int? id;
   @override
   final String? name;
   @override
+  final String? serialNo;
+  @override
   final Branch? assignedBranch;
 
   @override
   String toString() {
-    return 'RegisterFormState(id: $id, name: $name, assignedBranch: $assignedBranch)';
+    return 'RegisterFormState(id: $id, name: $name, serialNo: $serialNo, assignedBranch: $assignedBranch)';
   }
 
   @override
@@ -152,12 +166,15 @@ class _$RegisterFormStateImpl implements _RegisterFormState {
             other is _$RegisterFormStateImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.serialNo, serialNo) ||
+                other.serialNo == serialNo) &&
             (identical(other.assignedBranch, assignedBranch) ||
                 other.assignedBranch == assignedBranch));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, assignedBranch);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, serialNo, assignedBranch);
 
   @JsonKey(ignore: true)
   @override
@@ -171,12 +188,15 @@ abstract class _RegisterFormState implements RegisterFormState {
   const factory _RegisterFormState(
       {final int? id,
       final String? name,
+      final String? serialNo,
       final Branch? assignedBranch}) = _$RegisterFormStateImpl;
 
   @override
   int? get id;
   @override
   String? get name;
+  @override
+  String? get serialNo;
   @override
   Branch? get assignedBranch;
   @override

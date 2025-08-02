@@ -3,37 +3,37 @@
 // import 'package:medglobal_admin_portal/core/core.dart';
 // import 'package:medglobal_admin_portal/pos/register/presentation/cubit/order/order_cubit.dart';
 // import 'package:medglobal_shared/medglobal_shared.dart';
-//
+
 // class OrderDiscount extends StatefulWidget {
 //   const OrderDiscount({super.key, this.isReadOnly = false});
-//
+
 //   final bool isReadOnly;
-//
+
 //   @override
 //   State<OrderDiscount> createState() => _OrderDiscountState();
 // }
-//
+
 // class _OrderDiscountState extends State<OrderDiscount> {
 //   late TextEditingController _discountController;
-//
+
 //   @override
 //   void initState() {
 //     super.initState();
 //     final order = context.read<OrderCubit>().state.order;
-//
+
 //     _discountController = TextEditingController(text: (order.discount ?? '').toString())
 //       ..addListener(
 //         () => context.read<OrderCubit>().setDiscount(
 //             discount: double.tryParse(_discountController.text), type: order.discountType ?? DiscountType.PERCENT),
 //       );
 //   }
-//
+
 //   @override
 //   void dispose() {
 //     _discountController.dispose();
 //     super.dispose();
 //   }
-//
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return BlocConsumer<OrderCubit, OrderState>(

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -9,7 +10,7 @@ Future<void> main() async {
   HydratedBloc.storage = await HydratedStorage.build(storageDirectory: HydratedStorage.webStorageDirectory);
 
   await configureAmplify();
-  initDependencyInjection();
+  kIsWeb ? initDependencyInjection() : initDesktopDependencies();
 
   Bloc.observer = AppBlocObserver();
 

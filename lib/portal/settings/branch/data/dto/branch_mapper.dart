@@ -25,3 +25,15 @@ class BranchMapper {
     );
   }
 }
+
+class BranchPartialMapper {
+  BranchPartialMapper._();
+
+  static BranchPartial fromDto(BranchPartialDto dto) {
+    return BranchPartial(
+      id: dto.id,
+      name: dto.name,
+      phone: dto.phone,
+    );
+  }
+}

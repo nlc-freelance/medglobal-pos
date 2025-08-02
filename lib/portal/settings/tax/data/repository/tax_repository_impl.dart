@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
-import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
+import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/api/tax_api_service.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/tax_payload.dart';

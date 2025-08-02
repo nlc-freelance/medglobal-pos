@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/print_util.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/bloc/purchase_order_bloc/purchase_order_bloc.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_order_details.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/purchase_order_stepper.dart';
@@ -23,35 +22,14 @@ class PurchaseOrderDetailsPage extends StatefulWidget {
 }
 
 class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
-  late PurchaseOrder _purchaseOrder;
+  // late PurchaseOrder _purchaseOrder;
 
   @override
   void initState() {
     super.initState();
-    context.read<PurchaseOrderBloc>().add(PurchaseOrderEvent.getPurchaseOrderById(int.parse(widget.id)));
-  }
 
-  String _title(StockOrderStatus status) {
-    switch (status) {
-      case StockOrderStatus.NEW:
-        return 'Edit Purchase Order';
-      case StockOrderStatus.FOR_RECEIVING:
-        return 'Receive Purchase Order';
-      case StockOrderStatus.COMPLETED || StockOrderStatus.CANCELLED:
-        return 'Purchase Order';
-      default:
-        return Strings.empty;
-    }
-  }
-
-  void _onSuccess(PurchaseOrder purchaseOrder) {
-    context.read<PurchaseOrderFormCubit>().loadPurchaseOrder(purchaseOrder);
-    SnackbarUtil.success(context, 'Purchase Order updated successfully.');
-  }
-
-  void _onDeleted() {
-    AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name);
-    SnackbarUtil.success(context, 'Purchase Order deleted successfully.');
+    final id = int.parse(widget.id);
+    context.read<PurchaseOrderBloc>().add(PurchaseOrderEvent.getPurchaseOrderById(id));
   }
 
   @override
@@ -61,6 +39,7 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
         loaded: (po) => context.read<PurchaseOrderFormCubit>().loadPurchaseOrder(po),
         updated: (po) => _onSuccess(po),
         deleted: () => _onDeleted(),
+        failure: (message) => _onFailure(context, message),
         orElse: () => {},
       ),
       // {
@@ -158,7 +137,7 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
               ),
           ],
         ),
-        failure: (message) => FailureView(message),
+        loadFailed: (message) => FailureView(message),
         orElse: () => const SizedBox(),
       ),
       // {
@@ -250,5 +229,33 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
       //   );
       // },
     );
+  }
+
+  String _title(StockOrderStatus status) {
+    switch (status) {
+      case StockOrderStatus.NEW:
+        return 'Edit Purchase Order';
+      case StockOrderStatus.FOR_RECEIVING:
+        return 'Receive Purchase Order';
+      case StockOrderStatus.COMPLETED || StockOrderStatus.CANCELLED:
+        return 'Purchase Order';
+      default:
+        return Strings.empty;
+    }
+  }
+
+  void _onSuccess(PurchaseOrder purchaseOrder) {
+    context.read<PurchaseOrderFormCubit>().loadPurchaseOrder(purchaseOrder);
+    SnackbarUtil.success(context, 'Purchase Order updated successfully.');
+  }
+
+  void _onDeleted() {
+    context.pushReplacementNamed('purchaseOrderList');
+    SnackbarUtil.success(context, 'Purchase Order deleted successfully.');
+  }
+
+  void _onFailure(BuildContext context, String message) {
+    PageLoader.close();
+    SnackbarUtil.error(context, message);
   }
 }

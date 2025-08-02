@@ -277,7 +277,7 @@ class SalesPerShiftDataSource extends DataGridSource {
         'open_time' => HoverBuilder(
             builder: (isHover) => InkWell(
               onTap: () => AppRouter.router.goNamed(
-                'Sales Per Shift Details',
+                'salesPerShiftDetails',
                 pathParameters: {'id': id.toString()},
               ),
               hoverColor: UIColors.transparent,

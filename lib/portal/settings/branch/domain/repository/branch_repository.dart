@@ -7,7 +7,10 @@ import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/rece
 
 abstract class BranchRepository {
   /// Retrieves a list of all branches
-  Future<Either<Failure, PaginatedList<Branch>>> getBranches(PageQuery filters);
+  Future<Either<Failure, PaginatedList<Branch>>> getBranches(PageQuery query);
+
+  // TODO: Refactor to have a base Branch model so we dont need to have separate repository contracts for full and partial models
+  Future<Either<Failure, PaginatedList<BranchPartial>>> getBranchesPartial(PageQuery query);
 
   /// Retrieves a branch by [id]
   Future<Either<Failure, Branch>> getBranch(int id);

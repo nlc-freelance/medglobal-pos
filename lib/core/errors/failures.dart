@@ -15,6 +15,14 @@ class NetworkFailure extends Failure {
   NetworkFailure(super.message);
 }
 
+class LocalDatabaseFailure extends Failure {
+  LocalDatabaseFailure(super.message);
+}
+
+class SyncFailure extends Failure {
+  SyncFailure(super.message);
+}
+
 class UnexpectedFailure extends Failure {
   UnexpectedFailure(super.message);
 }

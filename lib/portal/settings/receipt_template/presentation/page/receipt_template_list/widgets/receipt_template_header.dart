@@ -17,7 +17,7 @@ class ReceiptTemplateHeader extends StatelessWidget {
           UIButton.filled(
             'New Receipt Template',
             icon: Assets.icons.add.setSize(12.0),
-            onClick: () => context.goNamed(SideMenuTreeItem.newReceiptTemplate.name),
+            onClick: () => context.goNamed('receiptTemplateCreate'),
           )
         ],
       ),

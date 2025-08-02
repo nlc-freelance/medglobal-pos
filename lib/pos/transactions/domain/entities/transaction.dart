@@ -273,9 +273,12 @@ class Transaction with _$Transaction {
     String? saleTransactionReceiptId,
     required TransactionType type,
     ReturnStatus? status,
-    required Register register,
-    required Branch branch,
-    required Employee employee,
+    required RegisterPartial register,
+    required BranchPartial branch,
+    required EmployeePartial employee,
+    // required Register register,
+    // required Branch branch,
+    // required Employee employee,
     required List<TransactionItem> items,
     double? subtotal,
     double? tax,
@@ -296,6 +299,37 @@ class Transaction with _$Transaction {
   }) = _Transaction;
 
   const Transaction._();
+
+  // TODO: Ask BE if the structure of the transaction it will received
+  // now that the receipt id is already generated in FE and considered as an existing transaction already
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'receiptId': receiptId,
+      'saleTransactionId': saleTransactionId,
+      'saleTransactionReceiptId': saleTransactionReceiptId,
+      'type': type.name.toString(),
+      'status': status?.toString(),
+      'register': {
+        'id': register.id,
+        'name': register.name,
+      },
+      'branch': branch.toJson(),
+      'employee': {
+        'id': employee.id,
+        'firstName': employee.firstName,
+        'lastName': employee.lastName,
+      },
+      'items': items.map((e) => e.toJson()).toList(),
+      'subtotal': subtotal,
+      'tax': tax,
+      'total': total,
+      'reasonForRefund': reasonForRefund,
+      'createdAt': createdAt.toIso8601String(),
+      'totalDiscountAmount': totalDiscountAmount,
+      'amountPaid': amountPaid,
+    };
+  }
 
   /// Sale Transaction List DataGrid
   DataGridRow toSaleTransactionRow() => DataGridRow(

@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/entities
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form_cubit/product_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_cubit/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/form_models/variant_form_model.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/form_models/variant_form_model.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';

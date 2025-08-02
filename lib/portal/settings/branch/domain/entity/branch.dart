@@ -5,6 +5,8 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 part 'branch.freezed.dart';
 part 'branch.g.dart';
 
+/// BranchFull
+///
 @freezed
 class Branch with _$Branch {
   const factory Branch({
@@ -40,4 +42,26 @@ extension BranchExt on Branch {
 
   String get address =>
       [street1, street2, city, state, postalCode, country].where((item) => item?.isNotEmpty == true).join(', ');
+}
+
+/// BranchPartial
+///
+@freezed
+class BranchPartial with _$BranchPartial {
+  const factory BranchPartial({
+    required int id,
+    required String name,
+    String? phone,
+    String? address,
+  }) = _BranchPartial;
+
+  factory BranchPartial.fromJson(Map<String, dynamic> json) => _$BranchPartialFromJson(json);
+}
+
+extension BranchPartialExt on BranchPartial {
+  String get code {
+    final words = name.trim().split(' ');
+    final initials = words.map((word) => word[0].toUpperCase()).join();
+    return '${initials}B';
+  }
 }

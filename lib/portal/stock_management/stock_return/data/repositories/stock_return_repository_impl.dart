@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/enums/enums.dart';
+import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/data/api/stock_return_api.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/new_stock_return.dart';
@@ -28,8 +29,15 @@ class StockReturnRepositoryImpl implements StockReturnRepository {
     try {
       final response = await _stockReturnApi.getStockReturnById(id);
       return Right(response.toEntity());
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
+      // } on DioException catch (e) {
+      //   return Left(ServerFailure(e.message!));
+      // }
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on UnexpectedException catch (e) {
+      return Left(UnexpectedFailure(e.message));
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
     }
   }
 

@@ -30,3 +30,17 @@ class BranchDto with _$BranchDto {
 
   factory BranchDto.fromJson(Map<String, dynamic> json) => _$BranchDtoFromJson(json);
 }
+
+@freezed
+class BranchPartialDto with _$BranchPartialDto {
+  const factory BranchPartialDto({
+    required int id,
+    required String name,
+    String? phone,
+    String? address,
+    @DateTimeConverter() DateTime? createdAt,
+    @DateTimeConverter() DateTime? updatedAt,
+  }) = _BranchPartialDto;
+
+  factory BranchPartialDto.fromJson(Map<String, dynamic> json) => _$BranchPartialDtoFromJson(json);
+}

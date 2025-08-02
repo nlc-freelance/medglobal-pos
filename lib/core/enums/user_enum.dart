@@ -1,4 +1,4 @@
-enum UserType { CASHIER, ADMIN, STORE_MANAGER }
+enum UserType { cashier, admin, supervisor }
 
 enum ProfileMenu {
   PROFILE('Account Profile'),

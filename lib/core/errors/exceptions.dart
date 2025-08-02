@@ -11,6 +11,14 @@ class NetworkException extends AppException {
   NetworkException(super.message);
 }
 
+class LocalDatabaseException extends AppException {
+  LocalDatabaseException(super.message);
+}
+
+class SyncException extends AppException {
+  SyncException(super.message);
+}
+
 class UnexpectedException extends AppException {
   UnexpectedException(super.message);
 }

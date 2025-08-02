@@ -12,14 +12,14 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_return/pres
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class StockReturnsPage extends StatefulWidget {
-  const StockReturnsPage({super.key});
+class StockReturnListPage extends StatefulWidget {
+  const StockReturnListPage({super.key});
 
   @override
-  State<StockReturnsPage> createState() => _StockReturnsPageState();
+  State<StockReturnListPage> createState() => _StockReturnsPageState();
 }
 
-class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerProviderStateMixin {
+class _StockReturnsPageState extends State<StockReturnListPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -91,7 +91,7 @@ class _StockReturnsPageState extends State<StockReturnsPage> with SingleTickerPr
             UIButton.filled(
               'New Stock Return',
               icon: Assets.icons.add.setSize(12.0),
-              onClick: () => AppRouter.router.goNamed(SideMenuTreeItem.NEW_STOCK_RETURN.name),
+              onClick: () => AppRouter.router.goNamed('stockReturnCreate'),
             ),
           ],
         ),

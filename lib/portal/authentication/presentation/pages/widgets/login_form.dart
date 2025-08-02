@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/widgets/confirm_sign_in_dialog.dart';
+import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class LoginForm extends StatefulWidget {
@@ -43,6 +44,9 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
+        if (state is AuthenticatedState) {
+          if (AppConfig.isPOSApp) context.read<SyncBloc>().add(const SyncEvent.start());
+        }
         if (state is AuthLoadingState) UIPageLoader.show(context);
         if (state is FirstTimeLoginState) {
           UIPageLoader.close(context);

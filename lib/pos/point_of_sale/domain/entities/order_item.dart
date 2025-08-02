@@ -8,6 +8,7 @@ part 'order_item.g.dart';
 class OrderItem with _$OrderItem {
   const factory OrderItem({
     required int id,
+    required int itemId,
     required String name,
     required String sku,
     @Default(1) int quantity,

@@ -1,10 +1,10 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
-import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/form/form.dart';
-import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/cubit/employee_form_cubit/employee_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class EmployeeGeneralSection extends StatefulWidget {
@@ -77,15 +77,55 @@ class _EmployeeGeneralSectionState extends State<EmployeeGeneralSection> {
                   const UIVerticalSpace(16),
                   BlocBuilder<EmployeeFormCubit, EmployeeFormState>(
                     builder: (context, state) {
-                      return BranchDropdown.input_top(
-                        label: 'Assigned Branches',
-                        hint: 'Select branches to assign',
-                        showSelectedItems: true,
-                        isMultiSelect: true,
-                        selectedItems: state.assignedBranches,
-                        onDeleteItem: (id) => _formCubit.removeAssignedBranch(id),
-                        onSelectItem: (branch) => _formCubit.addAssignedBranch(branch),
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppDropdownFormField<BranchPartial>.lazy(
+                            hint: state.assignedBranches.isEmpty
+                                ? 'Select branches to assign'
+                                : '${state.assignedBranches.length} branch(es) selected',
+                            label: 'Assigned Branches',
+                            getName: (branch) => branch.name!,
+                            isMultiSelect: true,
+                            onChanged: (branch) => _formCubit.toggleAssignedBranch(branch),
+                            onRemoveFromMultiSelect: (branch) => _formCubit.removeAssignedBranch(branch),
+                            isSelectedInMultiSelect: (branch) => _formCubit.state.isBranchSelected(branch),
+                          ),
+                          if (state.assignedBranches.isNotEmpty) ...[
+                            const UIVerticalSpace(8),
+                            Wrap(
+                              direction: Axis.horizontal,
+                              runAlignment: WrapAlignment.center,
+                              runSpacing: 6,
+                              spacing: 4,
+                              children: state.assignedBranches
+                                  .map(
+                                    (item) => Chip(
+                                      label: Text(item.name!, style: UIStyleText.chip),
+                                      deleteButtonTooltipMessage: 'Remove supplier',
+                                      backgroundColor: UIColors.whiteBg,
+                                      deleteIcon: Assets.icons.close.svg(),
+                                      onDeleted: () => _formCubit.removeAssignedBranch(item),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        side: const BorderSide(color: UIColors.borderMuted, width: 0.8),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ],
+                        ],
                       );
+                      // return BranchDropdown.input_top(
+                      //   label: 'Assigned Branches',
+                      //   hint: 'Select branches to assign',
+                      //   showSelectedItems: true,
+                      //   isMultiSelect: true,
+                      //   selectedItems: state.assignedBranches,
+                      //   onDeleteItem: (id) => _formCubit.removeAssignedBranch(id),
+                      //   onSelectItem: (branch) => _formCubit.addAssignedBranch(branch),
+                      // );
                     },
                   )
                 ],

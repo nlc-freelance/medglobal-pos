@@ -14,10 +14,10 @@ abstract class ProductRepository {
   Future<Either<Failure, Product>> getProductById(int id);
 
   /// Creates a new product
-  Future<Either<Failure, Product>> createProduct(ProductPayload product);
+  Future<Either<Failure, Product>> createProduct(ProductPayload payload);
 
   /// Updates an existing product
-  Future<Either<Failure, Product>> updateProduct(int id, ProductPayload product);
+  Future<Either<Failure, Product>> updateProduct(int id, ProductPayload payload);
 
   /// Deletes a product by [id]
   Future<Either<Failure, void>> deleteProduct(int id);

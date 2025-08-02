@@ -4,7 +4,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/variant/variant.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/form_models/variant_form_model.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/form_models/variant_form_model.dart';
 
 part 'product_form_state.dart';
 part 'product_form_cubit.freezed.dart';

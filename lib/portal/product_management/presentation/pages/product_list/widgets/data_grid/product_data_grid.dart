@@ -78,11 +78,12 @@ class ProductDataGridState extends State<ProductDataGrid> {
 
                       filterCubit.setPageAndSize(page, size);
 
-                      context.read<PaginatedListBloc<Product>>().add(
-                            PaginatedListEvent<Product>.fetch(
-                              query: filterCubit.state.toPageQuery,
-                            ),
-                          );
+                      Future.microtask(() {
+                        final updatedQuery = filterCubit.state.toPageQuery;
+                        context
+                            .read<PaginatedListBloc<Product>>()
+                            .add(PaginatedListEvent<Product>.fetch(query: updatedQuery));
+                      });
                     },
                   ),
               ],
@@ -140,7 +141,7 @@ class ProductDataGridSource extends DataGridSource {
       switch (colName) {
         'name' => HoverBuilder(
             builder: (isHover) => InkWell(
-              onTap: () => _onEditProduct(productId),
+              onTap: () => _onTapProduct(productId),
               hoverColor: UIColors.transparent,
               child: UIText.dataGridText(
                 cell.value.toString(),
@@ -152,11 +153,11 @@ class ProductDataGridSource extends DataGridSource {
         _ => UIText.dataGridText(cell.value.toString()),
       };
 
-  void _onEditProduct(productId) {
+  void _onTapProduct(productId) {
     /// Go to details page
     /// In the details page, fetch the product by the given id and load it in the ProductFormCubit
     _context.goNamed(
-      SideMenuTreeItem.PRODUCT_DETAILS.name,
+      'productDetails',
       pathParameters: {'id': productId.toString()},
     );
   }

@@ -279,7 +279,7 @@ class StockReturnDataSource extends DataGridSource {
               onTap: () {
                 // _context.read<StockReturnRemoteCubit>().getStockReturnById(id);
                 AppRouter.router.goNamed(
-                  'Stock Return Details',
+                  'stockReturnDetails',
                   pathParameters: {'id': id.toString()},
                 );
               },

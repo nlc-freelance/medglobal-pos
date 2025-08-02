@@ -81,8 +81,8 @@ class _ReceiptTemplateFormState extends State<ReceiptTemplateForm> with DialogMi
     // Reload lazy list for receipt template dropdown
     context.read<LazyListBloc<ReceiptTemplate>>().add(const LazyListEvent<ReceiptTemplate>.fetch(forceRefresh: true));
 
-    SnackbarUtil.success(context, message);
     PageLoader.close();
+    SnackbarUtil.success(context, message);
 
     context.goNamed(SideMenuTreeItem.receiptTemplate.name);
   }
