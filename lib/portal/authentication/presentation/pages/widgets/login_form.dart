@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/widgets/confirm_sign_in_dialog.dart';
-import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
+import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
+import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
+import 'package:medglobal_admin_portal/pos/session_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class LoginForm extends StatefulWidget {
@@ -43,9 +48,16 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
+      // listenWhen: (prev, curr) {
+      //   if (prev is AuthenticatedState && curr is AuthInitialState) return false;
+      //   return true;
+      // },
       listener: (context, state) {
         if (state is AuthenticatedState) {
-          if (AppConfig.isPOSApp) context.read<SyncBloc>().add(const SyncEvent.start());
+          if (AppConfig.isPOSApp) {
+            GetIt.I<UserSessionService>().setUser(state.user);
+            context.read<SessionBloc>().add(SessionEvent.initialize(state.user));
+          }
         }
         if (state is AuthLoadingState) UIPageLoader.show(context);
         if (state is FirstTimeLoginState) {
@@ -62,58 +74,84 @@ class _LoginFormState extends State<LoginForm> {
             },
           );
         }
-        if (state is AuthErrorState || state is ConfirmLoginErrorState) UIPageLoader.close(context);
+        if (state is AuthErrorState || state is ConfirmLoginErrorState || state is AuthAccessDeniedState) {
+          UIPageLoader.close(context);
+        }
       },
-      builder: (context, state) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Assets.images.medglobalLogo.image(),
-          const UIVerticalSpace(60.0),
-          UIText.heading1(Strings.welcome),
-          const UIVerticalSpace(20.0),
-          UIText.heading2(Strings.loginToYourAccount),
-          const UIVerticalSpace(60.0),
-          if (state is AuthErrorState) ...[
-            SizedBox(
-                width: 330,
-                child: UIText.labelSemiBold(
-                  state.message,
-                  color: UIColors.buttonDanger,
-                )),
+      builder: (context, state) => SizedBox(
+        width: 350,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Assets.images.medglobalLogo.image(),
+            const UIVerticalSpace(60.0),
+            UIText.heading1(Strings.welcome),
             const UIVerticalSpace(20.0),
-          ],
-          UITextField.noLabel(
-            width: 345.0,
-            hint: Strings.emailAddress,
-            controller: emailController,
-            onSubmitted: (_) => _login(),
-          ),
-          const UIVerticalSpace(20.0),
-          UITextField.noLabel(
-            width: 345.0,
-            hint: Strings.password,
-            controller: passwordController,
-            obscureText: obscurePassword,
-            onSubmitted: (_) => _login(),
-            suffixIcon: passwordController.text.isNotEmpty
-                ? InkWell(
-                    onTap: () => setState(() => obscurePassword = !obscurePassword),
-                    child: (obscurePassword ? Assets.icons.eye : Assets.icons.eyeSlash).setSize(12),
-                  )
-                : null,
-          ),
-          const UIVerticalSpace(36.0),
-          SizedBox(
-            width: 345.0,
-            child: UIButton.filled(
-              icon: Assets.icons.arrowRight1.setSize(12.0),
-              iconAlign: IconAlignment.end,
-              Strings.login,
-              onClick: _login,
+            UIText.heading2(Strings.loginToYourAccount),
+            if (AppConfig.isPOSApp)
+              BlocBuilder<ConnectivityCubit, bool>(
+                builder: (context, isOnline) => isOnline
+                    ? const UIVerticalSpace(60.0)
+                    : const Padding(
+                        padding: EdgeInsets.only(top: 24, bottom: 16),
+                        child: PageErrorBanner(
+                            message:
+                                'Looks like you don\'t have an internet connection right now. Please try again later.'),
+                      ),
+              )
+            else
+              const UIVerticalSpace(60.0),
+            if (state is AuthErrorState) ...[
+              SizedBox(
+                  width: 330,
+                  child: UIText.labelSemiBold(
+                    state.message,
+                    color: UIColors.buttonDanger,
+                  )),
+              const UIVerticalSpace(20.0),
+            ],
+            if (state is AuthAccessDeniedState) ...[
+              SizedBox(
+                  width: 330,
+                  child: UIText.labelSemiBold(
+                    state.message,
+                    color: UIColors.buttonDanger,
+                  )),
+              const UIVerticalSpace(20.0),
+            ],
+            UITextField.noLabel(
+              width: 345.0,
+              hint: Strings.emailAddress,
+              controller: emailController,
+              onSubmitted: (_) => _login(),
             ),
-          ),
-        ],
+            const UIVerticalSpace(20.0),
+            UITextField.noLabel(
+              width: 345.0,
+              hint: Strings.password,
+              controller: passwordController,
+              obscureText: obscurePassword,
+              onSubmitted: (_) => _login(),
+              suffixIcon: passwordController.text.isNotEmpty
+                  ? InkWell(
+                      onTap: () => setState(() => obscurePassword = !obscurePassword),
+                      child: (obscurePassword ? Assets.icons.eye : Assets.icons.eyeSlash).setSize(12),
+                    )
+                  : null,
+            ),
+            const UIVerticalSpace(36.0),
+            SizedBox(
+              width: 345.0,
+              child: UIButton.filled(
+                icon: Assets.icons.arrowRight1.setSize(12.0),
+                iconAlign: IconAlignment.end,
+                Strings.login,
+                onClick: _login,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

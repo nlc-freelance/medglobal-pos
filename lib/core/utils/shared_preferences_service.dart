@@ -1,4 +1,5 @@
 import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
+import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register_shift.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -78,5 +79,28 @@ class SharedPreferencesService {
   static Future<bool> clearPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.clear();
+  }
+
+  static Future<void> saveUserDetails(User user) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setInt('user_id', user.id!);
+    await prefs.setString('user_first_name', user.firstName!);
+    await prefs.setString('user_last_name', user.lastName!);
+  }
+
+  static Future<User> getUserDetails() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final id = prefs.getInt('user_id');
+    final firstName = prefs.getString('user_first_name');
+    final lastName = prefs.getString('user_last_name');
+
+    return User(
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+    );
+    // return {'id': id, 'firstName': firstName, 'lastName': lastName};
   }
 }

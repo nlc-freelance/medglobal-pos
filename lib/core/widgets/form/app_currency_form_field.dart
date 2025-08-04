@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:medglobal_admin_portal/core/utils/form_validators.dart';
 import 'package:medglobal_admin_portal/core/utils/input_formatter.dart';
 import 'package:medglobal_admin_portal/core/widgets/form/form.dart';
-import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/register_shift_dialog.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/presentation/pages/register_shift_dialog.dart';
 
 class AppCurrencyFormField extends StatefulWidget {
   const AppCurrencyFormField({

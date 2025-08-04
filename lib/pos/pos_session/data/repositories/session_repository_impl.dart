@@ -1,8 +1,8 @@
 // import 'package:dartz/dartz.dart';
 // import 'package:medglobal_admin_portal/core/errors/failures.dart';
 // import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
-// import 'package:medglobal_admin_portal/core/local_db/native/session/pos_session_dao.dart';
-// import 'package:medglobal_admin_portal/pos/pos_session/domain/entities/session.dart';
+// import 'package:medglobal_admin_portal/core/local_db/native/session/session_dao.dart';
+// import 'package:medglobal_admin_portal/pos/pos_session/domain/entities/pos_session.dart';
 // import 'package:medglobal_admin_portal/pos/pos_session/data/datasources/session_local_datasource.dart';
 // import 'package:medglobal_admin_portal/pos/pos_session/domain/repository/session_repository.dart';
 

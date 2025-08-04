@@ -53,4 +53,12 @@ class RegisterApiService {
   Future<void> deleteRegister(int id) async {
     return await _api.delete(ApiEndpoints.registerById(id));
   }
+
+  Future<RegisterDto> getRegisterBySerialNo(String serialNo) async {
+    final response = await _api.get(
+      ApiEndpoints.registerBySerialNo(serialNo),
+      fromJson: RegisterDto.fromJson,
+    );
+    return response.data;
+  }
 }

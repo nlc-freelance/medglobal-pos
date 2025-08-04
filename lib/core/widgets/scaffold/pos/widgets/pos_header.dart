@@ -23,9 +23,9 @@ class PosHeader extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               UIText.heading5(
-                routeState.matchedLocation == '/point-of-sale/transactions'
+                routeState.matchedLocation == '/pos/transactions'
                     ? 'Transactions'
-                    : (routeState.matchedLocation == '/point-of-sale/register' ? 'Register' : 'Order Payment'),
+                    : (routeState.matchedLocation == '/pos/register' ? 'Register' : 'Order Payment'),
               ),
               const UIHorizontalSpace(16),
               if (state.name != null) ...[

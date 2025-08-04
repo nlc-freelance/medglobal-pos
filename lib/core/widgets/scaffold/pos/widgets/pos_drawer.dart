@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
-import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/register_shift_dialog.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/presentation/pages/register_shift_dialog.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
@@ -114,17 +114,18 @@ class PosDrawer extends StatelessWidget with DialogMixin {
                 showConfirmDialog(
                   context,
                   title: 'Are you sure you want to logout?',
-                  content: context.read<SyncBloc>().state.maybeWhen(
-                        syncing: () => Column(
-                          children: [UIText.heading6('There is an ongoing sync')],
-                        ),
-                        orElse: () => const SizedBox(),
-                      ),
+                  // content: context.read<SyncBloc>().state.maybeWhen(
+                  //       syncing: () => Column(
+                  //         children: [UIText.heading6('There is an ongoing sync')],
+                  //       ),
+                  //       orElse: () => const SizedBox(),
+                  //     ),
+                  content: UIText.heading6('---'),
                   onConfirm: () {
                     context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.reset());
                     context.read<ActiveRegisterCubit>().reset();
 
-                    if (AppConfig.isPOSApp) context.read<SyncBloc>().add(const SyncEvent.stop());
+                    // if (AppConfig.isPOSApp) context.read<SyncBloc>().add(const SyncEvent.stop());
 
                     context.read<AuthBloc>().add(const LogoutEvent());
                   },

@@ -19,4 +19,7 @@ abstract class RegisterRepository {
 
   /// Deletes a POS register
   Future<Either<Failure, void>> deleteRegister(int id);
+
+  /// Retrieves a POS register by serial number
+  Future<Either<Failure, Register>> getRegisterBySerialNo();
 }

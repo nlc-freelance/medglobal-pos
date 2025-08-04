@@ -3,13 +3,21 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
+import 'package:medglobal_admin_portal/core/local_db/native/session/session_dao.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/confirm_first_time_login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/get_auth_session.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/logout.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
+import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
+import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
+import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -32,29 +40,89 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutEvent>(_logout);
   }
 
+  bool getIsAllowed(UserType? type) {
+    final isPortalUser = type == UserType.admin;
+    final isPosUser = type == UserType.cashier;
+    final isBoth = type == UserType.supervisor;
+
+    if (AppConfig.isPortalApp) return isPortalUser || isBoth;
+    if (AppConfig.isPOSApp) return isPosUser || isBoth;
+
+    return false;
+  }
+
   void _clearSharedPreferencesOnLogout() async => await SharedPreferencesService.clearPreferences();
 
   Future<void> _onAppInit(event, emit) async {
     try {
       final result = await getAuthSession.call(NoParams());
-      result.fold(
-          (error) => emit(AuthErrorState(message: error.message)),
-          (data) => data.isLoggedIn == true
-              ? emit(AuthenticatedState(user: data.user!))
-              : emit(const UnauthenticatedState()));
+      result.fold((error) => emit(AuthErrorState(message: error.message)), (data) {
+        final isLoggedIn = data.isLoggedIn == true;
+        final isAllowed = getIsAllowed(data.user?.type);
+
+        if (isAllowed) {
+          isLoggedIn ? emit(AuthenticatedState(user: data.user!)) : emit(const UnauthenticatedState());
+        }
+      });
     } catch (e) {
       emit(AuthErrorState(message: e.toString()));
     }
   }
+
+  // Future<void> _onPosInit(event, emit) async {
+  //   try {
+  //     final session = await GetIt.I<AppDatabase>().sessionDao.getActiveSession();
+  //
+  //     if (session == null) {
+  //       final isOnline = await GetIt.I<ConnectivityService>().isOnline;
+  //
+  //       if (isOnline) {}
+  //     } else {
+  //       // fetch session data from db which is the session above
+  //       // load it to the usersessionservice
+  //       final User user = User(
+  //         id: session.id,
+  //         firstName: session.employeeFirstName,
+  //         lastName: session.employeeLastName,
+  //       );
+  //
+  //       final Register register = Register(
+  //         id: session.registerId,
+  //         name: session.registerName,
+  //       );
+  //
+  //       final BranchPartial branch = BranchPartial(
+  //         id: session.branchId,
+  //         name: session.branchName,
+  //       );
+  //
+  //       GetIt.I<UserSessionService>().setUser(user);
+  //       GetIt.I<UserSessionService>().upsertUserAndRegister(user, register, branch);
+  //     }
+  //
+  //     final result = await getAuthSession.call(NoParams());
+  //     result.fold((error) => emit(AuthErrorState(message: error.message)), (data) {
+  //       final isLoggedIn = data.isLoggedIn == true;
+  //       final isAllowed = getIsAllowed(data.user?.type);
+  //
+  //       if (isAllowed) {
+  //         isLoggedIn ? emit(AuthenticatedState(user: data.user!)) : emit(const UnauthenticatedState());
+  //       }
+  //     });
+  //   } catch (e) {
+  //     emit(AuthErrorState(message: e.toString()));
+  //   }
+  // }
 
   Future<void> _login(event, emit) async {
     emit(const AuthLoadingState());
 
     try {
       final result = await login.call(LoginParams(event.email, event.password));
+
       result.fold(
         (error) => emit(AuthErrorState(message: error.message)),
-        (data) {
+        (data) async {
           final user = data.user;
 
           if (user == null) {
@@ -62,11 +130,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             return;
           }
 
-          final isPortalUserOnly = user.type == UserType.admin;
-          final isPosUserOnly = user.type == UserType.cashier;
-          final isBothUsers = user.type == UserType.supervisor;
-
-          final isAllowed = (kIsWeb && isPortalUserOnly) || (Platform.isWindows && isPosUserOnly) || isBothUsers;
+          final isAllowed = getIsAllowed(data.user?.type);
 
           if (isAllowed) {
             if (data.isFirstTimeLogin == true) {
@@ -78,9 +142,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             emit(
               const AuthAccessDeniedState(
                 message:
-                    'Your account is not authorized to use this application. \n Contact your administrator if you believe this is an error.',
+                    'Your account is not authorized to use this application.\nContact your administrator if you believe this is an error.',
               ),
             );
+            await logout.call(NoParams());
           }
         },
       );

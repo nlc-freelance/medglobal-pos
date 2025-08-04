@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
 class RegisterShiftDialog extends StatefulWidget {
   final void Function(double) onConfirm;
@@ -52,13 +52,6 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
   }
 
   @override
-  void dispose() {
-    _amountCtrl.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final shiftAction = widget.action;
 
@@ -66,12 +59,19 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
       key: _formKey,
       child: BlocConsumer<RegisterShiftBloc, RegisterShiftState>(
         listener: (context, state) {
-          if (state is RegisterShiftSuccess) {
-            Navigator.pop(context);
-
-            context.read<ActiveRegisterCubit>().updateRegisterShift(state.shift);
-            if (state.shift.status == 'open') context.read<PosProductListCubit>().getPOSProducts();
-          }
+          state.maybeWhen(
+            success: (shift) {
+              Navigator.pop(context);
+              if (shift.status == 'open') context.read<PosProductListCubit>().getPOSProducts();
+            },
+            orElse: () {},
+          );
+          // if (state is RegisterShiftSuccess) {
+          //   Navigator.pop(context);
+          //
+          //   context.read<ActiveRegisterCubit>().updateRegisterShift(state.shift);
+          //   if (state.shift.status == 'open') context.read<PosProductListCubit>().getPOSProducts();
+          // }
         },
         builder: (context, state) {
           return Dialog(
@@ -111,13 +111,21 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
                     },
                   ),
                   const UIVerticalSpace(30),
-                  if (state is RegisterShiftError) ...[
-                    UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
-                    const UIVerticalSpace(30),
-                  ],
+                  state.maybeWhen(
+                    failure: (message) => PageErrorBanner(message: message),
+                    orElse: () => const SizedBox(),
+                  ),
+                  // if (state is RegisterShiftError) ...[
+                  //   UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
+                  //   const UIVerticalSpace(30),
+                  // ],
                   CancelActionButton(
                     actionLabel: 'Continue',
-                    isLoading: state is RegisterShiftLoading,
+                    isLoading: state.maybeWhen(
+                      saving: () => true,
+                      orElse: () => false,
+                    ),
+                    // state is RegisterShiftLoading,
                     onCancel: () => Navigator.pop(context),
                     onAction: () {
                       if (_formKey.currentState?.validate() == true) {
@@ -169,6 +177,13 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
               ),
             ],
           ));
+
+  @override
+  void dispose() {
+    _amountCtrl.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
 }
 
 // TODO: Make a CurrencyFormField widget

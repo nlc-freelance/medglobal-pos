@@ -8,12 +8,14 @@ class RegisterShiftPayload {
   final String status;
   final double? openingAmount;
   final double? closingAmount;
+  final DateTime updateTimestamp;
 
   const RegisterShiftPayload({
     required this.register,
     required this.status,
     this.openingAmount,
     this.closingAmount,
+    required this.updateTimestamp,
   });
 
   Map<String, dynamic> toJson() => _$RegisterShiftPayloadToJson(this);

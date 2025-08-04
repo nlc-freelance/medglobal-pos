@@ -7,6 +7,7 @@ import 'package:medglobal_admin_portal/portal/settings/register/data/dto/registe
 import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register/register_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
+import 'package:medglobal_admin_portal/pos/device_bios_uuid.dart';
 
 /// Concrete implementation of [RegisterRepository] that uses [RegisterApiService] for API calls
 /// and [BaseRepository] to centralize error handling.
@@ -52,5 +53,19 @@ class RegisterRepositoryImpl extends BaseRepository implements RegisterRepositor
   @override
   Future<Either<Failure, void>> deleteRegister(int id) async {
     return call(() async => await _api.deleteRegister(id));
+  }
+
+  @override
+  Future<Either<Failure, Register>> getRegisterBySerialNo() {
+    return call(() async {
+      final uuid = await getSystemUUID();
+
+      if (uuid == null) {
+        throw UnexpectedException('Could not fetch device ID.');
+      }
+
+      final response = await _api.getRegisterBySerialNo(uuid);
+      return RegisterMapper.fromDto(response);
+    });
   }
 }

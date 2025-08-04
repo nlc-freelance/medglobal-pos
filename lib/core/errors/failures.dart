@@ -26,3 +26,7 @@ class SyncFailure extends Failure {
 class UnexpectedFailure extends Failure {
   UnexpectedFailure(super.message);
 }
+
+class UserNotFoundFailure extends Failure {
+  UserNotFoundFailure(super.message);
+}

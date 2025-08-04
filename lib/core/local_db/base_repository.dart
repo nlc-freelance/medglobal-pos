@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-// import 'package:drift/drift.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
 
 /// This class wraps responses using [Either] to handle success and failure cases consistently.
@@ -29,16 +28,12 @@ abstract class BaseRepository {
 
 Failure _mapAppExceptionToFailure(Object e) {
   if (e is ServerException) {
-    return ServerFailure('Server error: ${e.message}');
-    // } else if (e is SqliteException) {
-    //   return LocalDatabaseFailure('Database error: ${e.message}');
-  }
-  // else if (e is DriftWrappedException) {
-  //   return LocalDatabaseFailure('Query failed: ${e.message}');
-  // } else if (e is InvalidDataException) {
-  //   return LocalDatabaseFailure('Data mapping error: ${e.toString()}');
-  // }
-  else if (e is UnexpectedException) {
+    return ServerFailure(e.message);
+  } else if (e is LocalDatabaseException) {
+    return LocalDatabaseFailure('[Database error] ${e.toString()}');
+  } else if (e is NetworkException) {
+    return NetworkFailure('[Network error] ${e.toString()}');
+  } else if (e is UnexpectedException) {
     return UnexpectedFailure('Unexpected error: ${e.toString()}');
   } else {
     return UnexpectedFailure('Unknown error: ${e.toString()}');

@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-class PosSession extends Table {
+class Session extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get employeeId => integer()();
   TextColumn get employeeFirstName => text()();

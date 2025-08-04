@@ -52,8 +52,11 @@ import 'package:medglobal_admin_portal/portal/transactions/return/presentation/c
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sale/presentation/cubit/sale_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sale/presentation/cubit/sale_transaction_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
+import 'package:medglobal_admin_portal/pos/device_register/device_register_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/session_bloc.dart';
 import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -65,7 +68,6 @@ class MedGlobaPortalApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => GetIt.I<AuthBloc>()..add(const AppInitEvent())),
-        BlocProvider(create: (_) => GetIt.I<SyncBloc>()),
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<Register>>()),
 
         if (AppConfig.isPortalApp) ...[
@@ -82,6 +84,10 @@ class MedGlobaPortalApp extends StatelessWidget {
 
         if (AppConfig.isPOSApp) ...[
           //  POS only
+          // BlocProvider(create: (_) => GetIt.I<SyncBloc>()),
+
+          BlocProvider(create: (_) => GetIt.I<ConnectivityCubit>()..monitorConnection()),
+          BlocProvider(create: (_) => GetIt.I<SessionBloc>()),
           BlocProvider(create: (_) => ActiveRegisterCubit()),
           BlocProvider(create: (_) => GetIt.I<ReceiptConfigBloc>()),
         ],
@@ -138,11 +144,12 @@ class MedGlobaPortalApp extends StatelessWidget {
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is AuthenticatedState) {
-            if (AppConfig.isPOSApp && state.user.type == UserType.cashier) {
-              context.read<ActiveRegisterCubit>().loadRegister();
-            }
-          }
+          // if (state is AuthenticatedState) {
+          //   if (AppConfig.isPOSApp && state.user.type == UserType.cashier) {
+          //     context.read<ActiveRegisterCubit>().loadRegister();
+          //   }
+          // }
+
           AppRouter.router.refresh();
         },
         child: MaterialApp.router(

@@ -39,7 +39,7 @@ class _BillingPageState extends State<BillingPage> {
           success: (transaction) {
             context.read<OrderBloc>().add(const OrderEvent.clearOrder());
             context.read<PosTransactionListBloc>().add(PosTransactionListEvent.addTransactionToList(transaction));
-            context.read<PosProductListCubit>().getPOSProducts(isInitialSearch: true);
+            // context.read<PosProductListCubit>().getPOSProducts(isInitialSearch: true);
           },
           orElse: () => {},
         );

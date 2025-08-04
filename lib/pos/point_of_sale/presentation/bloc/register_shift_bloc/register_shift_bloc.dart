@@ -8,9 +8,10 @@ part 'register_shift_event.dart';
 part 'register_shift_state.dart';
 
 class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
-  final RegisterShiftRepository _repository;
+  // final RegisterShiftRepository _repository;
 
-  RegisterShiftBloc(this._repository) : super(RegisterShiftInitial()) {
+  RegisterShiftBloc() : super(RegisterShiftInitial()) {
+    // RegisterShiftBloc(this._repository) : super(RegisterShiftInitial()) {
     on<RegisterShiftOpened>(_onShiftOpened);
     on<RegisterShiftClosed>(_onShiftClosed);
   }
@@ -19,13 +20,13 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
     emit(RegisterShiftLoading());
 
     try {
-      final id = await SharedPreferencesService.getRegisterId();
-
-      final result = await _repository.openShift(registerId: id!, amount: event.amount);
-      result.fold(
-        (error) => emit(RegisterShiftError(message: error.message)),
-        (data) => emit(RegisterShiftSuccess(shift: data)),
-      );
+      // final id = await SharedPreferencesService.getRegisterId();
+      //
+      // final result = await _repository.openShift(registerId: id!, amount: event.amount);
+      // result.fold(
+      //   (error) => emit(RegisterShiftError(message: error.message)),
+      //   (data) => emit(RegisterShiftSuccess(shift: data)),
+      // );
     } catch (e) {
       emit(RegisterShiftError(message: e.toString()));
     }
@@ -35,13 +36,13 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
     emit(RegisterShiftLoading());
 
     try {
-      final id = await SharedPreferencesService.getRegisterId();
-
-      final result = await _repository.closeShift(registerId: id!, amount: event.amount);
-      result.fold(
-        (error) => emit(RegisterShiftError(message: error.message)),
-        (data) => emit(RegisterShiftSuccess(shift: data)),
-      );
+      // final id = await SharedPreferencesService.getRegisterId();
+      //
+      // final result = await _repository.closeShift(registerId: id!, amount: event.amount);
+      // result.fold(
+      //   (error) => emit(RegisterShiftError(message: error.message)),
+      //   (data) => emit(RegisterShiftSuccess(shift: data)),
+      // );
     } catch (e) {
       emit(RegisterShiftError(message: e.toString()));
     }

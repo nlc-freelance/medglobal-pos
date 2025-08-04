@@ -1,44 +1,63 @@
 import 'dart:async';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class NetworkService {
-  final Connectivity _connectivity;
-  final InternetConnectionChecker _internetChecker;
+  late StreamSubscription<InternetConnectionStatus> _subscription;
 
-  final StreamController<bool> _controller = StreamController.broadcast();
-  bool _lastStatus = false;
+  /// Public stream to expose network status updates
+  final StreamController<bool> _connectionChangeController = StreamController<bool>.broadcast();
+  Stream<bool> get onConnectionChanged => _connectionChangeController.stream;
 
-  NetworkService({Connectivity? conn, InternetConnectionChecker? checker})
-      : _connectivity = conn ?? Connectivity(),
-        _internetChecker = checker ?? InternetConnectionChecker.instance;
-
+  /// Initialize the service and start listening
   void initialize() {
-    _connectivity.onConnectivityChanged.listen((result) async {
-      await _evaluateConnection();
+    _subscription = InternetConnectionChecker.instance.onStatusChange.listen((status) {
+      final isConnected = status == InternetConnectionStatus.connected;
+      _connectionChangeController.add(isConnected);
     });
-    // Evaluate once at startup
-    _evaluateConnection();
   }
 
-  Future<void> _evaluateConnection() async {
-    final networks = await _connectivity.checkConnectivity();
-    final hasInternetConnection = await _internetChecker.hasConnection;
-
-    bool hasInternet = (networks.first != ConnectivityResult.none && hasInternetConnection);
-
-    // Only emit when the status changes to avoid flooding listeners.
-    if (hasInternet != _lastStatus) {
-      _lastStatus = hasInternet;
-      _controller.add(hasInternet);
-    }
+  /// Check current connection status manually
+  Future<bool> hasConnection() async {
+    return await InternetConnectionChecker.instance.hasConnection;
   }
 
-  Stream<bool> get onStatusChange => _controller.stream;
-  Future<bool> get hasInternet async => _lastStatus;
-
+  /// Dispose resources when no longer needed
   void dispose() {
-    _controller.close();
+    _subscription.cancel();
+    _connectionChangeController.close();
   }
+  // final InternetConnectionChecker _internetChecker;
+
+  // final StreamController<bool> _controller = StreamController.broadcast();
+  // bool _lastStatus = false;
+
+  // NetworkService({InternetConnectionChecker? checker})
+  //    :   _internetChecker = checker ?? InternetConnectionChecker.instance;
+
+  // void initialize() {
+  //   _internetChecker.onStatusChange.listen((status) {
+  //    _evaluateConnection();
+  //   });
+  // }
+
+  // Future<void> _evaluateConnection() async {
+  //   final hasInternetConnection = await _internetChecker.hasConnection;
+
+
+  //   bool hasInternet = hasInternetConnection;
+
+  //   // Only emit when the status changes to avoid flooding listeners.
+  //   if (hasInternet != _lastStatus) {
+  //     _lastStatus = hasInternet;
+  //     _controller.add(hasInternet);
+  //   }
+  // }
+
+  // Stream<bool> get onStatusChange => _controller.stream;
+  // Future<bool> get hasInternet async => _lastStatus;
+
+  // void dispose() {
+  //   _controller.close();
+  // }
 }

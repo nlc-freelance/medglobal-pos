@@ -1,10 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'session.freezed.dart';
+part 'pos_session.freezed.dart';
 
 @freezed
-class Session with _$Session {
-  const factory Session({
+class PosSession with _$PosSession {
+  const factory PosSession({
     required int employeeId,
     required String employeeFirstName,
     required String employeeLastName,
@@ -15,5 +15,5 @@ class Session with _$Session {
     required String branchName,
     String? authToken,
     DateTime? loginTime,
-  }) = _Session;
+  }) = _PosSession;
 }

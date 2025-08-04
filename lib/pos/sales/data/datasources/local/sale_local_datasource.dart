@@ -7,7 +7,7 @@ class SaleLocalDataSource {
 
   SaleLocalDataSource({required TransactionDao dao}) : _dao = dao;
 
-  Future<Transaction> saveOrder(Order order) async {
+  Future<Transaction> insertOrder(Order order) async {
     final id = await _dao.insertOrderWithItems(
       order.toDriftCompanion(),
       order.items.map((item) => item.toDriftCompanion()).toList(),

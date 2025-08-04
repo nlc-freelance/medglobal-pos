@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' hide Category;
 import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/sidebar_cubit.dart';
+import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/core/network/dio_service.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
@@ -159,6 +160,10 @@ import 'package:medglobal_admin_portal/portal/transactions/return/presentation/c
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sale/presentation/cubit/sale_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sale/presentation/cubit/sale_transaction_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
+import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
+import 'package:medglobal_admin_portal/pos/device_register/device_register_bloc.dart';
+import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/data/api/pos_products_api.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/data/api/sale_api.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/data/repositories/pos_product_repository_impl.dart';
@@ -174,8 +179,18 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/prod
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
 import 'package:medglobal_admin_portal/pos/pos_catalog/data/datasources/local/pos_catalog_local_datasource.dart';
 import 'package:medglobal_admin_portal/pos/pos_catalog/data/datasources/remote/pos_catalog_remote_datasource.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_local_datasource.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_remote_datasource.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_remote_datasource.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/data/repositories/local_register_shift_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/data/repositories/remote_register_shift_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/local_register_shift_repository.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/remote_register_shift_repository.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/domain/usecases/open_register_shift_usecase.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/sync_queue_repository.dart';
 import 'package:medglobal_admin_portal/pos/sales/data/datasources/local/sale_local_datasource.dart';
 import 'package:medglobal_admin_portal/pos/sales/data/datasources/remote/sale_remote_datasource.dart';
+import 'package:medglobal_admin_portal/pos/session_bloc.dart';
 import 'package:medglobal_admin_portal/pos/sync/network_service.dart';
 import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
 import 'package:medglobal_admin_portal/pos/sync/sync_service.dart';
@@ -191,26 +206,36 @@ import 'package:medglobal_admin_portal/portal/settings/register/data/repository/
 import 'package:medglobal_admin_portal/portal/settings/register/data/repository/register_shift_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_shift_repository.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/api/transaction_api.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transaction_repository.dart';
+
+import '../../pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
 /// lazySingleton are only initialized when needed while factory are always initialized
 
 GetIt inject = GetIt.instance;
 
 void initDesktopDependencies() {
+  print('setup di on desktop');
+
   initCoreDependencies();
   initAll();
-  // initLocalDatabaseDependencies();
-  // initNetworkDependencies();
-  initRegisterDependencies();
+  initServices();
+  initSyncingDependencies();
+  initLocalDatabaseDependencies();
+  initNetworkDependencies();
+  initRegisterPOSDependencies();
+  initSharedRegisterDependencies();
   initTransactionDependencies();
   initPosDependencies();
+
+  // // Get device assigned register by serial number
+  // GetIt.I<DeviceRegisterBloc>().add(const DeviceRegisterEvent.getAssignedRegister());
 }
 
 void initDependencyInjection() {
+  print('setup di on web');
   initCoreDependencies();
   initAll();
 
@@ -218,34 +243,54 @@ void initDependencyInjection() {
   initSupplierDependencies();
   initTaxDependencies();
   initBranchDependencies();
+  initRegisterPortalDependencies();
+  initSharedRegisterDependencies();
   initReceiptTemplateDependencies();
   initEmployeeDependencies();
   initReportDependencies();
   initStockDependencies();
 }
 
-// void initLocalDatabaseDependencies() {
+void initLocalDatabaseDependencies() {
+  inject.registerSingleton<AppDatabase>(AppDatabase());
+}
 
-//     inject.registerSingleton(() => AppDatabase());
+void initServices() {
+  inject
+    ..registerSingleton<ConnectivityService>(
+      ConnectivityService(),
+    )
+    ..registerLazySingleton<UserSessionService>(
+      () => UserSessionService(),
+    );
+}
 
-// }
+void initNetworkDependencies() {
+  inject
+        ..registerLazySingleton<PosCatalogLocalDataSource>(
+          () => PosCatalogLocalDataSource(dao: inject<AppDatabase>().posCatalogDao),
+        )
+        ..registerLazySingleton<PosCatalogRemoteDatasource>(
+          () => PosCatalogRemoteDatasource(inject<BaseApiService>()),
+        )
+        ..registerLazySingleton<SaleRemoteDatasource>(
+          () => SaleRemoteDatasource(inject<BaseApiService>()),
+        )
 
-// void initNetworkDependencies() {
-//   inject
-//     ..registerSingleton(() => NetworkService())
-//     ..registerSingleton(() => SyncService(
-//           db: inject<AppDatabase>(),
-//           catalogLocal: inject<PosCatalogLocalDataSource>(),
-//           catalogRemote: inject<PosCatalogRemoteDatasource>(),
-//           salesApi: inject<SaleRemoteDatasource>(),
-//         ))
-//     ..registerSingleton(() => SyncBloc(
-//           syncService: inject<SyncService>(),
-//           networkService: inject<NetworkService>(),
-//         ));
-
-//   GetIt.I<NetworkService>().initialize();
-// }
+      // ..registerSingleton<SyncService>(
+      //   SyncService(
+      //     db: inject<AppDatabase>(),
+      //     catalogLocal: inject<PosCatalogLocalDataSource>(),
+      //     catalogRemote: inject<PosCatalogRemoteDatasource>(),
+      //     salesApi: inject<SaleRemoteDatasource>(),
+      //   ),
+      // )
+      // ..registerFactory<SyncBloc>(() => SyncBloc(
+      //       syncService: inject<SyncService>(),
+      //       networkService: inject<NetworkService>(),
+      //     ))
+      ;
+}
 
 void initCoreDependencies() {
   inject
@@ -341,7 +386,7 @@ void initBranchDependencies() {
     );
 }
 
-void initRegisterDependencies() {
+void initSharedRegisterDependencies() {
   inject
     ..registerLazySingleton<RegisterApiService>(
       () => RegisterApiService(inject<BaseApiService>()),
@@ -349,23 +394,71 @@ void initRegisterDependencies() {
     ..registerLazySingleton<RegisterRepository>(
       () => RegisterRepositoryImpl(api: inject<RegisterApiService>()),
     )
+    ..registerFactory<LazyListBloc<Register>>(
+      () => LazyListBloc<Register>(inject<RegisterRepository>().getRegisters),
+    );
+}
+
+void initRegisterPortalDependencies() {
+  inject
     ..registerFactory<PaginatedListBloc<Register>>(
       () => PaginatedListBloc<Register>(inject<RegisterRepository>().getRegisters),
     )
-    ..registerFactory<LazyListBloc<Register>>(
-      () => LazyListBloc<Register>(inject<RegisterRepository>().getRegisters),
-    )
-    ..registerFactory(
+    ..registerFactory<RegisterBloc>(
       () => RegisterBloc(inject<RegisterRepository>()),
+    );
+}
+
+void initSyncingDependencies() {
+  inject
+    ..registerFactory<ConnectivityCubit>(
+      () => ConnectivityCubit(service: inject<ConnectivityService>()),
     )
-    ..registerLazySingleton<RegisterShiftApiService>(
-      () => RegisterShiftApiService(inject<BaseApiService>()), // Refactor to use BaseApiService
+    ..registerLazySingleton<SyncQueueRepository>(
+      () => SyncQueueRepository(
+        dao: inject<AppDatabase>().syncQueueDao,
+        session: inject<UserSessionService>(),
+      ),
+    );
+}
+
+void initRegisterPOSDependencies() {
+  inject
+
+    ///
+    ..registerFactory<SessionBloc>(
+      () => SessionBloc(
+        registerRepository: inject<RegisterRepository>(),
+        sessionDao: inject<AppDatabase>().sessionDao,
+        userSessionService: inject<UserSessionService>(),
+      ),
     )
-    ..registerLazySingleton<RegisterShiftRepository>(
-      () => RegisterShiftRepositoryImpl(api: inject<RegisterShiftApiService>()),
+
+    ///
+
+    ..registerLazySingleton<RegisterShiftLocalDataSource>(
+      () => RegisterShiftLocalDataSource(dao: inject<AppDatabase>().registerShiftDao),
     )
-    ..registerFactory(
-      () => RegisterShiftBloc(inject<RegisterShiftRepository>()),
+    ..registerLazySingleton<RegisterShiftRemoteDataSource>(
+      () => RegisterShiftRemoteDataSource(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<LocalRegisterShiftRepository>(
+      () => LocalRegisterShiftRepositoryImpl(dataSource: inject<RegisterShiftLocalDataSource>()),
+    )
+    ..registerLazySingleton<RemoteRegisterShiftRepository>(
+      () => RemoteRegisterShiftRepositoryImpl(dataSource: inject<RegisterShiftRemoteDataSource>()),
+    )
+    ..registerLazySingleton<OpenRegisterShiftUseCase>(
+      () => OpenRegisterShiftUseCase(
+        local: inject<LocalRegisterShiftRepository>(),
+        remote: inject<RemoteRegisterShiftRepository>(),
+        session: inject<UserSessionService>(),
+        connection: inject<ConnectivityService>(),
+        sync: inject<SyncQueueRepository>(),
+      ),
+    )
+    ..registerFactory<RegisterShiftBloc>(
+      () => RegisterShiftBloc(openRegisterShiftUseCase: inject<OpenRegisterShiftUseCase>()),
     );
 }
 

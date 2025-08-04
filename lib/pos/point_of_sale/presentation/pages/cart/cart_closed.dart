@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
-import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/register_shift_dialog.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/presentation/pages/register_shift_dialog.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
 class CartClosed extends StatelessWidget {
   const CartClosed({super.key});
@@ -35,12 +35,17 @@ class CartClosed extends StatelessWidget {
           onClick: () => showDialog(
               context: context,
               barrierDismissible: false,
-              builder: (context) => RegisterShiftDialog(
-                    action: RegisterShiftAction.open,
-                    dateTime: context.read<ActiveRegisterCubit>().state.closedAt,
-                    onConfirm: (amount) => context
-                        .read<RegisterShiftBloc>()
-                        .add(RegisterShiftOpened(id: context.read<ActiveRegisterCubit>().state.id!, amount: amount)),
+              builder: (_) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: context.read<PosProductListCubit>()),
+                      BlocProvider.value(value: context.read<RegisterShiftBloc>()),
+                    ],
+                    child: RegisterShiftDialog(
+                      action: RegisterShiftAction.open,
+                      dateTime: context.read<ActiveRegisterCubit>().state.closedAt,
+                      onConfirm: (amount) => context.read<RegisterShiftBloc>().add(RegisterShiftEvent.open(amount)),
+                      // .add(RegisterShiftOpened(id: context.read<ActiveRegisterCubit>().state.id!, amount: amount)),
+                    ),
                   )),
         ),
       ],

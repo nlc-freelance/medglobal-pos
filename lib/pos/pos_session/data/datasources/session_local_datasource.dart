@@ -1,6 +1,6 @@
 // import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
-// import 'package:medglobal_admin_portal/core/local_db/native/session/pos_session_dao.dart';
-// import 'package:medglobal_admin_portal/pos/pos_session/domain/entities/session.dart';
+// import 'package:medglobal_admin_portal/core/local_db/native/session/session_dao.dart';
+// import 'package:medglobal_admin_portal/pos/pos_session/domain/entities/pos_session.dart';
 // import 'package:medglobal_admin_portal/pos/pos_session/data/mappers/session_mapper.dart';
 
 // class SessionLocalDataSource {

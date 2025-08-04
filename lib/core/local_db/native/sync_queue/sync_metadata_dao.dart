@@ -24,13 +24,14 @@ class SyncMetadataDao extends DatabaseAccessor<AppDatabase> with _$SyncMetadataD
   }
 }
 
-extension SyncQeueueMapper on SyncQueueItem {
-  SyncQueueCompanion toDriftCompanion() {
-    return SyncQueueCompanion.insert(
-      table: tableName,
-      payload: payload,
-      action: action,
-      status: status,
-    );
-  }
-}
+// extension SyncQeueueMapper on SyncQueueItem {
+//   SyncQueueCompanion toDriftCompanion() {
+//     return SyncQueueCompanion.insert(
+//       table: tableName,
+//       data: payload,
+//       status: status,
+//       itemId: atus,
+//       userId: null,
+//     );
+//   }
+// }

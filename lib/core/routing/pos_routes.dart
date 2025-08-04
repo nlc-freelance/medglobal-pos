@@ -2,11 +2,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/enums/user_enum.dart';
 import 'package:medglobal_admin_portal/core/widgets/route_guard.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/pos_scaffold.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/order_bloc/order_bloc.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/sale_bloc/sale_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/print_receipt/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
@@ -17,21 +15,15 @@ import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_tr
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_list_bloc/pos_transaction_list_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/refund_bloc/refund_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transactions_page.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
 final ShellRoute posRoutes = ShellRoute(
   builder: (context, state, child) => RouteGuard(
     allowedRoles: const [UserType.cashier, UserType.supervisor],
     allowedPlatforms: const [PlatformType.desktop],
-    child: MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => GetIt.I<RegisterShiftBloc>()),
-        BlocProvider(create: (context) => GetIt.I<PosProductListCubit>()),
-        BlocProvider(create: (context) => GetIt.I<PosProductSearchCubit>()),
-      ],
-      child: PosScaffold(
-        route: state,
-        child: child,
-      ),
+    child: PosScaffold(
+      route: state,
+      child: child,
     ),
   ),
   routes: [
@@ -39,6 +31,9 @@ final ShellRoute posRoutes = ShellRoute(
       pageBuilder: (context, state, child) => NoTransitionPage(
         child: MultiBlocProvider(
           providers: [
+            BlocProvider(create: (context) => GetIt.I<PosProductListCubit>()),
+            BlocProvider(create: (context) => GetIt.I<RegisterShiftBloc>()),
+            BlocProvider(create: (context) => GetIt.I<PosProductSearchCubit>()),
             BlocProvider(create: (context) => OrderBloc()),
             BlocProvider(create: (context) => GetIt.I<SaleBloc>()),
             BlocProvider(create: (context) => PrintReceiptCubit()),
