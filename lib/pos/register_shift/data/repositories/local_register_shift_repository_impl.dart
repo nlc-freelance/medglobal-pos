@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
-import 'package:medglobal_admin_portal/core/local_db/native/register_shift/register_shift_dao.dart';
+import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_local_datasource.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/entities/register_shift.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/local_register_shift_repository.dart';
@@ -15,27 +15,40 @@ class LocalRegisterShiftRepositoryImpl extends BaseRepository implements LocalRe
   LocalRegisterShiftRepositoryImpl({required RegisterShiftLocalDataSource dataSource}) : _dataSource = dataSource;
 
   @override
-  Future<Either<Failure, RegisterShift>> closeShift(int shiftId, double amount) {
-    // TODO: implement closeShift
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Either<Failure, void>> enqueueShift(RegisterShift shift) {
-    // TODO: implement enqueueShift
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Either<Failure, RegisterShift>> openShift(RegisterShift data) {
+  Future<Either<Failure, RegisterShift?>> getOpenShift(int userId, int registerId) {
     return call(() async {
-      final shift = await _dataSource.openShift(data.toRegisterShiftCompanion);
+      final shift = await _dataSource.getOpenShift(userId, registerId);
+      if (shift == null) return null;
       return shift.toEntity();
     });
   }
 
   @override
-  Future<Either<Failure, RegisterShift>> getShift(int id) {
+  Future<Either<Failure, RegisterShift>> openShift(RegisterShift data) {
+    return call(() async {
+      final shift = await _dataSource.openShift(data);
+      return shift.toEntity();
+    });
+  }
+
+  @override
+  Future<Either<Failure, RegisterShift>> closeShift(int shiftId, double amount) {
+    return call(() async {
+      final shift = await _dataSource.closeShift(shiftId, amount);
+      return shift.toEntity();
+    });
+  }
+
+  @override
+  Future<Either<Failure, RegisterShift?>> getLastClosedShift(int userId, int registerId) {
+    return call(() async {
+      final shift = await _dataSource.getLastClosedShift(userId, registerId);
+      return shift?.toEntity();
+    });
+  }
+
+  @override
+  Future<Either<Failure, RegisterShift>> getShiftById(int id) {
     return call(() async {
       final shift = await _dataSource.getShiftById(id);
       return shift.toEntity();

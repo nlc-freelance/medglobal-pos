@@ -4,6 +4,6 @@ part of 'session_bloc.dart';
 class SessionState with _$SessionState {
   const factory SessionState.initial() = _Initial;
   const factory SessionState.loading() = _Loading;
-  const factory SessionState.success() = _Success;
-  const factory SessionState.failure(String error, String message, {Type? type}) = _Failure;
+  const factory SessionState.loaded(PosSession session) = _Loaded;
+  const factory SessionState.failure(String message, String error, {Type? type}) = _Failure;
 }

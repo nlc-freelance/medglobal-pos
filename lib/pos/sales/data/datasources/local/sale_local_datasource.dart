@@ -1,4 +1,4 @@
-import 'package:medglobal_admin_portal/core/local_db/native/transactions/transaction_dao.dart';
+import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
 import 'package:medglobal_admin_portal/pos/sales/domain/entities/order.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 

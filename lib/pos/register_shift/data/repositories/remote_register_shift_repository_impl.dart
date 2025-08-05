@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_remote_datasource.dart';
@@ -15,15 +16,9 @@ class RemoteRegisterShiftRepositoryImpl extends BaseRepository implements Remote
   RemoteRegisterShiftRepositoryImpl({required RegisterShiftRemoteDataSource dataSource}) : _dataSource = dataSource;
 
   @override
-  Future<Either<Failure, void>> sendShift(RegisterShift shift) {
+  Future<Either<Failure, void>> sendShift(RegisterShiftAction action, RegisterShift shift) {
     return call(() async {
-      final payload = RegisterShiftPayload(
-        register: shift.registerId,
-        status: shift.status,
-        closingAmount: shift.status == 'open' ? shift.openingAmount : shift.closingAmount,
-        updateTimestamp: shift.status == 'open' ? shift.openedAt! : shift.closedAt!,
-      );
-
+      final payload = action == RegisterShiftAction.open ? shift.toOpenPayload() : shift.toClosePayload();
       await _dataSource.openOrCloseShift(payload);
     });
   }

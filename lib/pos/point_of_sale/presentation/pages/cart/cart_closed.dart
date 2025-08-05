@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_sync_bloc/product_catalog_sync_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/pages/register_shift_dialog.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_cubit/product_catalog_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
@@ -33,20 +33,29 @@ class CartClosed extends StatelessWidget {
         UIButton.filled(
           'Open Shift',
           onClick: () => showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (_) => MultiBlocProvider(
-                    providers: [
-                      BlocProvider.value(value: context.read<PosProductListCubit>()),
-                      BlocProvider.value(value: context.read<RegisterShiftBloc>()),
-                    ],
-                    child: RegisterShiftDialog(
-                      action: RegisterShiftAction.open,
-                      dateTime: context.read<ActiveRegisterCubit>().state.closedAt,
-                      onConfirm: (amount) => context.read<RegisterShiftBloc>().add(RegisterShiftEvent.open(amount)),
-                      // .add(RegisterShiftOpened(id: context.read<ActiveRegisterCubit>().state.id!, amount: amount)),
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: context.read<ProductCatalogCubit>()),
+                BlocProvider.value(value: context.read<ProductCatalogSyncBloc>()),
+                BlocProvider.value(value: context.read<RegisterShiftBloc>()),
+              ],
+              child: BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
+                builder: (context, state) {
+                  return RegisterShiftDialog(
+                    action: RegisterShiftAction.open,
+                    dateTime: state.maybeWhen(
+                      closed: (closedSince) => closedSince,
+                      orElse: () => null,
                     ),
-                  )),
+                    onConfirm: (amount) => context.read<RegisterShiftBloc>().add(RegisterShiftEvent.open(amount)),
+                    // .add(RegisterShiftOpened(id: context.read<ActiveRegisterCubit>().state.id!, amount: amount)),
+                  );
+                },
+              ),
+            ),
+          ),
         ),
       ],
     );

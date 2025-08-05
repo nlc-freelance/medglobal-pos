@@ -1,6 +1,7 @@
 import 'package:animated_tree_view/animated_tree_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -96,5 +97,12 @@ extension NullableMapNullRemover on Map<String, dynamic>? {
     return Map.fromEntries(
       this!.entries.where((entry) => entry.value != null),
     );
+  }
+}
+
+extension ReadableDateTime on DateTime {
+  /// Formats as: 'Monday, 5 August 2024 3:45 PM'
+  String toFullDateWithTimeFormat() {
+    return DateFormat('EEEE, d MMMM yyyy h:mm a').format(this);
   }
 }

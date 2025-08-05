@@ -17,7 +17,13 @@ class BaseApiService {
   }) async {
     try {
       final response = await _dioService.dio.get(path);
-      return BaseApiResponse.fromJson(response.data, fromJson);
+
+      // Check for successful status code
+      if (response.statusCode == 200) {
+        return BaseApiResponse.fromJson(response.data, fromJson);
+      } else {
+        throw Exception('${response.statusCode} ${response.statusMessage}');
+      }
     } on DioException catch (e) {
       throw _mapDioError(e);
     } catch (e) {
@@ -33,7 +39,12 @@ class BaseApiService {
   }) async {
     try {
       final response = await _dioService.dio.get(path, queryParameters: queryParams);
-      return BaseApiResponse.fromJsonList(response.data, (list) => list.map((item) => fromJson(item)).toList());
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return BaseApiResponse.fromJsonList(response.data, (list) => list.map((item) => fromJson(item)).toList());
+      } else {
+        throw Exception('${response.statusCode} ${response.statusMessage}');
+      }
     } on DioException catch (e) {
       throw _mapDioError(e);
     } catch (e) {
@@ -49,7 +60,12 @@ class BaseApiService {
   }) async {
     try {
       final response = await _dioService.dio.get(path, queryParameters: queryParams);
-      return BaseApiResponse.fromJson(response.data, (json) => Paginated<T>.fromJson(json, fromJson));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return BaseApiResponse.fromJson(response.data, (json) => Paginated<T>.fromJson(json, fromJson));
+      } else {
+        throw Exception('${response.statusCode} ${response.statusMessage}');
+      }
     } on DioException catch (e) {
       throw _mapDioError(e);
     } catch (e) {
@@ -70,7 +86,12 @@ class BaseApiService {
         throw UnexpectedException('No data returned.');
       }
 
-      return BaseApiResponse.fromJson(response.data, fromJson);
+      // Check for successful status code
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return BaseApiResponse.fromJson(response.data, fromJson);
+      } else {
+        throw Exception('${response.statusCode} ${response.statusMessage}');
+      }
     } on DioException catch (e) {
       throw _mapDioError(e);
     } catch (e) {
@@ -91,7 +112,11 @@ class BaseApiService {
         throw UnexpectedException('No data returned.');
       }
 
-      return BaseApiResponse.fromJson(response.data, fromJson);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return BaseApiResponse.fromJson(response.data, fromJson);
+      } else {
+        throw Exception('${response.statusCode} ${response.statusMessage}');
+      }
     } on DioException catch (e) {
       throw _mapDioError(e);
     } catch (e) {
@@ -139,7 +164,6 @@ class BaseApiService {
   }
 
   AppException _mapDioError(DioException error) {
-    print(error.type);
     if (error.type == DioExceptionType.connectionTimeout) {
       return ServerException('Connection timed out. Please try again.');
     } else if (error.type == DioExceptionType.sendTimeout) {

@@ -284,7 +284,7 @@ class DataGridColumn {
 
   /// POS
   ///
-  static List<ColumnData> REGISTER_ITEMS = [
+  static List<ColumnData> productCatalog = [
     ColumnData('id', 'ID'),
     ColumnData('product_name', 'Product', minWidth: 400),
     ColumnData('stock', 'Stock', minWidth: 80),

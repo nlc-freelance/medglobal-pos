@@ -19,6 +19,12 @@ class LocalDatabaseFailure extends Failure {
   LocalDatabaseFailure(super.message);
 }
 
+class AlreadyExistsFailure<T> extends Failure {
+  final T data;
+
+  AlreadyExistsFailure(this.data, super.message);
+}
+
 class SyncFailure extends Failure {
   SyncFailure(super.message);
 }

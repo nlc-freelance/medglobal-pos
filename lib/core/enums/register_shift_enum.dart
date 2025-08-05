@@ -1,6 +1,6 @@
 enum RegisterShiftStatus {
   open(label: 'Open'),
-  close(label: 'Closed');
+  closed(label: 'Closed');
 
   final String label;
 

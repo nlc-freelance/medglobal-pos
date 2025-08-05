@@ -19,7 +19,7 @@ class ActiveRegisterCubit extends Cubit<ActiveRegisterState> {
     emit(ActiveRegisterState(
       id: register['id'],
       name: register['name'],
-      status: register['status'] == 'open' ? RegisterShiftStatus.open : RegisterShiftStatus.close,
+      status: register['status'] == 'open' ? RegisterShiftStatus.open : RegisterShiftStatus.closed,
       openedAt: register['openedAt'],
       closedAt: register['closedAt'],
     ));
@@ -34,7 +34,7 @@ class ActiveRegisterCubit extends Cubit<ActiveRegisterState> {
     emit(ActiveRegisterState(
       id: register.id,
       name: register.name,
-      status: register.shiftDetail?.status == 'open' ? RegisterShiftStatus.open : RegisterShiftStatus.close,
+      status: register.shiftDetail?.status == 'open' ? RegisterShiftStatus.open : RegisterShiftStatus.closed,
       openedAt: register.shiftDetail?.createdAt,
       closedAt: register.shiftDetail?.updatedAt,
     ));
@@ -47,7 +47,7 @@ class ActiveRegisterCubit extends Cubit<ActiveRegisterState> {
     await SharedPreferencesService.updateRegisterShift(shift);
 
     emit(state.copyWith(
-      status: shift.status == 'open' ? RegisterShiftStatus.open : RegisterShiftStatus.close,
+      status: shift.status == 'open' ? RegisterShiftStatus.open : RegisterShiftStatus.closed,
       openedAt: shift.createdAt,
       closedAt: shift.updatedAt,
     ));

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
 import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
@@ -28,14 +29,11 @@ class OpenRegisterShiftUseCase {
         _sync = sync;
 
   Future<Either<Failure, RegisterShift>> call(double amount) async {
-    int? userId;
-    int? registerId;
+    final userId = _session.userId;
+    final registerId = _session.registerId;
 
     /// Get userId and registerId from UserSessionService
     try {
-      userId = _session.userId;
-      registerId = _session.registerId;
-
       if (userId == null || registerId == null) {
         throw Left(UserNotFoundFailure('User and/or register details not found.'));
       }
@@ -43,54 +41,115 @@ class OpenRegisterShiftUseCase {
       throw Left(UnexpectedFailure('Unexpected error occurred. Failed to get user and register details.'));
     }
 
-    // Attach session info to the shift data
-    final shift = RegisterShift(
-      openingAmount: amount,
-      userId: userId,
-      registerId: registerId,
-    );
+    // Check if there's an open shift. If there's an open shift, restrict user from opening a new one
+    final lookForOpenShift = await _local.getOpenShift(userId, registerId);
 
-    // Save the shift locally first and get the result.
-    final localResult = await _local.openShift(shift);
-
-    return localResult.fold(
-      // If saving locally failed, return the failure immediately.
+    return lookForOpenShift.fold(
       (failure) => Left(failure),
+      (openShift) async {
+        if (openShift != null) {
+          return Left(AlreadyExistsFailure(openShift, 'An open shift already exists.'));
+        }
 
-      // If successful, continue with remote sync logic.
-      (shift) {
-        // Try to send to remote if online
-        _connection.isOnline.then((online) {
-          if (online) {
-            // If online, attempt to send the shift to the remote server.
-            // We use `.then()` instead of `await` to run this in the background,
-            // allowing the main function to return immediately after saving locally.
-            _remote.sendShift(shift).then((result) {
-              result.fold(
-                // If remote send failed, add it to the sync queue for retry later.
-                (failure) => _sync.enqueue(
+        // If there's no open shift, proceed to create a new one
+        // Attach session info to the shift data
+        final shift = RegisterShift(
+          openingAmount: amount,
+          userId: userId,
+          registerId: registerId,
+        );
+
+        // Save the shift locally first and get the result.
+        final localSave = await _local.openShift(shift);
+
+        return localSave.fold(
+          // If saving locally failed, return the failure immediately.
+          (failure) => Left(failure),
+
+          // If successful, continue with remote sync logic.
+          (shift) {
+            final payload = shift.toOpenPayload();
+
+            // Try to send to remote if online
+            _connection.isOnline.then((online) {
+              if (online) {
+                // If online, attempt to send the shift to the remote server.
+                // We use `.then()` instead of `await` to run this in the background,
+                // allowing the main function to return immediately after saving locally.
+                // _remote.sendShift(RegisterShiftAction.open, shift).then((result) {
+                //   result.fold(
+                //     // If remote send failed, add it to the sync queue for retry later.
+                //     (failure) => _sync.enqueue(
+                //       itemId: shift.id!,
+                //       table: 'registerShifts',
+                //       data: payload,
+                //       error: failure.message,
+                //     ),
+                //     // If successful, do nothing — the shift is now synced.
+                //     (_) {},
+                //   );
+                // });
+              } else {
+                // If offline, queue the shift for syncing later.
+                _sync.enqueue(
                   itemId: shift.id!,
                   table: 'registerShifts',
-                  data: shift.toOpenPayload(),
-                  error: failure.message,
-                ),
-                // If successful, do nothing — the shift is now synced.
-                (_) {},
-              );
+                  data: payload,
+                );
+              }
             });
-          } else {
-            // If offline, queue the shift for syncing later.
-            _sync.enqueue(
-              itemId: shift.id!,
-              table: 'registerShifts',
-              data: shift.toOpenPayload(),
-            );
-          }
-        });
 
-        // Return the successfully saved shift (from local DB).
-        return Right(shift);
+            // Return the successfully saved shift (from local DB).
+            return Right(shift);
+          },
+        );
       },
     );
+
+    //
+    // // Save the shift locally first and get the result.
+    // final localSave = await _local.openShift(shift);
+    //
+    // return localSave.fold(
+    //   // If saving locally failed, return the failure immediately.
+    //   (failure) => Left(failure),
+    //
+    //   // If successful, continue with remote sync logic.
+    //   (shift) {
+    //     final payload = shift.toOpenPayload();
+    //
+    //     // Try to send to remote if online
+    //     _connection.isOnline.then((online) {
+    //       if (online) {
+    //         // If online, attempt to send the shift to the remote server.
+    //         // We use `.then()` instead of `await` to run this in the background,
+    //         // allowing the main function to return immediately after saving locally.
+    //         // _remote.sendShift(RegisterShiftAction.open, shift).then((result) {
+    //         //   result.fold(
+    //         //     // If remote send failed, add it to the sync queue for retry later.
+    //         //     (failure) => _sync.enqueue(
+    //         //       itemId: shift.id!,
+    //         //       table: 'registerShifts',
+    //         //       data: payload,
+    //         //       error: failure.message,
+    //         //     ),
+    //         //     // If successful, do nothing — the shift is now synced.
+    //         //     (_) {},
+    //         //   );
+    //         // });
+    //       } else {
+    //         // If offline, queue the shift for syncing later.
+    //         _sync.enqueue(
+    //           itemId: shift.id!,
+    //           table: 'registerShifts',
+    //           data: payload,
+    //         );
+    //       }
+    //     });
+    //
+    //     // Return the successfully saved shift (from local DB).
+    //     return Right(shift);
+    //   },
+    // );
   }
 }

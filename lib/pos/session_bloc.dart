@@ -1,8 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
-import 'package:medglobal_admin_portal/core/local_db/native/session/session_dao.dart';
+import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
@@ -39,7 +38,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
   Future<void> _onInitSession(_InitializeSession event, Emitter<SessionState> emit) async {
     emit(const SessionState.loading());
 
-    await Future.delayed(Duration(seconds: 3));
+    // await Future.delayed(Duration(seconds: 3));
 
     try {
       final user = event.user;
@@ -57,7 +56,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
                 'This device must be linked to a register before it can be used. Please complete the setup on the portal or contact your administrator for assistance.';
           }
 
-          emit(SessionState.failure(failure.message, message));
+          emit(SessionState.failure(message, failure.message));
         },
         (register) async {
           final session = PosSession(
@@ -70,6 +69,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
             branchId: register.assignedBranch!.id!,
             branchName: register.assignedBranch!.name,
           );
+
           await _sessionDao.insertSession(session.toDriftCompanion());
           _userSessionService.upsertUserAndRegister(
             user,
@@ -80,13 +80,13 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
             ),
           );
 
-          emit(const SessionState.success());
+          emit(SessionState.loaded(session));
         },
       );
     } catch (e) {
       final message =
           '${e.runtimeType == LocalDatabaseException ? 'Failed to save session data on this device.' : 'An unexpected error occurred.'} This may cause issues when working offline. Please try again or contact support.';
-      emit(SessionState.failure(e.toString(), message, type: e.runtimeType));
+      emit(SessionState.failure(message, e.toString(), type: e.runtimeType));
     }
   }
 }

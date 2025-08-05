@@ -7,7 +7,7 @@ part 'register_shift.g.dart';
 class RegisterShift with _$RegisterShift {
   const factory RegisterShift({
     int? id,
-    @Default('close') String status,
+    @Default('open') String status,
     double? openingAmount,
     double? closingAmount,
     DateTime? openedAt,
@@ -24,18 +24,18 @@ extension RegisterShiftPayloadExt on RegisterShift {
   Map<String, dynamic> toOpenPayload() {
     return {
       'register': registerId,
-      'status': status,
+      'status': 'open',
       'openingAmount': openingAmount,
-      'updateTimestamp': openedAt?.toIso8601String(),
+      'updateTimestamp': openedAt?.millisecondsSinceEpoch,
     };
   }
 
   Map<String, dynamic> toClosePayload() {
     return {
       'register': registerId,
-      'status': status,
+      'status': 'close',
       'closingAmount': closingAmount,
-      'updateTimestamp': openedAt?.toIso8601String(),
+      'updateTimestamp': openedAt?.millisecondsSinceEpoch,
     };
   }
 }

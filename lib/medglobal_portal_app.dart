@@ -56,6 +56,7 @@ import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
 import 'package:medglobal_admin_portal/pos/device_register/device_register_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/session_bloc.dart';
 import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -85,7 +86,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         if (AppConfig.isPOSApp) ...[
           //  POS only
           // BlocProvider(create: (_) => GetIt.I<SyncBloc>()),
-
+          BlocProvider(create: (_) => GetIt.I<RegisterShiftBloc>()),
           BlocProvider(create: (_) => GetIt.I<ConnectivityCubit>()..monitorConnection()),
           BlocProvider(create: (_) => GetIt.I<SessionBloc>()),
           BlocProvider(create: (_) => ActiveRegisterCubit()),

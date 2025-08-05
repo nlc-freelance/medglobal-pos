@@ -4,8 +4,8 @@
 // import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
 // import 'package:medglobal_admin_portal/core/models/models.dart';
 // import 'package:medglobal_admin_portal/pos/point_of_sale/data/dto/sale/create_sale_dto.dart';
-// import 'package:medglobal_admin_portal/pos/pos_catalog/data/datasources/local/pos_catalog_local_datasource.dart';
-// import 'package:medglobal_admin_portal/pos/pos_catalog/data/datasources/remote/pos_catalog_remote_datasource.dart';
+// import 'package:medglobal_admin_portal/pos/pos_catalog/data/datasources/local/local_product_catalog_datasource.dart';
+// import 'package:medglobal_admin_portal/pos/pos_catalog/data/datasources/remote/remote_pos_catalog_datasource.dart';
 // import 'package:medglobal_admin_portal/pos/pos_catalog/domain/entities/catalog_item.dart';
 // import 'package:medglobal_admin_portal/pos/sales/data/datasources/remote/sale_remote_datasource.dart';
 // import 'package:medglobal_admin_portal/pos/sales/data/dtos/order_payload.dart';
@@ -13,14 +13,14 @@
 //
 // class SyncService {
 //   final AppDatabase _db;
-//   final PosCatalogLocalDataSource _catalogLocal;
-//   final PosCatalogRemoteDatasource _catalogRemote;
+//   final LocalProductCatalogDataSource _catalogLocal;
+//   final RemoteProductCatalogDataSource _catalogRemote;
 //   final SaleRemoteDatasource _salesRemote;
 //
 //   SyncService({
 //     required AppDatabase db,
-//     required PosCatalogLocalDataSource catalogLocal,
-//     required PosCatalogRemoteDatasource catalogRemote,
+//     required LocalProductCatalogDataSource catalogLocal,
+//     required RemoteProductCatalogDataSource catalogRemote,
 //     required SaleRemoteDatasource salesApi,
 //   })  : _db = db,
 //         _catalogLocal = catalogLocal,

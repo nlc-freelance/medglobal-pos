@@ -10,7 +10,7 @@ class ActiveRegisterState extends Equatable {
   const ActiveRegisterState({
     this.id,
     this.name,
-    this.status = RegisterShiftStatus.close,
+    this.status = RegisterShiftStatus.closed,
     this.openedAt,
     this.closedAt,
   });
@@ -22,7 +22,7 @@ class ActiveRegisterState extends Equatable {
 
   bool get isOpen => status == RegisterShiftStatus.open;
 
-  bool get isRegisterNew => status == RegisterShiftStatus.close && openedAt == null && closedAt == null;
+  bool get isRegisterNew => status == RegisterShiftStatus.closed && openedAt == null && closedAt == null;
 
   ActiveRegisterState copyWith({
     int? id,

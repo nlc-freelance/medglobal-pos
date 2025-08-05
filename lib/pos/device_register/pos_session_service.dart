@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
@@ -42,4 +44,17 @@ class UserSessionService {
   User? get user => _user;
   Register? get register => _register;
   BranchPartial? get branch => _branch;
+}
+
+typedef SessionContext = ({int userId, int registerId});
+
+Either<Failure, SessionContext> resolveSession(UserSessionService session) {
+  final userId = session.userId;
+  final registerId = session.registerId;
+
+  if (userId == null || registerId == null) {
+    return Left(UserNotFoundFailure('User and/or register details not found.'));
+  }
+
+  return Right((userId: userId, registerId: registerId));
 }

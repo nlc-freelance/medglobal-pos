@@ -30,7 +30,7 @@ class SharedPreferencesService {
     await prefs.setString('register_name', register.name);
     await prefs.setString(
       'register_status',
-      register.shiftDetail?.status == 'open' ? RegisterShiftStatus.open.name : RegisterShiftStatus.close.name,
+      register.shiftDetail?.status == 'open' ? RegisterShiftStatus.open.name : RegisterShiftStatus.closed.name,
     );
 
     if (register.shiftDetail != null) {

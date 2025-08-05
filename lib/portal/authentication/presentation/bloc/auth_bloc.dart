@@ -1,23 +1,13 @@
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
-import 'package:medglobal_admin_portal/core/local_db/native/session/session_dao.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/confirm_first_time_login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/get_auth_session.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/logout.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
-import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
-import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
-import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

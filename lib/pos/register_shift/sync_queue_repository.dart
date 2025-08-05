@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
-import 'package:medglobal_admin_portal/core/local_db/native/sync_queue/sync_queue_dao.dart';
+import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
 import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
 
 class SyncQueueRepository {
@@ -29,8 +29,8 @@ class SyncQueueRepository {
     }
 
     final item = SyncQueueCompanion(
-      itemId: Value(itemId),
       userId: Value(userId),
+      itemId: Value(itemId),
       table: Value(table),
       data: Value(jsonEncode(data)),
       lastError: Value(error),

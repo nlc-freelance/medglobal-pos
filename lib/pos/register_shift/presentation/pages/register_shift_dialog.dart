@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_list/pos_product_list_cubit.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_cubit/product_catalog_cubit.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_sync_bloc/product_catalog_sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
@@ -45,12 +46,6 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
     });
   }
 
-  void _formatCurrency() {
-    if (_amountCtrl.text.isEmpty) return;
-
-    _amountCtrl.text = _amountCtrl.text.toCurrencyString();
-  }
-
   @override
   Widget build(BuildContext context) {
     final shiftAction = widget.action;
@@ -60,18 +55,16 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
       child: BlocConsumer<RegisterShiftBloc, RegisterShiftState>(
         listener: (context, state) {
           state.maybeWhen(
-            success: (shift) {
-              Navigator.pop(context);
-              if (shift.status == 'open') context.read<PosProductListCubit>().getPOSProducts();
+            open: (shift, error) {
+              if (error == null) {
+                Navigator.pop(context);
+                // if really not needed remove the provider.value above as well
+                // context.read<ProductCatalogSyncBloc>().add(const ProductCatalogSyncEvent.initialFetch());
+                // context.read<ProductCatalogCubit>().getProductCatalog();
+              }
             },
             orElse: () {},
           );
-          // if (state is RegisterShiftSuccess) {
-          //   Navigator.pop(context);
-          //
-          //   context.read<ActiveRegisterCubit>().updateRegisterShift(state.shift);
-          //   if (state.shift.status == 'open') context.read<PosProductListCubit>().getPOSProducts();
-          // }
         },
         builder: (context, state) {
           return Dialog(
@@ -86,13 +79,13 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
                 children: [
                   UIText.heading6(shiftAction.title),
                   const Divider(color: UIColors.borderMuted),
-                  const UIVerticalSpace(24),
+                  const UIVerticalSpace(16),
                   if (widget.dateTime != null) ...[
                     Text(
-                      '${shiftAction.message} ${DateFormat('EEEE, d MMMM yyyy h:mm a').format(widget.dateTime!)}',
+                      '${shiftAction.message} ${widget.dateTime!.toFullDateWithTimeFormat()}',
                       style: UIStyleText.bodyRegular.copyWith(fontWeight: FontWeight.w400, fontSize: 15),
                     ),
-                    const UIVerticalSpace(30),
+                    const UIVerticalSpace(24),
                   ],
                   UIText.bodyRegular('To proceed, please enter the ${shiftAction.inputLabel.toLowerCase()}'),
                   const UIVerticalSpace(8),
@@ -110,22 +103,19 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
                       return null;
                     },
                   ),
-                  const UIVerticalSpace(30),
+                  const UIVerticalSpace(24),
                   state.maybeWhen(
+                    open: (_, message) => message == null ? const SizedBox() : PageErrorBanner(message: message),
                     failure: (message) => PageErrorBanner(message: message),
                     orElse: () => const SizedBox(),
                   ),
-                  // if (state is RegisterShiftError) ...[
-                  //   UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
-                  //   const UIVerticalSpace(30),
-                  // ],
+                  const UIVerticalSpace(8),
                   CancelActionButton(
                     actionLabel: 'Continue',
                     isLoading: state.maybeWhen(
-                      saving: () => true,
+                      loading: () => true,
                       orElse: () => false,
                     ),
-                    // state is RegisterShiftLoading,
                     onCancel: () => Navigator.pop(context),
                     onAction: () {
                       if (_formKey.currentState?.validate() == true) {
@@ -140,6 +130,12 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
         },
       ),
     );
+  }
+
+  void _formatCurrency() {
+    if (_amountCtrl.text.isEmpty) return;
+
+    _amountCtrl.text = _amountCtrl.text.toCurrencyString();
   }
 
   void _showAmountConfirmation(String amount, String label) => showDialog(

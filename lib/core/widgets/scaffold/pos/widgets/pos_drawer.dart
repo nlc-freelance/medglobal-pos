@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/pages/register_shift_dialog.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
-import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/session_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+
+import '../../../../../pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
 class PosDrawer extends StatelessWidget with DialogMixin {
   final GoRouterState routerState;
@@ -35,10 +35,13 @@ class PosDrawer extends StatelessWidget with DialogMixin {
       child: ListView(
         children: [
           ListTile(
-            title: BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) => state is AuthenticatedState
-                  ? UIText.heading5('${state.user.firstName} ${state.user.lastName}')
-                  : const SizedBox(),
+            title: BlocBuilder<SessionBloc, SessionState>(
+              builder: (context, state) {
+                return state.maybeWhen(
+                  loaded: (session) => UIText.heading5('${session.employeeFirstName} ${session.employeeLastName}'),
+                  orElse: () => const SizedBox(),
+                );
+              },
             ),
             subtitle: UIText.bodyRegular('Cashier', color: UIColors.textMuted),
           ),
@@ -74,34 +77,7 @@ class PosDrawer extends StatelessWidget with DialogMixin {
               onTap: () => context.goNamed('transactionPage'),
             ),
           ),
-          BlocBuilder<ActiveRegisterCubit, ActiveRegisterState>(
-            builder: (context, state) {
-              return Visibility(
-                  visible: state.isOpen,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        title: UIText.bodyRegular('Close Shift'),
-                        onTap: () => showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) => RegisterShiftDialog(
-                                  action: RegisterShiftAction.close,
-                                  dateTime: state.openedAt,
-                                  onConfirm: (amount) => context
-                                      .read<RegisterShiftBloc>()
-                                      .add(RegisterShiftClosed(id: state.id!, amount: amount)),
-                                )),
-                      ),
-                    ),
-                  ));
-            },
-          ),
+          const CloseRegisterShiftMenu(),
           const UIVerticalSpace(12),
           Material(
             type: MaterialType.transparency,
@@ -131,7 +107,7 @@ class PosDrawer extends StatelessWidget with DialogMixin {
                   },
                 );
                 // context.read<RegisterShiftBloc>().add(ResetRegisterShiftOnLogoutEvent());
-                // context.read<PosProductListCubit>().reset();
+                // context.read<ProductCatalogCubit>().reset();
                 // context.read<TransactionListByBranchCubit>().reset();
                 // context.read<TransactionCubit>().reset();
                 // context.read<OrderCubit>().reset();
@@ -152,6 +128,46 @@ class PosDrawer extends StatelessWidget with DialogMixin {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CloseRegisterShiftMenu extends StatelessWidget {
+  const CloseRegisterShiftMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
+      builder: (context, state) {
+        return state.maybeWhen(
+          open: (shift, _) => Visibility(
+            visible: true,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Material(
+                type: MaterialType.transparency,
+                child: ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  title: UIText.bodyRegular('Close Shift'),
+                  onTap: () => showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => RegisterShiftDialog(
+                      action: RegisterShiftAction.close,
+                      dateTime: shift.openedAt,
+                      onConfirm: (amount) =>
+                          context.read<RegisterShiftBloc>().add(RegisterShiftEvent.close(shift.id!, amount)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          orElse: () => const SizedBox(),
+        );
+      },
     );
   }
 }

@@ -13,3 +13,13 @@ class DateTimeConverter implements JsonConverter<DateTime, String> {
     return date.toString();
   }
 }
+
+class EpochMillisecondsConverter implements JsonConverter<DateTime, int> {
+  const EpochMillisecondsConverter();
+
+  @override
+  DateTime fromJson(int json) => DateTime.fromMillisecondsSinceEpoch(json);
+
+  @override
+  int toJson(DateTime object) => object.millisecondsSinceEpoch;
+}

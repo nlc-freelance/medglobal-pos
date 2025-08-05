@@ -27,15 +27,20 @@ abstract class BaseRepository {
 }
 
 Failure _mapAppExceptionToFailure(Object e) {
+  // print('MEYBEHERE');
+  // print(e );
+
   if (e is ServerException) {
     return ServerFailure(e.message);
   } else if (e is LocalDatabaseException) {
-    return LocalDatabaseFailure('[Database error] ${e.toString()}');
+    return LocalDatabaseFailure(e.toString());
   } else if (e is NetworkException) {
-    return NetworkFailure('[Network error] ${e.toString()}');
+    return NetworkFailure(e.toString());
   } else if (e is UnexpectedException) {
-    return UnexpectedFailure('Unexpected error: ${e.toString()}');
+    return UnexpectedFailure(e.toString());
   } else {
-    return UnexpectedFailure('Unknown error: ${e.toString()}');
+    print('CATCHHERE');
+    print(e);
+    return UnexpectedFailure(e.toString());
   }
 }
