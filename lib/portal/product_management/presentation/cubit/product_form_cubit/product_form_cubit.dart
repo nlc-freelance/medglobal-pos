@@ -5,6 +5,7 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/entities
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/product/product.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/variant/variant.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/form_models/variant_form_model.dart';
+import 'package:uuid/uuid.dart';
 
 part 'product_form_state.dart';
 part 'product_form_cubit.freezed.dart';
@@ -40,7 +41,7 @@ class ProductFormCubit extends Cubit<ProductFormState> {
   ///
   /// This is used when a product started with no variations
   /// and is now being edited to have user-defined variant details.
-  void upgradeDefaultVariant(VariantFormModel newVariant) {
+  void replaceDefaultVariant(VariantFormModel newVariant) {
     final updatedVariants = (state.variants ?? []).map((variant) {
       return variant.name == Strings.defaultVariantName ? newVariant : variant;
     }).toList();
@@ -82,8 +83,10 @@ class ProductFormCubit extends Cubit<ProductFormState> {
       final isVariantNullOrEmpty = variantName == null || variantName.isEmpty;
 
       if (state.hasVariations) {
+        print('here');
         if (isVariantNullOrEmpty || variantName == Strings.defaultVariantName) return false;
       } else {
+        print('here1');
         if (isVariantNullOrEmpty) return false;
       }
 

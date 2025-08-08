@@ -10,6 +10,7 @@ class CatalogItem with _$CatalogItem {
     required String displayName,
     required int stock,
     required double price,
+    String? action,
   }) = _CatalogItem;
 }
 

@@ -27,9 +27,6 @@ abstract class BaseRepository {
 }
 
 Failure _mapAppExceptionToFailure(Object e) {
-  // print('MEYBEHERE');
-  // print(e );
-
   if (e is ServerException) {
     return ServerFailure(e.message);
   } else if (e is LocalDatabaseException) {
@@ -39,8 +36,6 @@ Failure _mapAppExceptionToFailure(Object e) {
   } else if (e is UnexpectedException) {
     return UnexpectedFailure(e.toString());
   } else {
-    print('CATCHHERE');
-    print(e);
     return UnexpectedFailure(e.toString());
   }
 }

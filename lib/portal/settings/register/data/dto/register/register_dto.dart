@@ -20,3 +20,15 @@ class RegisterDto with _$RegisterDto {
 
   factory RegisterDto.fromJson(Map<String, dynamic> json) => _$RegisterDtoFromJson(json);
 }
+
+@freezed
+class RegisterPartialDto with _$RegisterPartialDto {
+  const factory RegisterPartialDto({
+    required int id,
+    required String name,
+    @DateTimeConverter() DateTime? createdAt,
+    @DateTimeConverter() DateTime? updatedAt,
+  }) = _RegisterPartialDto;
+
+  factory RegisterPartialDto.fromJson(Map<String, dynamic> json) => _$RegisterPartialDtoFromJson(json);
+}

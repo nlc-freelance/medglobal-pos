@@ -7,8 +7,8 @@ import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/a
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/widgets/confirm_sign_in_dialog.dart';
 import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
 import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
-import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
-import 'package:medglobal_admin_portal/pos/session_bloc.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
+import 'package:medglobal_admin_portal/pos/app_session/presentation/app_session_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class LoginForm extends StatefulWidget {
@@ -55,13 +55,13 @@ class _LoginFormState extends State<LoginForm> {
       listener: (context, state) {
         if (state is AuthenticatedState) {
           if (AppConfig.isPOSApp) {
-            GetIt.I<UserSessionService>().setUser(state.user);
-            context.read<SessionBloc>().add(SessionEvent.initialize(state.user));
+            GetIt.I<AppSessionService>().setUser(state.user);
+            context.read<AppSessionBloc>().add(AppSessionEvent.initialize(state.user));
           }
         }
-        if (state is AuthLoadingState) UIPageLoader.show(context);
+        if (state is AuthLoadingState) PageLoader.show(context);
         if (state is FirstTimeLoginState) {
-          UIPageLoader.close(context);
+          PageLoader.close();
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -75,7 +75,7 @@ class _LoginFormState extends State<LoginForm> {
           );
         }
         if (state is AuthErrorState || state is ConfirmLoginErrorState || state is AuthAccessDeniedState) {
-          UIPageLoader.close(context);
+          PageLoader.close();
         }
       },
       builder: (context, state) => SizedBox(

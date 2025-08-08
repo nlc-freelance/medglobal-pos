@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/enums/enums.dart';
 
 part 'order_item.freezed.dart';
+part 'order_item.g.dart';
 
 @freezed
 class OrderItem with _$OrderItem {
@@ -21,11 +22,16 @@ class OrderItem with _$OrderItem {
     @Default(DiscountType.percentage) DiscountType? discountType,
 
     /// Unit price after discount
-    double? discountedPrice,
+    // double? discountedPrice,
   }) = _OrderItem;
+
+  factory OrderItem.fromJson(Map<String, dynamic> json) => _$OrderItemFromJson(json);
 }
 
 extension OrderItemExt on OrderItem {
+  // If item has discount applied
+  bool get hasDiscountApplied => discount != null;
+
   /// Discount amount per item
   double get discountAmountPerUnit {
     if (discount != null) return price * (discount!.value / 100);

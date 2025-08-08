@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/domain/entities/order_item.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/domain/entities/pos_product.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/order_bloc/order_bloc.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/order/order_cubit.dart';
+import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_search/pos_product_search_cubit.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_cubit/product_catalog_cubit.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/entities/catalog_item.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
+import 'package:medglobal_admin_portal/pos/sales/domain/entities/order_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -101,13 +98,14 @@ class _ProductCatalogDataGridState extends State<ProductCatalogDataGrid> {
                         _productCatalogDataSource.rows[details.rowColumnIndex.rowIndex - 1].getCells().first.value;
                     final item = _productCatalogDataSource._items.firstWhere((item) => item.id == id);
 
-                    context.read<OrderBloc>().add(
-                          OrderEvent.addItem(OrderItem(
+                    context.read<CartBloc>().add(
+                          CartEvent.addItem(OrderItem(
                             id: const Uuid().v4().hashCode,
                             itemId: item.id!,
-                            name: item.displayName!,
+                            // name: item.displayName!,
                             price: item.price!,
-                            sku: '',
+                            // sku: '',
+                            itemName: item.displayName,
                           )),
                         );
                     // addItem(TransactionItem(

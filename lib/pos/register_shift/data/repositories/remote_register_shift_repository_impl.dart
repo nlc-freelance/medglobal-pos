@@ -16,9 +16,10 @@ class RemoteRegisterShiftRepositoryImpl extends BaseRepository implements Remote
   RemoteRegisterShiftRepositoryImpl({required RegisterShiftRemoteDataSource dataSource}) : _dataSource = dataSource;
 
   @override
-  Future<Either<Failure, void>> sendShift(RegisterShiftAction action, RegisterShift shift) {
+  Future<Either<Failure, void>> sendShift(Map<String, dynamic> payload) {
+    // Future<Either<Failure, void>> sendShift(RegisterShift shift) {
     return call(() async {
-      final payload = action == RegisterShiftAction.open ? shift.toOpenPayload() : shift.toClosePayload();
+      // final payload = shift.status == RegisterShiftAction.open.name ? shift.toOpenPayload() : shift.toClosePayload();
       await _dataSource.openOrCloseShift(payload);
     });
   }

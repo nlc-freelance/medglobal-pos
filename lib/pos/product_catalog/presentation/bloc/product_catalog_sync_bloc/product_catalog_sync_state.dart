@@ -5,5 +5,5 @@ class ProductCatalogSyncState with _$ProductCatalogSyncState {
   const factory ProductCatalogSyncState.initial() = _Initial;
   const factory ProductCatalogSyncState.syncing() = _Syncing;
   const factory ProductCatalogSyncState.synced(DateTime lastSyncedAt) = _Synced;
-  const factory ProductCatalogSyncState.failure(String message) = _Failure;
+  const factory ProductCatalogSyncState.failure(String message, {DateTime? lastSyncedAt}) = _Failure;
 }

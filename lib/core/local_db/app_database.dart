@@ -1,12 +1,32 @@
 import 'package:drift/drift.dart';
 import 'package:medglobal_admin_portal/core/local_db/db/database_connection.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
+import 'package:medglobal_admin_portal/core/local_db/db_tables/settings/settings_table.dart';
 
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [Session, RegisterShifts, PosCatalog, Transactions, TransactionItems, SyncQueue, SyncMetadata],
-  daos: [SessionDao, RegisterShiftDao, PosCatalogDao, TransactionDao, SyncQueueDao, SyncMetadataDao],
+  tables: [
+    Session,
+    RegisterShifts,
+    ProductCatalog,
+    Transactions,
+    TransactionItems,
+    SyncQueue,
+    SyncMetadata,
+    ReceiptConfig,
+    Settings,
+  ],
+  daos: [
+    SessionDao,
+    RegisterShiftDao,
+    ProductCatalogDao,
+    TransactionDao,
+    SyncQueueDao,
+    SyncMetadataDao,
+    ReceiptConfigDao,
+    SettingsDao,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(connect());

@@ -7,10 +7,11 @@ import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_search/pos_product_search_cubit.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_cubit/product_catalog_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/cart/cart_closed.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/cart/cart_open.dart';
+
 import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_sync_bloc/product_catalog_sync_bloc.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/presentation/screens/product_catalog_data_grid.dart';
+import 'package:medglobal_admin_portal/pos/sales/presentation/screens/cart/cart_closed/cart_closed.dart';
+import 'package:medglobal_admin_portal/pos/sales/presentation/screens/cart/cart_open/cart_open.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
@@ -24,7 +25,7 @@ class SalesScreen extends StatelessWidget {
     return BlocConsumer<RegisterShiftBloc, RegisterShiftState>(
       listener: (context, state) {
         state.maybeWhen(
-          // open: (_, __) => context.read<ProductCatalogSyncBloc>().add(const ProductCatalogSyncEvent.initialFetch()),
+          open: (_, __) => context.read<ProductCatalogCubit>().getProductCatalog(),
           orElse: () {},
         );
       },
@@ -44,19 +45,6 @@ class SalesScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    BlocBuilder<ProductCatalogSyncBloc, ProductCatalogSyncState>(
-                      builder: (context, state) => state.maybeWhen(
-                        syncing: () => Text('Syncing....'),
-                        synced: (lastSyncedAt) => Text(lastSyncedAt.toFullDateWithTimeFormat()),
-                        failure: (message) => Text(message),
-                        orElse: () => const Text('hello'),
-                      ),
-                    ),
-                    InkWell(
-                      child: Text('Sync'),
-                      onTap: () =>
-                          context.read<ProductCatalogSyncBloc>().add(const ProductCatalogSyncEvent.initialFetch()),
-                    ),
                     state.maybeWhen(
                       open: (shift, _) => Expanded(child: const ProductCatalog()),
                       orElse: () => DataGridNoData(
@@ -106,10 +94,10 @@ class _ProductCatalogState extends State<ProductCatalog> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ProductCatalogSyncBloc, ProductCatalogSyncState>(
+    return BlocListener<RegisterShiftBloc, RegisterShiftState>(
       listener: (context, state) {
         state.maybeWhen(
-          synced: (_) => context.read<ProductCatalogCubit>().getProductCatalog(),
+          open: (_, __) => context.read<ProductCatalogCubit>().getProductCatalog(),
           orElse: () {},
         );
       },
@@ -145,20 +133,20 @@ class _ProductCatalogState extends State<ProductCatalog> {
               }
 
               if (state is ProductCatalogLoading) {
-                return Text('loading');
-                // return DataGridLoading(
-                //   columns: DataGridUtil.getColumns(DataGridColumn.productCatalog),
-                //   source: ProductCatalogDataSource([], context),
-                // );
+                // return Text('loading');
+                return DataGridLoading(
+                  columns: DataGridUtil.getColumns(DataGridColumn.productCatalog),
+                  source: ProductCatalogDataSource([], context),
+                );
               }
 
-              return Text('else');
-              // return DataGridNoData(
-              //   columns: DataGridUtil.getColumns(DataGridColumn.productCatalog),
-              //   source: ProductCatalogDataSource([], context),
-              //   isCustom: true,
-              //   message: 'No data available',
-              // );
+              // return Text('else');
+              return DataGridNoData(
+                columns: DataGridUtil.getColumns(DataGridColumn.productCatalog),
+                source: ProductCatalogDataSource([], context),
+                isCustom: true,
+                message: 'No data available',
+              );
             },
           ),
         ],

@@ -53,7 +53,7 @@ class VariantFormCubit extends Cubit<VariantFormState> {
         return variant.copyWith(suppliers: updatedSuppliers);
       });
 
-  void addBranchInventory(Branch branch) {
+  void addBranchInventory(BranchPartial branch) {
     final branchInventories = state.variant.branchInventories;
     final exists = branchInventories?.any((variant) => variant.branch.id == branch.id) ?? false;
 

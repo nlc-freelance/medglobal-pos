@@ -25,7 +25,7 @@ class BranchInventorySection extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: AppDropdownFormField<Branch>.lazy(
+                  child: AppDropdownFormField<BranchPartial>.lazy(
                     label: 'Branches',
                     hint: state.branches.isEmpty ? 'Select branch' : '${state.branches.length} branch(es) selected',
                     showSelectedItem: false,

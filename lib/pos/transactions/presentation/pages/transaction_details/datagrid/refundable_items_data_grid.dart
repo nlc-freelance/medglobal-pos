@@ -32,7 +32,7 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
-    final items = widget.transaction.items.map((item) => item.toRefundItem).toList();
+    final items = (widget.transaction.items ?? []).map((item) => item.toRefundItem).toList();
 
     _refundableItemsDataSource = RefundableItemsDataSource(items, context);
 

@@ -24,6 +24,7 @@ class ProductVariantDto extends Equatable {
   final double? price;
   final ProductDto? product;
   final List<SupplierDto>? suppliers; //
+  final String? actionType; // NEW, UPDATED, DELETED for delta sync
 
   const ProductVariantDto({
     this.displayName,
@@ -37,10 +38,12 @@ class ProductVariantDto extends Equatable {
     this.price,
     this.suppliers,
     this.product,
+    this.actionType,
   });
 
   @override
-  List<Object?> get props => [id, name, sku, warningStock, idealStock, qtyOnHand, cost, price, suppliers, product];
+  List<Object?> get props =>
+      [id, name, sku, warningStock, idealStock, qtyOnHand, cost, price, suppliers, product, actionType];
 
   factory ProductVariantDto.fromJson(Map<String, dynamic> json) => _$ProductVariantDtoFromJson(json);
 
@@ -88,5 +91,6 @@ class ProductVariantDto extends Equatable {
         displayName: displayName!,
         stock: qtyOnHand!,
         price: price!,
+        action: actionType,
       );
 }

@@ -16,6 +16,24 @@ class LocalProductCatalogRepositoryImpl extends BaseRepository implements LocalP
   }) : _localDataSource = localDataSource;
 
   @override
+  Future<Either<Failure, void>> upsertProducts(List<CatalogItem> products) {
+    return call(() async {
+      if (products.isEmpty) return;
+
+      return await _localDataSource.upsertProducts(products);
+    });
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteProducts(List<CatalogItem> products) {
+    return call(() async {
+      if (products.isEmpty) return;
+
+      return await _localDataSource.deleteProducts(products);
+    });
+  }
+
+  @override
   Future<Either<Failure, PaginatedList<CatalogItem>>> getProductCatalog(PageQuery query) {
     return call(() async {
       final data = await _localDataSource.getProductCatalog(query.page, query.size, query.search);
@@ -31,9 +49,23 @@ class LocalProductCatalogRepositoryImpl extends BaseRepository implements LocalP
   }
 
   @override
-  Future<Either<Failure, void>> upsertProducts(List<CatalogItem> products) {
+  Future<Either<Failure, void>> deltaSyncProducts(List<CatalogItem> products) {
     return call(() async {
-      return await _localDataSource.upsertProductCatalog(products);
+      final List<CatalogItem> itemsForDeletion = [];
+      final List<CatalogItem> itemsForUpsert = [];
+
+      for (final item in products) {
+        item.action == 'DELETED' ? itemsForDeletion.add(item) : itemsForUpsert.add(item);
+      }
+
+      print(
+          'ITEMS FOR DELETION ${itemsForDeletion.map((item) => '${item.displayName} ${item.action}').toList().toString()}');
+      print(
+          'ITEMS FOR UPSERT ${itemsForUpsert.map((item) => '${item.displayName} ${item.action}').toList().toString()}');
+
+      await _localDataSource.deleteProducts(itemsForDeletion);
+
+      await _localDataSource.upsertProducts(itemsForUpsert);
     });
   }
 }

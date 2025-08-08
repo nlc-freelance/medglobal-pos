@@ -9,7 +9,7 @@ class BranchInventoryMapper {
   static BranchInventory fromDto(BranchInventoryDto dto) {
     return BranchInventory(
       id: dto.id,
-      branch: BranchMapper.fromDto(dto.store),
+      branch: BranchPartialMapper.fromDto(dto.store),
       price: dto.price,
       quantityOnHand: dto.currentStock,
     );

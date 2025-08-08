@@ -42,3 +42,16 @@ class EmployeeDto with _$EmployeeDto {
         accessControls: accessControls.map((access) => access.toDomain()).toList(),
       );
 }
+
+@freezed
+class EmployeePartialDto with _$EmployeePartialDto {
+  const factory EmployeePartialDto({
+    required int id,
+    required String firstName,
+    required String lastName,
+    @DateTimeConverter() DateTime? createdAt,
+    @DateTimeConverter() DateTime? updatedAt,
+  }) = _EmployeePartialDto;
+
+  factory EmployeePartialDto.fromJson(Map<String, dynamic> json) => _$EmployeePartialDtoFromJson(json);
+}

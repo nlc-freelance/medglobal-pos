@@ -30,7 +30,7 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
   @override
   void initState() {
     super.initState();
-    _items = widget.transaction.items;
+    _items = widget.transaction.items ?? [];
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 

@@ -22,7 +22,7 @@ class ReturnTransactionDetails extends StatelessWidget {
     return BlocConsumer<ReturnRemoteCubit, ReturnRemoteState>(
       listener: (context, state) {
         if (state is ReturnSuccess) {
-          context.read<ReturnCubit>().setReturnItems(state.transaction.items);
+          context.read<ReturnCubit>().setReturnItems(state.transaction.items ?? []);
           SnackbarUtil.success(context, 'Return has been successfully completed.');
 
           context.read<ReturnTransactionListCubit>().getTransactions();

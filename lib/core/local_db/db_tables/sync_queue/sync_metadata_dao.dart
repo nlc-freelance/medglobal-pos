@@ -14,24 +14,15 @@ class SyncMetadataDao extends DatabaseAccessor<AppDatabase> with _$SyncMetadataD
     return row?.lastSyncTime;
   }
 
-  Future<void> insertLastSyncAt(String tableName, DateTime time) {
+  Future<void> updateLastSyncedAt(String tableName) {
     return safeCall(() async {
       await into(syncMetadata).insertOnConflictUpdate(
         SyncMetadataCompanion(
           table: Value(tableName),
-          lastSyncTime: Value(time),
+          lastSyncTime: Value(DateTime.now()),
         ),
       );
     });
-  }
-
-  Future<void> updateLastSyncTime(String tableName, DateTime time) async {
-    await into(syncMetadata).insertOnConflictUpdate(
-      SyncMetadataCompanion(
-        table: Value(tableName),
-        lastSyncTime: Value(time),
-      ),
-    );
   }
 }
 

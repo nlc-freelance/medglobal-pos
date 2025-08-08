@@ -10,6 +10,7 @@ class Session extends Table {
   TextColumn get registerSerialNo => text()();
   IntColumn get branchId => integer()();
   TextColumn get branchName => text()();
+  TextColumn get receiptConfig => text()();
 
   // TextColumn get authToken => text().nullable()();
   // DateTimeColumn get loginTime => dateTime()();

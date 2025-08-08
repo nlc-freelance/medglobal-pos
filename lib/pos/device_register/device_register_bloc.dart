@@ -5,7 +5,7 @@
 // import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 // import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
 // import 'package:medglobal_admin_portal/pos/device_bios_uuid.dart';
-// import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
+// import 'package:medglobal_admin_portal/pos/device_register/app_session_service.dart';
 //
 // part 'device_register_event.dart';
 // part 'device_register_state.dart';
@@ -13,13 +13,13 @@
 //
 // class DeviceRegisterBloc extends Bloc<DeviceRegisterEvent, DeviceRegisterState> {
 //   final RegisterRepository _repository;
-//   final PosSessionDao _sessionDao;
-//   final PosSessionService _sessionService;
+//   final AppSessionDao _sessionDao;
+//   final AppAppSessionService _sessionService;
 //
 //   DeviceRegisterBloc({
 //     required RegisterRepository repository,
-//     required PosSessionDao sessionDao,
-//     required PosSessionService sessionService,
+//     required AppSessionDao sessionDao,
+//     required AppAppSessionService sessionService,
 //   })  : _repository = repository,
 //         _sessionDao = sessionDao,
 //         _sessionService = sessionService,
@@ -44,7 +44,7 @@
 //         (register) {
 //           emit(DeviceRegisterState.loaded(register));
 //           _sessionDao.setSession(
-//             PosSessionCompanion.insert(
+//             AppSessionCompanion.insert(
 //                 employeeId: employeeId,
 //                 employeeFirstName: employeeFirstName,
 //                 employeeLastName: employeeLastName,

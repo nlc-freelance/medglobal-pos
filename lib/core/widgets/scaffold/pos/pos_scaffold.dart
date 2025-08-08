@@ -8,12 +8,15 @@ import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/pos_hea
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/pos_drawer.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/setting_up_device_screen.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
-import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
-import 'package:medglobal_admin_portal/pos/session_bloc.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
+import 'package:medglobal_admin_portal/pos/app_session/presentation/app_session_bloc.dart';
+import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_sync_bloc/product_catalog_sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
-class PosScaffold extends StatelessWidget {
+class PosScaffold extends StatefulWidget {
   const PosScaffold({
     super.key,
     required this.route,
@@ -24,12 +27,51 @@ class PosScaffold extends StatelessWidget {
   final Widget child;
 
   @override
+  State<PosScaffold> createState() => _PosScaffoldState();
+}
+
+class _PosScaffoldState extends State<PosScaffold> {
+  late final ConnectivityCubit connectivityCubit;
+  late final SyncBloc syncBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    // WidgetsBinding.instance.addObserver(this);
+
+    connectivityCubit = context.read<ConnectivityCubit>();
+    syncBloc = context.read<SyncBloc>();
+
+    // Listen for connectivity changes
+    connectivityCubit.stream.listen((status) {
+      syncBloc.updateConnectivity(status);
+    });
+  }
+
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   _isAppInForeground = state == AppLifecycleState.resumed;
+  //   syncBloc.updateAppLifecycle(_isAppInForeground);
+  // }
+
+  @override
+  void dispose() {
+    // WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SessionBloc, SessionState>(
+    return BlocConsumer<AppSessionBloc, AppSessionState>(
       listener: (context, state) {
         state.maybeWhen(
           loaded: (_) {
             // context.read<SyncBloc>().add(const SyncEvent.start());
+            // If the posCatalog table is empty and lastSyncedAt for posCatalog table is empty, do initial fetch
+            // Else if lastSyncedAt is past 10 minutes, do delta sync
+            // Additionally, add hasCompletedInitialSync to be able to know if we need to continue initial fetch
+            // Add a lastPage, error, so we can continue initial fetch we left of, if an error occurred
+            context.read<ProductCatalogSyncBloc>().add(const ProductCatalogSyncEvent.initialFetch());
             context.read<RegisterShiftBloc>().add(const RegisterShiftEvent.checkForOpen());
           },
           failure: (message, error, type) => _showErrorDialog(context, message, error, type),
@@ -39,14 +81,14 @@ class PosScaffold extends StatelessWidget {
       builder: (context, state) {
         return state.maybeWhen(
           loading: () => const SettingUpScreen(),
-          orElse: () => _PosScaffold(route, child),
+          orElse: () => _PosScaffold(widget.route, widget.child),
         );
       },
     );
   }
 
   void _showErrorDialog(BuildContext context, String message, String error, Type? type) {
-    final user = GetIt.I<UserSessionService>().user;
+    final user = GetIt.I<AppSessionService>().user;
     final allowRetry = user != null && type == LocalDatabaseException;
 
     return showBlurredDialog(
@@ -72,7 +114,7 @@ class PosScaffold extends StatelessWidget {
                 UIButton.filled(
                   'Retry',
                   onClick: () {
-                    context.read<SessionBloc>().add(SessionEvent.initialize(user));
+                    context.read<AppSessionBloc>().add(AppSessionEvent.initialize(user));
                     Navigator.pop(context);
                   },
                 ),

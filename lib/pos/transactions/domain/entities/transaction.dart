@@ -279,7 +279,7 @@ class Transaction with _$Transaction {
     // required Register register,
     // required Branch branch,
     // required Employee employee,
-    required List<TransactionItem> items,
+    List<TransactionItem>? items,
     double? subtotal,
     double? tax,
     double? total,
@@ -320,14 +320,14 @@ class Transaction with _$Transaction {
         'firstName': employee.firstName,
         'lastName': employee.lastName,
       },
-      'items': items.map((e) => e.toJson()).toList(),
+      'items': (items ?? []).map((e) => e.toJson()).toList(),
       'subtotal': subtotal,
       'tax': tax,
       'total': total,
       'reasonForRefund': reasonForRefund,
-      'createdAt': createdAt.toIso8601String(),
       'totalDiscountAmount': totalDiscountAmount,
       'amountPaid': amountPaid,
+      'createdTimestamp': createdAt.millisecondsSinceEpoch,
     };
   }
 

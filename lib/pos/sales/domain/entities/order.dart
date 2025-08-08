@@ -5,43 +5,46 @@ import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/re
 import 'package:medglobal_admin_portal/pos/sales/domain/entities/order_item.dart';
 
 part 'order.freezed.dart';
+part 'order.g.dart';
 
 @freezed
 class Order with _$Order {
   const factory Order({
-    required RegisterPartial register,
-    required BranchPartial branch,
-    required EmployeePartial employee,
+    // required RegisterPartial register,
+    // required BranchPartial branch,
+    // required EmployeePartial employee,
 
     /// Items added in cart
     @Default([]) List<OrderItem> items,
 
     /// Total amount due
-    // @Default(0.0) double total,
+    @Default(0.0) double total,
 
     /// Amount customer gave as payment
-    required double amountPaid,
+    double? amountPaid,
   }) = _Order;
+
+  factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
 }
 
 extension OrderExt on Order {
   /// Total amount before discounts
-  double get subtotal {
+  double subtotal() {
     return items.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
   }
 
   /// Total amount of discount applied
-  double get totalDiscountAmount {
+  double totalDiscountAmount() {
     return items.fold(0.0, (sum, item) => sum + item.totalDiscountAmount);
   }
 
-  /// Total amound due after all discounts
-  double get total {
+  /// Total amount due after all discounts
+  double grandTotal() {
     return items.fold(0.0, (sum, item) => sum + item.totalPrice);
   }
 
   /// Total number of items
-  int get totalQuantity {
+  int totalQuantity() {
     return items.fold(0, (sum, item) => sum + item.quantity);
   }
 }

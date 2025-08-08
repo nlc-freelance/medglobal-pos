@@ -1,8 +1,10 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
 import 'package:medglobal_admin_portal/core/local_db/base_dao.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
-import 'package:medglobal_admin_portal/pos/pos_session/domain/entities/pos_session.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/entities/app_session.dart';
 
 part 'session_dao.g.dart';
 
@@ -25,17 +27,17 @@ class SessionDao extends DatabaseAccessor<AppDatabase> with _$SessionDaoMixin, B
     });
   }
 
-  // Clear PosSession on logout
+  // Clear AppSession on logout
   Future<void> clearSession() async {
-    // return safeCall(() async {
-    await delete(session).go();
-    // });
+    return safeCall(() async {
+      await delete(session).go();
+    });
   }
 }
 
 /// Mappers
-extension SessionMapper on PosSession {
-  SessionCompanion toDriftCompanion() {
+extension SessionMapper on AppSession {
+  SessionCompanion toSessionCompanion() {
     return SessionCompanion.insert(
       employeeId: employeeId,
       employeeFirstName: employeeFirstName,
@@ -45,6 +47,23 @@ extension SessionMapper on PosSession {
       registerSerialNo: registerSerialNo,
       branchId: branchId,
       branchName: branchName,
+      receiptConfig: jsonEncode(receiptConfig.toJson()),
+    );
+  }
+}
+
+extension SessionDataMapper on SessionData {
+  AppSession toEntity() {
+    return AppSession(
+      employeeId: employeeId,
+      employeeFirstName: employeeFirstName,
+      employeeLastName: employeeLastName,
+      registerId: registerId,
+      registerName: registerName,
+      registerSerialNo: registerSerialNo,
+      branchId: branchId,
+      branchName: branchName,
+      receiptConfig: jsonDecode(receiptConfig),
     );
   }
 }

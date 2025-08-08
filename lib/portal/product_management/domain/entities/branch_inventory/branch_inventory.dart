@@ -8,7 +8,7 @@ part 'branch_inventory.freezed.dart';
 class BranchInventory with _$BranchInventory {
   const factory BranchInventory({
     required int id,
-    required Branch branch,
+    required BranchPartial branch,
     double? price,
     int? quantityOnHand,
   }) = _BranchInventory;

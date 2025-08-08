@@ -1,4 +1,59 @@
+import 'dart:async';
+
+import 'package:bloc/bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/pos/sync/network_service.dart';
+import 'package:medglobal_admin_portal/pos/sync/sync_service.dart';
+
+part 'sync_event.dart';
+part 'sync_state.dart';
+part 'sync_bloc.freezed.dart';
+
+class SyncBloc extends Bloc<SyncEvent, SyncState> {
+  final SyncService syncService;
+  Timer? _timer;
+
+  bool _isOnline = true;
+
+  SyncBloc(this.syncService) : super(const SyncState.initial()) {
+    on<_Start>(_onStart);
+    on<_SyncNow>(_onSyncNow);
+  }
+
+  void updateConnectivity(bool status) {
+    _isOnline = status;
+  }
+
+  void _onStart(_Start event, Emitter<SyncState> emit) {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(minutes: 10), (_) {
+      // _timer = Timer.periodic(const Duration(minutes: 10), (_) {
+      if (_isOnline) {
+        add(const SyncEvent.syncNow());
+      }
+    });
+  }
+
+  Future<void> _onSyncNow(_SyncNow event, Emitter<SyncState> emit) async {
+    emit(const SyncState.syncing());
+    try {
+      await syncService.syncQueuedWrites();
+      await syncService.syncReadOnlyData();
+      emit(const SyncState.synced());
+    } catch (e) {
+      emit(SyncState.failure(e.toString()));
+    }
+  }
+
+  @override
+  Future<void> close() {
+    _timer?.cancel();
+    return super.close();
+  }
+}
+
 // import 'dart:async';
+
 //
 // import 'package:bloc/bloc.dart';
 // import 'package:freezed_annotation/freezed_annotation.dart';

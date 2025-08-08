@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/core/models/page_query.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/entities/pos_product.dart';
-import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/get_pos_products_usecase.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/get_product_catalog_usecase.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/entities/catalog_item.dart';
 
 part 'product_catalog_state.dart';

@@ -1,17 +1,17 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
-import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 
 import '../entities/register_shift.dart';
 import '../repositories/local_register_shift_repository.dart';
 
 class GetLastClosedRegisterShiftUseCase {
   final LocalRegisterShiftRepository _local;
-  final UserSessionService _session;
+  final AppSessionService _session;
 
   const GetLastClosedRegisterShiftUseCase({
     required LocalRegisterShiftRepository local,
-    required UserSessionService session,
+    required AppSessionService session,
   })  : _local = local,
         _session = session;
 
@@ -19,7 +19,7 @@ class GetLastClosedRegisterShiftUseCase {
     final userId = _session.userId;
     final registerId = _session.registerId;
 
-    /// Get userId and registerId from UserSessionService
+    /// Get userId and registerId from AppSessionService
     try {
       if (userId == null || registerId == null) {
         return Left(UserNotFoundFailure('User and/or register details not found.'));

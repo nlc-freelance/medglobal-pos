@@ -15,6 +15,6 @@ class UpdateReturnDto {
   Map<String, dynamic> toJson() => _$UpdateReturnDtoToJson(this);
 
   factory UpdateReturnDto.fromDomain(Transaction transaction) => UpdateReturnDto(
-        items: transaction.items.map((item) => UpdateReturnItemDto.fromDomain(item)).toList(),
+        items: (transaction.items ?? []).map((item) => UpdateReturnItemDto.fromDomain(item)).toList(),
       );
 }

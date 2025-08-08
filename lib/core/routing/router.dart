@@ -13,8 +13,9 @@ import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/a
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/product_list_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_list_page.dart';
-import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/pos/point_of_sale_page.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
+import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/pos/register_screen.dart';
+import 'package:medglobal_admin_portal/pos/sales/presentation/screens/sales_screen.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 abstract class AppRouter {
@@ -58,7 +59,7 @@ abstract class AppRouter {
 
         if (AppConfig.isPOSApp) {
           if (userRole == UserType.cashier || userRole == UserType.supervisor) {
-            return PointOfSalePage.route;
+            return SalesScreen.route;
           } else {
             return AccessDeniedPage.route;
           }

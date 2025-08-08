@@ -7,7 +7,10 @@ import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/gen/assets.gen.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/bloc/product_bloc/product_bloc.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form_cubit/product_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_cubit/variant_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/form_models/variant_form_model.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:uuid/uuid.dart';
 
 class ProductFormActions extends StatelessWidget with DialogMixin {
   const ProductFormActions({
@@ -73,13 +76,21 @@ class ProductFormActions extends StatelessWidget with DialogMixin {
   void _onCancel(BuildContext context) => Navigator.pop(context);
 
   void _onSave(BuildContext context) {
-    final formCubit = context.read<ProductFormCubit>();
-    final formState = formCubit.state;
+    final productFormCubit = context.read<ProductFormCubit>();
+    final variantFormState = context.read<VariantFormCubit>();
 
-    final isValid = formCubit.validate();
+    if (productFormCubit.state.hasOnlyDefaultVariant) {
+      final isDefaultVariantValid = variantFormState.state.isValid;
+      if (isDefaultVariantValid) {
+        final variant = variantFormState.state.variant;
+        productFormCubit.replaceDefaultVariant(variant);
+      }
+    }
+
+    final isValid = productFormCubit.validate();
 
     if (formKey.currentState?.validate() == true && isValid) {
-      final product = formState.toProduct();
+      final product = productFormCubit.state.toProduct();
 
       if (product.id == null) {
         context.read<ProductBloc>().add(ProductEvent.createProduct(product));

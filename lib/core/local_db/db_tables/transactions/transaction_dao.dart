@@ -5,11 +5,13 @@ import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/entities/app_session.dart';
 import 'package:medglobal_admin_portal/pos/sales/domain/entities/order.dart';
 import 'package:medglobal_admin_portal/pos/sales/domain/entities/order_item.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
+import 'package:ulid/ulid.dart';
 
 part 'transaction_dao.g.dart';
 
@@ -60,30 +62,36 @@ class TransactionDao extends DatabaseAccessor<AppDatabase> with _$TransactionDao
 /// Mappers
 
 extension OrderMapper on Order {
-  String get _generateReceiptId => 'MG-${branch.code}${DateTime.now().microsecondsSinceEpoch}';
+  TransactionsCompanion toTransactionCompanion(AppSession session) {
+    final generatedReceiptId = 'MG-${_branchCode(session.branchName)}-${Ulid().toString().toUpperCase()}';
 
-  TransactionsCompanion toDriftCompanion() {
-    return TransactionsCompanion.insert(
-      receiptId: _generateReceiptId, // MG-LPB-xxxxxxxxxxx
-      type: TransactionType.sale.name,
-      registerId: register.id,
-      registerName: register.name,
-      branchId: branch.id,
-      branchName: branch.name,
-      employeeId: employee.id,
-      employeeFirstName: employee.firstName,
-      employeeLastName: employee.lastName,
-      subtotal: subtotal,
-      totalDiscountAmount: Value(totalDiscountAmount),
-      total: total,
-      amountPaid: amountPaid,
-      createdAt: DateTime.now(),
+    return TransactionsCompanion(
+      receiptId: Value(generatedReceiptId),
+      type: Value(TransactionType.sale.name),
+      registerId: Value(session.registerId),
+      registerName: Value(session.registerName),
+      branchId: Value(session.branchId),
+      branchName: Value(session.branchName),
+      employeeId: Value(session.employeeId),
+      employeeFirstName: Value(session.employeeFirstName),
+      employeeLastName: Value(session.employeeLastName),
+      subtotal: Value(subtotal()),
+      totalDiscountAmount: Value(totalDiscountAmount()),
+      total: Value(total),
+      amountPaid: Value(amountPaid!),
+      createdAt: Value(DateTime.now()),
     );
   }
 }
 
+String _branchCode(String name) {
+  final words = name.trim().split(' ');
+  final initials = words.map((word) => word[0].toUpperCase()).join();
+  return '${initials}B';
+}
+
 extension OrderItemMapper on OrderItem {
-  TransactionItemsCompanion toDriftCompanion() {
+  TransactionItemsCompanion toTransactionItemCompanion() {
     return TransactionItemsCompanion.insert(
       transactionId: 1,
       itemId: itemId,
@@ -141,7 +149,11 @@ extension TransactionDetailsMapper on TransactionDetails {
       saleTransactionId: transaction.saleTransactionId,
       saleTransactionReceiptId: transaction.saleTransactionReceiptId,
       reasonForRefund: transaction.reasonForReturn,
-      status: transaction.status == 'completed' ? ReturnStatus.completed : ReturnStatus.awaitingAction,
+      status: transaction.type == 'sale'
+          ? null
+          : transaction.status == 'completed'
+              ? ReturnStatus.completed
+              : ReturnStatus.awaitingAction,
     );
   }
 }

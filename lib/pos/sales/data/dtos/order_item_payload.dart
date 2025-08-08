@@ -21,6 +21,11 @@ class OrderItemPayload {
 
   Map<String, dynamic> toJson() => _$OrderItemPayloadToJson(this);
 
+  @override
+  String toString() {
+    return 'OrderItemPayload(variantId: $variantId, quantity: $quantity, discount: $discount, discountType: $discountType)';
+  }
+
   factory OrderItemPayload.fromDomain(OrderItem item) => OrderItemPayload(
         variantId: item.itemId,
         quantity: item.quantity,

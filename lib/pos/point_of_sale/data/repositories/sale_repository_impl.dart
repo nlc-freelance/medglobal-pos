@@ -5,6 +5,7 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/data/api/sale_api.dart'
 import 'package:medglobal_admin_portal/pos/point_of_sale/data/dto/sale/create_sale_dto.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/entities/order.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/repositories/sale_repository.dart';
+import 'package:medglobal_admin_portal/pos/sales/domain/entities/order.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction/transaction_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 

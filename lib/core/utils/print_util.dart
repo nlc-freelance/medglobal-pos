@@ -1,21 +1,48 @@
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/receipt_config.dart';
+import 'package:medglobal_admin_portal/pos/receipt_config/domain/entities/receipt_configuration.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:printing/printing.dart';
 import 'package:universal_html/html.dart' as html;
 
 class PrintUtil {
   const PrintUtil();
 
+  static Future<List<Printer>> getListOfPrinters() async {
+    try {
+      final printingInfo = await Printing.info();
+
+      if (printingInfo.canListPrinters) {
+        return await Printing.listPrinters();
+      }
+      throw UnexpectedException('Could not get the list of available printers for this device.');
+    } catch (e) {
+      throw UnexpectedException(e.toString());
+    }
+  }
+
+  static Future<void> directPrint(Printer printer, Document doc) async {
+    try {
+      await Printing.directPrintPdf(
+        printer: printer,
+        onLayout: (_) => doc.save(),
+        usePrinterSettings: true,
+      );
+    } catch (e) {
+      throw UnexpectedException(e.toString());
+    }
+  }
+
   static Future<void> generateAndPrintReceipt({
     required Transaction transaction,
-    required ReceiptConfig config,
+    required ReceiptConfiguration config,
   }) async {
     try {
       final doc = Document();
@@ -109,7 +136,7 @@ class PrintUtil {
                       ),
                       SizedBox(height: 2),
                       Container(margin: const EdgeInsets.symmetric(vertical: 2), height: 0.9, color: PdfColors.black),
-                      ...(transaction.items).map(
+                      ...(transaction.items ?? []).map(
                         (item) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Column(
@@ -171,7 +198,7 @@ class PrintUtil {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          '${(transaction.items).length.toString()} ITEMS',
+                          '${(transaction.items)?.length.toString()} ITEMS',
                           style: theme.header3,
                         ),
                       ),
@@ -257,34 +284,53 @@ class PrintUtil {
       //   onLayout: (PdfPageFormat format) async => doc.save(),
       // );
 
-      // Convert PDF to Uint8List
-      final pdfData = await doc.save();
+      // // Convert PDF to Uint8List
+      // final pdfData = await doc.save();
+      //
+      // // Create a Blob from the Uint8List
+      // final blob = html.Blob([pdfData], 'application/pdf');
+      // final url = html.Url.createObjectUrlFromBlob(blob);
+      //
+      // Future.delayed(const Duration(milliseconds: 500), () {
+      //   final script = html.ScriptElement()
+      //     ..type = 'text/javascript'
+      //     ..text = '''
+      //               (function() {
+      //                 var printWindow = window.open('$url', '_blank');
+      //                 // Trigger the print dialog
+      //                 printWindow.onload = function() {
+      //                   printWindow.focus(); // Ensure the new window is in focus
+      //                   printWindow.print(); // Trigger the print dialog
+      //               }
+      //               })();
+      //             ''';
+      //   html.document.body?.append(script);
+      // });
+      //
+      // // Clean up the URL object and iframe
+      // Future.delayed(const Duration(milliseconds: 500), () {
+      //   html.Url.revokeObjectUrl(url); // Clean up URL
+      //   html.document.querySelector('script')?.remove(); // Remove injected script
+      // });
 
-      // Create a Blob from the Uint8List
-      final blob = html.Blob([pdfData], 'application/pdf');
-      final url = html.Url.createObjectUrlFromBlob(blob);
+      Future<List<Printer>> findPrinters() async {
+        return await Printing.listPrinters();
+      }
 
-      Future.delayed(const Duration(milliseconds: 500), () {
-        final script = html.ScriptElement()
-          ..type = 'text/javascript'
-          ..text = '''
-                    (function() {
-                      var printWindow = window.open('$url', '_blank');
-                      // Trigger the print dialog
-                      printWindow.onload = function() {
-                        printWindow.focus(); // Ensure the new window is in focus
-                        printWindow.print(); // Trigger the print dialog
-                    }
-                    })();
-                  ''';
-        html.document.body?.append(script);
-      });
+      final result = await findPrinters();
+      final printer = result.firstWhere((p) => p.name.toLowerCase().contains('epson'));
 
-      // Clean up the URL object and iframe
-      Future.delayed(const Duration(milliseconds: 500), () {
-        html.Url.revokeObjectUrl(url); // Clean up URL
-        html.document.querySelector('script')?.remove(); // Remove injected script
-      });
+      final res = await Printing.directPrintPdf(
+        printer: printer,
+        onLayout: (_) => doc.save(),
+        // usePrinterSettings: true,
+      );
+
+      if (res) {
+        print("Printed!");
+      } else {
+        print("Error");
+      }
     } catch (e) {
       throw Exception(e);
     }

@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/entities/order_item.dart';
+import 'package:medglobal_admin_portal/pos/sales/domain/entities/order_item.dart';
 
 part 'create_sale_item_dto.g.dart';
 

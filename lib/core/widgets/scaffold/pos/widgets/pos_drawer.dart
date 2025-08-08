@@ -7,7 +7,7 @@ import 'package:medglobal_admin_portal/pos/register_shift/presentation/pages/reg
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/register/active_register_cubit.dart';
-import 'package:medglobal_admin_portal/pos/session_bloc.dart';
+import 'package:medglobal_admin_portal/pos/app_session/presentation/app_session_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 import '../../../../../pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
@@ -35,7 +35,7 @@ class PosDrawer extends StatelessWidget with DialogMixin {
       child: ListView(
         children: [
           ListTile(
-            title: BlocBuilder<SessionBloc, SessionState>(
+            title: BlocBuilder<AppSessionBloc, AppSessionState>(
               builder: (context, state) {
                 return state.maybeWhen(
                   loaded: (session) => UIText.heading5('${session.employeeFirstName} ${session.employeeLastName}'),
@@ -58,7 +58,7 @@ class PosDrawer extends StatelessWidget with DialogMixin {
                 'Register',
                 color: routerState.matchedLocation == '/pos/register' ? UIColors.background : UIColors.textRegular,
               ),
-              onTap: () => context.goNamed('registerPage'),
+              onTap: () => context.goNamed('registerScreen'),
             ),
           ),
           const UIVerticalSpace(12),
@@ -74,7 +74,7 @@ class PosDrawer extends StatelessWidget with DialogMixin {
                 'Transactions',
                 color: routerState.matchedLocation == '/pos/transactions' ? UIColors.background : UIColors.textRegular,
               ),
-              onTap: () => context.goNamed('transactionPage'),
+              onTap: () => context.goNamed('transactionListScreen'),
             ),
           ),
           const CloseRegisterShiftMenu(),
@@ -137,7 +137,13 @@ class CloseRegisterShiftMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
+    return BlocConsumer<RegisterShiftBloc, RegisterShiftState>(
+      listener: (context, state) {
+        state.maybeWhen(
+          closed: (_) => Navigator.of(context, rootNavigator: true).pop(),
+          orElse: () {},
+        );
+      },
       builder: (context, state) {
         return state.maybeWhen(
           open: (shift, _) => Visibility(

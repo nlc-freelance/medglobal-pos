@@ -7,7 +7,7 @@ import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_ma
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/repository/branch_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_payload.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/receipt_config.dart';
+import 'package:medglobal_admin_portal/pos/receipt_config/domain/entities/receipt_configuration.dart';
 
 /// Concrete implementation of [BranchRepository] that uses [BranchApiService] for API calls
 /// and [BaseRepository] to centralize error handling.
@@ -54,8 +54,8 @@ class BranchRepositoryImpl extends BaseRepository implements BranchRepository {
   }
 
   @override
-  Future<Either<Failure, ReceiptConfig>> getReceiptConfigByBranchId(int id) async {
-    return call(() async => await _api.getReceiptConfigByBranchId(id));
+  Future<Either<Failure, ReceiptConfiguration>> getReceiptConfigurationByBranchId(int id) async {
+    return call(() async => await _api.getReceiptConfigurationByBranchId(id));
   }
 
   @override

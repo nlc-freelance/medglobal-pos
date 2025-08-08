@@ -6,12 +6,12 @@
 // import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
 
 // part 'order_cubit.g.dart';
-// part 'order_state.dart';
+// part 'cart_state.dart';
 
-// class OrderCubit extends HydratedCubit<OrderState> {
-//   OrderCubit() : super(OrderState.initial());
+// class OrderCubit extends HydratedCubit<CartState> {
+//   OrderCubit() : super(CartState.initial());
 
-//   void setNewOrder(Transaction order) => emit(OrderState(order));
+//   void setNewOrder(Transaction order) => emit(CartState(order));
 
 //   void addItem(TransactionItem value) {
 //     final orderItems = state.order.items?.toList() ?? [];
@@ -28,7 +28,7 @@
 //     }
 
 //     emit(
-//       OrderState(
+//       CartState(
 //         state.order.copyWith(items: _updateDiscountAndTotalPerItem(updatedItems)),
 //       ),
 //     );
@@ -39,7 +39,7 @@
 //     items.removeWhere((item) => item.id == id);
 
 //     emit(
-//       OrderState(
+//       CartState(
 //         state.order.copyWith(items: _updateDiscountAndTotalPerItem(items)),
 //       ),
 //     );
@@ -60,7 +60,7 @@
 //       }).toList();
 
 //       emit(
-//         OrderState(
+//         CartState(
 //           state.order.copyWith(items: _updateDiscountAndTotalPerItem(updatedItems)),
 //         ),
 //       );
@@ -91,7 +91,7 @@
 //     }).toList();
 
 //     emit(
-//       OrderState(
+//       CartState(
 //         state.order.copyWith(items: _updateDiscountAndTotalPerItem(updatedItems)),
 //       ),
 //     );
@@ -108,7 +108,7 @@
 //     }).toList();
 
 //     emit(
-//       OrderState(
+//       CartState(
 //         state.order.copyWith(items: _updateDiscountAndTotalPerItem(updatedItems)),
 //       ),
 //     );
@@ -123,7 +123,7 @@
 //         items.fold(0.0, (totalDiscount, item) => totalDiscount + (item.discountInPeso ?? 0)).roundToTwoDecimalPlaces();
 
 //     emit(
-//       OrderState(
+//       CartState(
 //         state.order.copyWith(
 //           subtotal: subtotal,
 //           totalDiscountInPeso: totalDiscount,
@@ -133,7 +133,7 @@
 //     );
 //   }
 
-//   void reset() => emit(const OrderState(Transaction()));
+//   void reset() => emit(const CartState(Transaction()));
 
 //   List<TransactionItem> _updateDiscountAndTotalPerItem(List<TransactionItem> items) {
 //     return items.map((item) {
@@ -151,10 +151,10 @@
 //   }
 
 //   @override
-//   OrderState? fromJson(Map<String, dynamic> json) => OrderState.fromJson(json);
+//   CartState? fromJson(Map<String, dynamic> json) => CartState.fromJson(json);
 
 //   @override
-//   Map<String, dynamic>? toJson(OrderState state) => state.toJson();
+//   Map<String, dynamic>? toJson(CartState state) => state.toJson();
 
 // // void setDiscountTypePerItem({required int id, required DiscountType type}) {
 // //   final items = state.order.items?.toList() ?? [];
@@ -172,7 +172,7 @@
 // //     return item;
 // //   }).toList();
 // //
-// //   emit(OrderState(state.order.copyWith(items: updatedItems, subtotal: computeSubtotal(updatedItems))));
+// //   emit(CartState(state.order.copyWith(items: updatedItems, subtotal: computeSubtotal(updatedItems))));
 // // }
 
 // // void setDiscount({double? discount, required DiscountType type}) {
@@ -185,7 +185,7 @@
 // //     if (type == DiscountType.PESO) discountInPeso = discount;
 // //   }
 // //
-// //   emit(OrderState(state.order.copyWith(
+// //   emit(CartState(state.order.copyWith(
 // //     discount: discount,
 // //     discountType: type,
 // //     discountInPeso: discountInPeso,
@@ -202,7 +202,7 @@
 // //     if (type == DiscountType.PESO) discountInPeso = order.discount!;
 // //   }
 // //
-// //   emit(OrderState(state.order.copyWith(
+// //   emit(CartState(state.order.copyWith(
 // //     discountType: type,
 // //     discountInPeso: discountInPeso,
 // //   )));
@@ -217,7 +217,7 @@
 // //     if (order.discountType == DiscountType.PESO) discountInPeso = order.discount!;
 // //   }
 // //
-// //   emit(OrderState(
+// //   emit(CartState(
 // //       state.order.copyWith(discountInPeso: discountInPeso, discount: discountInPeso == 0 ? 0 : order.discount)));
 // // }
 // }

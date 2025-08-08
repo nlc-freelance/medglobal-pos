@@ -4,12 +4,18 @@ import 'package:medglobal_admin_portal/pos/product_catalog/domain/entities/catal
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
 
 class LocalProductCatalogDataSource {
-  final PosCatalogDao _dao;
+  final ProductCatalogDao _dao;
 
-  LocalProductCatalogDataSource({required PosCatalogDao dao}) : _dao = dao;
+  LocalProductCatalogDataSource({required ProductCatalogDao dao}) : _dao = dao;
 
-  Future<void> upsertProductCatalog(List<CatalogItem> items) async {
-    return await _dao.upsertProductCatalog(
+  Future<void> upsertProducts(List<CatalogItem> items) async {
+    return await _dao.upsertProducts(
+      items.map((item) => item.toProductCatalogCompanion).toList(),
+    );
+  }
+
+  Future<void> deleteProducts(List<CatalogItem> items) async {
+    return await _dao.deleteProducts(
       items.map((item) => item.toProductCatalogCompanion).toList(),
     );
   }

@@ -2,7 +2,7 @@ import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_payload.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/receipt_config.dart';
+import 'package:medglobal_admin_portal/pos/receipt_config/domain/entities/receipt_configuration.dart';
 
 class BranchApiService {
   final BaseApiService _api;
@@ -55,10 +55,10 @@ class BranchApiService {
     return await _api.delete(ApiEndpoints.branchById(id));
   }
 
-  Future<ReceiptConfig> getReceiptConfigByBranchId(int id) async {
+  Future<ReceiptConfiguration> getReceiptConfigurationByBranchId(int id) async {
     final response = await _api.get(
       ApiEndpoints.receiptConfigByBranchId(id),
-      fromJson: ReceiptConfig.fromJson,
+      fromJson: ReceiptConfiguration.fromJson,
     );
     return response.data;
   }

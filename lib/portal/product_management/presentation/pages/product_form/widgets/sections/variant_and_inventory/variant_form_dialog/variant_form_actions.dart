@@ -65,7 +65,7 @@ class VariantFormActions extends StatelessWidget {
                     ///
                     /// Otherwise, treat it as a new variant and add it normally.
                     if (productFormCubit.state.hasOnlyDefaultVariant) {
-                      productFormCubit.upgradeDefaultVariant(newVariant);
+                      productFormCubit.replaceDefaultVariant(newVariant);
                     } else {
                       productFormCubit.addVariant(newVariant);
                     }

@@ -160,10 +160,14 @@ import 'package:medglobal_admin_portal/portal/transactions/return/presentation/c
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_transaction_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sale/presentation/cubit/sale_transaction_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sale/presentation/cubit/sale_transaction_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/pos/app_session/data/datasources/app_session_datasource.dart';
+import 'package:medglobal_admin_portal/pos/app_session/data/repositories/session_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/repository/app_session_repository.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/usecases/initialize_app_session_usecase.dart';
 import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
 import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
 import 'package:medglobal_admin_portal/pos/device_register/device_register_bloc.dart';
-import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/data/api/pos_products_api.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/data/api/sale_api.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/data/repositories/pos_product_repository_impl.dart';
@@ -172,18 +176,33 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/domain/repositories/pos
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/repositories/sale_repository.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/data/repositories/local_product_catalog_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/data/repositories/remote_product_catalog_repository_impl.dart';
-import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/get_pos_products_usecase.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/order_bloc/order_bloc.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/bloc/sale_bloc/sale_bloc.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/print_receipt/print_receipt_cubit.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/delta_sync_products_usecase.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/get_product_catalog_usecase.dart';
+import 'package:medglobal_admin_portal/pos/sales/data/repositories/local_sale_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/sales/data/repositories/remote_sale_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/sales/domain/repositories/local_sale_repository.dart';
+import 'package:medglobal_admin_portal/pos/sales/domain/repositories/remote_sale_repository.dart';
+import 'package:medglobal_admin_portal/pos/sales/domain/usecases/create_sale_usecase.dart';
+import 'package:medglobal_admin_portal/pos/sales/domain/usecases/print_receipt_usecase.dart';
+import 'package:medglobal_admin_portal/pos/sales/domain/usecases/print_receipt_usecase.dart';
+import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/cart_bloc/cart_bloc.dart';
+import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/print_receipt_cubit/print_receipt_cubit.dart';
+import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/sale_bloc/sale_bloc.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/initial_fetch_products_usecase.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_cubit/product_catalog_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_search/pos_product_search_cubit.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/data/datasources/local_product_catalog_datasource.dart';
-import 'package:medglobal_admin_portal/pos/product_catalog/data/datasources/remote_pos_catalog_datasource.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/data/datasources/remote_product_catalog_datasource.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/repositories/local_product_catalog_repository.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/repositories/remote_product_catalog_repository.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_sync_bloc/product_catalog_sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/receipt_config/data/datasources/local_receipt_config_datasource.dart';
+import 'package:medglobal_admin_portal/pos/receipt_config/data/datasources/remote_receipt_config_datasource.dart';
+import 'package:medglobal_admin_portal/pos/receipt_config/data/repositories/local_receipt_config_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/receipt_config/data/repositories/remote_receipt_config_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/receipt_config/domain/repositories/local_receipt_config_repository.dart';
+import 'package:medglobal_admin_portal/pos/receipt_config/domain/repositories/remote_receipt_config_repository.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_local_datasource.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_remote_datasource.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_remote_datasource.dart';
@@ -198,9 +217,9 @@ import 'package:medglobal_admin_portal/pos/register_shift/domain/usecases/get_la
 import 'package:medglobal_admin_portal/pos/register_shift/domain/usecases/get_last_closed_register_shift_usecase.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/usecases/open_register_shift_usecase.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/sync_queue_repository.dart';
-import 'package:medglobal_admin_portal/pos/sales/data/datasources/local/sale_local_datasource.dart';
-import 'package:medglobal_admin_portal/pos/sales/data/datasources/remote/sale_remote_datasource.dart';
-import 'package:medglobal_admin_portal/pos/session_bloc.dart';
+import 'package:medglobal_admin_portal/pos/sales/data/datasources/local_sale_datasource.dart';
+import 'package:medglobal_admin_portal/pos/sales/data/datasources/sale_remote_datasource.dart';
+import 'package:medglobal_admin_portal/pos/app_session/presentation/app_session_bloc.dart';
 import 'package:medglobal_admin_portal/pos/sync/network_service.dart';
 import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
 import 'package:medglobal_admin_portal/pos/sync/sync_service.dart';
@@ -232,6 +251,7 @@ void initDesktopDependencies() {
   initCoreDependencies();
   initAll();
   initServices();
+  initReceiptConfig();
   initSyncingDependencies();
   initLocalDatabaseDependencies();
   initNetworkDependencies();
@@ -270,36 +290,64 @@ void initServices() {
     ..registerSingleton<ConnectivityService>(
       ConnectivityService(),
     )
-    ..registerLazySingleton<UserSessionService>(
-      () => UserSessionService(),
+    ..registerLazySingleton<AppSessionService>(
+      () => AppSessionService(),
+    );
+}
+
+void initReceiptConfig() {
+  inject
+    ..registerLazySingleton<LocalReceiptConfigDataSource>(
+      () => LocalReceiptConfigDataSource(dao: inject<AppDatabase>().receiptConfigDao),
+    )
+    ..registerLazySingleton<RemoteReceiptConfigDataSource>(
+      () => RemoteReceiptConfigDataSource(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<LocalReceiptConfigRepository>(
+      () => LocalReceiptConfigRepositoryImpl(localDataSource: inject<LocalReceiptConfigDataSource>()),
+    )
+    ..registerLazySingleton<RemoteReceiptConfigRepository>(
+      () => RemoteReceiptConfigRepositoryImpl(remoteDataSource: inject<RemoteReceiptConfigDataSource>()),
+    )
+    ..registerLazySingleton<PrintReceiptUseCase>(
+      () => PrintReceiptUseCase(
+        remoteReceiptConfigRepository: inject<RemoteReceiptConfigRepository>(),
+        localReceiptConfigRepository: inject<LocalReceiptConfigRepository>(),
+        appSessionService: inject<AppSessionService>(),
+        connection: inject<ConnectivityService>(),
+      ),
+    )
+    ..registerFactory<PrintReceiptCubit>(
+      () => PrintReceiptCubit(printReceiptUseCase: inject<PrintReceiptUseCase>()),
     );
 }
 
 void initNetworkDependencies() {
   inject
-        ..registerLazySingleton<LocalProductCatalogDataSource>(
-          () => LocalProductCatalogDataSource(dao: inject<AppDatabase>().posCatalogDao),
-        )
-        ..registerLazySingleton<RemoteProductCatalogDataSource>(
-          () => RemoteProductCatalogDataSource(inject<BaseApiService>()),
-        )
-        ..registerLazySingleton<SaleRemoteDatasource>(
-          () => SaleRemoteDatasource(inject<BaseApiService>()),
-        )
-
-      // ..registerSingleton<SyncService>(
-      //   SyncService(
-      //     db: inject<AppDatabase>(),
-      //     catalogLocal: inject<LocalProductCatalogDataSource>(),
-      //     catalogRemote: inject<RemoteProductCatalogDataSource>(),
-      //     salesApi: inject<SaleRemoteDatasource>(),
-      //   ),
-      // )
-      // ..registerFactory<SyncBloc>(() => SyncBloc(
-      //       syncService: inject<SyncService>(),
-      //       networkService: inject<NetworkService>(),
-      //     ))
-      ;
+    ..registerLazySingleton<LocalProductCatalogDataSource>(
+      () => LocalProductCatalogDataSource(dao: inject<AppDatabase>().productCatalogDao),
+    )
+    ..registerLazySingleton<RemoteProductCatalogDataSource>(
+      () => RemoteProductCatalogDataSource(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<SyncService>(
+      () => SyncService(
+        db: inject<AppDatabase>(),
+        connection: inject<ConnectivityService>(),
+        productCatalogLocalRepo: inject<LocalProductCatalogRepository>(),
+        productCatalogRemoteRepo: inject<RemoteProductCatalogRepository>(),
+        receiptConfigLocalRepo: inject<LocalReceiptConfigRepository>(),
+        receiptConfigRemoteRepo: inject<RemoteReceiptConfigRepository>(),
+        registerShiftLocalRepo: inject<LocalRegisterShiftRepository>(),
+        registerShiftRemoteRepo: inject<RemoteRegisterShiftRepository>(),
+        saleLocalRepo: inject<LocalSaleRepository>(),
+        saleRemoteRepo: inject<RemoteSaleRepository>(),
+      ),
+    )
+    ..registerFactory<SyncBloc>(() => SyncBloc(inject<SyncService>()
+        // syncService: inject<SyncService>(),
+        // networkService: inject<NetworkService>(),
+        ));
 }
 
 void initCoreDependencies() {
@@ -427,7 +475,7 @@ void initSyncingDependencies() {
     ..registerLazySingleton<SyncQueueRepository>(
       () => SyncQueueRepository(
         dao: inject<AppDatabase>().syncQueueDao,
-        session: inject<UserSessionService>(),
+        session: inject<AppSessionService>(),
       ),
     );
 }
@@ -435,12 +483,25 @@ void initSyncingDependencies() {
 void initRegisterPOSDependencies() {
   inject
 
-    ///
-    ..registerFactory<SessionBloc>(
-      () => SessionBloc(
+    /// Session
+    ..registerLazySingleton<AppSessionDataSource>(
+      () => AppSessionDataSource(dao: inject<AppDatabase>().sessionDao),
+    )
+    ..registerLazySingleton<AppSessionRepository>(
+      () => AppSessionRepositoryImpl(localDataSource: inject<AppSessionDataSource>()),
+    )
+    ..registerLazySingleton<InitializeAppSessionUseCase>(
+      () => InitializeAppSessionUseCase(
         registerRepository: inject<RegisterRepository>(),
-        sessionDao: inject<AppDatabase>().sessionDao,
-        userSessionService: inject<UserSessionService>(),
+        remoteReceiptConfigRepository: inject<RemoteReceiptConfigRepository>(),
+        localReceiptConfigRepository: inject<LocalReceiptConfigRepository>(),
+        appSessionRepository: inject<AppSessionRepository>(),
+        appSessionService: inject<AppSessionService>(),
+      ),
+    )
+    ..registerFactory<AppSessionBloc>(
+      () => AppSessionBloc(
+        initializeAppSessionUseCase: inject<InitializeAppSessionUseCase>(),
       ),
     )
 
@@ -462,7 +523,7 @@ void initRegisterPOSDependencies() {
       () => OpenRegisterShiftUseCase(
         local: inject<LocalRegisterShiftRepository>(),
         remote: inject<RemoteRegisterShiftRepository>(),
-        session: inject<UserSessionService>(),
+        session: inject<AppSessionService>(),
         connection: inject<ConnectivityService>(),
         sync: inject<SyncQueueRepository>(),
       ),
@@ -470,20 +531,20 @@ void initRegisterPOSDependencies() {
     ..registerLazySingleton<CheckForOpenRegisterShiftUseCase>(
       () => CheckForOpenRegisterShiftUseCase(
         local: inject<LocalRegisterShiftRepository>(),
-        session: inject<UserSessionService>(),
+        session: inject<AppSessionService>(),
       ),
     )
     ..registerLazySingleton<GetLastClosedRegisterShiftUseCase>(
       () => GetLastClosedRegisterShiftUseCase(
         local: inject<LocalRegisterShiftRepository>(),
-        session: inject<UserSessionService>(),
+        session: inject<AppSessionService>(),
       ),
     )
     ..registerLazySingleton<CloseRegisterShiftUseCase>(
       () => CloseRegisterShiftUseCase(
         local: inject<LocalRegisterShiftRepository>(),
         remote: inject<RemoteRegisterShiftRepository>(),
-        session: inject<UserSessionService>(),
+        session: inject<AppSessionService>(),
         connection: inject<ConnectivityService>(),
         sync: inject<SyncQueueRepository>(),
       ),
@@ -681,7 +742,15 @@ void initPosDependencies() {
       () => InitialFetchProductsUseCase(
         local: inject<LocalProductCatalogRepository>(),
         remote: inject<RemoteProductCatalogRepository>(),
-        session: inject<UserSessionService>(),
+        session: inject<AppSessionService>(),
+        syncMetaDataDao: inject<AppDatabase>().syncMetadataDao,
+      ),
+    )
+    ..registerLazySingleton<DeltaSyncProductsUseCase>(
+      () => DeltaSyncProductsUseCase(
+        local: inject<LocalProductCatalogRepository>(),
+        remote: inject<RemoteProductCatalogRepository>(),
+        session: inject<AppSessionService>(),
         syncMetaDataDao: inject<AppDatabase>().syncMetadataDao,
       ),
     )
@@ -694,12 +763,36 @@ void initPosDependencies() {
     ..registerFactory<ProductCatalogSyncBloc>(
       () => ProductCatalogSyncBloc(
         initialFetchProductsUseCase: inject<InitialFetchProductsUseCase>(),
+        deltaSyncProductsUseCase: inject<DeltaSyncProductsUseCase>(),
+      ),
+    )
+
+    /// Sale
+    ..registerLazySingleton<LocalSaleDataSource>(
+      () => LocalSaleDataSource(dao: inject<AppDatabase>().transactionDao),
+    )
+    ..registerLazySingleton<RemoteSaleDataSource>(
+      () => RemoteSaleDataSource(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<LocalSaleRepository>(
+      () => LocalSaleRepositoryImpl(localDataSource: inject<LocalSaleDataSource>()),
+    )
+    ..registerLazySingleton<RemoteSaleRepository>(
+      () => RemoteSaleRepositoryImpl(remoteDataSource: inject<RemoteSaleDataSource>()),
+    )
+    ..registerLazySingleton<CreateSaleUseCase>(
+      () => CreateSaleUseCase(
+        localRegisterShiftRepository: inject<LocalRegisterShiftRepository>(),
+        local: inject<LocalSaleRepository>(),
+        remote: inject<RemoteSaleRepository>(),
+        sync: inject<SyncQueueRepository>(),
+        appSessionService: inject<AppSessionService>(),
+        connection: inject<ConnectivityService>(),
       ),
     )
     ..registerFactory<SaleBloc>(
       () => SaleBloc(
-        repository: inject<SaleRepository>(),
-        networkService: inject<NetworkService>(),
+        createSaleUseCase: inject<CreateSaleUseCase>(),
       ),
     )
     ..registerFactory<RefundBloc>(
@@ -711,228 +804,229 @@ void initPosDependencies() {
 void initAll() {
   inject
 
-    /// Dio
-    ..registerSingleton<DioService>(DioService())
+        /// Dio
+        ..registerSingleton<DioService>(DioService())
 
-    /// API Service
-    ..registerSingleton<ApiService>(ApiService(inject()))
-    ..registerSingleton<AuthService>(AuthService())
+        /// API Service
+        ..registerSingleton<ApiService>(ApiService(inject()))
+        ..registerSingleton<AuthService>(AuthService())
 
-    /// API
-    /// Portal
-    ..registerLazySingleton<AuthApi>(() => AuthApiImpl(inject()))
-    ..registerLazySingleton<SupplierApi>(
-      () => SupplierApi(inject<BaseApiService>()),
-    )
-    // ..registerLazySingleton<SupplierApi>(() => SupplierApiImpl(inject()))
-    // ..registerLazySingleton<CategoryApi>(() => CategoryApiImpl(inject()))
-    // ..registerLazySingleton<ProductApi>(() => ProductApiImpl(inject()))
-    ..registerLazySingleton<ProductVariantApi>(() => ProductVariantApiImpl(inject()))
-    // ..registerLazySingleton<SupplyNeedsApi>(() => SupplyNeedsApiImpl(inject()))
-    // ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(inject()))
-    // ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApi(inject<ApiService>()))
-    // ..registerLazySingleton<StockReturnApi>(() => StockReturnApiImpl(inject()))
-    // ..registerLazySingleton<StockTransferApi>(() => StockTransferApiImpl(inject()))
-    // ..registerLazySingleton<StockTakeApi>(() => StockTakeApiImpl(inject()))
-    // ..registerLazySingleton<TransactionApi>(() => TransactionApiImpl(inject()))
-    ..registerLazySingleton<ReturnApi>(() => ReturnApiImpl(inject()))
-    ..registerLazySingleton<ProductHistoryApi>(() => ProductHistoryApiImpl(inject()))
-    // ..registerLazySingleton<ReportsApi>(() => ReportsApiImpl(inject()))
-    ..registerLazySingleton<SalesPerCategoryApi>(() => SalesPerCategoryApiImpl(inject()))
-    ..registerLazySingleton<SalesPerShiftApi>(() => SalesPerShiftApiImpl(inject()))
+        /// API
+        /// Portal
+        ..registerLazySingleton<AuthApi>(() => AuthApiImpl(inject()))
+        ..registerLazySingleton<SupplierApi>(
+          () => SupplierApi(inject<BaseApiService>()),
+        )
+        // ..registerLazySingleton<SupplierApi>(() => SupplierApiImpl(inject()))
+        // ..registerLazySingleton<CategoryApi>(() => CategoryApiImpl(inject()))
+        // ..registerLazySingleton<ProductApi>(() => ProductApiImpl(inject()))
+        ..registerLazySingleton<ProductVariantApi>(() => ProductVariantApiImpl(inject()))
+        // ..registerLazySingleton<SupplyNeedsApi>(() => SupplyNeedsApiImpl(inject()))
+        // ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApiImpl(inject()))
+        // ..registerLazySingleton<PurchaseOrderApi>(() => PurchaseOrderApi(inject<ApiService>()))
+        // ..registerLazySingleton<StockReturnApi>(() => StockReturnApiImpl(inject()))
+        // ..registerLazySingleton<StockTransferApi>(() => StockTransferApiImpl(inject()))
+        // ..registerLazySingleton<StockTakeApi>(() => StockTakeApiImpl(inject()))
+        // ..registerLazySingleton<TransactionApi>(() => TransactionApiImpl(inject()))
+        ..registerLazySingleton<ReturnApi>(() => ReturnApiImpl(inject()))
+        ..registerLazySingleton<ProductHistoryApi>(() => ProductHistoryApiImpl(inject()))
+        // ..registerLazySingleton<ReportsApi>(() => ReportsApiImpl(inject()))
+        ..registerLazySingleton<SalesPerCategoryApi>(() => SalesPerCategoryApiImpl(inject()))
+        ..registerLazySingleton<SalesPerShiftApi>(() => SalesPerShiftApiImpl(inject()))
 
-    /// POS
-    // ..registerLazySingleton<POSProductApi>(() => POSProductApiImpl(inject()))
-    ..registerLazySingleton<SaleApi>(() => SaleApiImpl(inject()))
-    ..registerLazySingleton<RefundApi>(() => RefundApiImpl(inject()))
+        /// POS
+        // ..registerLazySingleton<POSProductApi>(() => POSProductApiImpl(inject()))
+        ..registerLazySingleton<SaleApi>(() => SaleApiImpl(inject()))
+        ..registerLazySingleton<RefundApi>(() => RefundApiImpl(inject()))
 
-    /// Repository
-    /// Portal
-    ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(inject()))
-    // ..registerLazySingleton<SupplierRepository>(() => SupplierRepositoryImpl(inject()))
-    // ..registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(inject()))
-    // ..registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(inject()))
-    // ..registerLazySingleton<SupplyNeedsRepository>(() => SupplyNeedsRepositoryImpl(inject()))
-    // ..registerLazySingleton<PurchaseOrderRepository>(() => PurchaseOrderRepositoryImpl(inject()))
-    // ..registerLazySingleton<StockReturnRepository>(() => StockReturnRepositoryImpl(inject()))
-    // ..registerLazySingleton<StockTransferRepository>(() => StockTransferRepositoryImpl(inject()))
-    // ..registerLazySingleton<StockTakeRepository>(() => StockTakeRepositoryImpl(inject()))
-    // ..registerLazySingleton<TransactionRepository>(() => TransactionRepositoryImpl(inject()))
-    ..registerLazySingleton<ReturnRepository>(() => ReturnRepositoryImpl(inject()))
-    ..registerLazySingleton<ProductHistoryRepository>(() => ProductHistoryRepositoryImpl(inject()))
-    ..registerLazySingleton<SalesPerCategoryRepository>(() => SalesPerCategoryRepositoryImpl(inject()))
-    ..registerLazySingleton<SalesPerShiftRepository>(() => SalesPerShiftRepositoryImpl(inject()))
+        /// Repository
+        /// Portal
+        ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(inject()))
+        // ..registerLazySingleton<SupplierRepository>(() => SupplierRepositoryImpl(inject()))
+        // ..registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl(inject()))
+        // ..registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(inject()))
+        // ..registerLazySingleton<SupplyNeedsRepository>(() => SupplyNeedsRepositoryImpl(inject()))
+        // ..registerLazySingleton<PurchaseOrderRepository>(() => PurchaseOrderRepositoryImpl(inject()))
+        // ..registerLazySingleton<StockReturnRepository>(() => StockReturnRepositoryImpl(inject()))
+        // ..registerLazySingleton<StockTransferRepository>(() => StockTransferRepositoryImpl(inject()))
+        // ..registerLazySingleton<StockTakeRepository>(() => StockTakeRepositoryImpl(inject()))
+        // ..registerLazySingleton<TransactionRepository>(() => TransactionRepositoryImpl(inject()))
+        ..registerLazySingleton<ReturnRepository>(() => ReturnRepositoryImpl(inject()))
+        ..registerLazySingleton<ProductHistoryRepository>(() => ProductHistoryRepositoryImpl(inject()))
+        ..registerLazySingleton<SalesPerCategoryRepository>(() => SalesPerCategoryRepositoryImpl(inject()))
+        ..registerLazySingleton<SalesPerShiftRepository>(() => SalesPerShiftRepositoryImpl(inject()))
 
-    /// POS
+        /// POS
 
-    // ..registerLazySingleton<POSProductRepository>(() => POSProductRepositoryImpl(inject()))
-    ..registerLazySingleton<SaleRepository>(() => SaleRepositoryImpl(inject()))
-    ..registerLazySingleton<RefundRepository>(() => RefundRepositoryImpl(inject()))
+        // ..registerLazySingleton<POSProductRepository>(() => POSProductRepositoryImpl(inject()))
+        ..registerLazySingleton<SaleRepository>(() => SaleRepositoryImpl(inject()))
+        ..registerLazySingleton<RefundRepository>(() => RefundRepositoryImpl(inject()))
 
-    /// Usecases
-    ///
-    /// Portal
-    /// Authentication UseCase
-    ..registerLazySingleton(() => Login(inject()))
-    ..registerLazySingleton(() => ConfirmFirstTimeLogin(inject()))
-    ..registerLazySingleton(() => GetAuthSession(inject()))
-    ..registerLazySingleton(() => Logout(inject()))
+        /// Usecases
+        ///
+        /// Portal
+        /// Authentication UseCase
+        ..registerLazySingleton(() => Login(inject()))
+        ..registerLazySingleton(() => ConfirmFirstTimeLogin(inject()))
+        ..registerLazySingleton(() => GetAuthSession(inject()))
+        ..registerLazySingleton(() => Logout(inject()))
 
-    /// Supplier UseCase
-    // ..registerLazySingleton(() => GetSuppliersUseCase(inject()))
-    // ..registerLazySingleton(() => GetSupplierByIdUseCase(inject()))
-    // ..registerLazySingleton(() => CreateSupplierUseCase(inject()))
-    // ..registerLazySingleton(() => UpdateSupplierUseCase(inject()))
-    // ..registerLazySingleton(() => DeleteSupplierUseCase(inject()))
+        /// Supplier UseCase
+        // ..registerLazySingleton(() => GetSuppliersUseCase(inject()))
+        // ..registerLazySingleton(() => GetSupplierByIdUseCase(inject()))
+        // ..registerLazySingleton(() => CreateSupplierUseCase(inject()))
+        // ..registerLazySingleton(() => UpdateSupplierUseCase(inject()))
+        // ..registerLazySingleton(() => DeleteSupplierUseCase(inject()))
 
-    /// Category UseCase
-    // ..registerLazySingleton(() => AddCategoryUseCase(inject()))
-    // ..registerLazySingleton(() => GetCategoriesUseCase(inject()))
+        /// Category UseCase
+        // ..registerLazySingleton(() => AddCategoryUseCase(inject()))
+        // ..registerLazySingleton(() => GetCategoriesUseCase(inject()))
 
-    /// Product UseCase
-    // ..registerLazySingleton(() => GetProductsUseCase(inject()))
-    // ..registerLazySingleton(() => BulkUpdateProductsUseCase(inject()))
-    // ..registerLazySingleton(() => BulkDeleteProductsUseCase(inject()))
-    // ..registerLazySingleton(() => GetProductByIdUseCase(inject()))
-    // ..registerLazySingleton(() => CreateProductUseCase(inject()))
-    // ..registerLazySingleton(() => UpdateProductUseCase(inject()))
-    // ..registerLazySingleton(() => DeleteProductUseCase(inject()))
+        /// Product UseCase
+        // ..registerLazySingleton(() => GetProductsUseCase(inject()))
+        // ..registerLazySingleton(() => BulkUpdateProductsUseCase(inject()))
+        // ..registerLazySingleton(() => BulkDeleteProductsUseCase(inject()))
+        // ..registerLazySingleton(() => GetProductByIdUseCase(inject()))
+        // ..registerLazySingleton(() => CreateProductUseCase(inject()))
+        // ..registerLazySingleton(() => UpdateProductUseCase(inject()))
+        // ..registerLazySingleton(() => DeleteProductUseCase(inject()))
 
-    /// Stock Management
-    /// Supply Needs
-    ..registerLazySingleton(() => GetSupplyNeedsUseCase(inject()))
+        /// Stock Management
+        /// Supply Needs
+        ..registerLazySingleton(() => GetSupplyNeedsUseCase(inject()))
 
-    /// Purchase Order
-    // ..registerLazySingleton(() => GetPurchaseOrdersUseCase(inject()))
-    // ..registerLazySingleton(() => GetPurchaseOrderByIdUseCase(inject()))
-    // ..registerLazySingleton(() => CreatePurchaseOrderUseCase(inject()))
-    // ..registerLazySingleton(() => UpdatePurchaseOrderUseCase(inject()))
-    // ..registerLazySingleton(() => DeletePurchaseOrderUseCase(inject()))
+        /// Purchase Order
+        // ..registerLazySingleton(() => GetPurchaseOrdersUseCase(inject()))
+        // ..registerLazySingleton(() => GetPurchaseOrderByIdUseCase(inject()))
+        // ..registerLazySingleton(() => CreatePurchaseOrderUseCase(inject()))
+        // ..registerLazySingleton(() => UpdatePurchaseOrderUseCase(inject()))
+        // ..registerLazySingleton(() => DeletePurchaseOrderUseCase(inject()))
 
-    /// Stock Return
-    ..registerLazySingleton(() => GetStockReturnsUseCase(inject()))
-    ..registerLazySingleton(() => GetStockReturnByIdUseCase(inject()))
-    ..registerLazySingleton(() => CreateStockReturnUseCase(inject()))
-    ..registerLazySingleton(() => UpdateStockReturnUseCase(inject()))
+        /// Stock Return
+        ..registerLazySingleton(() => GetStockReturnsUseCase(inject()))
+        ..registerLazySingleton(() => GetStockReturnByIdUseCase(inject()))
+        ..registerLazySingleton(() => CreateStockReturnUseCase(inject()))
+        ..registerLazySingleton(() => UpdateStockReturnUseCase(inject()))
 
-    /// Stock Transfer
-    ..registerLazySingleton(() => GetStockTransfersUseCase(inject()))
-    ..registerLazySingleton(() => GetStockTransferByIdUseCase(inject()))
-    ..registerLazySingleton(() => CreateStockTransferUseCase(inject()))
-    ..registerLazySingleton(() => UpdateStockTransferUseCase(inject()))
-    ..registerLazySingleton(() => DeleteStockTransferUseCase(inject()))
+        /// Stock Transfer
+        ..registerLazySingleton(() => GetStockTransfersUseCase(inject()))
+        ..registerLazySingleton(() => GetStockTransferByIdUseCase(inject()))
+        ..registerLazySingleton(() => CreateStockTransferUseCase(inject()))
+        ..registerLazySingleton(() => UpdateStockTransferUseCase(inject()))
+        ..registerLazySingleton(() => DeleteStockTransferUseCase(inject()))
 
-    /// Stock Take
-    ..registerLazySingleton(() => GetStockTakesUseCase(inject()))
-    ..registerLazySingleton(() => GetStockTakeByIdUseCase(inject()))
-    ..registerLazySingleton(() => GetStockTakeItemsByIdUseCase(inject()))
-    ..registerLazySingleton(() => CreateStockTakeUseCase(inject()))
-    ..registerLazySingleton(() => UpdateStockTakeUseCase(inject()))
-    ..registerLazySingleton(() => UpdateStockTakeItemsByIdUseCase(inject()))
+        /// Stock Take
+        ..registerLazySingleton(() => GetStockTakesUseCase(inject()))
+        ..registerLazySingleton(() => GetStockTakeByIdUseCase(inject()))
+        ..registerLazySingleton(() => GetStockTakeItemsByIdUseCase(inject()))
+        ..registerLazySingleton(() => CreateStockTakeUseCase(inject()))
+        ..registerLazySingleton(() => UpdateStockTakeUseCase(inject()))
+        ..registerLazySingleton(() => UpdateStockTakeItemsByIdUseCase(inject()))
 
-    /// Transactions
-    // ..registerLazySingleton(() => GetTransactionsUseCase(inject()))
-    // ..registerLazySingleton(() => GetTransactionByIdUseCase(inject()))
-    ..registerLazySingleton(() => UpdateReturnTransactionUseCase(inject()))
+        /// Transactions
+        // ..registerLazySingleton(() => GetTransactionsUseCase(inject()))
+        // ..registerLazySingleton(() => GetTransactionByIdUseCase(inject()))
+        ..registerLazySingleton(() => UpdateReturnTransactionUseCase(inject()))
 
-    /// Reports
-    ..registerLazySingleton(() => GetProductHistoryUseCase(inject()))
-    // ..registerLazySingleton(() => GetReportByIdUseCase(inject()))
-    // ..registerLazySingleton(() => CreateReportUseCase(inject()))
-    ..registerLazySingleton(() => GetSalesPerCategoryUseCase(inject()))
-    ..registerLazySingleton(() => GetSalesPerShiftUseCase(inject()))
-    ..registerLazySingleton(() => GetSalesPerShiftByIdUseCase(inject()))
+        /// Reports
+        ..registerLazySingleton(() => GetProductHistoryUseCase(inject()))
+        // ..registerLazySingleton(() => GetReportByIdUseCase(inject()))
+        // ..registerLazySingleton(() => CreateReportUseCase(inject()))
+        ..registerLazySingleton(() => GetSalesPerCategoryUseCase(inject()))
+        ..registerLazySingleton(() => GetSalesPerShiftUseCase(inject()))
+        ..registerLazySingleton(() => GetSalesPerShiftByIdUseCase(inject()))
 
-    /// POS
-    /// Open Close Shift
-    // ..registerLazySingleton(() => OpenShiftUseCase(inject()))
-    // ..registerLazySingleton(() => CloseShiftUseCase(inject()))
+        /// POS
+        /// Open Close Shift
+        // ..registerLazySingleton(() => OpenShiftUseCase(inject()))
+        // ..registerLazySingleton(() => CloseShiftUseCase(inject()))
 
-    ///
-    /// Register Items
-    // ..registerLazySingleton(() => GetProductCatalogUseCase(inject()))
-    // ..registerLazySingleton(() => CreateSaleUseCase(inject()))
+        ///
+        /// Register Items
+        // ..registerLazySingleton(() => GetProductCatalogUseCase(inject()))
+        // ..registerLazySingleton(() => CreateSaleUseCase(inject()))
 
-    ///
-    /// Issue Refund
-    // ..registerLazySingleton(() => CreateRefundTransactionUseCase(inject()))
+        ///
+        /// Issue Refund
+        // ..registerLazySingleton(() => CreateRefundTransactionUseCase(inject()))
 
-    /// Bloc
-    ..registerFactory(() => AuthBloc(inject(), inject(), inject(), inject()))
-    ..registerFactory(() => SidebarCubit())
-    // ..registerFactory(() => SupplierListCubit(inject()))
-    // ..registerFactory(() => SupplierListFilterCubit())
-    // ..registerFactory(() => SupplierCubit(inject(), inject(), inject(), inject()))
-    // ..registerFactory(() => CategoryCubit(inject()))
-    // ..registerFactory(() => ProductSelectionCubit())
-    // ..registerFactory(() => ProductBulkActionCubit(inject(), inject()))
-    // ..registerFactory(() => ProductListCubit(inject()))
-    // ..registerFactory(() => ProductListFilterCubit())
-    // ..registerFactory(() => ProductCubit(inject(), inject(), inject(), inject()))
-    // ..registerFactory(() => ProductFormCubit())
-    // ..registerFactory(() => VariantFormCubit())
-    // ..registerFactory(() => VariantFormUiCubit())
-    // ..registerFactory(() => SupplyNeedsCubit(inject()))
-    ..registerFactory(() => SupplyNeedCubit())
-    // ..registerFactory(() => PurchaseOrderListRemoteCubit(inject()))
-    ..registerFactory(() => PurchaseOrderListFilterCubit())
-    // ..registerFactory(() => PurchaseOrderRemoteCubit(inject(), inject(), inject(), inject()))
-    // ..registerFactory(() => PurchaseOrderCubit())
-    ..registerFactory(() => NewPurchaseOrderCubit())
-    ..registerFactory(() => StockReturnListRemoteCubit(inject()))
-    ..registerFactory(() => StockReturnListFilterCubit())
-    // ..registerFactory(() => StockReturnRemoteCubit(inject(), inject(), inject()))
-    ..registerFactory(() => StockReturnCubit())
-    ..registerFactory(() => NewStockReturnCubit())
-    ..registerFactory(() => StockTransferListRemoteCubit(inject()))
-    ..registerFactory(() => StockTransferListFilterCubit())
-    // ..registerFactory(() => StockTransferRemoteCubit(inject(), inject(), inject(), inject()))
-    ..registerFactory(() => StockTransferCubit())
-    ..registerFactory(() => NewStockTransferCubit())
-    ..registerFactory(() => StockTakeListRemoteCubit(inject()))
-    ..registerFactory(() => StockTakeListFilterCubit())
-    // ..registerFactory(() => StockTakeBloc(inject(), inject(), inject()))
-    ..registerFactory(() => UncountedItemsListCubit(inject()))
-    ..registerFactory(() => UncountedItemsListFilterCubit())
-    ..registerFactory(() => CountedItemsListCubit(inject()))
-    ..registerFactory(() => CountedItemsListFilterCubit())
-    ..registerFactory(() => StockTakeCubit())
-    ..registerFactory(() => StockTakeItemsCubit(inject()))
-    ..registerFactory(() => NewStockTakeCubit())
-    ..registerFactory(() => UncountedItemsDraftCubit())
-    ..registerFactory(() => SaleTransactionListCubit(inject()))
-    // ..registerFactory(() => TransactionCubit(inject()))
-    ..registerFactory(() => ReturnTransactionListCubit(inject()))
-    ..registerFactory(() => ReturnCubit())
-    ..registerFactory(() => ReturnRemoteCubit(inject()))
-    ..registerFactory(() => SaleTransactionListFilterCubit())
-    ..registerFactory(() => ReturnTransactionListFilterCubit())
-    // ..registerFactory(() => CategoryLazyListCubit(inject()))
-    // ..registerFactory(() => BranchLazyListCubit(inject()))
-    ..registerFactory(() => SupplierLazyListCubit(inject()))
-    ..registerFactory(() => ProductHistoryListCubit(inject()))
-    ..registerFactory(() => ProductHistoryListFilterCubit())
-    // ..registerFactory(() => ReportBloc(inject<ReportRepository>())) //
-    // ..registerFactory(() => ReportsBloc(inject(), inject()))
-    ..registerFactory(() => SalesCategoryFilterCubit())
-    ..registerFactory(() => SalesCategoryGroupByCubit())
-    ..registerFactory(() => SalesCategoryPeriodCubit())
-    ..registerFactory(() => SalesPerCategoryCubit(inject()))
-    ..registerFactory(() => SalesPerShiftListCubit(inject()))
-    ..registerFactory(() => SalesPerShiftListFilterCubit())
-    ..registerFactory(() => SalesPerShiftCubit(inject()))
-    ..registerFactory(() => ShiftTransactionsCubit(inject()))
-    ..registerFactory(() => ShiftTransactionPageSizeCubit())
+        /// Bloc
+        ..registerFactory(() => AuthBloc(inject(), inject(), inject(), inject()))
+        ..registerFactory(() => SidebarCubit())
+        // ..registerFactory(() => SupplierListCubit(inject()))
+        // ..registerFactory(() => SupplierListFilterCubit())
+        // ..registerFactory(() => SupplierCubit(inject(), inject(), inject(), inject()))
+        // ..registerFactory(() => CategoryCubit(inject()))
+        // ..registerFactory(() => ProductSelectionCubit())
+        // ..registerFactory(() => ProductBulkActionCubit(inject(), inject()))
+        // ..registerFactory(() => ProductListCubit(inject()))
+        // ..registerFactory(() => ProductListFilterCubit())
+        // ..registerFactory(() => ProductCubit(inject(), inject(), inject(), inject()))
+        // ..registerFactory(() => ProductFormCubit())
+        // ..registerFactory(() => VariantFormCubit())
+        // ..registerFactory(() => VariantFormUiCubit())
+        // ..registerFactory(() => SupplyNeedsCubit(inject()))
+        ..registerFactory(() => SupplyNeedCubit())
+        // ..registerFactory(() => PurchaseOrderListRemoteCubit(inject()))
+        ..registerFactory(() => PurchaseOrderListFilterCubit())
+        // ..registerFactory(() => PurchaseOrderRemoteCubit(inject(), inject(), inject(), inject()))
+        // ..registerFactory(() => PurchaseOrderCubit())
+        ..registerFactory(() => NewPurchaseOrderCubit())
+        ..registerFactory(() => StockReturnListRemoteCubit(inject()))
+        ..registerFactory(() => StockReturnListFilterCubit())
+        // ..registerFactory(() => StockReturnRemoteCubit(inject(), inject(), inject()))
+        ..registerFactory(() => StockReturnCubit())
+        ..registerFactory(() => NewStockReturnCubit())
+        ..registerFactory(() => StockTransferListRemoteCubit(inject()))
+        ..registerFactory(() => StockTransferListFilterCubit())
+        // ..registerFactory(() => StockTransferRemoteCubit(inject(), inject(), inject(), inject()))
+        ..registerFactory(() => StockTransferCubit())
+        ..registerFactory(() => NewStockTransferCubit())
+        ..registerFactory(() => StockTakeListRemoteCubit(inject()))
+        ..registerFactory(() => StockTakeListFilterCubit())
+        // ..registerFactory(() => StockTakeBloc(inject(), inject(), inject()))
+        ..registerFactory(() => UncountedItemsListCubit(inject()))
+        ..registerFactory(() => UncountedItemsListFilterCubit())
+        ..registerFactory(() => CountedItemsListCubit(inject()))
+        ..registerFactory(() => CountedItemsListFilterCubit())
+        ..registerFactory(() => StockTakeCubit())
+        ..registerFactory(() => StockTakeItemsCubit(inject()))
+        ..registerFactory(() => NewStockTakeCubit())
+        ..registerFactory(() => UncountedItemsDraftCubit())
+        ..registerFactory(() => SaleTransactionListCubit(inject()))
+        // ..registerFactory(() => TransactionCubit(inject()))
+        ..registerFactory(() => ReturnTransactionListCubit(inject()))
+        ..registerFactory(() => ReturnCubit())
+        ..registerFactory(() => ReturnRemoteCubit(inject()))
+        ..registerFactory(() => SaleTransactionListFilterCubit())
+        ..registerFactory(() => ReturnTransactionListFilterCubit())
+        // ..registerFactory(() => CategoryLazyListCubit(inject()))
+        // ..registerFactory(() => BranchLazyListCubit(inject()))
+        ..registerFactory(() => SupplierLazyListCubit(inject()))
+        ..registerFactory(() => ProductHistoryListCubit(inject()))
+        ..registerFactory(() => ProductHistoryListFilterCubit())
+        // ..registerFactory(() => ReportBloc(inject<ReportRepository>())) //
+        // ..registerFactory(() => ReportsBloc(inject(), inject()))
+        ..registerFactory(() => SalesCategoryFilterCubit())
+        ..registerFactory(() => SalesCategoryGroupByCubit())
+        ..registerFactory(() => SalesCategoryPeriodCubit())
+        ..registerFactory(() => SalesPerCategoryCubit(inject()))
+        ..registerFactory(() => SalesPerShiftListCubit(inject()))
+        ..registerFactory(() => SalesPerShiftListFilterCubit())
+        ..registerFactory(() => SalesPerShiftCubit(inject()))
+        ..registerFactory(() => ShiftTransactionsCubit(inject()))
+        ..registerFactory(() => ShiftTransactionPageSizeCubit())
 
-    /// POS
+        /// POS
 
-    // ..registerFactory(() => ProductCatalogCubit(inject()))
-    ..registerFactory(() => PosProductSearchCubit())
-    // ..registerFactory(() => OrderCubit())
-    // ..registerFactory(() => SaleRemoteCubit(inject()))
-    // ..registerFactory(() => TransactionListByBranchCubit(inject()))
-    // ..registerFactory(() => RefundCubit())
-    // ..registerFactory(() => RefundRemoteCubit(inject()))
-    ..registerFactory(() => PrintReceiptCubit())
-    ..registerFactory(() => ReceiptConfigBloc(inject<BranchRepository>()));
+        // ..registerFactory(() => ProductCatalogCubit(inject()))
+        ..registerFactory(() => PosProductSearchCubit())
+      // ..registerFactory(() => OrderCubit())
+      // ..registerFactory(() => SaleRemoteCubit(inject()))
+      // ..registerFactory(() => TransactionListByBranchCubit(inject()))
+      // ..registerFactory(() => RefundCubit())
+      // ..registerFactory(() => RefundRemoteCubit(inject()))
+      // ..registerFactory(() => PrintReceiptCubit())
+      // ..registerFactory(() => ReceiptConfigurationBloc(inject<BranchRepository>()))
+      ;
 }

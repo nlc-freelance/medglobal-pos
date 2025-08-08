@@ -11,6 +11,7 @@ import 'package:medglobal_admin_portal/portal/product_management/presentation/bl
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/product_form_cubit/product_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_cubit/variant_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/variant_form_ui/variant_form_ui_cubit.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/form_models/variant_form_model.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_form/widgets/product_form_view.dart';
 
 class ProductFormPage extends StatelessWidget {
@@ -68,13 +69,20 @@ class _ProductFormState extends State<ProductForm> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProductBloc, ProductState>(
-      listener: (context, state) => state.maybeWhen(
-        loaded: (product) => _productFormCubit.loadProduct(product),
-        processing: () => PageLoader.show(context),
-        success: (message) => _onSuccess(context, message),
-        failure: (message) => _onFailure(context, message),
-        orElse: () => {},
-      ),
+      listener: (context, state) {
+        state.maybeWhen(
+          loaded: (product) {
+            _productFormCubit.loadProduct(product);
+            if (product.variants.length == 1 && product.variants.first.name == Strings.defaultVariantName) {
+              _variantFormCubit.loadVariant(VariantFormModel.fromVariant(product.variants.first));
+            }
+          },
+          processing: () => PageLoader.show(context),
+          success: (message) => _onSuccess(context, message),
+          failure: (message) => _onFailure(context, message),
+          orElse: () => {},
+        );
+      },
       builder: (_, state) => state.maybeWhen(
         initial: () => _isEditMode ? const LoadingView() : const ProductFormView(),
         loading: () => const LoadingView(),
@@ -90,7 +98,7 @@ class _ProductFormState extends State<ProductForm> {
     PageLoader.close();
     SnackbarUtil.success(context, message);
     context.read<PaginatedListBloc<Product>>().add(const PaginatedListEvent.fetch());
-    context.goNamed(SideMenuTreeItem.PRODUCTS.name);
+    context.goNamed('productList');
   }
 
   void _onFailure(BuildContext context, String message) {

@@ -8,7 +8,7 @@ part 'branch_inventory_dto.g.dart';
 class BranchInventoryDto with _$BranchInventoryDto {
   const factory BranchInventoryDto({
     required int id,
-    required BranchDto store,
+    required BranchPartialDto store,
     required double price,
     required int currentStock,
   }) = _BranchInventoryDto;

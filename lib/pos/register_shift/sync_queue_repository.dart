@@ -4,15 +4,15 @@ import 'package:drift/drift.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
-import 'package:medglobal_admin_portal/pos/device_register/pos_session_service.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 
 class SyncQueueRepository {
   final SyncQueueDao _dao;
-  final UserSessionService _session;
+  final AppSessionService _session;
 
   SyncQueueRepository({
     required SyncQueueDao dao,
-    required UserSessionService session,
+    required AppSessionService session,
   })  : _dao = dao,
         _session = session;
 

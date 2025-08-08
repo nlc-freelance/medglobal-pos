@@ -13,12 +13,15 @@ class ProductFormState with _$ProductFormState {
 
   factory ProductFormState.initial() => const ProductFormState();
 
-  factory ProductFormState.load(Product product) => ProductFormState(
-        id: product.id,
-        name: product.name,
-        category: product.category,
-        variants: product.variants.map((variant) => VariantFormModel.fromVariant(variant)).toList(),
-      );
+  factory ProductFormState.load(Product product) {
+    print('load here');
+    return ProductFormState(
+      id: product.id,
+      name: product.name,
+      category: product.category,
+      variants: product.variants.map((variant) => VariantFormModel.fromVariant(variant)).toList(),
+    );
+  }
 }
 
 extension ProductFormStateExt on ProductFormState {
@@ -59,7 +62,9 @@ extension ProductFormStateExt on ProductFormState {
         imageUrl: imageUrl,
         variants: variants
                 ?.map((variant) => Variant(
-                      id: variant.id!,
+                      // Add temporary ID for default variant. This does not get included on the payload.
+                      // True variants have their own temporary ID.
+                      id: variant.id ?? -(const Uuid().v4().hashCode),
                       name: variant.name!,
                       warningStock: variant.warningStock,
                       idealStock: variant.idealStock,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/gen/assets.gen.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class AppCustomDialog extends StatefulWidget {

@@ -3,11 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/print_receipt/print_receipt_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
+import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/print_receipt_cubit/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_bloc/pos_transaction_bloc.dart';
-// import 'package:medglobal_admin_portal/shared/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class TransactionDetailsHeader extends StatelessWidget {
@@ -37,35 +35,46 @@ class TransactionDetailsHeader extends StatelessWidget {
               ),
               if (!isIssuingRefund) ...[
                 const Spacer(),
-                BlocConsumer<ReceiptConfigBloc, ReceiptConfigState>(
-                  listener: (context, state) {
-                    state.maybeWhen(
-                      loaded: (config) => context.read<PrintReceiptCubit>().generateAndPrintReceipt(
-                            transaction: transaction,
-                            receiptConfig: config,
-                          ),
-                      orElse: () {},
-                    );
-                  },
-                  builder: (context, state) {
-                    return UIButton.filled(
-                      'Print Receipt',
-                      isLoading: state.maybeWhen(
-                        orElse: () => false,
-                        loading: () => true,
-                      ),
-                      onClick: () => context
-                          .read<ReceiptConfigBloc>()
-                          .add(ReceiptConfigEvent.getReceiptConfigByBranchId(transaction.branch.id!)),
-                      style: UIStyleButton.filled.style?.copyWith(
-                        backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
-                        overlayColor: UIStyleUtil.setColor(UIColors.borderMuted),
-                        textStyle: UIStyleUtil.setTextStyle(UIStyleText.labelSemiBold),
-                        foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
-                      ),
-                    );
-                  },
+                UIButton.filled(
+                  'Print Receipt',
+                  isLoading: context.select<PrintReceiptCubit, bool>((state) => state is PrintReceiptLoading),
+                  onClick: () => context.read<PrintReceiptCubit>().generateAndPrintReceipt(transaction),
+                  style: UIStyleButton.filled.style?.copyWith(
+                    backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
+                    overlayColor: UIStyleUtil.setColor(UIColors.borderMuted),
+                    textStyle: UIStyleUtil.setTextStyle(UIStyleText.labelSemiBold),
+                    foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
+                  ),
                 ),
+                // BlocConsumer<ReceiptConfigurationBloc, ReceiptConfigurationState>(
+                //   listener: (context, state) {
+                //     state.maybeWhen(
+                //       loaded: (config) => context.read<PrintReceiptCubit>().generateAndPrintReceipt(
+                //             transaction: transaction,
+                //             ReceiptConfiguration: config,
+                //           ),
+                //       orElse: () {},
+                //     );
+                //   },
+                //   builder: (context, state) {
+                //     return UIButton.filled(
+                //       'Print Receipt',
+                //       isLoading: state.maybeWhen(
+                //         orElse: () => false,
+                //         loading: () => true,
+                //       ),
+                //       onClick: () => context
+                //           .read<ReceiptConfigurationBloc>()
+                //           .add(ReceiptConfigurationEvent.getReceiptConfigurationByBranchId(transaction.branch.id!)),
+                //       style: UIStyleButton.filled.style?.copyWith(
+                //         backgroundColor: UIStyleUtil.setColor(UIColors.whiteBg),
+                //         overlayColor: UIStyleUtil.setColor(UIColors.borderMuted),
+                //         textStyle: UIStyleUtil.setTextStyle(UIStyleText.labelSemiBold),
+                //         foregroundColor: UIStyleUtil.setForegroundColorOnHover(UIColors.textRegular),
+                //       ),
+                //     );
+                //   },
+                // ),
                 const UIHorizontalSpace(8),
                 UIButton.filled(
                   'Issue Refund',

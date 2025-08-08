@@ -13,7 +13,7 @@ class VariantFormState with _$VariantFormState {
 }
 
 extension VariantFormStateExt on VariantFormState {
-  List<Branch> get branches => variant.branchInventories?.map((variant) => variant.branch).toList() ?? [];
+  List<BranchPartial> get branches => variant.branchInventories?.map((variant) => variant.branch).toList() ?? [];
 
   bool isSupplierSelected(Supplier supplier) {
     return variant.suppliers?.where((s) => s.id == supplier.id).isNotEmpty ?? false;

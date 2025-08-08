@@ -1,31 +1,31 @@
 // part of 'order_cubit.dart';
 
 // // @JsonSerializable()
-// // class OrderState extends Equatable {
-// //   const OrderState(this.order);
+// // class CartState extends Equatable {
+// //   const CartState(this.order);
 
 // //   final Transaction order;
 
 // //   @override
 // //   List<Object> get props => [order];
 
-// //   factory OrderState.initial() => const OrderState(Transaction());
+// //   factory CartState.initial() => const CartState(Transaction());
 
-// //   factory OrderState.fromJson(Map<String, dynamic> json) => _$OrderStateFromJson(json);
+// //   factory CartState.fromJson(Map<String, dynamic> json) => _$OrderStateFromJson(json);
 
 // //   Map<String, dynamic> toJson() => _$OrderStateToJson(this);
 // // }
 
 // @freezed
-// class OrderState with _$OrderState {
-//   const factory OrderState({
+// class CartState with _$OrderState {
+//   const factory CartState({
 //     @Default([]) List<TransactionItem> items,
 //   }) = _OrderState;
 
-//   factory OrderState.initial() => const OrderState();
+//   factory CartState.initial() => const CartState();
 // }
 
-// extension OrderStateExt on OrderState {
+// extension OrderStateExt on CartState {
 //   double get subtotal => items.fold(0, (sum, item) => sum + item.totalPerItem);
 
 //   double get tax => subtotal * 0.1;

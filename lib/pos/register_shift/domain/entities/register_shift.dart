@@ -21,6 +21,8 @@ class RegisterShift with _$RegisterShift {
 }
 
 extension RegisterShiftPayloadExt on RegisterShift {
+  String get registerShiftAction => status;
+
   Map<String, dynamic> toOpenPayload() {
     return {
       'register': registerId,
@@ -39,3 +41,5 @@ extension RegisterShiftPayloadExt on RegisterShift {
     };
   }
 }
+
+// RegisterShiftAction registerShiftAction(Map<String, dynamic> shiftData) => shiftData['action'] == 'closed' ? ;
