@@ -7,4 +7,5 @@ abstract class LocalProductCatalogRepository {
   Future<Either<Failure, void>> upsertProducts(List<CatalogItem> products);
   Future<Either<Failure, void>> deltaSyncProducts(List<CatalogItem> products);
   Future<Either<Failure, PaginatedList<CatalogItem>>> getProductCatalog(PageQuery query);
+  Future<Either<Failure, void>> updateStock(int productId, int newStock);
 }

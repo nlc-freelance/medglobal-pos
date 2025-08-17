@@ -1,5 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:get_it/get_it.dart';
+import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
+import 'package:medglobal_admin_portal/core/local_db/db_tables/catalog/product_catalog_dao.dart';
 import 'package:medglobal_admin_portal/core/models/page_query.dart';
 import 'package:medglobal_admin_portal/pos/point_of_sale/domain/entities/pos_product.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/get_product_catalog_usecase.dart';

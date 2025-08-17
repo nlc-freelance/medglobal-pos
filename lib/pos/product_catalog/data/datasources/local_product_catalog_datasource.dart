@@ -14,6 +14,10 @@ class LocalProductCatalogDataSource {
     );
   }
 
+  Future<void> updateStock(int productId, int quantityToDeduct) async {
+    return await _dao.updateStock(productId, quantityToDeduct);
+  }
+
   Future<void> deleteProducts(List<CatalogItem> items) async {
     return await _dao.deleteProducts(
       items.map((item) => item.toProductCatalogCompanion).toList(),

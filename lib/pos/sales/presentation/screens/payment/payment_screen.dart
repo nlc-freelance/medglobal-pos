@@ -4,6 +4,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/dialog/app_blurred_dialog.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_cubit/product_catalog_cubit.dart';
 import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/cart_bloc/cart_bloc.dart';
 import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/print_receipt_cubit/print_receipt_cubit.dart';
 import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/sale_bloc/sale_bloc.dart';

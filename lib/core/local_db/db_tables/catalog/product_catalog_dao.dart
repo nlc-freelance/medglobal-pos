@@ -20,6 +20,18 @@ class ProductCatalogDao extends DatabaseAccessor<AppDatabase> with _$ProductCata
     });
   }
 
+  Future<void> updateStock(int productId, int quantityToDeduct) async {
+    final product = await (select(productCatalog)..where((p) => p.id.equals(productId))).getSingle();
+
+    final newStock = product.stock - quantityToDeduct;
+
+    await (update(productCatalog)..where((tbl) => tbl.id.equals(productId))).write(
+      ProductCatalogCompanion(
+        stock: Value(newStock),
+      ),
+    );
+  }
+
   /// Delete products
   Future<void> deleteProducts(List<ProductCatalogCompanion> items) {
     final idsForDeletion = items.map((item) => item.id.value).toList();

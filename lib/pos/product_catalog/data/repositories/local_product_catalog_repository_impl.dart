@@ -68,4 +68,11 @@ class LocalProductCatalogRepositoryImpl extends BaseRepository implements LocalP
       await _localDataSource.upsertProducts(itemsForUpsert);
     });
   }
+
+  @override
+  Future<Either<Failure, void>> updateStock(int productId, int newStock) {
+    return call(() async {
+      await _localDataSource.updateStock(productId, newStock);
+    });
+  }
 }

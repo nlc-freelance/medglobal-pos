@@ -15,10 +15,25 @@ import 'package:medglobal_admin_portal/pos/sales/presentation/screens/cart/cart_
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
-class SalesScreen extends StatelessWidget {
+class SalesScreen extends StatefulWidget {
   static String route = '/pos/register';
 
   const SalesScreen({super.key});
+
+  @override
+  State<SalesScreen> createState() => _SalesScreenState();
+}
+
+class _SalesScreenState extends State<SalesScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Temporary: Re fetch the product catalog from local to update the stock in ui
+    // For later, use watch() from drift from local db to trigger ui rebuilds automatically
+
+    context.read<ProductCatalogCubit>().getProductCatalog(isInitialSearch: true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,63 +109,55 @@ class _ProductCatalogState extends State<ProductCatalog> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RegisterShiftBloc, RegisterShiftState>(
-      listener: (context, state) {
-        state.maybeWhen(
-          open: (_, __) => context.read<ProductCatalogCubit>().getProductCatalog(),
-          orElse: () {},
-        );
-      },
-      child: Column(
-        children: [
-          UISearchField(
-            fieldWidth: double.infinity,
-            hint: 'Search',
-            icon: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Assets.icons.search.svg(),
-            ),
-            onChanged: (value) => _debouncer.run(
-              (() {
-                context.read<PosProductSearchCubit>().setSearchKey(value);
-                context.read<ProductCatalogCubit>().getProductCatalog(
-                      search: value,
-                      isInitialSearch: true,
-                    );
-              }),
-            ),
+    return Column(
+      children: [
+        UISearchField(
+          fieldWidth: double.infinity,
+          hint: 'Search',
+          icon: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Assets.icons.search.svg(),
           ),
-          const UIVerticalSpace(36),
-          BlocBuilder<ProductCatalogCubit, ProductCatalogState>(
-            builder: (context, state) {
-              if (state is ProductCatalogLoaded) {
-                // return Text(state.products.toString());
-                return Expanded(child: ProductCatalogDataGrid(state.products));
-              }
+          onChanged: (value) => _debouncer.run(
+            (() {
+              context.read<PosProductSearchCubit>().setSearchKey(value);
+              context.read<ProductCatalogCubit>().getProductCatalog(
+                    search: value,
+                    isInitialSearch: true,
+                  );
+            }),
+          ),
+        ),
+        const UIVerticalSpace(36),
+        BlocBuilder<ProductCatalogCubit, ProductCatalogState>(
+          builder: (context, state) {
+            if (state is ProductCatalogLoaded) {
+              // return Text(state.products.toString());
+              return Expanded(child: ProductCatalogDataGrid(state.products));
+            }
 
-              if (state is ProductCatalogFailure) {
-                return Text(state.message);
-              }
+            if (state is ProductCatalogFailure) {
+              return Text(state.message);
+            }
 
-              if (state is ProductCatalogLoading) {
-                // return Text('loading');
-                return DataGridLoading(
-                  columns: DataGridUtil.getColumns(DataGridColumn.productCatalog),
-                  source: ProductCatalogDataSource([], context),
-                );
-              }
-
-              // return Text('else');
-              return DataGridNoData(
+            if (state is ProductCatalogLoading) {
+              // return Text('loading');
+              return DataGridLoading(
                 columns: DataGridUtil.getColumns(DataGridColumn.productCatalog),
                 source: ProductCatalogDataSource([], context),
-                isCustom: true,
-                message: 'No data available',
               );
-            },
-          ),
-        ],
-      ),
+            }
+
+            // return Text('else');
+            return DataGridNoData(
+              columns: DataGridUtil.getColumns(DataGridColumn.productCatalog),
+              source: ProductCatalogDataSource([], context),
+              isCustom: true,
+              message: 'No data available aaaa',
+            );
+          },
+        ),
+      ],
     );
   }
 

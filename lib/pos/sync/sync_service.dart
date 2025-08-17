@@ -102,9 +102,6 @@ class SyncService {
 
       try {
         await _syncToServer(item.table, jsonDecode(item.data));
-        // also mark as sync in the actual table of the sync item
-        // if this is a transaction, we also mark here the transaction as synced in transactions table
-        // before deleting it in the queue
         await _db.syncQueueDao.deleteItem(item.id);
       } catch (e) {
         throw SyncException('Syncing to server failed: ${e.toString()}');
@@ -120,14 +117,23 @@ class SyncService {
     switch (tableName) {
       case 'transactions':
         // if (item.action == 'insert') {
-        await _saleRemoteRepo.createSale(payload);
+
+        final result = await _saleRemoteRepo.createSale(payload);
+        result.fold(
+          (failure) => throw (SyncException(failure.message)),
+          (_) => null,
+        );
         // }
         break;
 
       case 'registerShifts':
         // if (item.action == 'insert') {
         // await _registerShiftRemoteRepo.sendShift(RegisterShift.fromJson(payload));
-        await _registerShiftRemoteRepo.sendShift(payload);
+        final result = await _registerShiftRemoteRepo.sendShift(payload);
+        result.fold(
+          (failure) => throw (SyncException(failure.message)),
+          (_) => null,
+        );
         // }
         break;
     }

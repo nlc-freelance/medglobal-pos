@@ -54,6 +54,7 @@ class _LoginFormState extends State<LoginForm> {
       // },
       listener: (context, state) {
         if (state is AuthenticatedState) {
+          PageLoader.close();
           if (AppConfig.isPOSApp) {
             GetIt.I<AppSessionService>().setUser(state.user);
             context.read<AppSessionBloc>().add(AppSessionEvent.initialize(state.user));

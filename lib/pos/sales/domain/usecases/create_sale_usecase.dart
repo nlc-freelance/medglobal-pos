@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart' hide Order;
+import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/data/datasources/local_product_catalog_datasource.dart';
 import 'package:medglobal_admin_portal/pos/receipt_config/domain/repositories/remote_receipt_config_repository.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/local_register_shift_repository.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/sync_queue_repository.dart';
@@ -10,6 +12,7 @@ import 'package:medglobal_admin_portal/pos/sales/domain/entities/order.dart';
 import 'package:medglobal_admin_portal/pos/sales/domain/repositories/local_sale_repository.dart';
 import 'package:medglobal_admin_portal/pos/sales/domain/repositories/remote_sale_repository.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
 
 class CreateSaleUseCase {
   final LocalRegisterShiftRepository _localRegisterShiftRepository;
@@ -76,6 +79,16 @@ class CreateSaleUseCase {
 
           // If successful, continue with remote sync logic.
           (transaction) {
+            // Deduct stocks locally after successful local save
+            for (TransactionItem item in transaction.items ?? []) {
+              final quantityToDeduct = item.quantity;
+              final productId = item.itemId;
+
+              if (productId != null && quantityToDeduct != null) {
+                GetIt.I<LocalProductCatalogDataSource>().updateStock(productId, quantityToDeduct);
+              }
+            }
+
             final payload = OrderPayload.fromDomain(
               session.registerId,
               order,
