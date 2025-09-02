@@ -302,7 +302,7 @@ class ReturnTransactionDataSource extends DataGridSource {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: ((cell.value as ReturnStatus) == ReturnStatus.AWAITING_ACTION
+            color: ((cell.value as ReturnStatus) == ReturnStatus.awaitingAction
                     ? UIColors.awaitingActionBg
                     : UIColors.completedBg)
                 .withOpacity(0.6),
@@ -313,7 +313,7 @@ class ReturnTransactionDataSource extends DataGridSource {
               Text(
                 (cell.value as ReturnStatus).label,
                 style: UIStyleText.hint.copyWith(
-                  color: (cell.value as ReturnStatus) == ReturnStatus.AWAITING_ACTION
+                  color: (cell.value as ReturnStatus) == ReturnStatus.awaitingAction
                       ? UIColors.awaitingAction
                       : UIColors.completed,
                   fontSize: 11,

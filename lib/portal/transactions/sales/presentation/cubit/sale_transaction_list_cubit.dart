@@ -23,7 +23,7 @@ class SaleTransactionListCubit extends Cubit<SaleTransactionListState> {
 
     try {
       final result = await _getTransactionsUseCase.call(GetTransactionsParams(
-        type: TransactionType.SALE,
+        type: TransactionType.sale,
         page: page,
         size: size,
         search: search,

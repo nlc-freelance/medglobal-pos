@@ -41,9 +41,11 @@ class ApiEndpoints {
   static const String productCategories = '/product-categories';
 
   // Product Variants
-  static const String productVariants = '/$products/variants';
+  static const String productVariants = '$products/variants';
+  static const String productVariantsDeltaSync = '$products/variants/delta-sync';
 
-  static String productHistory(int variantId) => '/$products/variants/$variantId/history';
+  static String productHistory(int variantId) => '$productVariants/$variantId/history';
+  static String productSalesHistory(int variantId) => '$productVariants/$variantId/sales-history';
 
   // Branch
   static const String branches = '/stores';
@@ -87,6 +89,7 @@ class ApiEndpoints {
   // Registers
   static const String registers = '/registers';
   static String registerById(int id) => '$registers/$id';
+  static String registerBySerialNo(String serialNo) => '$registers/serial/$serialNo';
 
   // Register shift
   static const String registerShift = '/shifts';

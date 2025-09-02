@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'create_report_dto.dart';
+part of 'report_payload.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,22 +15,22 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$CreateReportDto {
+mixin _$ReportPayload {
   String get type => throw _privateConstructorUsedError;
   Map<String, dynamic>? get filters => throw _privateConstructorUsedError;
   int? get userId => throw _privateConstructorUsedError;
   Map<String, dynamic>? get payload => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $CreateReportDtoCopyWith<CreateReportDto> get copyWith =>
+  $ReportPayloadCopyWith<ReportPayload> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $CreateReportDtoCopyWith<$Res> {
-  factory $CreateReportDtoCopyWith(
-          CreateReportDto value, $Res Function(CreateReportDto) then) =
-      _$CreateReportDtoCopyWithImpl<$Res, CreateReportDto>;
+abstract class $ReportPayloadCopyWith<$Res> {
+  factory $ReportPayloadCopyWith(
+          ReportPayload value, $Res Function(ReportPayload) then) =
+      _$ReportPayloadCopyWithImpl<$Res, ReportPayload>;
   @useResult
   $Res call(
       {String type,
@@ -40,9 +40,9 @@ abstract class $CreateReportDtoCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$CreateReportDtoCopyWithImpl<$Res, $Val extends CreateReportDto>
-    implements $CreateReportDtoCopyWith<$Res> {
-  _$CreateReportDtoCopyWithImpl(this._value, this._then);
+class _$ReportPayloadCopyWithImpl<$Res, $Val extends ReportPayload>
+    implements $ReportPayloadCopyWith<$Res> {
+  _$ReportPayloadCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -79,11 +79,11 @@ class _$CreateReportDtoCopyWithImpl<$Res, $Val extends CreateReportDto>
 }
 
 /// @nodoc
-abstract class _$$CreateReportDtoImplCopyWith<$Res>
-    implements $CreateReportDtoCopyWith<$Res> {
-  factory _$$CreateReportDtoImplCopyWith(_$CreateReportDtoImpl value,
-          $Res Function(_$CreateReportDtoImpl) then) =
-      __$$CreateReportDtoImplCopyWithImpl<$Res>;
+abstract class _$$ReportPayloadImplCopyWith<$Res>
+    implements $ReportPayloadCopyWith<$Res> {
+  factory _$$ReportPayloadImplCopyWith(
+          _$ReportPayloadImpl value, $Res Function(_$ReportPayloadImpl) then) =
+      __$$ReportPayloadImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -94,11 +94,11 @@ abstract class _$$CreateReportDtoImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$CreateReportDtoImplCopyWithImpl<$Res>
-    extends _$CreateReportDtoCopyWithImpl<$Res, _$CreateReportDtoImpl>
-    implements _$$CreateReportDtoImplCopyWith<$Res> {
-  __$$CreateReportDtoImplCopyWithImpl(
-      _$CreateReportDtoImpl _value, $Res Function(_$CreateReportDtoImpl) _then)
+class __$$ReportPayloadImplCopyWithImpl<$Res>
+    extends _$ReportPayloadCopyWithImpl<$Res, _$ReportPayloadImpl>
+    implements _$$ReportPayloadImplCopyWith<$Res> {
+  __$$ReportPayloadImplCopyWithImpl(
+      _$ReportPayloadImpl _value, $Res Function(_$ReportPayloadImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -109,7 +109,7 @@ class __$$CreateReportDtoImplCopyWithImpl<$Res>
     Object? userId = freezed,
     Object? payload = freezed,
   }) {
-    return _then(_$CreateReportDtoImpl(
+    return _then(_$ReportPayloadImpl(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
@@ -132,15 +132,14 @@ class __$$CreateReportDtoImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CreateReportDtoImpl extends _CreateReportDto {
-  const _$CreateReportDtoImpl(
+class _$ReportPayloadImpl implements _ReportPayload {
+  const _$ReportPayloadImpl(
       {required this.type,
       final Map<String, dynamic>? filters,
       this.userId,
       final Map<String, dynamic>? payload})
       : _filters = filters,
-        _payload = payload,
-        super._();
+        _payload = payload;
 
   @override
   final String type;
@@ -168,14 +167,14 @@ class _$CreateReportDtoImpl extends _CreateReportDto {
 
   @override
   String toString() {
-    return 'CreateReportDto(type: $type, filters: $filters, userId: $userId, payload: $payload)';
+    return 'ReportPayload(type: $type, filters: $filters, userId: $userId, payload: $payload)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CreateReportDtoImpl &&
+            other is _$ReportPayloadImpl &&
             (identical(other.type, type) || other.type == type) &&
             const DeepCollectionEquality().equals(other._filters, _filters) &&
             (identical(other.userId, userId) || other.userId == userId) &&
@@ -193,18 +192,16 @@ class _$CreateReportDtoImpl extends _CreateReportDto {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$CreateReportDtoImplCopyWith<_$CreateReportDtoImpl> get copyWith =>
-      __$$CreateReportDtoImplCopyWithImpl<_$CreateReportDtoImpl>(
-          this, _$identity);
+  _$$ReportPayloadImplCopyWith<_$ReportPayloadImpl> get copyWith =>
+      __$$ReportPayloadImplCopyWithImpl<_$ReportPayloadImpl>(this, _$identity);
 }
 
-abstract class _CreateReportDto extends CreateReportDto {
-  const factory _CreateReportDto(
+abstract class _ReportPayload implements ReportPayload {
+  const factory _ReportPayload(
       {required final String type,
       final Map<String, dynamic>? filters,
       final int? userId,
-      final Map<String, dynamic>? payload}) = _$CreateReportDtoImpl;
-  const _CreateReportDto._() : super._();
+      final Map<String, dynamic>? payload}) = _$ReportPayloadImpl;
 
   @override
   String get type;
@@ -216,6 +213,6 @@ abstract class _CreateReportDto extends CreateReportDto {
   Map<String, dynamic>? get payload;
   @override
   @JsonKey(ignore: true)
-  _$$CreateReportDtoImplCopyWith<_$CreateReportDtoImpl> get copyWith =>
+  _$$ReportPayloadImplCopyWith<_$ReportPayloadImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

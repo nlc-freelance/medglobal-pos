@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/enums/enums.dart';
 import 'package:medglobal_admin_portal/core/extensions/extensions.dart';
-import 'package:medglobal_admin_portal/portal/reports/data/dto/request/create_report_dto.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/repositories/report_repository.dart';
@@ -27,7 +27,7 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
   ///
   /// Adds a temporary task to the state immediately for UI feedback,
   /// then calls the backend to get the actual taskId and starts polling.
-  Future<void> generateReport(CreateReportDto payload, {bool autoDownload = true}) async {
+  Future<void> generateReport(ReportPayload payload, {bool autoDownload = true}) async {
     final type = ReportType.fromString(payload.type);
 
     final tempTaskId = -DateTime.now().microsecondsSinceEpoch;

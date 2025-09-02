@@ -79,7 +79,7 @@ class ReturnTransactionDetails extends StatelessWidget {
                     const UIVerticalSpace(40),
                     ReturnTransactionItemsDataGrid(transaction),
                     const UIVerticalSpace(40),
-                    if (transaction.status == ReturnStatus.AWAITING_ACTION)
+                    if (transaction.status == ReturnStatus.awaitingAction)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

@@ -128,7 +128,7 @@ class ProductPerformanceFormState with _$ProductPerformanceFormState {
     return DateFormat('yyyy-MM-dd').format(date!);
   }
 
-  CreateReportDto? get toPayload {
+  ReportPayload? get toPayload {
     if (!isFormValid) return null;
 
     final payload = switch (type!) {
@@ -147,7 +147,7 @@ class ProductPerformanceFormState with _$ProductPerformanceFormState {
         ).toJson(),
     };
 
-    return CreateReportDto(
+    return ReportPayload(
       type: reportType!.value,
       payload: payload,
     );

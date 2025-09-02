@@ -4,7 +4,7 @@ import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/page_query.dart';
 import 'package:medglobal_admin_portal/core/models/paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/reports/data/api/report_api_service.dart';
-import 'package:medglobal_admin_portal/portal/reports/data/dto/request/create_report_dto.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
 import 'package:medglobal_admin_portal/portal/reports/data/dto/response/report_dto.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/repositories/report_repository.dart';
@@ -23,7 +23,7 @@ class ReportRepositoryImpl extends BaseRepository implements ReportRepository {
   ReportRepositoryImpl({required ReportApiService api}) : _api = api;
 
   @override
-  Future<Either<Failure, Report>> createReport(CreateReportDto payload) async {
+  Future<Either<Failure, Report>> createReport(ReportPayload payload) async {
     return call(() async {
       final responseDto = await _api.createReport(payload);
       return responseDto.toDomain();

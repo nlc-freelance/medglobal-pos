@@ -173,14 +173,14 @@ class _TransactionListState extends State<TransactionList> {
                                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                                       decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.circular(8),
-                                                        color: (item.type == TransactionType.SALE
+                                                        color: (item.type == TransactionType.sale
                                                                 ? UIColors.completedBg
                                                                 : UIColors.cancelledBg)
                                                             .withOpacity(0.4),
                                                       ),
                                                       child: Row(
                                                         children: [
-                                                          item.type == TransactionType.REFUND
+                                                          item.type == TransactionType.refund
                                                               ? Assets.icons.import
                                                                   .svg(colorFilter: UIColors.buttonDanger.toColorFilter)
                                                               : Assets.icons.received.svg(
@@ -189,7 +189,7 @@ class _TransactionListState extends State<TransactionList> {
                                                           const UIHorizontalSpace(8),
                                                           UIText.labelRegular(
                                                             item.type!.label,
-                                                            color: item.type == TransactionType.SALE
+                                                            color: item.type == TransactionType.sale
                                                                 ? UIColors.completed
                                                                 : UIColors.buttonDanger,
                                                           ),
@@ -207,7 +207,7 @@ class _TransactionListState extends State<TransactionList> {
                                                         style: UIStyleText.hint.copyWith(color: UIColors.textMuted),
                                                       ),
                                                       const Spacer(),
-                                                      if (item.type == TransactionType.REFUND) UIText.label('-'),
+                                                      if (item.type == TransactionType.refund) UIText.label('-'),
                                                       UIText.label('₱${item.total.toPesoString()} '),
                                                     ],
                                                   ),

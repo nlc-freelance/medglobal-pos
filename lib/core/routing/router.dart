@@ -18,6 +18,9 @@ import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_tas
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/product_performance_list_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/presentation/bloc/product_sales_history_bloc/product_sales_history_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/presentation/bloc/product_sales_history_filter_cubit/product_sales_history_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/presentation/product_sales_history_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/sales_per_category_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/presentation/sales_per_shift_details/sales_per_shift_details_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/presentation/sales_per_shift_list/sales_per_shift_page.dart';
@@ -271,6 +274,19 @@ abstract class AppRouter {
                     name: SideMenuTreeItem.PRODUCT_HISTORY.name,
                     path: SideMenuTreeItem.PRODUCT_HISTORY.path,
                     pageBuilder: (context, state) => const NoTransitionPage(child: ProductHistoryPage()),
+                  ),
+                  GoRoute(
+                    name: SideMenuTreeItem.PRODUCT_SALES_HISTORY.name,
+                    path: SideMenuTreeItem.PRODUCT_SALES_HISTORY.path,
+                    pageBuilder: (context, state) => NoTransitionPage(
+                      child: MultiBlocProvider(
+                        providers: [
+                          BlocProvider(create: (context) => ProductSalesHistoryFilterCubit()),
+                          BlocProvider(create: (context) => GetIt.I<ProductSalesHistoryBloc>()),
+                        ],
+                        child: const ProductSalesHistoryPage(),
+                      ),
+                    ),
                   ),
                   GoRoute(
                     name: SideMenuTreeItem.productPerformance.name,

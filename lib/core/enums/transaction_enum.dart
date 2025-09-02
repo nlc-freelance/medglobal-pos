@@ -1,14 +1,21 @@
+import 'package:flutter/material.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
+
 enum TransactionType {
-  REFUND('Refund'),
-  SALE('Sale');
+  refund('Refund'),
+  sale('Sale');
+
+  Color get bgColor => this == sale ? UIColors.completedBg : UIColors.cancelledBg;
+  Color get textColor => this == sale ? UIColors.completed : UIColors.cancelled;
 
   final String label;
+
   const TransactionType(this.label);
 }
 
 enum ReturnStatus {
-  AWAITING_ACTION('Awaiting Action'),
-  COMPLETED('Completed');
+  awaitingAction('Awaiting Action'),
+  completed('Completed');
 
   final String label;
   const ReturnStatus(this.label);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/reports/data/dto/request/create_report_dto.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
@@ -108,7 +108,7 @@ class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
                                                             if (action == SupplyNeedsAction.DOWNLOAD_CSV) {
                                                               context
                                                                   .read<ReportManagerCubit>()
-                                                                  .generateReport(CreateReportDto(
+                                                                  .generateReport(ReportPayload(
                                                                     type: ReportType.supplyNeeds.value,
                                                                     filters: {'branch': supplyNeed.branch?.id},
                                                                   ));

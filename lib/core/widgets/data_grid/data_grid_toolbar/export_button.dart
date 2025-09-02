@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/reports/data/dto/request/create_report_dto.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -9,8 +9,9 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 class ExportButton extends StatelessWidget {
   final ReportType type;
   final Map<String, dynamic>? filters;
+  final Map<String, dynamic>? payload;
 
-  const ExportButton(this.type, {super.key, this.filters});
+  const ExportButton(this.type, {super.key, this.filters, this.payload});
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +21,10 @@ class ExportButton extends StatelessWidget {
           'Export CSV',
           iconBuilder: (isHover) => Assets.icons.download.setColorOnHover(isHover),
           onClick: () => context.read<ReportManagerCubit>().generateReport(
-                CreateReportDto(
+                ReportPayload(
                   type: type.value,
                   filters: filters,
+                  payload: payload,
                 ),
               ),
           isLoading: state.tasks.any(

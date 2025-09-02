@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/enums/reports_enum.dart';
 import 'package:medglobal_admin_portal/core/utils/date_util.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
-import 'package:medglobal_admin_portal/portal/reports/data/dto/request/create_report_dto.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/data/dto/create_product_abc_dto.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/data/dto/create_product_pnl_dto.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/cubit/product_performance_form_cubit/params.dart';

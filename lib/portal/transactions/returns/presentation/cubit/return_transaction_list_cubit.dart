@@ -23,7 +23,7 @@ class ReturnTransactionListCubit extends Cubit<ReturnTransactionListState> {
 
     try {
       final result = await _getTransactionsUseCase.call(GetTransactionsParams(
-        type: TransactionType.REFUND,
+        type: TransactionType.refund,
         page: page,
         size: size,
         search: search,
