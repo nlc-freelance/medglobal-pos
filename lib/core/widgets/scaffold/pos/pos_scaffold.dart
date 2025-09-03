@@ -133,7 +133,7 @@ class _PosScaffoldState extends State<PosScaffold> {
 }
 
 class _PosScaffold extends StatelessWidget {
-  const _PosScaffold(this.route, this.child, {super.key});
+  const _PosScaffold(this.route, this.child);
 
   final GoRouterState route;
 

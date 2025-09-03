@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 /// A utility class for displaying various types of snackbars.
@@ -59,7 +57,7 @@ class SnackbarUtil {
 
   static void _show(
     BuildContext context, {
-    required ToastType type,
+    required SnackbarType type,
     required String message,
     Widget? action,
     VoidCallback? onSnackbarClosed,

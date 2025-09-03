@@ -10,7 +10,7 @@ import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_tas
 import 'package:medglobal_admin_portal/portal/reports/domain/repositories/report_repository.dart';
 
 part 'report_manager_state.dart';
-part 'report_manager_cubit.freezed.dart';
+part '../report_manager_cubit.freezed.dart';
 
 /// A global Cubit that manages the lifecycle of report generation tasks,
 /// including creation, polling for status, and triggering downloads.

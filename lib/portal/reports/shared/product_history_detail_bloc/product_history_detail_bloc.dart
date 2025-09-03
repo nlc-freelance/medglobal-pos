@@ -6,13 +6,13 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/d
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/repositories/stock_return_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/repositories/stock_take_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/repositories/stock_transfer_repository.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/repositories/transaction_repository.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transaction_repository.dart';
 
 part 'product_history_detail_event.dart';
 part 'product_history_detail_state.dart';
 part 'product_history_detail_bloc.freezed.dart';
 
-class ProductHistoryDetailBloc<T> extends Bloc<ProductHistoryDetailEvent<T>, ProductHistoryDetailState<T>> {
+class ProductHistoryDetailBloc extends Bloc<ProductHistoryDetailEvent, ProductHistoryDetailState> {
   final PurchaseOrderRepository _purchaseOrderRepository;
   final StockReturnRepository _stockReturnRepository;
   final StockTakeRepository _stockTakeRepository;
@@ -30,19 +30,19 @@ class ProductHistoryDetailBloc<T> extends Bloc<ProductHistoryDetailEvent<T>, Pro
         _stockTakeRepository = stockTakeRepository,
         _stockTransferRepository = stockTransferRepository,
         _transactionRepository = transactionRepository,
-        super(ProductHistoryDetailState<T>.initial()) {
-    on<_GetDetailsById<T>>(_onGetDetails);
+        super(const ProductHistoryDetailState.initial()) {
+    on<_GetDetailsById>(_onGetDetails);
   }
 
-  Future<Either<Failure, T>> _castResult(Either<Failure, dynamic> result) async {
-    return result.map((res) => res as T);
+  Future<Either<Failure, dynamic>> _castResult(Either<Failure, dynamic> result) async {
+    return result.map((res) => res as dynamic);
   }
 
-  Future<void> _onGetDetails(_GetDetailsById<T> event, Emitter<ProductHistoryDetailState<T>> emit) async {
-    emit(ProductHistoryDetailState<T>.loading());
+  Future<void> _onGetDetails(_GetDetailsById event, Emitter<ProductHistoryDetailState> emit) async {
+    emit(const ProductHistoryDetailState.loading());
 
     try {
-      final Map<ProductHistoryAction, Future<Either<Failure, T>> Function(int)> getterMap = {
+      final Map<ProductHistoryAction, Future<Either<Failure, dynamic>> Function(int)> getterMap = {
         ProductHistoryAction.PURCHASE: (id) async {
           return _purchaseOrderRepository.getPurchaseOrderById(id).then(_castResult);
         },
@@ -63,19 +63,19 @@ class ProductHistoryDetailBloc<T> extends Bloc<ProductHistoryDetailEvent<T>, Pro
       final getByIdFn = getterMap[event.action];
 
       if (getByIdFn == null) {
-        emit(ProductHistoryDetailState<T>.failure('Unsupported product action.'));
+        emit(const ProductHistoryDetailState.failure('Unsupported product action.'));
         return;
       }
 
       final result = await getByIdFn(event.id);
       result.fold(
         (failure) {
-          emit(ProductHistoryDetailState<T>.failure(failure.message));
+          emit(ProductHistoryDetailState.failure(failure.message));
         },
-        (data) => emit(ProductHistoryDetailState<T>.loaded(data, event.action)),
+        (data) => emit(ProductHistoryDetailState.loaded(data, event.action)),
       );
     } catch (e) {
-      emit(ProductHistoryDetailState<T>.failure(e.toString()));
+      emit(ProductHistoryDetailState.failure(e.toString()));
     }
   }
 }

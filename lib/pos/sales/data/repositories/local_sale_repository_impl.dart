@@ -4,7 +4,7 @@ import 'package:dartz/dartz.dart' hide Order;
 import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/enums/transaction_enum.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
-import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';

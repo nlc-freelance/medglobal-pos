@@ -4,7 +4,7 @@ import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
@@ -66,6 +66,12 @@ class PortalTopbar extends StatelessWidget implements PreferredSizeWidget {
                   menuAsString: (item) => item.title,
                   onSelect: (menu) {
                     if (ProfileMenu.LOGOUT == menu) {
+                      /// Find a way to reset without:
+                      // Looking up a deactivated widget's ancestor is unsafe.
+                      // At this point the state of the widget's element tree is no longer stable.
+                      // To safely refer to a widget's ancestor in its dispose() method, save a reference to the ancestor by
+                      // calling dependOnInheritedWidgetOfExactType() in the widget's didChangeDependencies() method.
+
                       // TODO: To remove once all SupplierDropdown are replaced with the reusable lazy list dropdown
                       context.read<SupplierLazyListCubit>().reset();
 

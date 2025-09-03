@@ -9,11 +9,9 @@ enum ReportType {
   sales('SALES_CSV'),
   productHistory('PRODUCT_HISTORY_CSV'),
   productSalesHistory('PRODUCT_SALES_HISTORY_CSV'),
-  productSalesHistory('PRODUCT_SALES_HISTORY_CSV'),
   salesPerCategory('SALES_PER_CATEGORY'),
   salesPerShift('SHIFT_REPORT_CSV'),
   supplyNeeds('SUPPLY_NEEDS_CSV'),
-  productABC('ABC_ANALYSIS'),
   productABC('ABC_ANALYSIS'),
   productPNL('PRODUCT_PNL'),
   unknown('Unknown');

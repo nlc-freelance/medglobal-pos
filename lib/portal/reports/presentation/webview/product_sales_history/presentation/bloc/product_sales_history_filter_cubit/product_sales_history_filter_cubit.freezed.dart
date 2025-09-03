@@ -19,7 +19,7 @@ mixin _$ProductSalesHistoryFilterState {
   int get page => throw _privateConstructorUsedError;
   int get size => throw _privateConstructorUsedError;
   int? get variantId => throw _privateConstructorUsedError;
-  Branch? get branch => throw _privateConstructorUsedError;
+  BranchPartial? get branch => throw _privateConstructorUsedError;
   String? get startDate => throw _privateConstructorUsedError;
   String? get endDate => throw _privateConstructorUsedError;
   bool get isValid => throw _privateConstructorUsedError;
@@ -42,13 +42,13 @@ abstract class $ProductSalesHistoryFilterStateCopyWith<$Res> {
       {int page,
       int size,
       int? variantId,
-      Branch? branch,
+      BranchPartial? branch,
       String? startDate,
       String? endDate,
       bool isValid,
       String? errorMessage});
 
-  $BranchCopyWith<$Res>? get branch;
+  $BranchPartialCopyWith<$Res>? get branch;
 }
 
 /// @nodoc
@@ -90,7 +90,7 @@ class _$ProductSalesHistoryFilterStateCopyWithImpl<$Res,
       branch: freezed == branch
           ? _value.branch
           : branch // ignore: cast_nullable_to_non_nullable
-              as Branch?,
+              as BranchPartial?,
       startDate: freezed == startDate
           ? _value.startDate
           : startDate // ignore: cast_nullable_to_non_nullable
@@ -112,12 +112,12 @@ class _$ProductSalesHistoryFilterStateCopyWithImpl<$Res,
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchCopyWith<$Res>? get branch {
+  $BranchPartialCopyWith<$Res>? get branch {
     if (_value.branch == null) {
       return null;
     }
 
-    return $BranchCopyWith<$Res>(_value.branch!, (value) {
+    return $BranchPartialCopyWith<$Res>(_value.branch!, (value) {
       return _then(_value.copyWith(branch: value) as $Val);
     });
   }
@@ -136,14 +136,14 @@ abstract class _$$ProductSalesHistoryFilterStateImplCopyWith<$Res>
       {int page,
       int size,
       int? variantId,
-      Branch? branch,
+      BranchPartial? branch,
       String? startDate,
       String? endDate,
       bool isValid,
       String? errorMessage});
 
   @override
-  $BranchCopyWith<$Res>? get branch;
+  $BranchPartialCopyWith<$Res>? get branch;
 }
 
 /// @nodoc
@@ -184,7 +184,7 @@ class __$$ProductSalesHistoryFilterStateImplCopyWithImpl<$Res>
       branch: freezed == branch
           ? _value.branch
           : branch // ignore: cast_nullable_to_non_nullable
-              as Branch?,
+              as BranchPartial?,
       startDate: freezed == startDate
           ? _value.startDate
           : startDate // ignore: cast_nullable_to_non_nullable
@@ -228,7 +228,7 @@ class _$ProductSalesHistoryFilterStateImpl
   @override
   final int? variantId;
   @override
-  final Branch? branch;
+  final BranchPartial? branch;
   @override
   final String? startDate;
   @override
@@ -281,7 +281,7 @@ abstract class _ProductSalesHistoryFilterState
       {final int page,
       final int size,
       final int? variantId,
-      final Branch? branch,
+      final BranchPartial? branch,
       final String? startDate,
       final String? endDate,
       final bool isValid,
@@ -294,7 +294,7 @@ abstract class _ProductSalesHistoryFilterState
   @override
   int? get variantId;
   @override
-  Branch? get branch;
+  BranchPartial? get branch;
   @override
   String? get startDate;
   @override

@@ -12,7 +12,6 @@ import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/prod
 import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_sync_bloc/product_catalog_sync_bloc.dart';
 import 'package:medglobal_admin_portal/pos/sales/presentation/screens/payment/payment_screen.dart';
 import 'package:medglobal_admin_portal/pos/sales/presentation/screens/sales_screen.dart';
-import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_bloc/pos_transaction_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_list_bloc/pos_transaction_list_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/refund_bloc/refund_bloc.dart';

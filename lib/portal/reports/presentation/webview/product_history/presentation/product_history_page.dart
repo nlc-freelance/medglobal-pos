@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
-import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
-import 'package:medglobal_admin_portal/core/widgets/dropdowns/app_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
-import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/core/widgets/typeahead_search/variant_typeahead_search.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/cubit/product_history_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/cubit/product_history_list_filter_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_detail_bloc/product_history_detail_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_paginated_data_grid.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take.dart';
@@ -46,65 +40,6 @@ class _ProductHistoryPageState extends State<ProductHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<ProductHistoryListFilterCubit, ProductHistoryListFilterState>(
-          listener: (context, state) {
-            if (state.variantId == null || state.branchId == null || state.startDate == null) {
-              context.read<ProductHistoryListCubit>().reset();
-            }
-          },
-        ),
-        BlocListener<ProductHistoryDetailBloc, ProductHistoryDetailState>(
-          listener: (context, state) {
-            state.maybeWhen(
-              loading: () => PageLoader.show(context),
-              loaded: (data, action) {
-                switch (action) {
-                  case ProductHistoryAction.PURCHASE:
-                    context.pushNamed(
-                      'purchaseOrderDetails',
-                      pathParameters: {'id': (data as PurchaseOrder).id.toString()},
-                    );
-                    break;
-                  case ProductHistoryAction.RETURN:
-                    context.pushNamed(
-                      'stockReturnDetails',
-                      pathParameters: {'id': (data as StockReturn).id.toString()},
-                    );
-                    break;
-                  case ProductHistoryAction.TAKE:
-                    context.pushNamed(
-                      'stockTakeDetails',
-                      pathParameters: {'id': (data as StockTake).id.toString()},
-                    );
-                    break;
-                  case ProductHistoryAction.TRANSFER:
-                    context.pushNamed(
-                      'stockTransferDetails',
-                      pathParameters: {'id': (data as StockTransfer).id.toString()},
-                    );
-                    break;
-                  case ProductHistoryAction.SALE:
-                    context.pushNamed(
-                      'saleTransactionDetails',
-                      pathParameters: {'id': (data as Transaction).id.toString()},
-                    );
-                    break;
-                  default:
-                    return;
-                }
-                PageLoader.close();
-              },
-              failure: (message) {
-                PageLoader.close();
-                SnackbarUtil.error(context, message);
-              },
-              orElse: () {},
-            );
-          },
-        ),
-      ],
     return MultiBlocListener(
       listeners: [
         BlocListener<ProductHistoryListFilterCubit, ProductHistoryListFilterState>(

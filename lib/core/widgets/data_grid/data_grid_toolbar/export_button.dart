@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class ExportButton extends StatelessWidget {

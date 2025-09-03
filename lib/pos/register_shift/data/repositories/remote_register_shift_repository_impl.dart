@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
-import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_remote_datasource.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/entities/register_shift.dart';
 

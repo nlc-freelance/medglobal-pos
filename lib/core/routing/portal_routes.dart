@@ -20,8 +20,8 @@ import 'package:medglobal_admin_portal/portal/product_management/presentation/pa
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/product_performance_list_page.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_detail_bloc/product_history_detail_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/presentation/bloc/product_sales_history_bloc/product_sales_history_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/presentation/bloc/product_sales_history_filter_cubit/product_sales_history_filter_cubit.dart';
@@ -108,6 +108,11 @@ final ShellRoute portalRoutes = ShellRoute(
                 onClick: () =>
                     context.read<ReportManagerCubit>().manualDownloadReport(task.toReport(ReportStatus.completed)),
               ),
+              onSnackbarClosed: () {
+                // Remove the task from the ReportManagerCubit when snackbar is dismissed (auto or manual)
+                // This ensures no duplicate snackbars are shown for the same task
+                context.read<ReportManagerCubit>().removeTask(task.key);
+              },
             );
           }
         }

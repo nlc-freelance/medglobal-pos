@@ -5,9 +5,10 @@ import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_bloc/report_bloc.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/domain/entities/product_history_item.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/report_bloc/report_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/cubit/product_history_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/cubit/product_history_list_filter_cubit.dart';
@@ -82,7 +83,6 @@ class MedGlobaPortalApp extends StatelessWidget {
           BlocProvider(create: (_) => GetIt.I<LazyListBloc<BranchPartial>>()),
           BlocProvider(create: (_) => GetIt.I<LazyListBloc<Tax>>()),
           BlocProvider(create: (_) => GetIt.I<LazyListBloc<ReceiptTemplate>>()),
-          BlocProvider(create: (_) => GetIt.I<ProductHistoryDetailBloc>()),
           BlocProvider(create: (_) => GetIt.I<ReportBloc>()),
           BlocProvider(create: (_) => GetIt.I<ReportManagerCubit>()),
           BlocProvider(create: (_) => GetIt.I<TransactionBloc>()),

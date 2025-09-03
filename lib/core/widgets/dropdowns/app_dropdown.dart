@@ -195,7 +195,7 @@ class _DropdownButton<T> extends StatelessWidget {
       onTap: isEnabled ? onTap : null,
       child: HoverBuilder(
         builder: (isHover) {
-          final highlight = value?.isNotEmpty == true;
+          // final highlight = value?.isNotEmpty == true;
           return Container(
             constraints: const BoxConstraints(minWidth: 200),
             padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),

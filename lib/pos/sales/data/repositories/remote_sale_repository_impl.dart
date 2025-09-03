@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart' hide Order;
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
-import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/pos/sales/data/datasources/sale_remote_datasource.dart';
 import 'package:medglobal_admin_portal/pos/sales/data/dtos/order_payload.dart';
 import 'package:medglobal_admin_portal/pos/sales/domain/entities/order.dart';

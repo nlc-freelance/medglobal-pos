@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'report_manager_cubit.dart';
+part of 'report_manager_cubit/report_manager_cubit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -19,14 +19,12 @@ mixin _$ReportManagerState {
   List<ReportTask> get tasks => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $ReportManagerStateCopyWith<ReportManagerState> get copyWith =>
-      throw _privateConstructorUsedError;
+  $ReportManagerStateCopyWith<ReportManagerState> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $ReportManagerStateCopyWith<$Res> {
-  factory $ReportManagerStateCopyWith(
-          ReportManagerState value, $Res Function(ReportManagerState) then) =
+  factory $ReportManagerStateCopyWith(ReportManagerState value, $Res Function(ReportManagerState) then) =
       _$ReportManagerStateCopyWithImpl<$Res, ReportManagerState>;
   @useResult
   $Res call({List<ReportTask> tasks});
@@ -57,10 +55,9 @@ class _$ReportManagerStateCopyWithImpl<$Res, $Val extends ReportManagerState>
 }
 
 /// @nodoc
-abstract class _$$ReportManagerStateImplCopyWith<$Res>
-    implements $ReportManagerStateCopyWith<$Res> {
-  factory _$$ReportManagerStateImplCopyWith(_$ReportManagerStateImpl value,
-          $Res Function(_$ReportManagerStateImpl) then) =
+abstract class _$$ReportManagerStateImplCopyWith<$Res> implements $ReportManagerStateCopyWith<$Res> {
+  factory _$$ReportManagerStateImplCopyWith(
+          _$ReportManagerStateImpl value, $Res Function(_$ReportManagerStateImpl) then) =
       __$$ReportManagerStateImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -71,8 +68,7 @@ abstract class _$$ReportManagerStateImplCopyWith<$Res>
 class __$$ReportManagerStateImplCopyWithImpl<$Res>
     extends _$ReportManagerStateCopyWithImpl<$Res, _$ReportManagerStateImpl>
     implements _$$ReportManagerStateImplCopyWith<$Res> {
-  __$$ReportManagerStateImplCopyWithImpl(_$ReportManagerStateImpl _value,
-      $Res Function(_$ReportManagerStateImpl) _then)
+  __$$ReportManagerStateImplCopyWithImpl(_$ReportManagerStateImpl _value, $Res Function(_$ReportManagerStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -92,9 +88,7 @@ class __$$ReportManagerStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ReportManagerStateImpl implements _ReportManagerState {
-  const _$ReportManagerStateImpl(
-      {final List<ReportTask> tasks = const <ReportTask>[]})
-      : _tasks = tasks;
+  const _$ReportManagerStateImpl({final List<ReportTask> tasks = const <ReportTask>[]}) : _tasks = tasks;
 
   final List<ReportTask> _tasks;
   @override
@@ -119,25 +113,21 @@ class _$ReportManagerStateImpl implements _ReportManagerState {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_tasks));
+  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(_tasks));
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$ReportManagerStateImplCopyWith<_$ReportManagerStateImpl> get copyWith =>
-      __$$ReportManagerStateImplCopyWithImpl<_$ReportManagerStateImpl>(
-          this, _$identity);
+      __$$ReportManagerStateImplCopyWithImpl<_$ReportManagerStateImpl>(this, _$identity);
 }
 
 abstract class _ReportManagerState implements ReportManagerState {
-  const factory _ReportManagerState({final List<ReportTask> tasks}) =
-      _$ReportManagerStateImpl;
+  const factory _ReportManagerState({final List<ReportTask> tasks}) = _$ReportManagerStateImpl;
 
   @override
   List<ReportTask> get tasks;
   @override
   @JsonKey(ignore: true)
-  _$$ReportManagerStateImplCopyWith<_$ReportManagerStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$ReportManagerStateImplCopyWith<_$ReportManagerStateImpl> get copyWith => throw _privateConstructorUsedError;
 }

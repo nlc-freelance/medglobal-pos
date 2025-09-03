@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-import 'package:flutter/material.dart';
-import 'package:medglobal_shared/medglobal_shared.dart';
-
 enum TransactionType {
   refund('Refund'),
   sale('Sale');
@@ -17,8 +14,6 @@ enum TransactionType {
 }
 
 enum ReturnStatus {
-  awaitingAction('Awaiting Action'),
-  completed('Completed');
   awaitingAction('Awaiting Action'),
   completed('Completed');
 

@@ -9,8 +9,6 @@ import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
-import '../../../../../pos/product_catalog/presentation/bloc/product_catalog_sync_bloc/product_catalog_sync_bloc.dart';
-
 class PosHeader extends StatelessWidget {
   const PosHeader(this.routeState, {super.key});
 

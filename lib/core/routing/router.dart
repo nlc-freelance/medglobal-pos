@@ -1,20 +1,14 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
 import 'package:medglobal_admin_portal/core/routing/portal_routes.dart';
 import 'package:medglobal_admin_portal/core/routing/pos_routes.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/product_list_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_list_page.dart';
-import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/pos/register_screen.dart';
 import 'package:medglobal_admin_portal/pos/sales/presentation/screens/sales_screen.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 

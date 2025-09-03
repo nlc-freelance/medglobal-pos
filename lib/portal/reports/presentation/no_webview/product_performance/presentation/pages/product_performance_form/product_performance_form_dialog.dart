@@ -4,7 +4,7 @@ import 'package:flutter_portal/flutter_portal.dart';
 import 'package:medglobal_admin_portal/core/widgets/dialog/app_custom_dialog.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/cubit/product_performance_form_cubit/product_performance_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_form/widgets/product_performance_form.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_form/widgets/product_performance_selection.dart';
@@ -23,7 +23,6 @@ class _GenerateProductPerformanceDialogState extends State<GenerateProductPerfor
 
   late ProductPerformanceFormCubit formCubit;
   late ReportManagerCubit reportCubit;
-  final ScrollController scrollController = ScrollController();
   final ScrollController scrollController = ScrollController();
 
   @override
@@ -67,12 +66,6 @@ class _GenerateProductPerformanceDialogState extends State<GenerateProductPerfor
               listener: (context, state) {
                 final failedCreationTasks = state.productPerformanceTasks.failedCreation;
 
-                setState(() {
-                  currentReportTask = failedCreationTasks.isNotEmpty ? failedCreationTasks.first : null;
-                });
-              },
-              builder: (context, state) {
-                if (currentReportTask == null) return const SizedBox();
                 setState(() {
                   currentReportTask = failedCreationTasks.isNotEmpty ? failedCreationTasks.first : null;
                 });
