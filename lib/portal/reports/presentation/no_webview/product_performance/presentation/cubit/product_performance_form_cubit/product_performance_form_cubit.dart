@@ -76,7 +76,13 @@ class ProductPerformanceFormCubit extends Cubit<ProductPerformanceFormState> {
     emit(state.copyWith(rankingCriteria: rankingCriteria));
   }
 
-  void setPeriod(Period? period) => emit(state.copyWith(period: period, year: null));
+  void setPeriod(Period? period) => emit(state.copyWith(
+        period: period,
+        year: null,
+        month: null,
+        quarter: null,
+        halfYear: null,
+      ));
 
   void setYear(int? year) => emit(state.copyWith(year: year));
 

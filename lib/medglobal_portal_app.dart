@@ -6,6 +6,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_bloc/report_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/cubit/category/category_cubit.dart';
@@ -101,6 +102,7 @@ class MedGlobaPortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<ReportManagerCubit>()),
         BlocProvider(create: (_) => ActiveRegisterCubit()),
         BlocProvider(create: (_) => GetIt.I<ProductHistoryDetailBloc>()),
+        BlocProvider(create: (context) => GetIt.I<ReportBloc>()),
 
         //
         BlocProvider(create: (_) => GetIt.I<SidebarCubit>()),

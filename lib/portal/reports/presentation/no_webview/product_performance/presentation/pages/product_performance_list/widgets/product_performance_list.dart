@@ -26,7 +26,10 @@ class ProductPerformanceList extends StatelessWidget {
                 PageLoader.close();
                 context.read<ReportManagerCubit>().manualDownloadReport(report);
               },
-              failure: (message) => SnackbarUtil.error(context, message),
+              failure: (message) {
+                PageLoader.close();
+                SnackbarUtil.error(context, message);
+              },
               orElse: () {},
             );
           },

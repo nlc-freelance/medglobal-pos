@@ -74,7 +74,7 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
         tempTaskKey,
         (task) => task.copyWith(
           status: ReportTaskStatus.failure,
-          error: 'Failed to generate ${task.type.value}. ${e.toString()}',
+          error: 'An unexpected error occured. Failed to generate ${task.type.value}. ${e.toString()}',
         ),
       );
     }
@@ -126,7 +126,7 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
           taskKey,
           (task) => task.copyWith(
             status: ReportTaskStatus.failure,
-            error: 'Failed to generate ${task.type.value}. ${e.toString()}',
+            error: 'An unexpected error occured. Failed to generate ${task.type.value}. ${e.toString()}',
             pollingTimer: null,
           ),
         );
@@ -178,7 +178,7 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
         taskKey,
         (task) => task.copyWith(
           status: ReportTaskStatus.failure,
-          error: 'Failed to download $type. ${e.toString()}',
+          error: 'An unexpected error occured. Failed to download $type. ${e.toString()}',
         ),
       );
     }

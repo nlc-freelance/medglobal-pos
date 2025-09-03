@@ -20,6 +20,7 @@ import 'package:medglobal_admin_portal/portal/employee_management/domain/reposit
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/bloc/employee_bloc/employee_bloc.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_bloc/report_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/data/api/product_sales_history_api.dart';
@@ -354,6 +355,9 @@ void initReportDependencies() {
     )
     ..registerFactory<ReportManagerCubit>(
       () => ReportManagerCubit(repository: inject<ReportRepository>()),
+    )
+    ..registerLazySingleton<ReportBloc>(
+      () => ReportBloc(repository: inject<ReportRepository>()),
     )
     ..registerFactory<ProductPerformanceListBloc>(
       () => ProductPerformanceListBloc(repository: inject<ReportRepository>()),
