@@ -19,8 +19,6 @@ enum ReportType {
   final String value;
   const ReportType(this.value);
 
-  bool get isProductPerformance => [productABC, productPNL].contains(this);
-
   static ReportType fromString(String value) {
     return values.firstWhereOrNull((t) => t.value == value) ?? ReportType.unknown;
   }
@@ -37,14 +35,23 @@ enum ReportType {
         ReportType.supplyNeeds,
       ];
 
+  /// Report types with data payload and list of generated
+  bool get hasListAndRequiresSourceData => [productABC, productPNL].contains(this);
+
+  /// Product performance reports
+  bool get isProductPerformance => [productABC, productPNL].contains(this);
+
+  /// Product performance reports filter by type
+  static Map<String, dynamic> get productPerformanceTypeQuery => {
+        'type': [ReportType.productPNL.value, ReportType.productABC.value].join(',')
+      };
+
   /// Report types with payload for export
   bool get withPayload => [
         productABC,
         productPNL,
         productSalesHistory,
       ].contains(this);
-
-  bool get requiresSourceData => [productABC, productPNL].contains(this);
 }
 
 enum ReportStatus {

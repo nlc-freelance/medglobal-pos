@@ -15,6 +15,7 @@ import 'package:medglobal_admin_portal/portal/employee_management/presentation/p
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/products_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/product_performance_list_page.dart';
@@ -74,11 +75,23 @@ abstract class AppRouter {
               /// Tasks requiring source data are retained in the state so that they can
               /// continue to be managed and possibly corrected within the form or UI.
               final failedTasks = state.tasks.failed;
+
               if (failedTasks.isNotEmpty) {
-                for (ReportTask task in state.productPerformanceTasks) {
+                for (ReportTask task in failedTasks) {
                   SnackbarUtil.error(context, task.error!);
 
-                  if (task.type.requiresSourceData && task.isInCreationState) return;
+                  final hasListAndRequiresSourceData = task.type.hasListAndRequiresSourceData;
+
+                  /// If a report requires source data and is in creation state, do nothing
+                  if (hasListAndRequiresSourceData && task.isInCreationState) return;
+
+                  /// If a report requires source data and is already created,
+                  /// but encountered failure during polling/generating/downloading, remove it from the list
+                  if (hasListAndRequiresSourceData) {
+                    context.read<ProductPerformanceListBloc>().add(ProductPerformanceListEvent.removeReport(task.id));
+                  }
+
+                  // Finally, remove from ReportManagerCubit
                   context.read<ReportManagerCubit>().removeTask(task.key);
                 }
               }
@@ -88,7 +101,7 @@ abstract class AppRouter {
               final localReadyProductPerformanceTasks = state.productPerformanceTasks.local.ready;
 
               if (localReadyProductPerformanceTasks.isNotEmpty) {
-                for (ReportTask task in state.productPerformanceTasks) {
+                for (ReportTask task in localReadyProductPerformanceTasks) {
                   SnackbarUtil.success(
                     context,
                     '${task.fileName} is ready to download.',
@@ -98,6 +111,11 @@ abstract class AppRouter {
                           .read<ReportManagerCubit>()
                           .manualDownloadReport(task.toReport(ReportStatus.completed)),
                     ),
+                    onSnackbarClosed: () {
+                      // Remove the task from the ReportManagerCubit when snackbar is dismissed (auto or manual)
+                      // This ensures no duplicate snackbars are shown for the same task
+                      context.read<ReportManagerCubit>().removeTask(task.key);
+                    },
                   );
                 }
               }

@@ -5,7 +5,7 @@ import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_bloc/report_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/widgets/data_grid/product_performance_data_grid_empty.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
@@ -78,12 +78,10 @@ class _ProductPerformanceDataGridState extends State<ProductPerformanceDataGrid>
                     paginatedData,
                     onPageChanged: ({required page, required size}) =>
                         context.read<ProductPerformanceListBloc>().add(ProductPerformanceListEvent.getReports(
-                              filters: PageQuery(
+                              query: PageQuery(
                                 page: page,
                                 size: size,
-                                extra: {
-                                  'type': ReportType.productPNL.value,
-                                },
+                                extra: ReportType.productPerformanceTypeQuery,
                               ),
                             )),
                   ),
@@ -134,7 +132,7 @@ class ProductPerformanceDataGridSource extends DataGridSource with DialogMixin {
           child: cellBuilder(
             colName: cell.columnName,
             cell: cell,
-            report: _reports.firstWhere((tax) => tax.id == row.getCells().first.value),
+            report: _reports.firstWhere((report) => report.id == row.getCells().first.value),
           ),
         );
       }).toList(),
@@ -160,6 +158,6 @@ class ProductPerformanceDataGridSource extends DataGridSource with DialogMixin {
   }
 
   void _onDownload(Report report) {
-    _context.read<ReportManagerCubit>().manualDownloadReport(report);
+    _context.read<ReportBloc>().add(ReportEvent.getReport(report.id));
   }
 }
