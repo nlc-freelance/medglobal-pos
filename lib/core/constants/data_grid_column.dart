@@ -239,6 +239,18 @@ class DataGridColumn {
     ColumnData('qty_after', 'Qty After'),
   ];
 
+  static List<ColumnData> productSaleHistory = [
+    ColumnData('id', 'ID'),
+    ColumnData('datetime', 'Datetime'),
+    ColumnData('type', 'Type'),
+    ColumnData('unit_cost', 'Unit Cost'),
+    ColumnData('selling_price', 'Selling Price'),
+    ColumnData('volume_sold', 'Volume Sold'),
+    ColumnData('gross_sales', 'Gross Sales'),
+    ColumnData('discount', 'Discount'),
+    ColumnData('net_sales', 'Net Sales'),
+  ];
+
   static List<ColumnData> SALES_PER_CATEGORY = [
     ColumnData('group_by', 'Group By'),
     ColumnData('product_category', 'Product Category', minWidth: 205),

@@ -27,6 +27,7 @@ class _PortalSideBar1State extends State<PortalSideBar1> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: 260,
       backgroundColor: UIColors.background,
       shape: const Border(right: BorderSide(color: UIColors.borderMuted)),
       child: ListView(
@@ -146,22 +147,42 @@ class _PortalSideBar1State extends State<PortalSideBar1> {
                   SidebarSection(
                     leading: icon('/reports'),
                     title: 'Reports',
-                    isExpanded: expandedKey == '/reports' || expandedKey == '/reports/sales',
+                    isExpanded: expandedKey == '/reports' ||
+                        expandedKey == '/reports/sales' ||
+                        expandedKey == '/reports/products',
                     onToggle: () => toggleExpansion('/reports'),
                     hasSelection: context.isSubrouteOf('/reports'),
                     children: [
-                      const SidebarItem(
-                        title: 'Product History',
-                        route: '/reports/product-history',
-                        routeName: 'productHistoryList',
-                      ),
-                      const SidebarItem(
-                        title: 'Product Performance',
-                        route: '/reports/product-performance',
-                        routeName: 'productPerformanceList',
+                      SidebarSection(
+                        title: 'Products',
+                        isExpanded: expandedKey == '/reports/products',
+                        onToggle: () => setState(() {
+                          if (expandedKey == '/reports/products') {
+                            expandedKey = '/reports';
+                          } else {
+                            expandedKey = '/reports/products';
+                          }
+                        }),
+                        hasSelection: context.isSubrouteOf('/reports/products'),
+                        children: const [
+                          SidebarItem(
+                            title: 'Product History',
+                            route: '/reports/products/product-history',
+                            routeName: 'productHistoryReport',
+                          ),
+                          SidebarItem(
+                            title: 'Product Sales History',
+                            route: '/reports/products/product-sales-history',
+                            routeName: 'productSalesHistoryReport',
+                          ),
+                          SidebarItem(
+                            title: 'Product Performance',
+                            route: '/reports/products/product-performance',
+                            routeName: 'productPerformanceReports',
+                          ),
+                        ],
                       ),
                       SidebarSection(
-                        leading: icon('/reports/sales'),
                         title: 'Sales',
                         isExpanded: expandedKey == '/reports/sales',
                         onToggle: () => setState(() {

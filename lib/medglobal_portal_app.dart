@@ -46,6 +46,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_need/supply_need_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_lazy_list/supplier_lazy_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/transactions/bloc/transaction_bloc.dart';
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_transaction_list_cubit.dart';
@@ -80,6 +81,7 @@ class MedGlobaPortalApp extends StatelessWidget {
           BlocProvider(create: (_) => GetIt.I<LazyListBloc<Tax>>()),
           BlocProvider(create: (_) => GetIt.I<LazyListBloc<ReceiptTemplate>>()),
           BlocProvider(create: (_) => GetIt.I<ReportManagerCubit>()),
+          BlocProvider(create: (_) => GetIt.I<TransactionBloc>()),
           BlocProvider(create: (_) => GetIt.I<SidebarCubit>()),
         ],
 

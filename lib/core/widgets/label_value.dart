@@ -68,7 +68,10 @@ class LabelValue extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         UIText.labelSemiBold(label),
-        if (labelType == LabelValueType.text) UIText.bodyRegular(value ?? Strings.empty),
+        if (labelType == LabelValueType.text) ...[
+          const UIVerticalSpace(4),
+          UIText.bodyRegular(value ?? Strings.empty),
+        ],
         if (labelType == LabelValueType.status) ...[
           const UIVerticalSpace(6),
           Chip(

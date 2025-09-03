@@ -68,7 +68,7 @@ class _SidebarSectionState extends State<SidebarSection> with SingleTickerProvid
           ),
           child: ListTile(
             onTap: _onToggle,
-            leading: widget.leading,
+            leading: widget.leading ?? const SizedBox.shrink(),
             title: Text(widget.title),
             titleTextStyle: UIStyleText.inter.copyWith(fontWeight: FontWeight.w500),
             trailing: RotationTransition(
@@ -79,6 +79,7 @@ class _SidebarSectionState extends State<SidebarSection> with SingleTickerProvid
             ),
             selected: widget.hasSelection,
             selectedColor: UIColors.primary,
+            horizontalTitleGap: widget.leading == null ? 10 : 16,
             dense: true,
             visualDensity: VisualDensity.compact,
             contentPadding: const EdgeInsets.only(left: 22, right: 24),
@@ -95,7 +96,7 @@ class _SidebarSectionState extends State<SidebarSection> with SingleTickerProvid
             child: FadeTransition(
               opacity: _animation,
               child: Padding(
-                padding: const EdgeInsets.only(left: 32),
+                padding: const EdgeInsets.only(left: 20),
                 child: Column(children: widget.children),
               ),
             ),

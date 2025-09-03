@@ -28,7 +28,7 @@ class PageHeader extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    UIText.heading4(title),
+                    Text(title, style: UIStyleText.heading3),
                     if (titleTrailings != null) ...[
                       const UIHorizontalSpace(16),
                       ...?titleTrailings,
@@ -36,7 +36,6 @@ class PageHeader extends StatelessWidget {
                   ],
                 ),
                 if (subtitle != null) ...[
-                  const UIVerticalSpace(4),
                   Text(subtitle!, style: UIStyleText.hint.copyWith(color: UIColors.textGray)),
                 ],
               ],

@@ -316,3 +316,213 @@ abstract class _RegisterDto implements RegisterDto {
   _$$RegisterDtoImplCopyWith<_$RegisterDtoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+RegisterPartialDto _$RegisterPartialDtoFromJson(Map<String, dynamic> json) {
+  return _RegisterPartialDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$RegisterPartialDto {
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  @DateTimeConverter()
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  @DateTimeConverter()
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $RegisterPartialDtoCopyWith<RegisterPartialDto> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $RegisterPartialDtoCopyWith<$Res> {
+  factory $RegisterPartialDtoCopyWith(
+          RegisterPartialDto value, $Res Function(RegisterPartialDto) then) =
+      _$RegisterPartialDtoCopyWithImpl<$Res, RegisterPartialDto>;
+  @useResult
+  $Res call(
+      {int id,
+      String name,
+      @DateTimeConverter() DateTime? createdAt,
+      @DateTimeConverter() DateTime? updatedAt});
+}
+
+/// @nodoc
+class _$RegisterPartialDtoCopyWithImpl<$Res, $Val extends RegisterPartialDto>
+    implements $RegisterPartialDtoCopyWith<$Res> {
+  _$RegisterPartialDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$RegisterPartialDtoImplCopyWith<$Res>
+    implements $RegisterPartialDtoCopyWith<$Res> {
+  factory _$$RegisterPartialDtoImplCopyWith(_$RegisterPartialDtoImpl value,
+          $Res Function(_$RegisterPartialDtoImpl) then) =
+      __$$RegisterPartialDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      String name,
+      @DateTimeConverter() DateTime? createdAt,
+      @DateTimeConverter() DateTime? updatedAt});
+}
+
+/// @nodoc
+class __$$RegisterPartialDtoImplCopyWithImpl<$Res>
+    extends _$RegisterPartialDtoCopyWithImpl<$Res, _$RegisterPartialDtoImpl>
+    implements _$$RegisterPartialDtoImplCopyWith<$Res> {
+  __$$RegisterPartialDtoImplCopyWithImpl(_$RegisterPartialDtoImpl _value,
+      $Res Function(_$RegisterPartialDtoImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(_$RegisterPartialDtoImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$RegisterPartialDtoImpl implements _RegisterPartialDto {
+  const _$RegisterPartialDtoImpl(
+      {required this.id,
+      required this.name,
+      @DateTimeConverter() this.createdAt,
+      @DateTimeConverter() this.updatedAt});
+
+  factory _$RegisterPartialDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$RegisterPartialDtoImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String name;
+  @override
+  @DateTimeConverter()
+  final DateTime? createdAt;
+  @override
+  @DateTimeConverter()
+  final DateTime? updatedAt;
+
+  @override
+  String toString() {
+    return 'RegisterPartialDto(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RegisterPartialDtoImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name, createdAt, updatedAt);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$RegisterPartialDtoImplCopyWith<_$RegisterPartialDtoImpl> get copyWith =>
+      __$$RegisterPartialDtoImplCopyWithImpl<_$RegisterPartialDtoImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$RegisterPartialDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _RegisterPartialDto implements RegisterPartialDto {
+  const factory _RegisterPartialDto(
+          {required final int id,
+          required final String name,
+          @DateTimeConverter() final DateTime? createdAt,
+          @DateTimeConverter() final DateTime? updatedAt}) =
+      _$RegisterPartialDtoImpl;
+
+  factory _RegisterPartialDto.fromJson(Map<String, dynamic> json) =
+      _$RegisterPartialDtoImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get name;
+  @override
+  @DateTimeConverter()
+  DateTime? get createdAt;
+  @override
+  @DateTimeConverter()
+  DateTime? get updatedAt;
+  @override
+  @JsonKey(ignore: true)
+  _$$RegisterPartialDtoImplCopyWith<_$RegisterPartialDtoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

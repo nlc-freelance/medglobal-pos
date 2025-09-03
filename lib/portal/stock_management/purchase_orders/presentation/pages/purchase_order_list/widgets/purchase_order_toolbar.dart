@@ -47,6 +47,8 @@ class PurchaseOrderToolbar extends StatelessWidget {
         ),
         const UIHorizontalSpace(8),
         AppDropdown<Branch>.lazy(
+          hasInlineLabel: true,
+          inlineLabel: 'Branch',
           hint: 'All Branches',
           getName: (branch) => branch.name,
           onSelectItem: (branch) {

@@ -35,7 +35,7 @@ extension ReportPayloadExt on ReportPayload {
     }
 
     /// For product performance reports, wrap the data inside the JSON key `payload`
-    if (reportType.isProductPerformance) {
+    if (reportType.withPayload) {
       final cleanPayload = payload.removeNullValues();
       if (cleanPayload.isNotEmpty) {
         json['payload'] = cleanPayload;

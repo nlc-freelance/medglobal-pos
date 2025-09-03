@@ -18,11 +18,15 @@ class VariantTypeAheadSearch extends StatefulWidget {
 
 class _VariantTypeAheadSearchState extends State<VariantTypeAheadSearch> {
   late TextEditingController _controller;
+  bool _hasValue = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _controller = TextEditingController()
+      ..addListener(() {
+        setState(() => _hasValue = _controller.text.isNotEmpty);
+      });
   }
 
   @override
@@ -45,17 +49,17 @@ class _VariantTypeAheadSearchState extends State<VariantTypeAheadSearch> {
             style: UIStyleText.bodyRegular,
             cursorHeight: 14,
             decoration: InputDecoration(
-              hintText: 'Search for a product',
+              hintText: 'Search product',
               hintStyle: UIStyleText.hint,
               constraints: const BoxConstraints(maxHeight: 38),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
               prefixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Assets.icons.search.setSize(14),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: UIText.labelMedium('Product', color: UIColors.textMuted),
               ),
-              prefixIconConstraints: const BoxConstraints(maxWidth: 48, maxHeight: 30),
+              prefixIconConstraints: const BoxConstraints(maxWidth: 100, maxHeight: 30),
               suffixIcon: Visibility(
-                visible: _controller.text.isNotEmpty,
+                visible: _hasValue,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: InkWell(

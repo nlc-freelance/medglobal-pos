@@ -21,7 +21,11 @@ import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_tas
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/product_performance_list_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_detail_bloc/product_history_detail_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/presentation/bloc/product_sales_history_bloc/product_sales_history_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/presentation/bloc/product_sales_history_filter_cubit/product_sales_history_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/presentation/product_sales_history_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/sales_per_category_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/presentation/sales_per_shift_details/sales_per_shift_details_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/presentation/presentation/sales_per_shift_list/sales_per_shift_page.dart';
@@ -322,41 +326,93 @@ final ShellRoute portalRoutes = ShellRoute(
 
     /// Reports
     ///
-    GoRoute(
-      path: '/reports',
-      builder: (context, state) => const SizedBox(),
+    ShellRoute(
+      pageBuilder: (context, state, child) => NoTransitionPage(
+        child: BlocProvider(
+          create: (context) => GetIt.I<ProductHistoryDetailBloc>(),
+          child: child,
+        ),
+      ),
       routes: [
         GoRoute(
-          path: 'product-history',
-          name: 'productHistoryList',
-          pageBuilder: (context, state) => const NoTransitionPage(child: ProductHistoryPage()),
-        ),
-        GoRoute(
-          path: 'product-performance',
-          name: 'productPerformanceList',
-          pageBuilder: (context, state) => const NoTransitionPage(child: ProductPerformanceListPage()),
-        ),
-        GoRoute(
-          path: 'sales',
+          path: '/reports',
           builder: (context, state) => const SizedBox(),
           routes: [
             GoRoute(
-              path: 'sales-per-category',
-              name: 'salesPerCategoryDetails',
-              pageBuilder: (context, state) => const NoTransitionPage(child: SalesPerCategoryPage()),
-            ),
-            GoRoute(
-              path: 'sales-per-shift',
-              name: 'salesPerShiftList',
-              pageBuilder: (context, state) => const NoTransitionPage(child: SalesPerShiftPage()),
+              path: 'products',
+              builder: (context, state) => const SizedBox(),
               routes: [
                 GoRoute(
-                  path: ':id',
-                  name: 'salesPerShiftDetails',
-                  pageBuilder: (context, state) {
-                    final id = state.pathParameters['id']!;
-                    return NoTransitionPage(child: SalesPerShiftDetailsPage(id: id));
-                  },
+                  path: 'product-history',
+                  name: 'productHistoryReport',
+                  pageBuilder: (context, state) => const NoTransitionPage(child: ProductHistoryPage()),
+                ),
+                GoRoute(
+                  path: 'product-sales-history',
+                  name: 'productSalesHistoryReport',
+                  pageBuilder: (context, state) => NoTransitionPage(
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider(create: (context) => GetIt.I<ProductSalesHistoryBloc>()),
+                        BlocProvider(create: (context) => ProductSalesHistoryFilterCubit()),
+                      ],
+                      child: const ProductSalesHistoryPage(),
+                    ),
+                  ),
+                ),
+                GoRoute(
+                  path: 'product-performance',
+                  name: 'productPerformanceReports',
+                  pageBuilder: (context, state) => const NoTransitionPage(child: ProductPerformanceListPage()),
+                )
+              ],
+            ),
+            // GoRoute(
+            //   path: 'product-history',
+            //   name: 'productHistoryReport',
+            //   pageBuilder: (context, state) => const NoTransitionPage(child: ProductHistoryPage()),
+            // ),
+            // GoRoute(
+            //   path: 'product-sales-history',
+            //   name: 'productSalesHistoryReport',
+            //   pageBuilder: (context, state) => NoTransitionPage(
+            //     child: MultiBlocProvider(
+            //       providers: [
+            //         BlocProvider(create: (context) => GetIt.I<ProductSalesHistoryBloc>()),
+            //         BlocProvider(create: (context) => ProductSalesHistoryFilterCubit()),
+            //       ],
+            //       child: const ProductSalesHistoryPage(),
+            //     ),
+            //   ),
+            // ),
+            // GoRoute(
+            //   path: 'product-performance',
+            //   name: 'productPerformanceReports',
+            //   pageBuilder: (context, state) => const NoTransitionPage(child: ProductPerformanceListPage()),
+            // ),
+            GoRoute(
+              path: 'sales',
+              builder: (context, state) => const SizedBox(),
+              routes: [
+                GoRoute(
+                  path: 'sales-per-category',
+                  name: 'salesPerCategoryDetails',
+                  pageBuilder: (context, state) => const NoTransitionPage(child: SalesPerCategoryPage()),
+                ),
+                GoRoute(
+                  path: 'sales-per-shift',
+                  name: 'salesPerShiftList',
+                  pageBuilder: (context, state) => const NoTransitionPage(child: SalesPerShiftPage()),
+                  routes: [
+                    GoRoute(
+                      path: ':id',
+                      name: 'salesPerShiftDetails',
+                      pageBuilder: (context, state) {
+                        final id = state.pathParameters['id']!;
+                        return NoTransitionPage(child: SalesPerShiftDetailsPage(id: id));
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

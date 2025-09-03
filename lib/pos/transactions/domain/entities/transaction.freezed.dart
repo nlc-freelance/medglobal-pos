@@ -28,7 +28,7 @@ mixin _$Transaction {
       throw _privateConstructorUsedError; // required Register register,
 // required Branch branch,
 // required Employee employee,
-  List<TransactionItem> get items => throw _privateConstructorUsedError;
+  List<TransactionItem>? get items => throw _privateConstructorUsedError;
   double? get subtotal => throw _privateConstructorUsedError;
   double? get tax => throw _privateConstructorUsedError;
   double? get total => throw _privateConstructorUsedError;
@@ -63,7 +63,7 @@ abstract class $TransactionCopyWith<$Res> {
       RegisterPartial register,
       BranchPartial branch,
       EmployeePartial employee,
-      List<TransactionItem> items,
+      List<TransactionItem>? items,
       double? subtotal,
       double? tax,
       double? total,
@@ -99,7 +99,7 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
     Object? register = null,
     Object? branch = null,
     Object? employee = null,
-    Object? items = null,
+    Object? items = freezed,
     Object? subtotal = freezed,
     Object? tax = freezed,
     Object? total = freezed,
@@ -145,10 +145,10 @@ class _$TransactionCopyWithImpl<$Res, $Val extends Transaction>
           ? _value.employee
           : employee // ignore: cast_nullable_to_non_nullable
               as EmployeePartial,
-      items: null == items
+      items: freezed == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<TransactionItem>,
+              as List<TransactionItem>?,
       subtotal: freezed == subtotal
           ? _value.subtotal
           : subtotal // ignore: cast_nullable_to_non_nullable
@@ -223,7 +223,7 @@ abstract class _$$TransactionImplCopyWith<$Res>
       RegisterPartial register,
       BranchPartial branch,
       EmployeePartial employee,
-      List<TransactionItem> items,
+      List<TransactionItem>? items,
       double? subtotal,
       double? tax,
       double? total,
@@ -260,7 +260,7 @@ class __$$TransactionImplCopyWithImpl<$Res>
     Object? register = null,
     Object? branch = null,
     Object? employee = null,
-    Object? items = null,
+    Object? items = freezed,
     Object? subtotal = freezed,
     Object? tax = freezed,
     Object? total = freezed,
@@ -306,10 +306,10 @@ class __$$TransactionImplCopyWithImpl<$Res>
           ? _value.employee
           : employee // ignore: cast_nullable_to_non_nullable
               as EmployeePartial,
-      items: null == items
+      items: freezed == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<TransactionItem>,
+              as List<TransactionItem>?,
       subtotal: freezed == subtotal
           ? _value.subtotal
           : subtotal // ignore: cast_nullable_to_non_nullable
@@ -355,7 +355,7 @@ class _$TransactionImpl extends _Transaction {
       required this.register,
       required this.branch,
       required this.employee,
-      required final List<TransactionItem> items,
+      final List<TransactionItem>? items,
       this.subtotal,
       this.tax,
       this.total,
@@ -387,15 +387,17 @@ class _$TransactionImpl extends _Transaction {
 // required Register register,
 // required Branch branch,
 // required Employee employee,
-  final List<TransactionItem> _items;
+  final List<TransactionItem>? _items;
 // required Register register,
 // required Branch branch,
 // required Employee employee,
   @override
-  List<TransactionItem> get items {
+  List<TransactionItem>? get items {
+    final value = _items;
+    if (value == null) return null;
     if (_items is EqualUnmodifiableListView) return _items;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_items);
+    return EqualUnmodifiableListView(value);
   }
 
   @override
@@ -497,7 +499,7 @@ abstract class _Transaction extends Transaction {
       required final RegisterPartial register,
       required final BranchPartial branch,
       required final EmployeePartial employee,
-      required final List<TransactionItem> items,
+      final List<TransactionItem>? items,
       final double? subtotal,
       final double? tax,
       final double? total,
@@ -528,7 +530,7 @@ abstract class _Transaction extends Transaction {
   @override // required Register register,
 // required Branch branch,
 // required Employee employee,
-  List<TransactionItem> get items;
+  List<TransactionItem>? get items;
   @override
   double? get subtotal;
   @override

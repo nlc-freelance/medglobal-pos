@@ -14,20 +14,25 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+Order _$OrderFromJson(Map<String, dynamic> json) {
+  return _Order.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Order {
-  RegisterPartial get register => throw _privateConstructorUsedError;
-  BranchPartial get branch => throw _privateConstructorUsedError;
-  EmployeePartial get employee => throw _privateConstructorUsedError;
-
+// required RegisterPartial register,
+// required BranchPartial branch,
+// required EmployeePartial employee,
   /// Items added in cart
   List<OrderItem> get items => throw _privateConstructorUsedError;
 
   /// Total amount due
-// @Default(0.0) double total,
-  /// Amount customer gave as payment
-  double get amountPaid => throw _privateConstructorUsedError;
+  double get total => throw _privateConstructorUsedError;
 
+  /// Amount customer gave as payment
+  double? get amountPaid => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $OrderCopyWith<Order> get copyWith => throw _privateConstructorUsedError;
 }
@@ -37,16 +42,7 @@ abstract class $OrderCopyWith<$Res> {
   factory $OrderCopyWith(Order value, $Res Function(Order) then) =
       _$OrderCopyWithImpl<$Res, Order>;
   @useResult
-  $Res call(
-      {RegisterPartial register,
-      BranchPartial branch,
-      EmployeePartial employee,
-      List<OrderItem> items,
-      double amountPaid});
-
-  $RegisterPartialCopyWith<$Res> get register;
-  $BranchPartialCopyWith<$Res> get branch;
-  $EmployeePartialCopyWith<$Res> get employee;
+  $Res call({List<OrderItem> items, double total, double? amountPaid});
 }
 
 /// @nodoc
@@ -62,58 +58,24 @@ class _$OrderCopyWithImpl<$Res, $Val extends Order>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? register = null,
-    Object? branch = null,
-    Object? employee = null,
     Object? items = null,
-    Object? amountPaid = null,
+    Object? total = null,
+    Object? amountPaid = freezed,
   }) {
     return _then(_value.copyWith(
-      register: null == register
-          ? _value.register
-          : register // ignore: cast_nullable_to_non_nullable
-              as RegisterPartial,
-      branch: null == branch
-          ? _value.branch
-          : branch // ignore: cast_nullable_to_non_nullable
-              as BranchPartial,
-      employee: null == employee
-          ? _value.employee
-          : employee // ignore: cast_nullable_to_non_nullable
-              as EmployeePartial,
       items: null == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<OrderItem>,
-      amountPaid: null == amountPaid
+      total: null == total
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as double,
+      amountPaid: freezed == amountPaid
           ? _value.amountPaid
           : amountPaid // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
     ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $RegisterPartialCopyWith<$Res> get register {
-    return $RegisterPartialCopyWith<$Res>(_value.register, (value) {
-      return _then(_value.copyWith(register: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $BranchPartialCopyWith<$Res> get branch {
-    return $BranchPartialCopyWith<$Res>(_value.branch, (value) {
-      return _then(_value.copyWith(branch: value) as $Val);
-    });
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $EmployeePartialCopyWith<$Res> get employee {
-    return $EmployeePartialCopyWith<$Res>(_value.employee, (value) {
-      return _then(_value.copyWith(employee: value) as $Val);
-    });
   }
 }
 
@@ -124,19 +86,7 @@ abstract class _$$OrderImplCopyWith<$Res> implements $OrderCopyWith<$Res> {
       __$$OrderImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {RegisterPartial register,
-      BranchPartial branch,
-      EmployeePartial employee,
-      List<OrderItem> items,
-      double amountPaid});
-
-  @override
-  $RegisterPartialCopyWith<$Res> get register;
-  @override
-  $BranchPartialCopyWith<$Res> get branch;
-  @override
-  $EmployeePartialCopyWith<$Res> get employee;
+  $Res call({List<OrderItem> items, double total, double? amountPaid});
 }
 
 /// @nodoc
@@ -150,58 +100,47 @@ class __$$OrderImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? register = null,
-    Object? branch = null,
-    Object? employee = null,
     Object? items = null,
-    Object? amountPaid = null,
+    Object? total = null,
+    Object? amountPaid = freezed,
   }) {
     return _then(_$OrderImpl(
-      register: null == register
-          ? _value.register
-          : register // ignore: cast_nullable_to_non_nullable
-              as RegisterPartial,
-      branch: null == branch
-          ? _value.branch
-          : branch // ignore: cast_nullable_to_non_nullable
-              as BranchPartial,
-      employee: null == employee
-          ? _value.employee
-          : employee // ignore: cast_nullable_to_non_nullable
-              as EmployeePartial,
       items: null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
               as List<OrderItem>,
-      amountPaid: null == amountPaid
+      total: null == total
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as double,
+      amountPaid: freezed == amountPaid
           ? _value.amountPaid
           : amountPaid // ignore: cast_nullable_to_non_nullable
-              as double,
+              as double?,
     ));
   }
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$OrderImpl implements _Order {
   const _$OrderImpl(
-      {required this.register,
-      required this.branch,
-      required this.employee,
-      final List<OrderItem> items = const [],
-      required this.amountPaid})
+      {final List<OrderItem> items = const [],
+      this.total = 0.0,
+      this.amountPaid})
       : _items = items;
 
-  @override
-  final RegisterPartial register;
-  @override
-  final BranchPartial branch;
-  @override
-  final EmployeePartial employee;
+  factory _$OrderImpl.fromJson(Map<String, dynamic> json) =>
+      _$$OrderImplFromJson(json);
 
+// required RegisterPartial register,
+// required BranchPartial branch,
+// required EmployeePartial employee,
   /// Items added in cart
   final List<OrderItem> _items;
-
+// required RegisterPartial register,
+// required BranchPartial branch,
+// required EmployeePartial employee,
   /// Items added in cart
   @override
   @JsonKey()
@@ -212,14 +151,17 @@ class _$OrderImpl implements _Order {
   }
 
   /// Total amount due
-// @Default(0.0) double total,
+  @override
+  @JsonKey()
+  final double total;
+
   /// Amount customer gave as payment
   @override
-  final double amountPaid;
+  final double? amountPaid;
 
   @override
   String toString() {
-    return 'Order(register: $register, branch: $branch, employee: $employee, items: $items, amountPaid: $amountPaid)';
+    return 'Order(items: $items, total: $total, amountPaid: $amountPaid)';
   }
 
   @override
@@ -227,51 +169,52 @@ class _$OrderImpl implements _Order {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OrderImpl &&
-            (identical(other.register, register) ||
-                other.register == register) &&
-            (identical(other.branch, branch) || other.branch == branch) &&
-            (identical(other.employee, employee) ||
-                other.employee == employee) &&
             const DeepCollectionEquality().equals(other._items, _items) &&
+            (identical(other.total, total) || other.total == total) &&
             (identical(other.amountPaid, amountPaid) ||
                 other.amountPaid == amountPaid));
   }
 
+  @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, register, branch, employee,
-      const DeepCollectionEquality().hash(_items), amountPaid);
+  int get hashCode => Object.hash(runtimeType,
+      const DeepCollectionEquality().hash(_items), total, amountPaid);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$OrderImplCopyWith<_$OrderImpl> get copyWith =>
       __$$OrderImplCopyWithImpl<_$OrderImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$OrderImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Order implements Order {
   const factory _Order(
-      {required final RegisterPartial register,
-      required final BranchPartial branch,
-      required final EmployeePartial employee,
-      final List<OrderItem> items,
-      required final double amountPaid}) = _$OrderImpl;
+      {final List<OrderItem> items,
+      final double total,
+      final double? amountPaid}) = _$OrderImpl;
 
-  @override
-  RegisterPartial get register;
-  @override
-  BranchPartial get branch;
-  @override
-  EmployeePartial get employee;
-  @override
+  factory _Order.fromJson(Map<String, dynamic> json) = _$OrderImpl.fromJson;
 
+  @override // required RegisterPartial register,
+// required BranchPartial branch,
+// required EmployeePartial employee,
   /// Items added in cart
   List<OrderItem> get items;
   @override
 
   /// Total amount due
-// @Default(0.0) double total,
+  double get total;
+  @override
+
   /// Amount customer gave as payment
-  double get amountPaid;
+  double? get amountPaid;
   @override
   @JsonKey(ignore: true)
   _$$OrderImplCopyWith<_$OrderImpl> get copyWith =>

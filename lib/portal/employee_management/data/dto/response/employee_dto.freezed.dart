@@ -403,3 +403,236 @@ abstract class _EmployeeDto extends EmployeeDto {
   _$$EmployeeDtoImplCopyWith<_$EmployeeDtoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+EmployeePartialDto _$EmployeePartialDtoFromJson(Map<String, dynamic> json) {
+  return _EmployeePartialDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$EmployeePartialDto {
+  int get id => throw _privateConstructorUsedError;
+  String get firstName => throw _privateConstructorUsedError;
+  String get lastName => throw _privateConstructorUsedError;
+  @DateTimeConverter()
+  DateTime? get createdAt => throw _privateConstructorUsedError;
+  @DateTimeConverter()
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $EmployeePartialDtoCopyWith<EmployeePartialDto> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $EmployeePartialDtoCopyWith<$Res> {
+  factory $EmployeePartialDtoCopyWith(
+          EmployeePartialDto value, $Res Function(EmployeePartialDto) then) =
+      _$EmployeePartialDtoCopyWithImpl<$Res, EmployeePartialDto>;
+  @useResult
+  $Res call(
+      {int id,
+      String firstName,
+      String lastName,
+      @DateTimeConverter() DateTime? createdAt,
+      @DateTimeConverter() DateTime? updatedAt});
+}
+
+/// @nodoc
+class _$EmployeePartialDtoCopyWithImpl<$Res, $Val extends EmployeePartialDto>
+    implements $EmployeePartialDtoCopyWith<$Res> {
+  _$EmployeePartialDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? firstName = null,
+    Object? lastName = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      firstName: null == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastName: null == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$EmployeePartialDtoImplCopyWith<$Res>
+    implements $EmployeePartialDtoCopyWith<$Res> {
+  factory _$$EmployeePartialDtoImplCopyWith(_$EmployeePartialDtoImpl value,
+          $Res Function(_$EmployeePartialDtoImpl) then) =
+      __$$EmployeePartialDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      String firstName,
+      String lastName,
+      @DateTimeConverter() DateTime? createdAt,
+      @DateTimeConverter() DateTime? updatedAt});
+}
+
+/// @nodoc
+class __$$EmployeePartialDtoImplCopyWithImpl<$Res>
+    extends _$EmployeePartialDtoCopyWithImpl<$Res, _$EmployeePartialDtoImpl>
+    implements _$$EmployeePartialDtoImplCopyWith<$Res> {
+  __$$EmployeePartialDtoImplCopyWithImpl(_$EmployeePartialDtoImpl _value,
+      $Res Function(_$EmployeePartialDtoImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? firstName = null,
+    Object? lastName = null,
+    Object? createdAt = freezed,
+    Object? updatedAt = freezed,
+  }) {
+    return _then(_$EmployeePartialDtoImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      firstName: null == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastName: null == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      updatedAt: freezed == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$EmployeePartialDtoImpl implements _EmployeePartialDto {
+  const _$EmployeePartialDtoImpl(
+      {required this.id,
+      required this.firstName,
+      required this.lastName,
+      @DateTimeConverter() this.createdAt,
+      @DateTimeConverter() this.updatedAt});
+
+  factory _$EmployeePartialDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EmployeePartialDtoImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String firstName;
+  @override
+  final String lastName;
+  @override
+  @DateTimeConverter()
+  final DateTime? createdAt;
+  @override
+  @DateTimeConverter()
+  final DateTime? updatedAt;
+
+  @override
+  String toString() {
+    return 'EmployeePartialDto(id: $id, firstName: $firstName, lastName: $lastName, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$EmployeePartialDtoImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.firstName, firstName) ||
+                other.firstName == firstName) &&
+            (identical(other.lastName, lastName) ||
+                other.lastName == lastName) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, id, firstName, lastName, createdAt, updatedAt);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$EmployeePartialDtoImplCopyWith<_$EmployeePartialDtoImpl> get copyWith =>
+      __$$EmployeePartialDtoImplCopyWithImpl<_$EmployeePartialDtoImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$EmployeePartialDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _EmployeePartialDto implements EmployeePartialDto {
+  const factory _EmployeePartialDto(
+          {required final int id,
+          required final String firstName,
+          required final String lastName,
+          @DateTimeConverter() final DateTime? createdAt,
+          @DateTimeConverter() final DateTime? updatedAt}) =
+      _$EmployeePartialDtoImpl;
+
+  factory _EmployeePartialDto.fromJson(Map<String, dynamic> json) =
+      _$EmployeePartialDtoImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get firstName;
+  @override
+  String get lastName;
+  @override
+  @DateTimeConverter()
+  DateTime? get createdAt;
+  @override
+  @DateTimeConverter()
+  DateTime? get updatedAt;
+  @override
+  @JsonKey(ignore: true)
+  _$$EmployeePartialDtoImplCopyWith<_$EmployeePartialDtoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

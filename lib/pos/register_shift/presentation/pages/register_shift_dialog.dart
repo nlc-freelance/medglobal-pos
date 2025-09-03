@@ -82,7 +82,7 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
                   const UIVerticalSpace(16),
                   if (widget.dateTime != null) ...[
                     Text(
-                      '${shiftAction.message} ${widget.dateTime!.toFullDateWithTimeFormat()}',
+                      '${shiftAction.message} ${widget.dateTime!.toFormattedFullDateTime12Hr()}',
                       style: UIStyleText.bodyRegular.copyWith(fontWeight: FontWeight.w400, fontSize: 15),
                     ),
                     const UIVerticalSpace(24),

@@ -19,44 +19,38 @@ mixin _$SyncEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() start,
-    required TResult Function() stop,
-    required TResult Function() manual,
+    required TResult Function() syncNow,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? start,
-    TResult? Function()? stop,
-    TResult? Function()? manual,
+    TResult? Function()? syncNow,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? start,
-    TResult Function()? stop,
-    TResult Function()? manual,
+    TResult Function()? syncNow,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Start value) start,
-    required TResult Function(_Stop value) stop,
-    required TResult Function(_Manual value) manual,
+    required TResult Function(_SyncNow value) syncNow,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Start value)? start,
-    TResult? Function(_Stop value)? stop,
-    TResult? Function(_Manual value)? manual,
+    TResult? Function(_SyncNow value)? syncNow,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Start value)? start,
-    TResult Function(_Stop value)? stop,
-    TResult Function(_Manual value)? manual,
+    TResult Function(_SyncNow value)? syncNow,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -118,8 +112,7 @@ class _$StartImpl implements _Start {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() start,
-    required TResult Function() stop,
-    required TResult Function() manual,
+    required TResult Function() syncNow,
   }) {
     return start();
   }
@@ -128,8 +121,7 @@ class _$StartImpl implements _Start {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? start,
-    TResult? Function()? stop,
-    TResult? Function()? manual,
+    TResult? Function()? syncNow,
   }) {
     return start?.call();
   }
@@ -138,8 +130,7 @@ class _$StartImpl implements _Start {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? start,
-    TResult Function()? stop,
-    TResult Function()? manual,
+    TResult Function()? syncNow,
     required TResult orElse(),
   }) {
     if (start != null) {
@@ -152,8 +143,7 @@ class _$StartImpl implements _Start {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Start value) start,
-    required TResult Function(_Stop value) stop,
-    required TResult Function(_Manual value) manual,
+    required TResult Function(_SyncNow value) syncNow,
   }) {
     return start(this);
   }
@@ -162,8 +152,7 @@ class _$StartImpl implements _Start {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Start value)? start,
-    TResult? Function(_Stop value)? stop,
-    TResult? Function(_Manual value)? manual,
+    TResult? Function(_SyncNow value)? syncNow,
   }) {
     return start?.call(this);
   }
@@ -172,8 +161,7 @@ class _$StartImpl implements _Start {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Start value)? start,
-    TResult Function(_Stop value)? stop,
-    TResult Function(_Manual value)? manual,
+    TResult Function(_SyncNow value)? syncNow,
     required TResult orElse(),
   }) {
     if (start != null) {
@@ -188,34 +176,35 @@ abstract class _Start implements SyncEvent {
 }
 
 /// @nodoc
-abstract class _$$StopImplCopyWith<$Res> {
-  factory _$$StopImplCopyWith(
-          _$StopImpl value, $Res Function(_$StopImpl) then) =
-      __$$StopImplCopyWithImpl<$Res>;
+abstract class _$$SyncNowImplCopyWith<$Res> {
+  factory _$$SyncNowImplCopyWith(
+          _$SyncNowImpl value, $Res Function(_$SyncNowImpl) then) =
+      __$$SyncNowImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$StopImplCopyWithImpl<$Res>
-    extends _$SyncEventCopyWithImpl<$Res, _$StopImpl>
-    implements _$$StopImplCopyWith<$Res> {
-  __$$StopImplCopyWithImpl(_$StopImpl _value, $Res Function(_$StopImpl) _then)
+class __$$SyncNowImplCopyWithImpl<$Res>
+    extends _$SyncEventCopyWithImpl<$Res, _$SyncNowImpl>
+    implements _$$SyncNowImplCopyWith<$Res> {
+  __$$SyncNowImplCopyWithImpl(
+      _$SyncNowImpl _value, $Res Function(_$SyncNowImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$StopImpl implements _Stop {
-  const _$StopImpl();
+class _$SyncNowImpl implements _SyncNow {
+  const _$SyncNowImpl();
 
   @override
   String toString() {
-    return 'SyncEvent.stop()';
+    return 'SyncEvent.syncNow()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$StopImpl);
+        (other.runtimeType == runtimeType && other is _$SyncNowImpl);
   }
 
   @override
@@ -225,32 +214,29 @@ class _$StopImpl implements _Stop {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() start,
-    required TResult Function() stop,
-    required TResult Function() manual,
+    required TResult Function() syncNow,
   }) {
-    return stop();
+    return syncNow();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? start,
-    TResult? Function()? stop,
-    TResult? Function()? manual,
+    TResult? Function()? syncNow,
   }) {
-    return stop?.call();
+    return syncNow?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? start,
-    TResult Function()? stop,
-    TResult Function()? manual,
+    TResult Function()? syncNow,
     required TResult orElse(),
   }) {
-    if (stop != null) {
-      return stop();
+    if (syncNow != null) {
+      return syncNow();
     }
     return orElse();
   }
@@ -259,147 +245,36 @@ class _$StopImpl implements _Stop {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Start value) start,
-    required TResult Function(_Stop value) stop,
-    required TResult Function(_Manual value) manual,
+    required TResult Function(_SyncNow value) syncNow,
   }) {
-    return stop(this);
+    return syncNow(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Start value)? start,
-    TResult? Function(_Stop value)? stop,
-    TResult? Function(_Manual value)? manual,
+    TResult? Function(_SyncNow value)? syncNow,
   }) {
-    return stop?.call(this);
+    return syncNow?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Start value)? start,
-    TResult Function(_Stop value)? stop,
-    TResult Function(_Manual value)? manual,
+    TResult Function(_SyncNow value)? syncNow,
     required TResult orElse(),
   }) {
-    if (stop != null) {
-      return stop(this);
+    if (syncNow != null) {
+      return syncNow(this);
     }
     return orElse();
   }
 }
 
-abstract class _Stop implements SyncEvent {
-  const factory _Stop() = _$StopImpl;
-}
-
-/// @nodoc
-abstract class _$$ManualImplCopyWith<$Res> {
-  factory _$$ManualImplCopyWith(
-          _$ManualImpl value, $Res Function(_$ManualImpl) then) =
-      __$$ManualImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$ManualImplCopyWithImpl<$Res>
-    extends _$SyncEventCopyWithImpl<$Res, _$ManualImpl>
-    implements _$$ManualImplCopyWith<$Res> {
-  __$$ManualImplCopyWithImpl(
-      _$ManualImpl _value, $Res Function(_$ManualImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$ManualImpl implements _Manual {
-  const _$ManualImpl();
-
-  @override
-  String toString() {
-    return 'SyncEvent.manual()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$ManualImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() start,
-    required TResult Function() stop,
-    required TResult Function() manual,
-  }) {
-    return manual();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? start,
-    TResult? Function()? stop,
-    TResult? Function()? manual,
-  }) {
-    return manual?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? start,
-    TResult Function()? stop,
-    TResult Function()? manual,
-    required TResult orElse(),
-  }) {
-    if (manual != null) {
-      return manual();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Start value) start,
-    required TResult Function(_Stop value) stop,
-    required TResult Function(_Manual value) manual,
-  }) {
-    return manual(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Start value)? start,
-    TResult? Function(_Stop value)? stop,
-    TResult? Function(_Manual value)? manual,
-  }) {
-    return manual?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Start value)? start,
-    TResult Function(_Stop value)? stop,
-    TResult Function(_Manual value)? manual,
-    required TResult orElse(),
-  }) {
-    if (manual != null) {
-      return manual(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _Manual implements SyncEvent {
-  const factory _Manual() = _$ManualImpl;
+abstract class _SyncNow implements SyncEvent {
+  const factory _SyncNow() = _$SyncNowImpl;
 }
 
 /// @nodoc
@@ -408,7 +283,7 @@ mixin _$SyncState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() syncing,
-    required TResult Function() success,
+    required TResult Function() synced,
     required TResult Function(String message) failure,
   }) =>
       throw _privateConstructorUsedError;
@@ -416,7 +291,7 @@ mixin _$SyncState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? syncing,
-    TResult? Function()? success,
+    TResult? Function()? synced,
     TResult? Function(String message)? failure,
   }) =>
       throw _privateConstructorUsedError;
@@ -424,7 +299,7 @@ mixin _$SyncState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? syncing,
-    TResult Function()? success,
+    TResult Function()? synced,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) =>
@@ -433,7 +308,7 @@ mixin _$SyncState {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_Syncing value) syncing,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Synced value) synced,
     required TResult Function(_Failure value) failure,
   }) =>
       throw _privateConstructorUsedError;
@@ -441,7 +316,7 @@ mixin _$SyncState {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_Syncing value)? syncing,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Synced value)? synced,
     TResult? Function(_Failure value)? failure,
   }) =>
       throw _privateConstructorUsedError;
@@ -449,7 +324,7 @@ mixin _$SyncState {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_Syncing value)? syncing,
-    TResult Function(_Success value)? success,
+    TResult Function(_Synced value)? synced,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) =>
@@ -513,7 +388,7 @@ class _$InitialImpl implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() syncing,
-    required TResult Function() success,
+    required TResult Function() synced,
     required TResult Function(String message) failure,
   }) {
     return initial();
@@ -524,7 +399,7 @@ class _$InitialImpl implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? syncing,
-    TResult? Function()? success,
+    TResult? Function()? synced,
     TResult? Function(String message)? failure,
   }) {
     return initial?.call();
@@ -535,7 +410,7 @@ class _$InitialImpl implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? syncing,
-    TResult Function()? success,
+    TResult Function()? synced,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -550,7 +425,7 @@ class _$InitialImpl implements _Initial {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_Syncing value) syncing,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Synced value) synced,
     required TResult Function(_Failure value) failure,
   }) {
     return initial(this);
@@ -561,7 +436,7 @@ class _$InitialImpl implements _Initial {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_Syncing value)? syncing,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Synced value)? synced,
     TResult? Function(_Failure value)? failure,
   }) {
     return initial?.call(this);
@@ -572,7 +447,7 @@ class _$InitialImpl implements _Initial {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_Syncing value)? syncing,
-    TResult Function(_Success value)? success,
+    TResult Function(_Synced value)? synced,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
@@ -627,7 +502,7 @@ class _$SyncingImpl implements _Syncing {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() syncing,
-    required TResult Function() success,
+    required TResult Function() synced,
     required TResult Function(String message) failure,
   }) {
     return syncing();
@@ -638,7 +513,7 @@ class _$SyncingImpl implements _Syncing {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? syncing,
-    TResult? Function()? success,
+    TResult? Function()? synced,
     TResult? Function(String message)? failure,
   }) {
     return syncing?.call();
@@ -649,7 +524,7 @@ class _$SyncingImpl implements _Syncing {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? syncing,
-    TResult Function()? success,
+    TResult Function()? synced,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -664,7 +539,7 @@ class _$SyncingImpl implements _Syncing {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_Syncing value) syncing,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Synced value) synced,
     required TResult Function(_Failure value) failure,
   }) {
     return syncing(this);
@@ -675,7 +550,7 @@ class _$SyncingImpl implements _Syncing {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_Syncing value)? syncing,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Synced value)? synced,
     TResult? Function(_Failure value)? failure,
   }) {
     return syncing?.call(this);
@@ -686,7 +561,7 @@ class _$SyncingImpl implements _Syncing {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_Syncing value)? syncing,
-    TResult Function(_Success value)? success,
+    TResult Function(_Synced value)? synced,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
@@ -702,35 +577,35 @@ abstract class _Syncing implements SyncState {
 }
 
 /// @nodoc
-abstract class _$$SuccessImplCopyWith<$Res> {
-  factory _$$SuccessImplCopyWith(
-          _$SuccessImpl value, $Res Function(_$SuccessImpl) then) =
-      __$$SuccessImplCopyWithImpl<$Res>;
+abstract class _$$SyncedImplCopyWith<$Res> {
+  factory _$$SyncedImplCopyWith(
+          _$SyncedImpl value, $Res Function(_$SyncedImpl) then) =
+      __$$SyncedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$SuccessImplCopyWithImpl<$Res>
-    extends _$SyncStateCopyWithImpl<$Res, _$SuccessImpl>
-    implements _$$SuccessImplCopyWith<$Res> {
-  __$$SuccessImplCopyWithImpl(
-      _$SuccessImpl _value, $Res Function(_$SuccessImpl) _then)
+class __$$SyncedImplCopyWithImpl<$Res>
+    extends _$SyncStateCopyWithImpl<$Res, _$SyncedImpl>
+    implements _$$SyncedImplCopyWith<$Res> {
+  __$$SyncedImplCopyWithImpl(
+      _$SyncedImpl _value, $Res Function(_$SyncedImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$SuccessImpl implements _Success {
-  const _$SuccessImpl();
+class _$SyncedImpl implements _Synced {
+  const _$SyncedImpl();
 
   @override
   String toString() {
-    return 'SyncState.success()';
+    return 'SyncState.synced()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$SuccessImpl);
+        (other.runtimeType == runtimeType && other is _$SyncedImpl);
   }
 
   @override
@@ -741,10 +616,10 @@ class _$SuccessImpl implements _Success {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() syncing,
-    required TResult Function() success,
+    required TResult Function() synced,
     required TResult Function(String message) failure,
   }) {
-    return success();
+    return synced();
   }
 
   @override
@@ -752,10 +627,10 @@ class _$SuccessImpl implements _Success {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? syncing,
-    TResult? Function()? success,
+    TResult? Function()? synced,
     TResult? Function(String message)? failure,
   }) {
-    return success?.call();
+    return synced?.call();
   }
 
   @override
@@ -763,12 +638,12 @@ class _$SuccessImpl implements _Success {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? syncing,
-    TResult Function()? success,
+    TResult Function()? synced,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
-    if (success != null) {
-      return success();
+    if (synced != null) {
+      return synced();
     }
     return orElse();
   }
@@ -778,10 +653,10 @@ class _$SuccessImpl implements _Success {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_Syncing value) syncing,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Synced value) synced,
     required TResult Function(_Failure value) failure,
   }) {
-    return success(this);
+    return synced(this);
   }
 
   @override
@@ -789,10 +664,10 @@ class _$SuccessImpl implements _Success {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_Syncing value)? syncing,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Synced value)? synced,
     TResult? Function(_Failure value)? failure,
   }) {
-    return success?.call(this);
+    return synced?.call(this);
   }
 
   @override
@@ -800,19 +675,19 @@ class _$SuccessImpl implements _Success {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_Syncing value)? syncing,
-    TResult Function(_Success value)? success,
+    TResult Function(_Synced value)? synced,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
-    if (success != null) {
-      return success(this);
+    if (synced != null) {
+      return synced(this);
     }
     return orElse();
   }
 }
 
-abstract class _Success implements SyncState {
-  const factory _Success() = _$SuccessImpl;
+abstract class _Synced implements SyncState {
+  const factory _Synced() = _$SyncedImpl;
 }
 
 /// @nodoc
@@ -881,7 +756,7 @@ class _$FailureImpl implements _Failure {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() syncing,
-    required TResult Function() success,
+    required TResult Function() synced,
     required TResult Function(String message) failure,
   }) {
     return failure(message);
@@ -892,7 +767,7 @@ class _$FailureImpl implements _Failure {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? syncing,
-    TResult? Function()? success,
+    TResult? Function()? synced,
     TResult? Function(String message)? failure,
   }) {
     return failure?.call(message);
@@ -903,7 +778,7 @@ class _$FailureImpl implements _Failure {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? syncing,
-    TResult Function()? success,
+    TResult Function()? synced,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -918,7 +793,7 @@ class _$FailureImpl implements _Failure {
   TResult map<TResult extends Object?>({
     required TResult Function(_Initial value) initial,
     required TResult Function(_Syncing value) syncing,
-    required TResult Function(_Success value) success,
+    required TResult Function(_Synced value) synced,
     required TResult Function(_Failure value) failure,
   }) {
     return failure(this);
@@ -929,7 +804,7 @@ class _$FailureImpl implements _Failure {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Initial value)? initial,
     TResult? Function(_Syncing value)? syncing,
-    TResult? Function(_Success value)? success,
+    TResult? Function(_Synced value)? synced,
     TResult? Function(_Failure value)? failure,
   }) {
     return failure?.call(this);
@@ -940,7 +815,7 @@ class _$FailureImpl implements _Failure {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Initial value)? initial,
     TResult Function(_Syncing value)? syncing,
-    TResult Function(_Success value)? success,
+    TResult Function(_Synced value)? synced,
     TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {

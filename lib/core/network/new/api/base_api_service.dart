@@ -16,7 +16,7 @@ class BaseApiService {
     required T Function(Map<String, dynamic>) fromJson,
   }) async {
     try {
-      final response = await _dioService.dio.get(path);
+      final response = await _dioService.dio.get(path, queryParameters: queryParams);
 
       // Check for successful status code
       if (response.statusCode == 200) {

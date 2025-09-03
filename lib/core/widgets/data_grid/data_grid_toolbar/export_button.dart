@@ -9,8 +9,9 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 class ExportButton extends StatelessWidget {
   final ReportType type;
   final Map<String, dynamic>? filters;
+  final Map<String, dynamic>? payload;
 
-  const ExportButton(this.type, {super.key, this.filters});
+  const ExportButton(this.type, {super.key, this.filters, this.payload});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class ExportButton extends StatelessWidget {
                 ReportPayload(
                   type: type.value,
                   filters: filters,
+                  payload: payload,
                 ),
               ),
           isLoading: state.tasks.any(

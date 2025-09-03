@@ -17,7 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$BranchInventory {
   int get id => throw _privateConstructorUsedError;
-  Branch get branch => throw _privateConstructorUsedError;
+  BranchPartial get branch => throw _privateConstructorUsedError;
   double? get price => throw _privateConstructorUsedError;
   int? get quantityOnHand => throw _privateConstructorUsedError;
 
@@ -32,9 +32,9 @@ abstract class $BranchInventoryCopyWith<$Res> {
           BranchInventory value, $Res Function(BranchInventory) then) =
       _$BranchInventoryCopyWithImpl<$Res, BranchInventory>;
   @useResult
-  $Res call({int id, Branch branch, double? price, int? quantityOnHand});
+  $Res call({int id, BranchPartial branch, double? price, int? quantityOnHand});
 
-  $BranchCopyWith<$Res> get branch;
+  $BranchPartialCopyWith<$Res> get branch;
 }
 
 /// @nodoc
@@ -63,7 +63,7 @@ class _$BranchInventoryCopyWithImpl<$Res, $Val extends BranchInventory>
       branch: null == branch
           ? _value.branch
           : branch // ignore: cast_nullable_to_non_nullable
-              as Branch,
+              as BranchPartial,
       price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -77,8 +77,8 @@ class _$BranchInventoryCopyWithImpl<$Res, $Val extends BranchInventory>
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchCopyWith<$Res> get branch {
-    return $BranchCopyWith<$Res>(_value.branch, (value) {
+  $BranchPartialCopyWith<$Res> get branch {
+    return $BranchPartialCopyWith<$Res>(_value.branch, (value) {
       return _then(_value.copyWith(branch: value) as $Val);
     });
   }
@@ -92,10 +92,10 @@ abstract class _$$BranchInventoryImplCopyWith<$Res>
       __$$BranchInventoryImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, Branch branch, double? price, int? quantityOnHand});
+  $Res call({int id, BranchPartial branch, double? price, int? quantityOnHand});
 
   @override
-  $BranchCopyWith<$Res> get branch;
+  $BranchPartialCopyWith<$Res> get branch;
 }
 
 /// @nodoc
@@ -122,7 +122,7 @@ class __$$BranchInventoryImplCopyWithImpl<$Res>
       branch: null == branch
           ? _value.branch
           : branch // ignore: cast_nullable_to_non_nullable
-              as Branch,
+              as BranchPartial,
       price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -147,7 +147,7 @@ class _$BranchInventoryImpl implements _BranchInventory {
   @override
   final int id;
   @override
-  final Branch branch;
+  final BranchPartial branch;
   @override
   final double? price;
   @override
@@ -185,14 +185,14 @@ class _$BranchInventoryImpl implements _BranchInventory {
 abstract class _BranchInventory implements BranchInventory {
   const factory _BranchInventory(
       {required final int id,
-      required final Branch branch,
+      required final BranchPartial branch,
       final double? price,
       final int? quantityOnHand}) = _$BranchInventoryImpl;
 
   @override
   int get id;
   @override
-  Branch get branch;
+  BranchPartial get branch;
   @override
   double? get price;
   @override

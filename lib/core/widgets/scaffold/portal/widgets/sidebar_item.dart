@@ -25,7 +25,7 @@ class SidebarItem extends StatelessWidget {
             : true);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 4, right: 20),
+      margin: const EdgeInsets.only(bottom: 4, right: 20, left: 12),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(4.0),

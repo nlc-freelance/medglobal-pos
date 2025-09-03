@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+OrderItem _$OrderItemFromJson(Map<String, dynamic> json) {
+  return _OrderItem.fromJson(json);
+}
+
 /// @nodoc
 mixin _$OrderItem {
   int get id => throw _privateConstructorUsedError;
@@ -30,9 +34,7 @@ mixin _$OrderItem {
   /// Currently, only percentage is supported
   DiscountType? get discountType => throw _privateConstructorUsedError;
 
-  /// Unit price after discount
-  double? get discountedPrice => throw _privateConstructorUsedError;
-
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $OrderItemCopyWith<OrderItem> get copyWith =>
       throw _privateConstructorUsedError;
@@ -50,8 +52,7 @@ abstract class $OrderItemCopyWith<$Res> {
       int quantity,
       double price,
       DiscountCategory? discount,
-      DiscountType? discountType,
-      double? discountedPrice});
+      DiscountType? discountType});
 }
 
 /// @nodoc
@@ -74,7 +75,6 @@ class _$OrderItemCopyWithImpl<$Res, $Val extends OrderItem>
     Object? price = null,
     Object? discount = freezed,
     Object? discountType = freezed,
-    Object? discountedPrice = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -105,10 +105,6 @@ class _$OrderItemCopyWithImpl<$Res, $Val extends OrderItem>
           ? _value.discountType
           : discountType // ignore: cast_nullable_to_non_nullable
               as DiscountType?,
-      discountedPrice: freezed == discountedPrice
-          ? _value.discountedPrice
-          : discountedPrice // ignore: cast_nullable_to_non_nullable
-              as double?,
     ) as $Val);
   }
 }
@@ -128,8 +124,7 @@ abstract class _$$OrderItemImplCopyWith<$Res>
       int quantity,
       double price,
       DiscountCategory? discount,
-      DiscountType? discountType,
-      double? discountedPrice});
+      DiscountType? discountType});
 }
 
 /// @nodoc
@@ -150,7 +145,6 @@ class __$$OrderItemImplCopyWithImpl<$Res>
     Object? price = null,
     Object? discount = freezed,
     Object? discountType = freezed,
-    Object? discountedPrice = freezed,
   }) {
     return _then(_$OrderItemImpl(
       id: null == id
@@ -181,16 +175,12 @@ class __$$OrderItemImplCopyWithImpl<$Res>
           ? _value.discountType
           : discountType // ignore: cast_nullable_to_non_nullable
               as DiscountType?,
-      discountedPrice: freezed == discountedPrice
-          ? _value.discountedPrice
-          : discountedPrice // ignore: cast_nullable_to_non_nullable
-              as double?,
     ));
   }
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$OrderItemImpl implements _OrderItem {
   const _$OrderItemImpl(
       {required this.id,
@@ -199,8 +189,10 @@ class _$OrderItemImpl implements _OrderItem {
       this.quantity = 1,
       required this.price,
       this.discount,
-      this.discountType = DiscountType.percentage,
-      this.discountedPrice});
+      this.discountType = DiscountType.percentage});
+
+  factory _$OrderItemImpl.fromJson(Map<String, dynamic> json) =>
+      _$$OrderItemImplFromJson(json);
 
   @override
   final int id;
@@ -225,13 +217,9 @@ class _$OrderItemImpl implements _OrderItem {
   @JsonKey()
   final DiscountType? discountType;
 
-  /// Unit price after discount
-  @override
-  final double? discountedPrice;
-
   @override
   String toString() {
-    return 'OrderItem(id: $id, itemId: $itemId, itemName: $itemName, quantity: $quantity, price: $price, discount: $discount, discountType: $discountType, discountedPrice: $discountedPrice)';
+    return 'OrderItem(id: $id, itemId: $itemId, itemName: $itemName, quantity: $quantity, price: $price, discount: $discount, discountType: $discountType)';
   }
 
   @override
@@ -249,20 +237,26 @@ class _$OrderItemImpl implements _OrderItem {
             (identical(other.discount, discount) ||
                 other.discount == discount) &&
             (identical(other.discountType, discountType) ||
-                other.discountType == discountType) &&
-            (identical(other.discountedPrice, discountedPrice) ||
-                other.discountedPrice == discountedPrice));
+                other.discountType == discountType));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, itemId, itemName, quantity,
-      price, discount, discountType, discountedPrice);
+      price, discount, discountType);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$OrderItemImplCopyWith<_$OrderItemImpl> get copyWith =>
       __$$OrderItemImplCopyWithImpl<_$OrderItemImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$OrderItemImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _OrderItem implements OrderItem {
@@ -273,8 +267,10 @@ abstract class _OrderItem implements OrderItem {
       final int quantity,
       required final double price,
       final DiscountCategory? discount,
-      final DiscountType? discountType,
-      final double? discountedPrice}) = _$OrderItemImpl;
+      final DiscountType? discountType}) = _$OrderItemImpl;
+
+  factory _OrderItem.fromJson(Map<String, dynamic> json) =
+      _$OrderItemImpl.fromJson;
 
   @override
   int get id;
@@ -296,10 +292,6 @@ abstract class _OrderItem implements OrderItem {
 
   /// Currently, only percentage is supported
   DiscountType? get discountType;
-  @override
-
-  /// Unit price after discount
-  double? get discountedPrice;
   @override
   @JsonKey(ignore: true)
   _$$OrderItemImplCopyWith<_$OrderItemImpl> get copyWith =>

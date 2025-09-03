@@ -306,7 +306,7 @@ class _SingleSelectDropdownContainer extends StatelessWidget {
             ? Assets.icons.lock.svg(colorFilter: UIColors.textMuted.toColorFilter)
             : Assets.icons.arrowDown.svg(),
         suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
-        fillColor: UIColors.borderMuted.withOpacity(isReadOnly ? 0.5 : 0.15),
+        fillColor: UIColors.borderMuted.withValues(alpha: isReadOnly ? 0.5 : 0.15),
         filled: true,
         disabledBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),

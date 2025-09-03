@@ -21,7 +21,7 @@ BranchInventoryDto _$BranchInventoryDtoFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$BranchInventoryDto {
   int get id => throw _privateConstructorUsedError;
-  BranchDto get store => throw _privateConstructorUsedError;
+  BranchPartialDto get store => throw _privateConstructorUsedError;
   double get price => throw _privateConstructorUsedError;
   int get currentStock => throw _privateConstructorUsedError;
 
@@ -37,9 +37,9 @@ abstract class $BranchInventoryDtoCopyWith<$Res> {
           BranchInventoryDto value, $Res Function(BranchInventoryDto) then) =
       _$BranchInventoryDtoCopyWithImpl<$Res, BranchInventoryDto>;
   @useResult
-  $Res call({int id, BranchDto store, double price, int currentStock});
+  $Res call({int id, BranchPartialDto store, double price, int currentStock});
 
-  $BranchDtoCopyWith<$Res> get store;
+  $BranchPartialDtoCopyWith<$Res> get store;
 }
 
 /// @nodoc
@@ -68,7 +68,7 @@ class _$BranchInventoryDtoCopyWithImpl<$Res, $Val extends BranchInventoryDto>
       store: null == store
           ? _value.store
           : store // ignore: cast_nullable_to_non_nullable
-              as BranchDto,
+              as BranchPartialDto,
       price: null == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -82,8 +82,8 @@ class _$BranchInventoryDtoCopyWithImpl<$Res, $Val extends BranchInventoryDto>
 
   @override
   @pragma('vm:prefer-inline')
-  $BranchDtoCopyWith<$Res> get store {
-    return $BranchDtoCopyWith<$Res>(_value.store, (value) {
+  $BranchPartialDtoCopyWith<$Res> get store {
+    return $BranchPartialDtoCopyWith<$Res>(_value.store, (value) {
       return _then(_value.copyWith(store: value) as $Val);
     });
   }
@@ -97,10 +97,10 @@ abstract class _$$BranchInventoryDtoImplCopyWith<$Res>
       __$$BranchInventoryDtoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, BranchDto store, double price, int currentStock});
+  $Res call({int id, BranchPartialDto store, double price, int currentStock});
 
   @override
-  $BranchDtoCopyWith<$Res> get store;
+  $BranchPartialDtoCopyWith<$Res> get store;
 }
 
 /// @nodoc
@@ -127,7 +127,7 @@ class __$$BranchInventoryDtoImplCopyWithImpl<$Res>
       store: null == store
           ? _value.store
           : store // ignore: cast_nullable_to_non_nullable
-              as BranchDto,
+              as BranchPartialDto,
       price: null == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
@@ -155,7 +155,7 @@ class _$BranchInventoryDtoImpl implements _BranchInventoryDto {
   @override
   final int id;
   @override
-  final BranchDto store;
+  final BranchPartialDto store;
   @override
   final double price;
   @override
@@ -200,7 +200,7 @@ class _$BranchInventoryDtoImpl implements _BranchInventoryDto {
 abstract class _BranchInventoryDto implements BranchInventoryDto {
   const factory _BranchInventoryDto(
       {required final int id,
-      required final BranchDto store,
+      required final BranchPartialDto store,
       required final double price,
       required final int currentStock}) = _$BranchInventoryDtoImpl;
 
@@ -210,7 +210,7 @@ abstract class _BranchInventoryDto implements BranchInventoryDto {
   @override
   int get id;
   @override
-  BranchDto get store;
+  BranchPartialDto get store;
   @override
   double get price;
   @override

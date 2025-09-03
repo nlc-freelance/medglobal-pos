@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-/// A simple widget as laceholder for empty data grid state
+/// A simple widget as placeholder for empty data grid state
 /// With button for getting started
 ///
 /// Used inside the data grid footer when rows are empty
@@ -27,14 +27,14 @@ class DataGridEmpty extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: UIColors.textMuted.withOpacity(0.1),
+            color: UIColors.textMuted.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(1000),
           ),
           child: Assets.icons.cube.svg(),
         ),
         const UIVerticalSpace(12),
-        UIText.heading6(title),
-        const UIVerticalSpace(6),
+        UIText.labelSemiBold(title, align: TextAlign.center),
+        const UIVerticalSpace(4),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 380),
           child: Text(
