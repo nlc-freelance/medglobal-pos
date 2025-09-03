@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_bloc/report_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/widgets/data_grid/product_performance_data_grid.dart';
@@ -16,6 +18,23 @@ class ProductPerformanceList extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
+        BlocListener<ReportBloc, ReportState>(
+          listener: (context, state) {
+            state.maybeWhen(
+              loading: () => PageLoader.show(context),
+              loaded: (report) {
+                PageLoader.close();
+                context.read<ReportManagerCubit>().manualDownloadReport(report);
+              },
+              failure: (message) {
+                PageLoader.close();
+                SnackbarUtil.error(context, message);
+              },
+              orElse: () {},
+            );
+          },
+        ),
+
         BlocListener<ReportManagerCubit, ReportManagerState>(
           listener: (context, state) {
             final listBloc = context.read<ProductPerformanceListBloc>();

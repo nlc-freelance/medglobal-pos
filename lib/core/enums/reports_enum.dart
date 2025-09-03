@@ -8,22 +8,22 @@ enum ReportType {
   stockTake('STOCK_TAKE_CSV'),
   sales('SALES_CSV'),
   productHistory('PRODUCT_HISTORY_CSV'),
+  productSalesHistory('PRODUCT_SALES_HISTORY_CSV'),
   salesPerCategory('SALES_PER_CATEGORY'),
   salesPerShift('SHIFT_REPORT_CSV'),
   supplyNeeds('SUPPLY_NEEDS_CSV'),
-  productABC('PRODUCT_ABC'),
+  productABC('ABC_ANALYSIS'),
   productPNL('PRODUCT_PNL'),
   unknown('Unknown');
 
   final String value;
   const ReportType(this.value);
 
-  bool get isProductPerformance => [productABC, productPNL].contains(this);
-
   static ReportType fromString(String value) {
     return values.firstWhereOrNull((t) => t.value == value) ?? ReportType.unknown;
   }
 
+  /// Report types with filter queries
   static List<ReportType> get filterable => [
         ReportType.purchaseOrder,
         ReportType.stockReturn,
@@ -35,7 +35,23 @@ enum ReportType {
         ReportType.supplyNeeds,
       ];
 
-  bool get requiresSourceData => [productABC, productPNL].contains(this);
+  /// Report types with data payload and list of generated
+  bool get hasListAndRequiresSourceData => [productABC, productPNL].contains(this);
+
+  /// Product performance reports
+  bool get isProductPerformance => [productABC, productPNL].contains(this);
+
+  /// Product performance reports filter by type
+  static Map<String, dynamic> get productPerformanceTypeQuery => {
+        'type': [ReportType.productPNL.value, ReportType.productABC.value].join(',')
+      };
+
+  /// Report types with payload for export
+  bool get withPayload => [
+        productABC,
+        productPNL,
+        productSalesHistory,
+      ].contains(this);
 }
 
 enum ReportStatus {

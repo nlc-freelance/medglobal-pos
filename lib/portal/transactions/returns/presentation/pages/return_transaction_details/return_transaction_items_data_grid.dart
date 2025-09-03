@@ -32,7 +32,7 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
     _dataGridController = DataGridController();
     customSelectionManager = CustomSelectionManager(_dataGridController);
 
-    final isEditable = widget.transaction.status == ReturnStatus.AWAITING_ACTION;
+    final isEditable = widget.transaction.status == ReturnStatus.awaitingAction;
 
     _returnItemsDataSource = ReturnItemsDataSource(_items, context, isEditable);
   }
@@ -48,7 +48,7 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
     return BlocConsumer<ReturnCubit, ReturnState>(
       listener: (context, state) {
         _returnItemsDataSource._items = state.transaction.items ?? [];
-        _returnItemsDataSource._isEditable = state.transaction.status == ReturnStatus.AWAITING_ACTION;
+        _returnItemsDataSource._isEditable = state.transaction.status == ReturnStatus.awaitingAction;
 
         _returnItemsDataSource.buildDataGridRows();
         _returnItemsDataSource.updateDataGridSource();

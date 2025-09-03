@@ -1,6 +1,6 @@
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
-import 'package:medglobal_admin_portal/portal/reports/data/dto/request/create_report_dto.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
 import 'package:medglobal_admin_portal/portal/reports/data/dto/response/report_dto.dart';
 
 class ReportApiService {
@@ -12,7 +12,7 @@ class ReportApiService {
   /// with the provided [payload] as the request body.
   ///
   /// The base service handles all network execution, response parsing, and error handling.
-  Future<ReportDto> createReport(CreateReportDto payload) async {
+  Future<ReportDto> createReport(ReportPayload payload) async {
     // int? userId = await SharedPreferencesService.getUserId();
 
     final response = await _api.post<ReportDto>(

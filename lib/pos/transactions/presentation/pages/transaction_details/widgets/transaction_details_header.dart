@@ -25,7 +25,7 @@ class TransactionDetailsHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (transaction.type == TransactionType.SALE)
+        if (transaction.type == TransactionType.sale)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -72,11 +72,11 @@ class TransactionDetailsHeader extends StatelessWidget {
               ],
             ],
           ),
-        if (transaction.type == TransactionType.REFUND) UIText.heading5('Refund Transaction'),
+        if (transaction.type == TransactionType.refund) UIText.heading5('Refund Transaction'),
         const UIVerticalSpace(30),
         Row(
           children: [
-            if (transaction.type == TransactionType.REFUND) ...[
+            if (transaction.type == TransactionType.refund) ...[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -108,7 +108,7 @@ class TransactionDetailsHeader extends StatelessWidget {
               ),
               const Spacer(),
             ],
-            if (transaction.type == TransactionType.SALE && isIssuingRefund) ...[
+            if (transaction.type == TransactionType.sale && isIssuingRefund) ...[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -132,7 +132,7 @@ class TransactionDetailsHeader extends StatelessWidget {
               ),
               const Spacer(),
             ],
-            if (transaction.type == TransactionType.SALE && !isIssuingRefund) ...[
+            if (transaction.type == TransactionType.sale && !isIssuingRefund) ...[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

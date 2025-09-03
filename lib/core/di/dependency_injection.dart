@@ -19,8 +19,14 @@ import 'package:medglobal_admin_portal/portal/employee_management/domain/entitie
 import 'package:medglobal_admin_portal/portal/employee_management/domain/repository/employee_repository.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/bloc/employee_bloc/employee_bloc.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_bloc/report_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/shared/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/data/api/product_sales_history_api.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/data/repositories/product_sales_history_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/domain/repositories/product_sales_history_repository.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/presentation/bloc/product_sales_history_bloc/product_sales_history_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch_api.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/repository/branch_repository_impl.dart';
@@ -350,8 +356,28 @@ void initReportDependencies() {
     ..registerFactory<ReportManagerCubit>(
       () => ReportManagerCubit(repository: inject<ReportRepository>()),
     )
+    ..registerLazySingleton<ReportBloc>(
+      () => ReportBloc(repository: inject<ReportRepository>()),
+    )
     ..registerFactory<ProductPerformanceListBloc>(
       () => ProductPerformanceListBloc(repository: inject<ReportRepository>()),
+    )
+    ..registerLazySingleton<ProductSalesHistoryApi>(
+      () => ProductSalesHistoryApi(api: inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<ProductSalesHistoryRepository>(
+      () => ProductSalesHistoryRepositoryImpl(api: inject<ProductSalesHistoryApi>()),
+    )
+    ..registerFactory<ProductSalesHistoryBloc>(
+      () => ProductSalesHistoryBloc(repository: inject<ProductSalesHistoryRepository>()),
+    )
+    ..registerFactory<ProductHistoryDetailBloc>(
+      () => ProductHistoryDetailBloc(
+          purchaseOrderRepository: inject<PurchaseOrderRepository>(),
+          stockReturnRepository: inject<StockReturnRepository>(),
+          stockTakeRepository: inject<StockTakeRepository>(),
+          stockTransferRepository: inject<StockTransferRepository>(),
+          transactionRepository: inject<TransactionRepository>()),
     );
 }
 

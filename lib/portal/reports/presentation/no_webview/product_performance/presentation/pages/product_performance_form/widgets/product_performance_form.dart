@@ -20,7 +20,7 @@ class ProductPerformanceForm extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            UIText.labelMedium('Please provide the source data needed to generate the ${state.type!.title}.'),
+            UIText.labelMedium('Please provide the source data needed to generate ${state.type!.title}.'),
             const UIVerticalSpace(16),
             isABC ? const ProductABCSourceData() : const ProductPNLSourceData(),
             const UIVerticalSpace(16),
@@ -35,11 +35,6 @@ class ProductPerformanceForm extends StatelessWidget {
             ),
             const UIVerticalSpace(16),
             const ReportPeriodSelector(),
-            if (!state.isFormValid)
-              UIText.labelMedium(
-                'Please fill in all required fields.',
-                color: UIColors.buttonDanger,
-              ),
           ],
         );
       },

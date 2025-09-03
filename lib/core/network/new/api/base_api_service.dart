@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
@@ -14,10 +16,16 @@ class BaseApiService {
     required T Function(Map<String, dynamic>) fromJson,
   }) async {
     try {
-      final response = await _dioService.dio.get(path);
-      return BaseApiResponse.fromJson(response.data, fromJson);
+      final response = await _dioService.dio.get(path, queryParameters: queryParams);
+
+      // Check for successful status code
+      if (response.statusCode == 200) {
+        return BaseApiResponse.fromJson(response.data, fromJson);
+      } else {
+        throw Exception('${response.statusCode} ${response.statusMessage}');
+      }
     } on DioException catch (e) {
-      throw ServerException(_mapDioError(e));
+      throw _mapDioError(e);
     } catch (e) {
       throw UnexpectedException(e.toString());
     }
@@ -31,9 +39,14 @@ class BaseApiService {
   }) async {
     try {
       final response = await _dioService.dio.get(path, queryParameters: queryParams);
-      return BaseApiResponse.fromJsonList(response.data, (list) => list.map((item) => fromJson(item)).toList());
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return BaseApiResponse.fromJsonList(response.data, (list) => list.map((item) => fromJson(item)).toList());
+      } else {
+        throw Exception('${response.statusCode} ${response.statusMessage}');
+      }
     } on DioException catch (e) {
-      throw ServerException(_mapDioError(e));
+      throw _mapDioError(e);
     } catch (e) {
       throw UnexpectedException(e.toString());
     }
@@ -47,9 +60,14 @@ class BaseApiService {
   }) async {
     try {
       final response = await _dioService.dio.get(path, queryParameters: queryParams);
-      return BaseApiResponse.fromJson(response.data, (json) => Paginated<T>.fromJson(json, fromJson));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return BaseApiResponse.fromJson(response.data, (json) => Paginated<T>.fromJson(json, fromJson));
+      } else {
+        throw Exception('${response.statusCode} ${response.statusMessage}');
+      }
     } on DioException catch (e) {
-      throw ServerException(_mapDioError(e));
+      throw _mapDioError(e);
     } catch (e) {
       throw UnexpectedException(e.toString());
     }
@@ -63,9 +81,19 @@ class BaseApiService {
   }) async {
     try {
       final response = await _dioService.dio.post(path, data: data);
-      return BaseApiResponse.fromJson(response.data, fromJson);
+
+      if (response.data == null) {
+        throw UnexpectedException('No data returned.');
+      }
+
+      // Check for successful status code
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return BaseApiResponse.fromJson(response.data, fromJson);
+      } else {
+        throw Exception('${response.statusCode} ${response.statusMessage}');
+      }
     } on DioException catch (e) {
-      throw ServerException(_mapDioError(e));
+      throw _mapDioError(e);
     } catch (e) {
       throw UnexpectedException(e.toString());
     }
@@ -79,9 +107,18 @@ class BaseApiService {
   }) async {
     try {
       final response = await _dioService.dio.put(path, data: data);
-      return BaseApiResponse.fromJson(response.data, fromJson);
+
+      if (response.data == null) {
+        throw UnexpectedException('No data returned.');
+      }
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return BaseApiResponse.fromJson(response.data, fromJson);
+      } else {
+        throw Exception('${response.statusCode} ${response.statusMessage}');
+      }
     } on DioException catch (e) {
-      throw ServerException(_mapDioError(e));
+      throw _mapDioError(e);
     } catch (e) {
       throw UnexpectedException(e.toString());
     }
@@ -92,7 +129,21 @@ class BaseApiService {
     try {
       await _dioService.dio.delete(path);
     } on DioException catch (e) {
-      throw ServerException(_mapDioError(e));
+      throw _mapDioError(e);
+    } catch (e) {
+      throw UnexpectedException(e.toString());
+    }
+  }
+
+  /// UPDATE bulk request
+  Future<void> updateBulk<T>(
+    String path, {
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      await _dioService.dio.put(path, data: data);
+    } on DioException catch (e) {
+      throw _mapDioError(e);
     } catch (e) {
       throw UnexpectedException(e.toString());
     }
@@ -104,38 +155,42 @@ class BaseApiService {
     required Map<String, dynamic> data,
   }) async {
     try {
-      await _dioService.dio.post(path, data: data);
+      await _dioService.dio.delete(path, data: data);
     } on DioException catch (e) {
-      throw ServerException(_mapDioError(e));
+      throw _mapDioError(e);
     } catch (e) {
       throw UnexpectedException(e.toString());
     }
   }
 
-  String _mapDioError(DioException error) {
+  AppException _mapDioError(DioException error) {
     if (error.type == DioExceptionType.connectionTimeout) {
-      return 'Connection timed out. Please try again.';
+      return ServerException('Connection timed out. Please try again.');
     } else if (error.type == DioExceptionType.sendTimeout) {
-      return 'Request timed out. Please try again.';
+      return ServerException('Request timed out. Please try again.');
     } else if (error.type == DioExceptionType.receiveTimeout) {
-      return 'Server took too long to respond. Please try again.';
+      return ServerException('Server took too long to respond. Please try again.');
     } else if (error.type == DioExceptionType.badResponse) {
       final response = error.response;
       if (response != null && response.data != null) {
-        // Handle error from API response body
         if (response.data is Map<String, dynamic>) {
           final Map<String, dynamic> data = response.data;
           if (data.containsKey('message')) {
-            return data['message'];
+            return ServerException(data['message']);
           }
         }
-        return 'Received invalid status code: ${response.statusCode}';
+        return ServerException('Received invalid status code: ${response.statusCode}');
       }
-      return 'Something went wrong with the response.';
+      return ServerException('Something went wrong with the response.');
     } else if (error.type == DioExceptionType.cancel) {
-      return 'Request was cancelled.';
+      return ServerException('Request was cancelled.');
+    } else if (error.type == DioExceptionType.unknown || error.type == DioExceptionType.connectionError) {
+      if (error.error is SocketException) {
+        return NetworkException('No internet connection. Please check your network and try again.');
+      }
+      return ServerException('Unexpected network error occurred.');
+    } else {
+      return ServerException(error.message ?? 'An unexpected error occurred.');
     }
-
-    return error.message ?? 'An unexpected error occurred.';
   }
 }

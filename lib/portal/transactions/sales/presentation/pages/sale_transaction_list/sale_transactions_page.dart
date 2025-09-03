@@ -49,7 +49,7 @@ class _SaleTransactionsPageState extends State<SaleTransactionsPage> {
             return DataGridToolbar(
               reportType: ReportType.sales,
               reportFilters: {
-                'transactionType': TransactionType.SALE.name.toLowerCase(),
+                'transactionType': TransactionType.sale.name.toLowerCase(),
                 'isAllBranches': filters.branchId == null,
                 'search': filters.search,
                 'branch': filters.branchId,

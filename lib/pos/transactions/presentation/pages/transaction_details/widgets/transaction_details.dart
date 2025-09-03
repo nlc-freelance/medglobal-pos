@@ -61,18 +61,18 @@ class _TransactionDetailsState extends State<TransactionDetails> {
                     transaction: widget.transaction,
                   ),
                   const UIVerticalSpace(60),
-                  if (widget.transaction.type == TransactionType.SALE) ...[
+                  if (widget.transaction.type == TransactionType.sale) ...[
                     if (_isIssuingRefund) ...[
                       RefundableItemsDataGrid(widget.transaction),
                       const ReasonForRefundDetails(),
                     ] else
                       TransactionItemsDataGrid(widget.transaction),
                   ],
-                  if (widget.transaction.type == TransactionType.REFUND) RefundedItemsDataGrid(widget.transaction),
+                  if (widget.transaction.type == TransactionType.refund) RefundedItemsDataGrid(widget.transaction),
                 ],
               ),
             ),
-            if (widget.transaction.type == TransactionType.SALE && _isIssuingRefund)
+            if (widget.transaction.type == TransactionType.sale && _isIssuingRefund)
               Padding(
                 padding: const EdgeInsets.only(top: 30),
                 child: Row(

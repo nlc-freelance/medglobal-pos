@@ -72,7 +72,7 @@ class _SaleTransactionDetailsPageState extends State<SaleTransactionDetailsPage>
                             label: 'Transaction Type',
 
                             /// Only sale for now
-                            type: TransactionType.SALE,
+                            type: TransactionType.sale,
                           ),
                           LabelValue.text(
                             label: 'Employee',

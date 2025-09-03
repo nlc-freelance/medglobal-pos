@@ -10,7 +10,7 @@ class PageErrorNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: UIColors.buttonDanger.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),

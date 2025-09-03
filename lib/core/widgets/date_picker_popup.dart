@@ -5,17 +5,17 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class DatePickerPopup extends StatefulWidget {
-  const DatePickerPopup({
-    super.key,
-    this.selectedDate,
-    this.selectedDateRange,
-    this.isInput = false,
-    required this.selectionMode,
-    this.onSelect,
-    this.onSelectRange,
-    this.onRemoveSelected,
-    this.showEndIcon = true,
-  });
+  const DatePickerPopup(
+      {super.key,
+      this.selectedDate,
+      this.selectedDateRange,
+      this.isInput = false,
+      required this.selectionMode,
+      this.onSelect,
+      this.onSelectRange,
+      this.onRemoveSelected,
+      this.showEndIcon = true,
+      this.maxDate});
 
   final bool isInput;
   final bool showEndIcon;
@@ -25,6 +25,7 @@ class DatePickerPopup extends StatefulWidget {
   final void Function(List<DateTime?>)? onSelectRange;
   final DateRangePickerSelectionMode selectionMode;
   final VoidCallback? onRemoveSelected;
+  final DateTime? maxDate;
 
   @override
   State<DatePickerPopup> createState() => _DatePickerPopupState();
@@ -71,6 +72,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
               initialSelectedRange: _selectedDateRange.isNotEmpty
                   ? PickerDateRange(_selectedDateRange.first, _selectedDateRange.last)
                   : null,
+              maxDate: widget.maxDate,
               view: DateRangePickerView.month,
               selectionMode: widget.selectionMode,
               enableMultiView: widget.selectionMode == DateRangePickerSelectionMode.range,
@@ -109,7 +111,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
       child: HoverBuilder(
         builder: (isHover) => Container(
           constraints: const BoxConstraints(minWidth: 150),
-          padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 16.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: highlight
@@ -156,7 +158,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
                           child: Assets.icons.close.svg(height: 22),
                         ),
                       )
-                    : Assets.icons.arrowDown.svg(height: 10),
+                    : Assets.icons.arrowDown.svg(),
             ],
           ),
         ),
