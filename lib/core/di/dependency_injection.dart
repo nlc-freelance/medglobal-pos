@@ -607,6 +607,9 @@ void initReportDependencies() {
     ..registerFactory<ReportManagerCubit>(
       () => ReportManagerCubit(repository: inject<ReportRepository>()),
     )
+    ..registerLazySingleton<ReportBloc>(
+      () => ReportBloc(repository: inject<ReportRepository>()),
+    )
     ..registerFactory<ProductPerformanceListBloc>(
       () => ProductPerformanceListBloc(repository: inject<ReportRepository>()),
     )

@@ -24,6 +24,7 @@ class _GenerateProductPerformanceDialogState extends State<GenerateProductPerfor
   late ProductPerformanceFormCubit formCubit;
   late ReportManagerCubit reportCubit;
   final ScrollController scrollController = ScrollController();
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -66,6 +67,12 @@ class _GenerateProductPerformanceDialogState extends State<GenerateProductPerfor
               listener: (context, state) {
                 final failedCreationTasks = state.productPerformanceTasks.failedCreation;
 
+                setState(() {
+                  currentReportTask = failedCreationTasks.isNotEmpty ? failedCreationTasks.first : null;
+                });
+              },
+              builder: (context, state) {
+                if (currentReportTask == null) return const SizedBox();
                 setState(() {
                   currentReportTask = failedCreationTasks.isNotEmpty ? failedCreationTasks.first : null;
                 });

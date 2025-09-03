@@ -33,6 +33,7 @@ enum SideMenuTree {
       'Sales Per Category',
       'Sales Per Shift',
       'Sales Per Shift Details',
+      'Product Sales History',
       'Product Performance'
     ],
   ),
@@ -102,6 +103,7 @@ enum SideMenuTreeItem {
 
   REPORTS('Reports', '/reports', '/reports'),
   PRODUCT_HISTORY('Product History', 'product-history', '/reports/product-history'),
+  PRODUCT_SALES_HISTORY('Product Sales History', 'product-sales-history', '/reports/product-sales -history'),
   SALES_REPORT('Sales Report', 'sales', '/reports/sales'),
   SALES_PER_CATEGORY('Sales Per Category', 'sales-per-category', '/reports/sales-per-category'),
   SALES_PER_SHIFT('Sales Per Shift', 'sales-per-shift', '/reports/sales-per-shift'),

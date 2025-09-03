@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
-import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/data/api/product_sales_history_api.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/data/dtos/product_sale_history_dto.dart';
@@ -16,11 +16,6 @@ class ProductSalesHistoryRepositoryImpl extends BaseRepository implements Produc
   Future<Either<Failure, ProductSaleHistory>> getProductSaleHistory(
     int variantId,
     PageQuery query,
-    // required int branchId,
-    // required String startDate,
-    // required String endDate,
-    // required int page,
-    // required int size,
   ) {
     return call(() async {
       final response = await _api.getProductSaleHistory(variantId, query);

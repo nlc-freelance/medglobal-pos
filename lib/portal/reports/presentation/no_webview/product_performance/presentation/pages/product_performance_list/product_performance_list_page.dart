@@ -22,9 +22,12 @@ class ProductPerformanceListPage extends StatelessWidget {
               ),
             ),
         ),
-        BlocProvider(
-          create: (context) => GetIt.I<ReportBloc>(),
-        ),
+        // If ReportBloc is created on this page, the Bloc closes when user navigates to other page and cannot add new events
+        // Create the the Bloc on the main app so it does not close on page navigate
+        // Investigate further later
+        // BlocProvider(
+        //   create: (context) => GetIt.I<ReportBloc>(),
+        // ),
       ],
       child: const ProductPerformanceList(),
     );
