@@ -64,10 +64,12 @@ class ProductPerformanceFormCubit extends Cubit<ProductPerformanceFormState> {
     }
   }
 
-  // ABC Analysis
   void setBranch(Branch? branch) {
     final params = state.reportParams;
     if (params is ProductABCParams) {
+      emit(state.copyWith(reportParams: params.copyWith(branch: branch)));
+    }
+    if (params is ProductPNLParams) {
       emit(state.copyWith(reportParams: params.copyWith(branch: branch)));
     }
   }

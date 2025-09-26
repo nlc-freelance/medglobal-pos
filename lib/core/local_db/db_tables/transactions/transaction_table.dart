@@ -19,7 +19,7 @@ class Transactions extends Table {
   RealColumn get totalDiscountAmount => real().withDefault(const Constant(0.0))();
   RealColumn get tax => real().withDefault(const Constant(0.0))();
   RealColumn get total => real()();
-  RealColumn get amountPaid => real()();
+  RealColumn get amountPaid => real().withDefault(const Constant(0.0))();
   TextColumn get reasonForReturn => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   BoolColumn get isSynced => boolean().withDefault(const Constant(false))();

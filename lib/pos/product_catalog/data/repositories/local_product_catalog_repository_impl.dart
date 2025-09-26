@@ -25,15 +25,6 @@ class LocalProductCatalogRepositoryImpl extends BaseRepository implements LocalP
   }
 
   @override
-  Future<Either<Failure, void>> deleteProducts(List<CatalogItem> products) {
-    return call(() async {
-      if (products.isEmpty) return;
-
-      return await _localDataSource.deleteProducts(products);
-    });
-  }
-
-  @override
   Future<Either<Failure, PaginatedList<CatalogItem>>> getProductCatalog(PageQuery query) {
     return call(() async {
       final data = await _localDataSource.getProductCatalog(query.page, query.size, query.search);

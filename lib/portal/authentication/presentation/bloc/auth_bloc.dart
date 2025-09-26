@@ -10,6 +10,7 @@ import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/con
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/get_auth_session.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/logout.dart';
+import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -32,7 +33,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutEvent>(_logout);
   }
 
-  bool getIsAllowed(UserType? type) {
+  bool getIsAllowedByType(UserType? type) {
     final isPortalUser = type == UserType.admin;
     final isPosUser = type == UserType.cashier;
     final isBoth = type == UserType.supervisor;
@@ -52,7 +53,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         (error) => emit(AuthErrorState(message: error.message)),
         (data) {
           final isLoggedIn = data.isLoggedIn == true;
-          final isAllowed = getIsAllowed(data.user?.type);
+          final isAllowed = getIsAllowedByType(data.user?.type);
 
           if (isAllowed) {
             isLoggedIn ? emit(AuthenticatedState(user: data.user!)) : emit(const UnauthenticatedState());
@@ -125,7 +126,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             return;
           }
 
-          final isAllowed = getIsAllowed(data.user?.type);
+          final isAllowed = getIsAllowedByType(data.user?.type);
 
           if (isAllowed) {
             if (data.isFirstTimeLogin == true) {

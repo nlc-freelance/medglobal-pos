@@ -106,8 +106,16 @@ extension ReadableDateTime on DateTime {
     return DateFormat('EEEE, d MMMM yyyy h:mm a').format(this);
   }
 
+  String toFormattedDayAndFullDate() {
+    return DateFormat('E, d MMMM yyyy').format(this);
+  }
+
   String toFormattedDateTime24Hr() {
     return DateFormat('MM/dd/yyyy HH:mm').format(this);
+  }
+
+  String toFormattedDateTime12Hr() {
+    return DateFormat('MM/dd/yyyy h:mm a').format(this);
   }
 
   String toFormattedShortDate() {

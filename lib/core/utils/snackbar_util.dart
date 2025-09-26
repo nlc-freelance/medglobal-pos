@@ -33,6 +33,23 @@ class SnackbarUtil {
         onSnackbarClosed: onSnackbarClosed,
       );
 
+  /// Displays a success snackbar with a yellow theme.
+  static void info(
+    BuildContext context,
+    String message, {
+    String? title,
+    Widget? action,
+    Duration? duration,
+  }) =>
+      _show(
+        context,
+        type: SnackbarType.SUCCESS,
+        title: title,
+        message: message,
+        action: action,
+        duration: duration,
+      );
+
   /// Displays a validation message with a warning theme.
   static void invalid(
     BuildContext context, {
@@ -59,11 +76,11 @@ class SnackbarUtil {
     BuildContext context, {
     required SnackbarType type,
     required String message,
+    String? title,
     Widget? action,
     VoidCallback? onSnackbarClosed,
+    Duration? duration,
   }) {
-    const duration = Duration(milliseconds: 5000);
-
     ScaffoldMessenger.of(context)
         .showSnackBar(
           SnackBar(
@@ -74,7 +91,7 @@ class SnackbarUtil {
               right: 16,
               left: MediaQuery.of(context).size.width * 0.6,
             ),
-            duration: duration,
+            duration: duration ?? const Duration(milliseconds: 5000),
             elevation: 0,
             content: Align(
               alignment: Alignment.bottomRight,
@@ -93,7 +110,7 @@ class SnackbarUtil {
                     ),
                   ],
                 ),
-                child: _buildSnackbarContent(context, type, message, action),
+                child: _buildSnackbarContent(context, type, message, title: title, action: action),
               ),
             ),
           ),
@@ -102,7 +119,13 @@ class SnackbarUtil {
         .then((_) => onSnackbarClosed?.call());
   }
 
-  static Widget _buildSnackbarContent(BuildContext context, SnackbarType type, String message, Widget? action) {
+  static Widget _buildSnackbarContent(
+    BuildContext context,
+    SnackbarType type,
+    String message, {
+    String? title,
+    Widget? action,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -123,7 +146,7 @@ class SnackbarUtil {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(type.title, style: UIStyleText.heading6.copyWith(fontSize: 15)),
+              Text(title ?? type.title, style: UIStyleText.heading6.copyWith(fontSize: 15)),
               UIText.bodyRegular(message, color: UIColors.textMuted),
               if (action != null)
                 Padding(

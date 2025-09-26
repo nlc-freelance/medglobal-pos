@@ -165,45 +165,41 @@ import 'package:medglobal_admin_portal/pos/app_session/data/datasources/app_sess
 import 'package:medglobal_admin_portal/pos/app_session/data/repositories/session_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/repository/app_session_repository.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/usecases/initialize_app_session_usecase.dart';
-import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
-import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
-import 'package:medglobal_admin_portal/pos/device_register/device_register_bloc.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/data/api/pos_products_api.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/data/api/sale_api.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/data/repositories/pos_product_repository_impl.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/data/repositories/sale_repository_impl.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/domain/repositories/pos_product_repository.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/domain/repositories/sale_repository.dart';
+import 'package:medglobal_admin_portal/pos/auth_session/presentation/blocs/session/session_bloc.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/data/repositories/local_settings_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/contexts/device_context.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/repositories/local_settings_repository.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/repositories/remote_receipt_config_repository.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/usecases/bind_device_usecase.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/usecases/check_device_setting_usecase.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/presentation/blocs/device_setup/device_setup_bloc.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/presentation/blocs/unassigned_registers/unassigned_register_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/data/repositories/local_product_catalog_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/data/repositories/remote_product_catalog_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/delta_sync_products_usecase.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/get_product_catalog_usecase.dart';
-import 'package:medglobal_admin_portal/pos/sales/data/repositories/local_sale_repository_impl.dart';
-import 'package:medglobal_admin_portal/pos/sales/data/repositories/remote_sale_repository_impl.dart';
-import 'package:medglobal_admin_portal/pos/sales/domain/repositories/local_sale_repository.dart';
-import 'package:medglobal_admin_portal/pos/sales/domain/repositories/remote_sale_repository.dart';
-import 'package:medglobal_admin_portal/pos/sales/domain/usecases/create_sale_usecase.dart';
-import 'package:medglobal_admin_portal/pos/sales/domain/usecases/print_receipt_usecase.dart';
-import 'package:medglobal_admin_portal/pos/sales/domain/usecases/print_receipt_usecase.dart';
-import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/cart_bloc/cart_bloc.dart';
-import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/print_receipt_cubit/print_receipt_cubit.dart';
-import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/sale_bloc/sale_bloc.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/initial_fetch_products_usecase.dart';
-import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_cubit/product_catalog_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_search/pos_product_search_cubit.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/receipt_config/receipt_config_bloc.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/data/datasources/local_product_catalog_datasource.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/data/datasources/remote_product_catalog_datasource.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/repositories/local_product_catalog_repository.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/repositories/remote_product_catalog_repository.dart';
-import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_sync_bloc/product_catalog_sync_bloc.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/data/datasources/local_receipt_config_datasource.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/data/datasources/remote_receipt_config_datasource.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/data/repositories/local_receipt_config_repository_impl.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/data/repositories/remote_receipt_config_repository_impl.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/domain/repositories/local_receipt_config_repository.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/domain/repositories/remote_receipt_config_repository.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/data/datasources/remote_receipt_config_datasource.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/data/repositories/local_receipt_config_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/data/repositories/remote_receipt_config_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/repositories/local_receipt_config_repository.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_remote/product_catalog_bloc.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/presentation/cubit/product_catalog_local/product_catalog_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/data/datasources/local_sale_datasource.dart';
+import 'package:medglobal_admin_portal/pos/register/data/datasources/sale_remote_datasource.dart';
+import 'package:medglobal_admin_portal/pos/register/data/repositories/local_sale_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/register/data/repositories/remote_sale_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/repositories/local_sale_repository.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/repositories/remote_sale_repository.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/usecases/create_sale_usecase.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/usecases/print_receipt_usecase.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/bloc/print_receipt/print_receipt_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/bloc/sale/sale_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_local_datasource.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_remote_datasource.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_remote_datasource.dart';
@@ -217,19 +213,26 @@ import 'package:medglobal_admin_portal/pos/register_shift/domain/usecases/close_
 import 'package:medglobal_admin_portal/pos/register_shift/domain/usecases/get_last_closed_register_shift_usecase.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/usecases/get_last_closed_register_shift_usecase.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/usecases/open_register_shift_usecase.dart';
-import 'package:medglobal_admin_portal/pos/register_shift/sync_queue_repository.dart';
-import 'package:medglobal_admin_portal/pos/sales/data/datasources/local_sale_datasource.dart';
-import 'package:medglobal_admin_portal/pos/sales/data/datasources/sale_remote_datasource.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
+import 'package:medglobal_admin_portal/pos/syncing/sync/operation_sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/syncing/sync_queue/sync_queue_repository.dart';
 import 'package:medglobal_admin_portal/pos/app_session/presentation/app_session_bloc.dart';
-import 'package:medglobal_admin_portal/pos/sync/network_service.dart';
-import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
-import 'package:medglobal_admin_portal/pos/sync/sync_service.dart';
+import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_cubit.dart';
+import 'package:medglobal_admin_portal/pos/syncing/services/connectivity_service.dart';
+import 'package:medglobal_admin_portal/pos/syncing/services/sync_service.dart';
+import 'package:medglobal_admin_portal/pos/syncing/sync/sync_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/api/refund_api.dart';
-import 'package:medglobal_admin_portal/pos/transactions/data/repositories/refund_repository_impl.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund_repository.dart';
-// import 'package:medglobal_admin_portal/pos/transactions/domain/usecases/create_refund_transaction_usecase.dart';
-import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_bloc/pos_transaction_bloc.dart';
-import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/pos_transaction_list_bloc/pos_transaction_list_bloc.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/datasources/refund/local_refund_datasource.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/datasources/transactions/local_transaction_datasource.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/datasources/refund/remote_refund_datasource.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/repositories/refund/local_refund_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/repositories/refund/remote_refund_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/repositories/transactions/local_transaction_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/repositories/transactions/remote_transaction_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund/local_refund_repository.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund/remote_refund_repository.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transactions/register_transaction_repository.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/usecases/issue_refund_usecase.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/refund_bloc/refund_bloc.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_shift_api_service.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/repository/register_repository_impl.dart';
@@ -237,10 +240,10 @@ import 'package:medglobal_admin_portal/portal/settings/register/data/repository/
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_shift_repository.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/api/transaction_api.dart';
-import 'package:medglobal_admin_portal/pos/transactions/data/repositories/transaction_repository_impl.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transaction_repository.dart';
-
-import '../../pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
+import 'package:medglobal_admin_portal/portal/transactions/repositories/transaction_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/transactions/repositories/transaction_repository.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/register_transaction_bloc/register_transaction_bloc.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/transaction_list_bloc/transaction_list_bloc.dart';
 
 /// lazySingleton are only initialized when needed while factory are always initialized
 
@@ -294,27 +297,30 @@ void initServices() {
     )
     ..registerLazySingleton<AppSessionService>(
       () => AppSessionService(),
+    )
+    ..registerLazySingleton<DeviceContext>(
+      () => DeviceContext(),
     );
 }
 
 void initReceiptConfig() {
   inject
-    ..registerLazySingleton<LocalReceiptConfigDataSource>(
-      () => LocalReceiptConfigDataSource(dao: inject<AppDatabase>().receiptConfigDao),
-    )
+    // ..registerLazySingleton<LocalReceiptConfigDataSource>(
+    //   () => LocalReceiptConfigDataSource(dao: inject<AppDatabase>().receiptConfigDao),
+    // )
     ..registerLazySingleton<RemoteReceiptConfigDataSource>(
       () => RemoteReceiptConfigDataSource(inject<BaseApiService>()),
     )
-    ..registerLazySingleton<LocalReceiptConfigRepository>(
-      () => LocalReceiptConfigRepositoryImpl(localDataSource: inject<LocalReceiptConfigDataSource>()),
-    )
+    // ..registerLazySingleton<LocalReceiptConfigRepository>(
+    //   () => LocalReceiptConfigRepositoryImpl(localDataSource: inject<LocalReceiptConfigDataSource>()),
+    // )
     ..registerLazySingleton<RemoteReceiptConfigRepository>(
       () => RemoteReceiptConfigRepositoryImpl(remoteDataSource: inject<RemoteReceiptConfigDataSource>()),
     )
     ..registerLazySingleton<PrintReceiptUseCase>(
       () => PrintReceiptUseCase(
         remoteReceiptConfigRepository: inject<RemoteReceiptConfigRepository>(),
-        localReceiptConfigRepository: inject<LocalReceiptConfigRepository>(),
+        // localReceiptConfigRepository: inject<LocalReceiptConfigRepository>(),
         appSessionService: inject<AppSessionService>(),
         connection: inject<ConnectivityService>(),
       ),
@@ -334,11 +340,12 @@ void initNetworkDependencies() {
     )
     ..registerLazySingleton<SyncService>(
       () => SyncService(
+        syncQueueRepository: inject<SyncQueueRepository>(),
         db: inject<AppDatabase>(),
         connection: inject<ConnectivityService>(),
         productCatalogLocalRepo: inject<LocalProductCatalogRepository>(),
         productCatalogRemoteRepo: inject<RemoteProductCatalogRepository>(),
-        receiptConfigLocalRepo: inject<LocalReceiptConfigRepository>(),
+        // receiptConfigLocalRepo: inject<LocalReceiptConfigRepository>(),
         receiptConfigRemoteRepo: inject<RemoteReceiptConfigRepository>(),
         registerShiftLocalRepo: inject<LocalRegisterShiftRepository>(),
         registerShiftRemoteRepo: inject<RemoteRegisterShiftRepository>(),
@@ -346,9 +353,17 @@ void initNetworkDependencies() {
         saleRemoteRepo: inject<RemoteSaleRepository>(),
       ),
     )
-    ..registerFactory<SyncBloc>(() => SyncBloc(inject<SyncService>()
-        // syncService: inject<SyncService>(),
-        // networkService: inject<NetworkService>(),
+    ..registerFactory<SyncBloc>(() => SyncBloc(
+          syncService: inject<SyncService>(),
+          connection: inject<ConnectivityService>(),
+          // syncService: inject<SyncService>(),
+          // networkService: inject<NetworkService>(),
+        ))
+    ..registerFactory<OperationSyncBloc>(() => OperationSyncBloc(
+          syncService: inject<SyncService>(),
+          connection: inject<ConnectivityService>(),
+          // syncService: inject<SyncService>(),
+          // networkService: inject<NetworkService>(),
         ));
 }
 
@@ -484,6 +499,12 @@ void initSyncingDependencies() {
 
 void initRegisterPOSDependencies() {
   inject
+    ..registerLazySingleton<EmployeeApi>(
+      () => EmployeeApi(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<EmployeeRepository>(
+      () => EmployeeRepositoryImpl(inject<EmployeeApi>()),
+    )
 
     /// Session
     ..registerLazySingleton<AppSessionDataSource>(
@@ -492,18 +513,30 @@ void initRegisterPOSDependencies() {
     ..registerLazySingleton<AppSessionRepository>(
       () => AppSessionRepositoryImpl(localDataSource: inject<AppSessionDataSource>()),
     )
-    ..registerLazySingleton<InitializeAppSessionUseCase>(
-      () => InitializeAppSessionUseCase(
-        registerRepository: inject<RegisterRepository>(),
-        remoteReceiptConfigRepository: inject<RemoteReceiptConfigRepository>(),
-        localReceiptConfigRepository: inject<LocalReceiptConfigRepository>(),
-        appSessionRepository: inject<AppSessionRepository>(),
-        appSessionService: inject<AppSessionService>(),
+    // ..registerLazySingleton<InitializeSessionUseCase>(
+    //   () => InitializeSessionUseCase(
+    //     registerRepository: inject<RegisterRepository>(),
+    //     remoteReceiptConfigRepository: inject<RemoteReceiptConfigRepository>(),
+    //     localReceiptConfigRepository: inject<LocalReceiptConfigRepository>(),
+    //     appSessionRepository: inject<SessionRepository>(),
+    //     appSessionService: inject<AppSessionService>(),
+    //   ),
+    // )
+    // ..registerFactory<SessionBloc>(
+    //   () => SessionBloc(
+    //     initializeSessionUseCase: inject<InitializeSessionUseCase>(),
+    //   ),
+    // )
+    ..registerFactory<SessionBloc>(
+      () => SessionBloc(
+        sessionRepository: inject<AppSessionRepository>(),
+        getAuthSession: inject<GetAuthSession>(),
+        connectivityService: inject<ConnectivityService>(),
       ),
     )
-    ..registerFactory<AppSessionBloc>(
-      () => AppSessionBloc(
-        initializeAppSessionUseCase: inject<InitializeAppSessionUseCase>(),
+    ..registerFactory<UnassignedRegisterListCubit>(
+      () => UnassignedRegisterListCubit(
+        registerRepository: inject<RegisterRepository>(),
       ),
     )
 
@@ -723,6 +756,7 @@ void initStockDependencies() {
 /// POS Dependencies
 ///
 void initTransactionDependencies() {
+  /// TODO: Move this to a shared dependencies
   inject
     ..registerLazySingleton<TransactionApi>(
       () => TransactionApi(inject<BaseApiService>()),
@@ -737,11 +771,21 @@ void initTransactionDependencies() {
 
 void initPosDependencies() {
   inject
-    ..registerFactory<PosTransactionListBloc>(
-      () => PosTransactionListBloc(inject<TransactionRepository>()),
+    ..registerFactory<TransactionListBloc>(
+      // () => TransactionListBloc(inject<RegisterTransactionRepository>()),
+      () => TransactionListBloc(inject<TransactionRepository>()),
     )
-    ..registerFactory<PosTransactionBloc>(
-      () => PosTransactionBloc(inject<TransactionRepository>()),
+    ..registerLazySingleton<RegisterTransactionRepository>(
+      () => RemoteTransactionRepositoryImpl(api: inject<TransactionApi>()),
+    )
+    ..registerLazySingleton<LocalTransactionDataSource>(
+      () => LocalTransactionDataSource(dao: inject<AppDatabase>().transactionDao),
+    )
+    // ..registerLazySingleton<RegisterTransactionRepository>(
+    //   () => LocalTransactionRepositoryImpl(localDataSource: inject<LocalTransactionDataSource>()),
+    // )
+    ..registerFactory<RegisterTransactionBloc>(
+      () => RegisterTransactionBloc(inject<RegisterTransactionRepository>()),
     )
     ..registerLazySingleton<LocalProductCatalogRepository>(
       () => LocalProductCatalogRepositoryImpl(localDataSource: inject<LocalProductCatalogDataSource>()),
@@ -771,8 +815,8 @@ void initPosDependencies() {
     ..registerFactory<ProductCatalogCubit>(
       () => ProductCatalogCubit(getProductCatalogUseCase: inject<GetProductCatalogUseCase>()),
     )
-    ..registerFactory<ProductCatalogSyncBloc>(
-      () => ProductCatalogSyncBloc(
+    ..registerFactory<ProductCatalogBloc>(
+      () => ProductCatalogBloc(
         initialFetchProductsUseCase: inject<InitialFetchProductsUseCase>(),
         deltaSyncProductsUseCase: inject<DeltaSyncProductsUseCase>(),
       ),
@@ -797,8 +841,8 @@ void initPosDependencies() {
         local: inject<LocalSaleRepository>(),
         remote: inject<RemoteSaleRepository>(),
         sync: inject<SyncQueueRepository>(),
-        appSessionService: inject<AppSessionService>(),
         connection: inject<ConnectivityService>(),
+        appSessionService: inject<AppSessionService>(),
       ),
     )
     ..registerFactory<SaleBloc>(
@@ -806,8 +850,53 @@ void initPosDependencies() {
         createSaleUseCase: inject<CreateSaleUseCase>(),
       ),
     )
+
+    // Refund
+    ..registerLazySingleton<LocalRefundDataSource>(
+      () => LocalRefundDataSource(dao: inject<AppDatabase>().transactionDao),
+    )
+    ..registerLazySingleton<RemoteRefundDataSource>(
+      () => RemoteRefundDataSource(inject<BaseApiService>()),
+    )
+    ..registerLazySingleton<RemoteRefundRepository>(
+        () => RemoteRefundRepositoryImpl(remoteDataSource: inject<RemoteRefundDataSource>()))
+    ..registerLazySingleton<LocalRefundRepository>(
+        () => LocalRefundRepositoryImpl(localDataSource: inject<LocalRefundDataSource>()))
+    ..registerLazySingleton<IssueRefundUseCase>(
+      () => IssueRefundUseCase(
+        localRegisterShiftRepository: inject<LocalRegisterShiftRepository>(),
+        local: inject<LocalRefundRepository>(),
+        remote: inject<RemoteRefundRepository>(),
+        syncQueue: inject<SyncQueueRepository>(),
+        connection: inject<ConnectivityService>(),
+        appContext: inject<AppSessionService>(),
+      ),
+    )
     ..registerFactory<RefundBloc>(
-      () => RefundBloc(inject<RefundRepository>()),
+      () => RefundBloc(issueRefundUseCase: inject<IssueRefundUseCase>()),
+    )
+    // App Settings
+    ..registerLazySingleton<LocalSettingsRepository>(
+      () => LocalSettingsRepositoryImpl(dao: inject<AppDatabase>().settingsDao),
+    )
+    ..registerLazySingleton<CheckDeviceSettingUseCase>(
+      () => CheckDeviceSettingUseCase(
+        localSettingsRepository: inject<LocalSettingsRepository>(),
+        registerRepository: inject<RegisterRepository>(),
+      ),
+    )
+    ..registerLazySingleton<BindDeviceUseCase>(
+      () => BindDeviceUseCase(
+        registerRepository: inject<RegisterRepository>(),
+        remoteReceiptConfigRepository: inject<RemoteReceiptConfigRepository>(),
+        localSettingsRepository: inject<LocalSettingsRepository>(),
+      ),
+    )
+    ..registerFactory<DeviceSetupBloc>(
+      () => DeviceSetupBloc(
+        bindDeviceUseCase: inject<BindDeviceUseCase>(),
+        checkDeviceSettingUseCase: inject<CheckDeviceSettingUseCase>(),
+      ),
     );
 }
 
@@ -847,7 +936,7 @@ void initAll() {
 
         /// POS
         // ..registerLazySingleton<POSProductApi>(() => POSProductApiImpl(inject()))
-        ..registerLazySingleton<SaleApi>(() => SaleApiImpl(inject()))
+        // ..registerLazySingleton<SaleApi>(() => SaleApiImpl(inject()))
         ..registerLazySingleton<RefundApi>(() => RefundApiImpl(inject()))
 
         /// Repository
@@ -870,8 +959,8 @@ void initAll() {
         /// POS
 
         // ..registerLazySingleton<POSProductRepository>(() => POSProductRepositoryImpl(inject()))
-        ..registerLazySingleton<SaleRepository>(() => SaleRepositoryImpl(inject()))
-        ..registerLazySingleton<RefundRepository>(() => RefundRepositoryImpl(inject()))
+        // ..registerLazySingleton<SaleRepository>(() => SaleRepositoryImpl(inject()))
+        // ..registerLazySingleton<RemoteRefundRepository>(() => RemoteRefundRepositoryImpl(inject()))
 
         /// Usecases
         ///
@@ -1028,10 +1117,10 @@ void initAll() {
         ..registerFactory(() => ShiftTransactionsCubit(inject()))
         ..registerFactory(() => ShiftTransactionPageSizeCubit())
 
-        /// POS
+      /// POS
 
-        // ..registerFactory(() => ProductCatalogCubit(inject()))
-        ..registerFactory(() => PosProductSearchCubit())
+      // ..registerFactory(() => ProductCatalogCubit(inject()))
+      // ..registerFactory(() => PosProductSearchCubit())
       // ..registerFactory(() => OrderCubit())
       // ..registerFactory(() => SaleRemoteCubit(inject()))
       // ..registerFactory(() => TransactionListByBranchCubit(inject()))

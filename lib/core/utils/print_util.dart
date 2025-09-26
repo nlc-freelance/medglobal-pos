@@ -1,10 +1,13 @@
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
+import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
+import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/domain/entities/receipt_configuration.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/receipt_configuration.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:pdf/pdf.dart';
@@ -14,31 +17,6 @@ import 'package:universal_html/html.dart' as html;
 
 class PrintUtil {
   const PrintUtil();
-
-  static Future<List<Printer>> getListOfPrinters() async {
-    try {
-      final printingInfo = await Printing.info();
-
-      if (printingInfo.canListPrinters) {
-        return await Printing.listPrinters();
-      }
-      throw UnexpectedException('Could not get the list of available printers for this device.');
-    } catch (e) {
-      throw UnexpectedException(e.toString());
-    }
-  }
-
-  static Future<void> directPrint(Printer printer, Document doc) async {
-    try {
-      await Printing.directPrintPdf(
-        printer: printer,
-        onLayout: (_) => doc.save(),
-        usePrinterSettings: true,
-      );
-    } catch (e) {
-      throw UnexpectedException(e.toString());
-    }
-  }
 
   static Future<void> generateAndPrintReceipt({
     required Transaction transaction,
@@ -67,212 +45,208 @@ class PrintUtil {
           theme: theme,
           pageFormat: PdfPageFormat.roll80,
           build: (Context context) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text(
-                          (config.companyName ?? Strings.noValue).toUpperCase(),
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      if (config.showBranchName) ...[
-                        SizedBox(height: 10),
-                        Center(child: Text('${config.branchName}', style: theme.header2)),
-                      ],
-                      Center(
-                        child: Text(
-                          config.branchAddress ?? Strings.noValue,
-                          style: theme.tableCell,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      if (config.showBranchContact) ...[
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Phone: ${config.branchPhone ?? Strings.noValue}',
-                                style: theme.header4,
-                              ),
-                              if (config.branchEmail?.isNotEmpty == true)
-                                Text(
-                                  'Email: ${config.branchEmail ?? Strings.noValue}',
-                                  style: theme.header4,
-                                  textAlign: TextAlign.center,
-                                )
-                            ],
-                          ),
-                        ),
-                      ],
-                      SizedBox(height: 30),
-                      Text(
-                        'Receipt Date: ${DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now())}',
-                        style: theme.header4,
-                      ),
-                      SizedBox(height: 1),
-                      Text('Receipt ID: ${transaction.receiptId}', style: theme.header4),
-                      SizedBox(height: 1),
-                      Text('Cashier: ${transaction.employee.name}', style: theme.header4),
-                      SizedBox(height: 1),
-                      Text('Register: ${transaction.register.name}', style: theme.header4),
-                      SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(flex: 2, child: Text('Item', style: theme.tableHeader)),
-                          SizedBox(width: 8),
-                          Expanded(child: Text('Qty', style: theme.tableHeader)),
-                          SizedBox(width: 8),
-                          Expanded(child: Text('Price', style: theme.tableHeader)),
-                          Expanded(child: Text('Total', style: theme.tableHeader, textAlign: TextAlign.end)),
-                        ],
-                      ),
-                      SizedBox(height: 2),
-                      Container(margin: const EdgeInsets.symmetric(vertical: 2), height: 0.9, color: PdfColors.black),
-                      ...(transaction.items ?? []).map(
-                        (item) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      item.name!,
-                                      style: TextStyle(font: interMedium, fontSize: 11, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              if (item.discountValue != null &&
-                                  item.discountValue != 0 &&
-                                  item.discountAmount != null) ...[
-                                SizedBox(height: 2),
-                                Text(
-                                  '*Disc. ${item.discountType == DiscountType.percentage ? '${item.discountValue}%' : '₱${item.discountValue.toPesoString()}'}  (-${item.discountAmount.toPesoString()})',
-                                  style: theme.tableCell,
-                                ),
-                              ],
-                              SizedBox(height: 2),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Spacer(),
-                                  Expanded(
-                                    child: Text(
-                                      item.quantity.toString(),
-                                      style: theme.tableCell,
-                                      textAlign: TextAlign.end,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      item.price.toPesoString(),
-                                      style: theme.tableCell,
-                                      textAlign: TextAlign.end,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      item.total.toPesoString(),
-                                      style: theme.tableCell,
-                                      textAlign: TextAlign.end,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          '${(transaction.items)?.length.toString()} ITEMS',
-                          style: theme.header3,
-                        ),
-                      ),
-                      Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('SUBTOTAL', style: theme.header3),
-                          Text(
-                            transaction.subtotal.toPesoString(),
-                            style: theme.header3,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10),
+                  Center(
+                    child: Text(
+                      (config.companyName ?? Strings.noValue).toUpperCase(),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  if (config.showBranchName) ...[
+                    SizedBox(height: 10),
+                    Center(child: Text('${config.branchName}', style: theme.header2)),
+                  ],
+                  Center(
+                    child: Text(
+                      config.branchAddress ?? Strings.noValue,
+                      style: theme.tableCell,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  if (config.showBranchContact) ...[
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'TOTAL DISCOUNT',
-                            style: theme.header3,
+                            'Phone: ${config.branchPhone ?? Strings.noValue}',
+                            style: theme.header4,
                           ),
-                          Text('-${transaction.totalDiscountAmount.toPesoString()}', style: theme.header3),
-                        ],
-                      ),
-                      Divider(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('TOTAL', style: theme.header3),
-                            Text(transaction.total.toPesoString(), style: theme.header3),
-                          ],
-                        ),
-                      ),
-                      Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('CASH', style: theme.header3),
-                          Text(transaction.amountPaid.toPesoString(), style: theme.header3),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('CHANGE', style: theme.header3),
-                          Text('${transaction.amountPaid! - transaction.total!}'.toPesoString(), style: theme.header3),
-                        ],
-                      ),
-                      if (config.showFooterMessage) ...[
-                        SizedBox(height: 30),
-                        Center(
-                          child: Text(
-                            config.footerTitle ?? Strings.noValue,
-                            style: theme.tableHeader,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        if (config.footerMessage?.isNotEmpty == true) ...[
-                          SizedBox(height: 2),
-                          Center(
-                            child: Text(
-                              config.footerMessage!,
+                          if (config.branchEmail?.isNotEmpty == true)
+                            Text(
+                              'Email: ${config.branchEmail ?? Strings.noValue}',
+                              style: theme.header4,
                               textAlign: TextAlign.center,
-                              style: theme.paragraphStyle.copyWith(lineSpacing: 0.6),
-                            ),
-                          ),
+                            )
                         ],
-                      ],
+                      ),
+                    ),
+                  ],
+                  SizedBox(height: 30),
+                  Text(
+                    'Receipt Date: ${transaction.createdAt.toFormattedDateTime24Hr()}',
+                    style: theme.header4,
+                  ),
+                  SizedBox(height: 1),
+                  Text('Receipt ID: ${transaction.receiptId}', style: theme.header4),
+                  SizedBox(height: 1),
+                  Text('Cashier: ${transaction.employee.name}', style: theme.header4),
+                  SizedBox(height: 1),
+                  Text('Register: ${transaction.register.name}', style: theme.header4),
+                  SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(flex: 2, child: Text('Item', style: theme.tableHeader)),
+                      SizedBox(width: 8),
+                      Expanded(child: Text('Qty', style: theme.tableHeader)),
+                      SizedBox(width: 8),
+                      Expanded(child: Text('Price', style: theme.tableHeader)),
+                      Expanded(child: Text('Total', style: theme.tableHeader, textAlign: TextAlign.end)),
                     ],
                   ),
-                ),
-              ],
+                  SizedBox(height: 2),
+                  Container(margin: const EdgeInsets.symmetric(vertical: 2), height: 0.9, color: PdfColors.black),
+                  ...(transaction.items ?? []).map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  item.name!,
+                                  style: TextStyle(font: interMedium, fontSize: 11, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (item.discount != null && item.discount != 0 && item.discountAmount != null) ...[
+                            SizedBox(height: 2),
+                            Text(
+                              '*Disc. ${item.discountType == DiscountType.percentage ? '${item.discount}%' : '₱${item.discount.toPesoString()}'}  (-${item.discountAmount.toPesoString()})',
+                              style: theme.tableCell,
+                            ),
+                          ],
+                          SizedBox(height: 2),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Spacer(),
+                              Expanded(
+                                child: Text(
+                                  item.quantity.toString(),
+                                  style: theme.tableCell,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  item.price.toPesoString(),
+                                  style: theme.tableCell,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  item.total.toPesoString(),
+                                  style: theme.tableCell,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '${(transaction.items)?.length.toString()} ITEMS',
+                      style: theme.header3,
+                    ),
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('SUBTOTAL', style: theme.header3),
+                      Text(
+                        transaction.subtotal.toPesoString(),
+                        style: theme.header3,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'TOTAL DISCOUNT',
+                        style: theme.header3,
+                      ),
+                      Text('-${transaction.totalDiscountAmount.toPesoString()}', style: theme.header3),
+                    ],
+                  ),
+                  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('TOTAL', style: theme.header3),
+                        Text(transaction.total.toPesoString(), style: theme.header3),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('CASH', style: theme.header3),
+                      Text(transaction.amountPaid.toPesoString(), style: theme.header3),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('CHANGE', style: theme.header3),
+                      Text('${transaction.amountPaid! - transaction.total!}'.toPesoString(), style: theme.header3),
+                    ],
+                  ),
+                  if (config.showFooterMessage) ...[
+                    SizedBox(height: 30),
+                    Center(
+                      child: Text(
+                        config.footerTitle ?? Strings.noValue,
+                        style: theme.tableHeader,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    if (config.footerMessage?.isNotEmpty == true) ...[
+                      SizedBox(height: 2),
+                      Center(
+                        child: Text(
+                          config.footerMessage!,
+                          textAlign: TextAlign.center,
+                          style: theme.paragraphStyle.copyWith(lineSpacing: 0.6),
+                        ),
+                      ),
+                    ],
+                  ],
+                  SizedBox(height: 20),
+                  Divider(thickness: 0.5),
+                ],
+              ),
             );
           },
         ),
@@ -313,24 +287,14 @@ class PrintUtil {
       //   html.document.querySelector('script')?.remove(); // Remove injected script
       // });
 
-      Future<List<Printer>> findPrinters() async {
-        return await Printing.listPrinters();
-      }
+      final printer = await GetIt.I<AppDatabase>().settingsDao.getPrinter();
 
-      final result = await findPrinters();
-      final printer = result.firstWhere((p) => p.name.toLowerCase().contains('epson'));
+      if (printer == null) throw Exception('Printer not set up');
 
-      final res = await Printing.directPrintPdf(
-        printer: printer,
+      Printing.directPrintPdf(
+        printer: Printer(url: printer),
         onLayout: (_) => doc.save(),
-        // usePrinterSettings: true,
       );
-
-      if (res) {
-        print("Printed!");
-      } else {
-        print("Error");
-      }
     } catch (e) {
       throw Exception(e);
     }
@@ -380,7 +344,7 @@ class PrintUtil {
                 Text(order.supplier!.address, style: theme.header4),
                 SizedBox(height: 20),
                 Text('${order.branch!.name.toUpperCase()} BRANCH', style: theme.header3),
-                Text(order.branch!.address, style: theme.header4),
+                Text(order.branch!.address!, style: theme.header4),
                 SizedBox(height: 16),
                 SizedBox(
                   height: 40,
@@ -443,7 +407,7 @@ class PrintUtil {
                   Text('Delivery Details', style: theme.header3),
                   Divider(color: PdfColors.grey),
                   Text('${order.branch!.name.toUpperCase()} BRANCH', style: theme.header4),
-                  Text(order.branch!.address, style: theme.header4),
+                  Text(order.branch!.address!, style: theme.header4),
                   SizedBox(height: 20),
                   Text('Notes', style: theme.header3),
                   Divider(color: PdfColors.grey),
@@ -469,7 +433,7 @@ class PrintUtil {
                   Text('Delivery Details', style: theme.header3),
                   Divider(color: PdfColors.grey),
                   Text('${order.branch!.name.toUpperCase()} BRANCH', style: theme.header4),
-                  Text(order.branch!.address, style: theme.header4),
+                  Text(order.branch!.address!, style: theme.header4),
                   SizedBox(height: 30),
                   Text('Notes', style: theme.header3),
                   Divider(color: PdfColors.grey),
@@ -518,7 +482,7 @@ class PrintUtil {
                     Text('Delivery Details', style: theme.header3),
                     Divider(color: PdfColors.grey),
                     Text('${order.branch!.name.toUpperCase()} BRANCH', style: theme.header4),
-                    Text(order.branch!.address, style: theme.header4),
+                    Text(order.branch!.address!, style: theme.header4),
                     SizedBox(height: 30),
                     Text('Notes', style: theme.header3),
                     Divider(color: PdfColors.grey),

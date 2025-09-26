@@ -1,39 +1,26 @@
-import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/pos/transactions/data/dto/refund/create_refund_item_dto.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'create_refund_dto.freezed.dart';
 part 'create_refund_dto.g.dart';
 
-@JsonSerializable()
-class CreateRefundDto {
-  final int registerId;
-  final int saleTransactionId;
-  final List<CreateRefundItemDto> items;
-  final String? notes;
+@freezed
+class CreateRefundDto with _$CreateRefundDto {
+  const factory CreateRefundDto({
+    required int registerId,
+    required int saleTransactionId,
+    required List<CreateRefundItemDto> items,
+    String? notes,
+  }) = _CreateRefundDto;
 
-  CreateRefundDto({
-    required this.registerId,
-    required this.saleTransactionId,
-    required this.items,
-    this.notes,
-  });
+  factory CreateRefundDto.fromJson(Map<String, dynamic> json) => _$CreateRefundDtoFromJson(json);
+}
 
-  Map<String, dynamic> toJson() => _$CreateRefundDtoToJson(this);
+@freezed
+class CreateRefundItemDto with _$CreateRefundItemDto {
+  const factory CreateRefundItemDto({
+    required int variantId,
+    required int quantity,
+  }) = _CreateRefundItemDto;
 
-  // factory CreateRefundDto.fromDomain(Transaction transaction) {
-  //   if (transaction.type != TransactionType.refund) {
-  //     throw ArgumentError('Expected a refund transaction');
-  //   }
-  //   if (transaction.saleTransactionId == null) {
-  //     throw ArgumentError('Missing saleTransactionId for refund');
-  //   }
-
-  //   return CreateRefundDto(
-  //     registerId: transaction.register.id,
-  //     saleTransactionId: transaction.saleTransactionId!,
-  //     items: transaction.items.map((item) => CreateRefundItemDto.fromDomain(item)).toList(),
-  //     notes:
-  //   );
-  // }
+  factory CreateRefundItemDto.fromJson(Map<String, dynamic> json) => _$CreateRefundItemDtoFromJson(json);
 }

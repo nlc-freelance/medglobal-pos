@@ -12,7 +12,7 @@ part 'stock_return.g.dart';
 @JsonSerializable()
 class StockReturn extends Equatable {
   final int? id;
-  final Branch? branch;
+  final BranchPartial? branch;
   final Supplier? supplier;
   final StockOrderStatus? status;
   final double? totalAmount;
@@ -105,7 +105,7 @@ class StockReturn extends Equatable {
 
   StockReturn copyWith({
     int? id,
-    Branch? branch,
+    BranchPartial? branch,
     Supplier? supplier,
     StockOrderStatus? status,
     double? totalAmount,

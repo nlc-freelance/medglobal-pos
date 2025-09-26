@@ -9,15 +9,13 @@ class RefundFormCubit extends Cubit<RefundFormState> {
   RefundFormCubit() : super(RefundFormState.initial());
 
   void loadItems(List<RefundItem> items) => emit(RefundFormState(items: items));
-  // void setRefund(Transaction refund) => emit(RefundFormState(refund));
 
-  void setRefundItemQty({required int id, required int qtyToRefund}) {
-    // void setRefundItemQty({required int id, required int qtyToRefund, required double subtotal}) {
+  void setRefundItemQty({required int id, required int? qtyToRefund}) {
     final updatedRefundItems = state.items.map((item) {
       if (item.id == id) {
         return item.copyWith(
-          quantity: qtyToRefund,
-          // subtotal: subtotal,
+          refundQuantity: qtyToRefund,
+          subtotal: (qtyToRefund ?? 0) * item.price,
         );
       }
       return item;
@@ -27,4 +25,6 @@ class RefundFormCubit extends Cubit<RefundFormState> {
   }
 
   void setReason(String reason) => emit(state.copyWith(reasonForRefund: reason));
+
+  void reset() => emit(RefundFormState.initial());
 }

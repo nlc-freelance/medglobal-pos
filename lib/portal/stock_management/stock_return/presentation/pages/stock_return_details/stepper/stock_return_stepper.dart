@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/new_stock_return/new_stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
@@ -59,8 +60,12 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
               listener: (context, state) {
                 if (state is StockReturnCreateSuccess) {
                   final id = state.stockReturn.id;
-                  AppRouter.router.goNamed(
-                    SideMenuTreeItem.STOCK_RETURN_DETAILS.name,
+                  // AppRouter.router.goNamed(
+                  //   SideMenuTreeItem.STOCK_RETURN_DETAILS.name,
+                  //   pathParameters: {'id': id.toString()},
+                  // );
+                  context.goNamed(
+                    'stockReturnDetails',
                     pathParameters: {'id': id.toString()},
                   );
                 }
@@ -92,7 +97,8 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
                             padding: const EdgeInsets.only(right: 8),
                             child: UIButton.outlined(
                               'Cancel',
-                              onClick: () => AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_RETURNS.name),
+                              onClick: () => context.goNamed('stockReturnList'),
+                              // onClick: () => AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_RETURNS.name),
                             ),
                           ),
                         if (_currentStep == 0)

@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/enums/enums.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/cubit/product_performance_form_cubit/product_performance_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/widgets/product_performance_list.dart';
 import 'package:medglobal_admin_portal/portal/reports/shared/report_bloc/report_bloc.dart';
 
@@ -22,6 +23,7 @@ class ProductPerformanceListPage extends StatelessWidget {
               ),
             ),
         ),
+        BlocProvider(create: (context) => ProductPerformanceListFilterCubit()),
         // If ReportBloc is created on this page, the Bloc closes when user navigates to other page and cannot add new events
         // Create the the Bloc on the main app so it does not close on page navigate
         // Investigate further later

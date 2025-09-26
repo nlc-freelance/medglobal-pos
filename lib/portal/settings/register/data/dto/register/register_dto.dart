@@ -26,6 +26,7 @@ class RegisterPartialDto with _$RegisterPartialDto {
   const factory RegisterPartialDto({
     required int id,
     required String name,
+    String? serialNumber,
     @DateTimeConverter() DateTime? createdAt,
     @DateTimeConverter() DateTime? updatedAt,
   }) = _RegisterPartialDto;

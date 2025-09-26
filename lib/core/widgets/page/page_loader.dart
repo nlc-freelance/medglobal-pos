@@ -29,7 +29,7 @@ class _FullScreenLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.black.withOpacity(0.2),
+      color: Colors.black.withValues(alpha: 0.2),
       child: const Center(
         child: CircularProgressIndicator(
           color: UIColors.primary,

@@ -99,7 +99,8 @@ class _PurchaseOrderStepperState extends State<PurchaseOrderStepper> {
                                 padding: const EdgeInsets.only(right: 8),
                                 child: UIButton.outlined(
                                   'Cancel',
-                                  onClick: () => context.pushReplacementNamed('purchaseOrderList'),
+                                  onClick: () => context.goNamed('purchaseOrderList'),
+                                  // onClick: () => context.pushReplacementNamed('purchaseOrderList'),
                                 ),
                               ),
                             if (_currentStep == 0)

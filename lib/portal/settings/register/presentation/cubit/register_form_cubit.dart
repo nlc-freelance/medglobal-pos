@@ -13,7 +13,7 @@ class RegisterFormCubit extends Cubit<RegisterFormState> {
 
   void setName(String name) => emit(state.copyWith(name: name));
 
-  void setSerialNo(String serialNo) => emit(state.copyWith(serialNo: serialNo));
+  void setSerialNo(String? serialNo) => emit(state.copyWith(serialNo: serialNo));
 
   void setAssignedBranch(Branch branch) => emit(state.copyWith(assignedBranch: branch));
 

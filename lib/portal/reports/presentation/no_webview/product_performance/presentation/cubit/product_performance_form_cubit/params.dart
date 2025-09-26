@@ -14,6 +14,7 @@ class ProductABCParams with _$ProductABCParams implements ProductPerformancePara
 @freezed
 class ProductPNLParams with _$ProductPNLParams implements ProductPerformanceParams {
   const factory ProductPNLParams({
+    Branch? branch,
     List<Category>? categories,
     int? topN,
   }) = _ProductPNLParams;

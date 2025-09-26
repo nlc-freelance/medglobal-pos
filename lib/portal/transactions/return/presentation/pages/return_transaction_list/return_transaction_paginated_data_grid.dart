@@ -289,7 +289,10 @@ class ReturnTransactionDataSource extends DataGridSource {
     return switch (column) {
       'receipt_id' => HoverBuilder(
           builder: (isHover) => InkWell(
-            onTap: () => AppRouter.router.goNamed('returnTransactionDetails', pathParameters: {'id': id.toString()}),
+            onTap: () => AppRouter.router.goNamed(
+              'returnTransactionDetails',
+              pathParameters: {'id': id.toString()},
+            ),
             hoverColor: UIColors.transparent,
             child: UIText.dataGridText(
               cell.value.toString(),

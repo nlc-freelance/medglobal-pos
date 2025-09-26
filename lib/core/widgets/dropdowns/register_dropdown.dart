@@ -25,7 +25,7 @@ class RegisterDropdownState extends State<RegisterDropdown> {
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_scrollListener);
-    context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch());
+    context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(filters: {'assigned': false}));
     // context.read<RegisterLazyListCubit>().getRegisters();
   }
 
@@ -35,7 +35,7 @@ class RegisterDropdownState extends State<RegisterDropdown> {
         !context.read<LazyListBloc<Register>>().state.hasReachedMax) {
       // !context.read<RegisterLazyListCubit>().state.isLoadingMore &&
       // !context.read<RegisterLazyListCubit>().state.hasReachedMax) {
-      context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch());
+      context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(filters: {'assigned': false}));
       // context.read<RegisterLazyListCubit>().getRegisters();
     }
   }
@@ -101,9 +101,8 @@ class RegisterDropdownState extends State<RegisterDropdown> {
                       children: [
                         UIText.labelMedium(state.error!, align: TextAlign.center),
                         UIButton.text('Reload',
-                            onClick: () => context
-                                .read<LazyListBloc<Register>>()
-                                .add(const LazyListEvent<Register>.fetch(forceRefresh: true)))
+                            onClick: () => context.read<LazyListBloc<Register>>().add(
+                                const LazyListEvent<Register>.fetch(forceRefresh: true, filters: {'assigned': false})))
                         // UIButton.text('Reload', onClick: () => context.read<RegisterLazyListCubit>().getRegisters())
                       ],
                     ),

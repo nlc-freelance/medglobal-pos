@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:drift/drift.dart';
+import 'package:medglobal_admin_portal/core/enums/enums.dart';
 import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
 import 'package:medglobal_admin_portal/core/local_db/base_dao.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
-import 'package:medglobal_admin_portal/pos/app_session/domain/entities/app_session.dart';
+import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
 
 part 'session_dao.g.dart';
 
@@ -36,34 +35,45 @@ class SessionDao extends DatabaseAccessor<AppDatabase> with _$SessionDaoMixin, B
 }
 
 /// Mappers
-extension SessionMapper on AppSession {
+extension SessionMapper on User {
   SessionCompanion toSessionCompanion() {
     return SessionCompanion.insert(
-      employeeId: employeeId,
-      employeeFirstName: employeeFirstName,
-      employeeLastName: employeeLastName,
-      registerId: registerId,
-      registerName: registerName,
-      registerSerialNo: registerSerialNo,
-      branchId: branchId,
-      branchName: branchName,
-      receiptConfig: jsonEncode(receiptConfig.toJson()),
+      userId: id!,
+      userFirstName: firstName!,
+      userLastName: lastName!,
+      userRole: type!.name,
+      // registerId: registerId,
+      // registerName: registerName,
+      // registerSerialNo: registerSerialNo,
+      // branchId: branchId,
+      // branchName: branchName,
+      // receiptConfig: jsonEncode(receiptConfig.toJson()),
     );
   }
 }
 
+// extension SessionDataMapper on SessionData {
+//   AppSession toEntity() {
+//     return AppSession(
+//       employeeId: employeeId,
+//       employeeFirstName: employeeFirstName,
+//       employeeLastName: employeeLastName,
+//       registerId: registerId,
+//       registerName: registerName,
+//       registerSerialNo: registerSerialNo,
+//       branchId: branchId,
+//       branchName: branchName,
+//       receiptConfig: jsonDecode(receiptConfig),
+//     );
+//   }
+
 extension SessionDataMapper on SessionData {
-  AppSession toEntity() {
-    return AppSession(
-      employeeId: employeeId,
-      employeeFirstName: employeeFirstName,
-      employeeLastName: employeeLastName,
-      registerId: registerId,
-      registerName: registerName,
-      registerSerialNo: registerSerialNo,
-      branchId: branchId,
-      branchName: branchName,
-      receiptConfig: jsonDecode(receiptConfig),
+  User toEntity() {
+    return User(
+      id: userId,
+      firstName: userFirstName,
+      lastName: userLastName,
+      type: UserType.fromString(userRole),
     );
   }
 }

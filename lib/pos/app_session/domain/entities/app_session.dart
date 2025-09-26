@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/domain/entities/receipt_configuration.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/receipt_configuration.dart';
 
 part 'app_session.freezed.dart';
 

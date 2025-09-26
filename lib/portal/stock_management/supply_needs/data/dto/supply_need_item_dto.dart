@@ -22,7 +22,7 @@ class SupplyNeedItemDto extends Equatable {
 
   factory SupplyNeedItemDto.fromJson(Map<String, dynamic> json) => _$SupplyNeedItemDtoFromJson(json);
 
-  SupplyNeedItem toEntity(Branch? branch) => SupplyNeedItem(
+  SupplyNeedItem toEntity(BranchPartial? branch) => SupplyNeedItem(
         id: id,
         branch: branch,
         variantName: '${variant?.product?.name} ${variant?.name}',

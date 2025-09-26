@@ -13,12 +13,23 @@ part 'register_shift_dao.g.dart';
 class RegisterShiftDao extends DatabaseAccessor<AppDatabase> with _$RegisterShiftDaoMixin, BaseDao {
   RegisterShiftDao(super.db);
 
-  // Get the currently open shift, if there is
-  Future<RegisterShiftModel?> getOpenShift(int userId, int registerId) {
+  // Get the currently open shift by user, if there is
+  // Future<RegisterShiftModel?> getOpenShift(int userId, int registerId) {
+  //   return safeCall(() async {
+  //     return await (select(registerShifts)
+  //           ..where(
+  //             (tbl) => tbl.userId.equals(userId) & tbl.registerId.equals(registerId) & tbl.closedAt.isNull(),
+  //           ))
+  //         .getSingleOrNull();
+  //   });
+  // }
+
+  /// Get the current open shift
+  Future<RegisterShiftModel?> getOpenShift(int registerId) {
     return safeCall(() async {
       return await (select(registerShifts)
             ..where(
-              (tbl) => tbl.userId.equals(userId) & tbl.registerId.equals(registerId) & tbl.closedAt.isNull(),
+              (tbl) => tbl.registerId.equals(registerId) & tbl.closedAt.isNull(),
             ))
           .getSingleOrNull();
     });
@@ -45,10 +56,10 @@ class RegisterShiftDao extends DatabaseAccessor<AppDatabase> with _$RegisterShif
   }
 
   // Get the last closed shift
-  Future<RegisterShiftModel?> getLastClosedShift(int userId, int registerId) {
+  Future<RegisterShiftModel?> getLastClosedShift(int registerId) {
     return safeCall(() async {
       return (select(registerShifts)
-            ..where((tbl) => tbl.userId.equals(userId) & tbl.registerId.equals(registerId) & tbl.closedAt.isNotNull())
+            ..where((tbl) => tbl.registerId.equals(registerId) & tbl.closedAt.isNotNull())
             ..orderBy([
               (tbl) => OrderingTerm.desc(tbl.closedAt),
             ])
@@ -56,6 +67,19 @@ class RegisterShiftDao extends DatabaseAccessor<AppDatabase> with _$RegisterShif
           .getSingleOrNull();
     });
   }
+
+  // // Get the last closed shift by user
+  // Future<RegisterShiftModel?> getLastClosedShiftByUser(int userId, int registerId) {
+  //   return safeCall(() async {
+  //     return (select(registerShifts)
+  //       ..where((tbl) => tbl.userId.equals(userId) & tbl.registerId.equals(registerId) & tbl.closedAt.isNotNull())
+  //       ..orderBy([
+  //             (tbl) => OrderingTerm.desc(tbl.closedAt),
+  //       ])
+  //       ..limit(1))
+  //         .getSingleOrNull();
+  //   });
+  // }
 
   Future<RegisterShiftModel> getShiftById(int id) async {
     final shift = await (select(registerShifts)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();

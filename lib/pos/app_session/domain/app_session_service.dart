@@ -1,22 +1,36 @@
 import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/entities/app_session.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/domain/entities/receipt_configuration.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/receipt_configuration.dart';
 
 class AppSessionService {
   User? _user;
-  Register? _register;
+  RegisterPartial? _register;
+  BranchPartial? _branch;
   ReceiptConfiguration? _receipt;
   String? _printer;
 
   void setUser(User user) => _user = user;
   void setReceiptConfig(ReceiptConfiguration config) => _receipt = config;
-  void setPrinter(String printer) => _printer = printer;
+  void setPrinter(String? printer) => _printer = printer;
 
-  void setAppSession(User user, Register register, ReceiptConfiguration receipt) {
-    _user = user;
+  // void setAppSession(User user, Register register, ReceiptConfiguration receipt) {
+  //   _user = user;
+  //   _register = register;
+  //   _receipt = receipt;
+  // }
+
+  void setDeviceSettings(
+    RegisterPartial register,
+    BranchPartial branch,
+    ReceiptConfiguration receipt,
+    String? printer,
+  ) {
     _register = register;
+    _branch = branch;
     _receipt = receipt;
+    _printer = printer;
   }
 
   void clear() {
@@ -28,22 +42,24 @@ class AppSessionService {
   User? get user => _user;
   int? get userId => _user?.id;
   int? get registerId => _register?.id;
-  int? get branchId => _register?.assignedBranch?.id;
+  String? get registerName => _register?.name;
+  int? get branchId => _branch?.id;
+  String? get branchName => _branch?.name;
   ReceiptConfiguration? get receiptConfig => _receipt;
   String? get printer => _printer;
 
   AppSession? get session {
-    if (_user == null || _register == null || receiptConfig == null) return null;
+    if (_user == null || _register == null || _branch == null || receiptConfig == null) return null;
 
     return AppSession(
       employeeId: _user!.id!,
       employeeFirstName: _user!.firstName!,
       employeeLastName: _user!.lastName!,
-      registerId: _register!.id!,
+      registerId: _register!.id,
       registerName: _register!.name,
       registerSerialNo: _register!.serialNumber!,
-      branchId: _register!.assignedBranch!.id!,
-      branchName: _register!.assignedBranch!.name,
+      branchId: _branch!.id,
+      branchName: _branch!.name,
       receiptConfig: _receipt!,
     );
   }

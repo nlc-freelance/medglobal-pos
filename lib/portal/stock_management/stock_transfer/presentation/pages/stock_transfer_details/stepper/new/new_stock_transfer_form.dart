@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
+import 'package:medglobal_admin_portal/core/widgets/form/app_dropdown_form_field.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/new_stock_transfer/new_stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_need/supply_need_cubit.dart';
@@ -14,13 +15,21 @@ class NewStockTransferForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        BranchDropdown.input_left(
+        AppDropdownFormField<BranchPartial>.lazy(
+          labelPosition: LabelPosition.left,
           label: 'Source Branch',
           hint: 'Select source branch',
-          required: true,
-          selectedItem: context.read<SupplyNeedCubit>().state.stockTransferSourceBranch,
-          onSelectItem: (Branch value) => context.read<NewStockTransferCubit>().setSourceBranchId(value.id!),
+          isRequired: true,
+          getName: (branch) => branch.name,
+          onChanged: (branch) => context.read<NewStockTransferCubit>().setSourceBranchId(branch.id),
         ),
+        // BranchDropdown.input_left(
+        //   label: 'Source Branch',
+        //   hint: 'Select source branch',
+        //   required: true,
+        //   selectedItem: context.read<SupplyNeedCubit>().state.stockTransferSourceBranch,
+        //   onSelectItem: (Branch value) => context.read<NewStockTransferCubit>().setSourceBranchId(value.id!),
+        // ),
         const UIVerticalSpace(16),
         BranchDropdown.input_left(
           label: 'Destination Branch',

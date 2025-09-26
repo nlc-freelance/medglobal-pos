@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/constants/constants.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/access_control.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_form/widgets/sections/access_control/role_section.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/pages/employee_form/widgets/sections/access_control/system_access_section.dart';
@@ -38,6 +40,17 @@ class Employee with _$Employee {
           DataGridCell<String>(columnName: 'phone', value: phone),
           DataGridCell<EmployeeRole>(columnName: 'role', value: role),
         ],
+      );
+
+  User toUser() => User(
+        id: id,
+        firstName: firstName,
+        lastName: lastName,
+        type: role == EmployeeRole.cashier
+            ? UserType.cashier
+            : role == EmployeeRole.supervisor
+                ? UserType.supervisor
+                : UserType.admin,
       );
 }
 

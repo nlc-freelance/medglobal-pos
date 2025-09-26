@@ -21,7 +21,7 @@ class _TabBarFilterState extends State<AppTabBar> with SingleTickerProviderState
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: widget.tabs.length, vsync: this);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) return; // Wait until transition finishes
       widget.onChangedTab(_tabController.index);

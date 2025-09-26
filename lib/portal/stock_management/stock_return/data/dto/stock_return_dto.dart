@@ -14,7 +14,7 @@ part 'stock_return_dto.g.dart';
 class StockReturnDto extends Equatable {
   final int? id;
   @JsonKey(name: 'store')
-  final BranchDto? branch;
+  final BranchPartialDto? branch;
   final Supplier? supplier;
   final String? status;
   final double? totalAmount;
@@ -49,7 +49,7 @@ class StockReturnDto extends Equatable {
 
   StockReturn toEntity() => StockReturn(
         id: id,
-        branch: branch == null ? null : BranchMapper.fromDto(branch!),
+        branch: branch == null ? null : BranchPartialMapper.fromDto(branch!),
         supplier: supplier,
         status: StatusMapper.status(status),
         tax: tax,

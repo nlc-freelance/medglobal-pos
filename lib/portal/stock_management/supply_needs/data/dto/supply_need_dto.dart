@@ -11,7 +11,7 @@ part 'supply_need_dto.g.dart';
 @JsonSerializable()
 class SupplyNeedDto extends Equatable {
   final int? id;
-  final BranchDto? branch;
+  final BranchPartialDto? branch;
   @JsonKey(name: 'productList')
   final List<SupplyNeedItemDto>? items;
 
@@ -28,8 +28,10 @@ class SupplyNeedDto extends Equatable {
 
   SupplyNeed toEntity() => SupplyNeed(
         id: id,
-        branch: branch == null ? null : BranchMapper.fromDto(branch!),
-        items:
-            items?.map((item) => item.toEntity(branch == null ? null : BranchMapper.fromDto(branch!))).toList() ?? [],
+        branch: branch == null ? null : BranchPartialMapper.fromDto(branch!),
+        items: items
+                ?.map((item) => item.toEntity(branch == null ? null : BranchPartialMapper.fromDto(branch!)))
+                .toList() ??
+            [],
       );
 }

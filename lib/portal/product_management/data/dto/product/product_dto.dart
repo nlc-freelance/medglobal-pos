@@ -21,9 +21,6 @@ class ProductDto with _$ProductDto {
   factory ProductDto.fromJson(Map<String, dynamic> json) => _$ProductDtoFromJson(json);
 }
 
-
-
-
 // part 'product_dto.g.dart';
 
 // @JsonSerializable()

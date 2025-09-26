@@ -9,7 +9,7 @@ part 'supply_need_item.g.dart';
 @JsonSerializable()
 class SupplyNeedItem extends Equatable {
   final int? id;
-  final Branch? branch;
+  final BranchPartial? branch;
   final String? variantName;
   final String? sku;
   final int? qty;

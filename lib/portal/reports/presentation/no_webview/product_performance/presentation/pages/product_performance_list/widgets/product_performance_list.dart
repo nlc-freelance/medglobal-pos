@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
+import 'package:medglobal_admin_portal/core/widgets/app_tab_bar.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/cubit/product_performance_form_cubit/product_performance_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/shared/report_bloc/report_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
@@ -91,12 +93,38 @@ class ProductPerformanceList extends StatelessWidget {
           },
         ),
       ],
-      child: const Column(
+      child: Column(
         children: [
-          ProductPerformanceHeader(),
-          Expanded(child: ProductPerformanceDataGrid()),
+          const ProductPerformanceHeader(),
+          AppTabBar(
+            onChangedTab: (index) => _onChangeTab(context, index),
+            tabs: const [
+              'All',
+              'Profit & Loss',
+              'ABC Analysis',
+            ],
+          ),
+          const Expanded(child: ProductPerformanceDataGrid()),
         ],
       ),
     );
+  }
+
+  void _onChangeTab(BuildContext context, int index) {
+    final filterCubit = context.read<ProductPerformanceListFilterCubit>();
+
+    final type = switch (index) {
+      0 => null,
+      1 => ReportType.productPNL,
+      2 => ReportType.productABC,
+      _ => null, // optional default
+    };
+
+    filterCubit.reset();
+    filterCubit.setType(type);
+
+    context.read<ProductPerformanceListBloc>().add(ProductPerformanceListEvent.getReports(
+          query: filterCubit.state.toPageQuery,
+        ));
   }
 }

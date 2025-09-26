@@ -7,6 +7,6 @@ part 'supply_need_state.dart';
 class SupplyNeedCubit extends Cubit<SupplyNeedState> {
   SupplyNeedCubit() : super(const SupplyNeedState(null, null));
 
-  void setPurchaseOrderTargetBranch(Branch branch) => emit(SupplyNeedState(branch, null));
-  void setStockTransferSourceBranch(Branch branch) => emit(SupplyNeedState(null, branch));
+  void setPurchaseOrderTargetBranch(BranchPartial branch) => emit(SupplyNeedState(branch, null));
+  void setStockTransferSourceBranch(BranchPartial branch) => emit(SupplyNeedState(null, branch));
 }

@@ -1,13 +1,11 @@
 import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/enums/register_shift_enum.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
-import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/local_register_shift_repository.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/remote_register_shift_repository.dart';
-import 'package:medglobal_admin_portal/pos/register_shift/sync_queue_repository.dart';
-
-import '../entities/register_shift.dart';
-import '../repositories/local_register_shift_repository.dart';
+import 'package:medglobal_admin_portal/pos/syncing/sync_queue/sync_queue_repository.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/domain/entities/register_shift.dart';
+import 'package:medglobal_admin_portal/pos/syncing/services/connectivity_service.dart';
 
 class OpenRegisterShiftUseCase {
   final LocalRegisterShiftRepository _local;
@@ -42,7 +40,7 @@ class OpenRegisterShiftUseCase {
     }
 
     // Check if there's an open shift. If there's an open shift, restrict user from opening a new one
-    final lookForOpenShift = await _local.getOpenShift(userId, registerId);
+    final lookForOpenShift = await _local.getOpenShift(registerId);
 
     return lookForOpenShift.fold(
       (failure) => Left(failure),

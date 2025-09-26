@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/pos/sales/presentation/bloc/cart_bloc/cart_bloc.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/cubit/product_search/pos_product_search_cubit.dart';
-import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_cubit/product_catalog_cubit.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/entities/catalog_item.dart';
-import 'package:medglobal_admin_portal/pos/sales/domain/entities/order_item.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/presentation/cubit/product_catalog_filter/product_catalog_filter_cubit.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/presentation/cubit/product_catalog_local/product_catalog_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/domain/entities/order_item.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/bloc/cart/cart_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -33,7 +33,7 @@ class _ProductCatalogDataGridState extends State<ProductCatalogDataGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProductCatalogCubit, ProductCatalogState>(
+    return BlocConsumer<ProductCatalogCubit, ProductCatalogLocalState>(
       listener: (context, state) {
         if (state is ProductCatalogLoaded) {
           _productCatalogDataSource._items = state.products;
@@ -83,9 +83,10 @@ class _ProductCatalogDataGridState extends State<ProductCatalogDataGrid> {
                           children: [
                             Assets.icons.cube.svg(),
                             const UIVerticalSpace(12),
-                            context.read<PosProductSearchCubit>().state.search != null
+                            context.read<ProductCatalogFilterCubit>().state.search != null
                                 ? UIText.labelMedium(
-                                    'No results found for \'${context.read<PosProductSearchCubit>().state.search}\'')
+                                    'No results found for \'${context.read<ProductCatalogFilterCubit>().state.search}\'',
+                                  )
                                 : UIText.labelMedium('No data available'),
                           ],
                         ),
@@ -101,9 +102,9 @@ class _ProductCatalogDataGridState extends State<ProductCatalogDataGrid> {
                     context.read<CartBloc>().add(
                           CartEvent.addItem(OrderItem(
                             id: const Uuid().v4().hashCode,
-                            itemId: item.id!,
+                            itemId: item.id,
                             // name: item.displayName!,
-                            price: item.price!,
+                            price: item.price,
                             // sku: '',
                             itemName: item.displayName,
                           )),
@@ -153,7 +154,7 @@ class ProductCatalogDataSource extends DataGridSource {
 
   @override
   Future<void> handleLoadMoreRows() async {
-    final search = _context.read<PosProductSearchCubit>().state.search;
+    final search = _context.read<ProductCatalogFilterCubit>().state.search;
     _context.read<ProductCatalogCubit>().getProductCatalog(search: search);
   }
 

@@ -9,7 +9,7 @@ class TransactionItems extends Table {
   IntColumn get quantity => integer()();
   RealColumn get price => real()();
   TextColumn get discountType => text().nullable()();
-  RealColumn get discountValue => real().nullable()();
+  RealColumn get discount => real().nullable()();
   RealColumn get discountAmount => real().nullable()();
   RealColumn get totalDiscountAmount => real().nullable()();
   RealColumn get subtotal => real()();

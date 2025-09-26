@@ -2,7 +2,7 @@ import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_payload.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/domain/entities/receipt_configuration.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/receipt_configuration.dart';
 
 class BranchApiService {
   final BaseApiService _api;

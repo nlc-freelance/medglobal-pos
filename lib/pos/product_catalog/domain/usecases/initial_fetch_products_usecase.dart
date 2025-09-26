@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
-import 'package:medglobal_admin_portal/core/local_db/db_tables/sync_queue/sync_metadata_dao.dart';
+import 'package:medglobal_admin_portal/core/local_db/db_tables/sync_metadata/sync_metadata_dao.dart';
 import 'package:medglobal_admin_portal/core/models/page_query.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/repositories/local_product_catalog_repository.dart';

@@ -22,8 +22,6 @@ class VariantDto with _$VariantDto {
   factory VariantDto.fromJson(Map<String, dynamic> json) => _$VariantDtoFromJson(json);
 }
 
-
-
 // On transaction items
 // @freezed
 // class VariantLiteDto with _$VariantLiteDto {

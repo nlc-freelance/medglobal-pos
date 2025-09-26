@@ -83,10 +83,8 @@ class ProductFormCubit extends Cubit<ProductFormState> {
       final isVariantNullOrEmpty = variantName == null || variantName.isEmpty;
 
       if (state.hasVariations) {
-        print('here');
         if (isVariantNullOrEmpty || variantName == Strings.defaultVariantName) return false;
       } else {
-        print('here1');
         if (isVariantNullOrEmpty) return false;
       }
 

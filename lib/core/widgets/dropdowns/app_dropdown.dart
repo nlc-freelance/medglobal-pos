@@ -20,7 +20,7 @@ class AppDropdown<T> extends StatefulWidget {
     required this.hint,
     required this.getName,
     required this.onSelectItem,
-    required this.onRemoveSelectedItem,
+    this.onRemoveSelectedItem,
     this.hasInlineLabel = false,
     this.inlineLabel,
     required this.type,
@@ -33,7 +33,7 @@ class AppDropdown<T> extends StatefulWidget {
   final String hint;
   final String Function(T item) getName;
   final void Function(T item) onSelectItem;
-  final VoidCallback onRemoveSelectedItem;
+  final VoidCallback? onRemoveSelectedItem;
   final bool hasInlineLabel;
   final String? inlineLabel;
   final bool isEnabled;
@@ -42,7 +42,7 @@ class AppDropdown<T> extends StatefulWidget {
   factory AppDropdown.lazy({
     required String Function(T item) getName,
     required void Function(T item) onSelectItem,
-    required VoidCallback onRemoveSelectedItem,
+    VoidCallback? onRemoveSelectedItem,
     required String hint,
     bool hasInlineLabel = false,
     String? inlineLabel,
@@ -67,11 +67,12 @@ class AppDropdown<T> extends StatefulWidget {
     required List<T> items,
     required String Function(T item) getName,
     required void Function(T item) onSelectItem,
-    required VoidCallback onRemoveSelectedItem,
+    VoidCallback? onRemoveSelectedItem,
     required String hint,
     bool hasInlineLabel = false,
     String? inlineLabel,
     bool isEnabled = true,
+    T? value,
     Key? key,
   }) =>
       AppDropdown._(
@@ -85,6 +86,7 @@ class AppDropdown<T> extends StatefulWidget {
         hasInlineLabel: hasInlineLabel,
         inlineLabel: inlineLabel,
         isEnabled: isEnabled,
+        value: value,
       );
 
   @override
@@ -125,10 +127,12 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         hint: widget.hint,
         value: value == null ? null : widget.getName(value as T),
         onTap: () => setState(() => visible = true),
-        onRemoveSelectedItem: () {
-          _setValue(null);
-          widget.onRemoveSelectedItem();
-        },
+        onRemoveSelectedItem: widget.onRemoveSelectedItem == null
+            ? null
+            : () {
+                _setValue(null);
+                widget.onRemoveSelectedItem!();
+              },
         hasInlineLabel: widget.hasInlineLabel,
         inlineLabel: widget.inlineLabel,
         isEnabled: widget.isEnabled,
@@ -169,7 +173,7 @@ class _DropdownButton<T> extends StatelessWidget {
     required this.menuKey,
     required this.hint,
     required this.onTap,
-    required this.onRemoveSelectedItem,
+    this.onRemoveSelectedItem,
     this.value,
     this.hasInlineLabel = false,
     this.inlineLabel,
@@ -179,7 +183,7 @@ class _DropdownButton<T> extends StatelessWidget {
   final GlobalKey menuKey;
   final String hint;
   final VoidCallback onTap;
-  final VoidCallback onRemoveSelectedItem;
+  final VoidCallback? onRemoveSelectedItem;
   final String? value;
   final bool hasInlineLabel;
   final String? inlineLabel;
@@ -235,14 +239,14 @@ class _DropdownButton<T> extends StatelessWidget {
                         color: value != null ? UIColors.primary : UIColors.textLight,
                       ),
                 const UIHorizontalSpace(10),
-                value != null
+                value != null && onRemoveSelectedItem != null
                     ? SizedBox(
                         height: 18,
                         child: Material(
                           color: UIColors.transparent,
                           child: InkWell(
                             borderRadius: BorderRadius.circular(50),
-                            onTap: () => onRemoveSelectedItem(),
+                            onTap: () => onRemoveSelectedItem!(),
                             hoverColor: UIColors.borderRegular,
                             child: Assets.icons.close.svg(height: 22),
                           ),

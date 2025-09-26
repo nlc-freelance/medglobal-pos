@@ -54,7 +54,7 @@ class PurchaseOrderItemDto with _$PurchaseOrderItemDto {
     ProductVariantDto? variant,
     int? orderedQuantity,
     int? actualQuantity,
-    required double supplierPrice,
+    double? supplierPrice,
     double? price,
   }) = _PurchaseOrderItemDto;
 
@@ -72,6 +72,6 @@ class PurchaseOrderItemDto with _$PurchaseOrderItemDto {
         quantityReceived: actualQuantity,
         supplierPrice: supplierPrice,
         sellingPrice: price ?? 0,
-        total: (orderedQuantity ?? 0) * (supplierPrice),
+        total: (orderedQuantity ?? 0) * (supplierPrice ?? 0),
       );
 }

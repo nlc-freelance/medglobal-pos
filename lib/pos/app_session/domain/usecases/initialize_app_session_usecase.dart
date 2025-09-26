@@ -1,13 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/entities/app_session.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/repository/app_session_repository.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/domain/repositories/local_receipt_config_repository.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/domain/repositories/remote_receipt_config_repository.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/repositories/local_receipt_config_repository.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/repositories/remote_receipt_config_repository.dart';
 
 class InitializeAppSessionUseCase {
   final RegisterRepository _registerRepository;
@@ -62,10 +61,10 @@ class InitializeAppSessionUseCase {
             );
 
             // Save session to local DB
-            await _appSessionRepository.saveSession(session);
+            await _appSessionRepository.saveSession(user);
 
             // Align user, register, and receipt config details in AppSessionService
-            _appSessionService.setAppSession(user, register, receiptConfig);
+            // _appSessionService.setAppSession(user, register, receiptConfig);
 
             newSession = session;
 

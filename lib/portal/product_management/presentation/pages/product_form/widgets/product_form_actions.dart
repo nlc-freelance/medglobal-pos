@@ -35,6 +35,12 @@ class ProductFormActions extends StatelessWidget with DialogMixin {
               orElse: () => const SizedBox(),
             ),
           ),
+          BlocSelector<ProductFormCubit, ProductFormState, bool>(
+            selector: (state) => state.isValid,
+            builder: (context, isValid) => isValid
+                ? const SizedBox.shrink()
+                : const PageErrorBanner(message: 'Please fill in all required fields before continuing.'),
+          ),
           Row(
             children: [
               if (isEditMode)

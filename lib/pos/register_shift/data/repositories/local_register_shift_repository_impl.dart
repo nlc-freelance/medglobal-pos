@@ -15,9 +15,9 @@ class LocalRegisterShiftRepositoryImpl extends BaseRepository implements LocalRe
   LocalRegisterShiftRepositoryImpl({required RegisterShiftLocalDataSource dataSource}) : _dataSource = dataSource;
 
   @override
-  Future<Either<Failure, RegisterShift?>> getOpenShift(int userId, int registerId) {
+  Future<Either<Failure, RegisterShift?>> getOpenShift(int registerId) {
     return call(() async {
-      final shift = await _dataSource.getOpenShift(userId, registerId);
+      final shift = await _dataSource.getOpenShift(registerId);
       if (shift == null) return null;
       return shift.toEntity();
     });
@@ -40,9 +40,9 @@ class LocalRegisterShiftRepositoryImpl extends BaseRepository implements LocalRe
   }
 
   @override
-  Future<Either<Failure, RegisterShift?>> getLastClosedShift(int userId, int registerId) {
+  Future<Either<Failure, RegisterShift?>> getLastClosedShift(int registerId) {
     return call(() async {
-      final shift = await _dataSource.getLastClosedShift(userId, registerId);
+      final shift = await _dataSource.getLastClosedShift(registerId);
       return shift?.toEntity();
     });
   }

@@ -210,7 +210,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/constants/constants.dart';
 import 'package:medglobal_admin_portal/core/enums/enums.dart';
-import 'package:medglobal_admin_portal/pos/sales/domain/entities/order_item.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/refund_item.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -227,7 +226,7 @@ class TransactionItem with _$TransactionItem {
     double? price,
     int? quantity,
     DiscountType? discountType,
-    double? discountValue,
+    double? discount,
     double? discountAmount,
     double? subtotal,
     double? total,
@@ -287,18 +286,17 @@ class TransactionItem with _$TransactionItem {
 
   /// Map to RefundItem when issuing a refund
   RefundItem get toRefundItem => RefundItem(
-        id: id!,
+        id: itemId!,
         name: name!,
-        sku: sku!,
         quantity: quantity!,
         price: price!,
-        discountValue: discountAmount,
+        discount: discount,
         discountType: discountType,
       );
 
   /// Percentage discount in peso per item unit
   double get discountInPesoPerItemUnit {
-    if (discountValue != null) return price! * (discountValue! / 100);
+    if (discount != null) return price! * (discount! / 100);
     return 0;
   }
 }

@@ -10,8 +10,8 @@ abstract class StockReturnRepository {
     required int size,
     StockOrderStatus? status,
     int? branchId,
-     String? startDate,
-     String? endDate,
+    String? startDate,
+    String? endDate,
   });
   Future<Either<Failure, StockReturn>> getStockReturnById(int id);
   Future<Either<Failure, StockReturn>> create(NewStockReturn payload);

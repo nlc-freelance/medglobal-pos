@@ -21,15 +21,16 @@ class CheckForOpenRegisterShiftUseCase {
 
     /// Get userId and registerId from AppSessionService
     try {
-      if (userId == null || registerId == null) {
-        return Left(UserNotFoundFailure('User and/or register details not found.'));
+      if (registerId == null) {
+        // if (userId == null || registerId == null) {
+        return Left(UserNotFoundFailure('Register details not found.'));
       }
     } catch (e) {
       return Left(UnexpectedFailure('Unexpected error occurred. Failed to get user and register details.'));
     }
 
     /// Query the local repository to check for an open shift.
-    final result = await _local.getOpenShift(userId, registerId);
+    final result = await _local.getOpenShift(registerId);
 
     return result.fold(
       (failure) => Left(failure),

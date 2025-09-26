@@ -6,11 +6,13 @@ mixin DialogMixin {
   void showCustomDialog(
     BuildContext context, {
     required Widget dialog,
+    Color? barrierColor,
   }) =>
       showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => dialog,
+        barrierColor: barrierColor,
       );
 
   void showConfirmDialog(

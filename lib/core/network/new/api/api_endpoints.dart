@@ -80,7 +80,7 @@ class ApiEndpoints {
   static String transactionById(int id) => '/$transactions/$id';
 
   // Refund
-  static const String refund = '/refunds';
+  static const String refunds = '/refunds';
 
   // Return Transactions (Update)
   static const String returnTransactions = '/returns';

@@ -6,7 +6,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/d
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/repositories/stock_return_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/repositories/stock_take_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/repositories/stock_transfer_repository.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transaction_repository.dart';
+import 'package:medglobal_admin_portal/portal/transactions/repositories/transaction_repository.dart';
 
 part 'product_history_detail_event.dart';
 part 'product_history_detail_state.dart';

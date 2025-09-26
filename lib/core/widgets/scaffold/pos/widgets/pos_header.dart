@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/pos/app_session/presentation/app_session_bloc.dart';
-import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
-import 'package:medglobal_admin_portal/pos/sync/sync_bloc/sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/presentation/blocs/device_setup/device_setup_bloc.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/bloc/print_receipt/print_receipt_cubit.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/screens/register_screen.dart';
+import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_cubit.dart';
+import 'package:medglobal_admin_portal/pos/syncing/sync/operation_sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/syncing/sync/sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class PosHeader extends StatelessWidget {
   const PosHeader(this.routeState, {super.key});
@@ -18,20 +22,26 @@ class PosHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = routeState.matchedLocation == '/pos/transactions'
         ? 'Transactions'
-        : (routeState.matchedLocation == '/pos/register' ? 'Register' : 'Order Payment');
+        : routeState.matchedLocation == '/pos/settings'
+            ? 'Settings'
+            : (routeState.matchedLocation == '/pos/register' ? 'Register' : 'Payment');
 
     return AppBar(
       surfaceTintColor: UIColors.transparent,
       backgroundColor: UIColors.background,
-      centerTitle: false,
+      actionsPadding: const EdgeInsets.symmetric(horizontal: 16),
       title: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          UIText.heading6(title),
-          const UIHorizontalSpace(16),
-          const RegisterName(),
-          const UIHorizontalSpace(16),
-          const RegisterShiftStatusIndicator(),
+          Text(title, style: UIStyleText.label.copyWith(fontSize: 16, fontWeight: FontWeight.w700)),
+          const SizedBox(
+            height: 24,
+            child: VerticalDivider(
+              color: UIColors.borderRegular,
+              thickness: 1.1,
+              width: 36,
+            ),
+          ),
+          const RegisterBranchStatus(),
         ],
       ),
       leading: IconButton(
@@ -39,163 +49,306 @@ class PosHeader extends StatelessWidget {
         onPressed: () => Scaffold.of(context).openDrawer(),
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 20),
+        BlocBuilder<ConnectivityCubit, bool>(
+          builder: (context, isOnline) {
+            return Row(
+              children: [
+                Icon(
+                  isOnline ? Icons.wifi : Icons.wifi_off,
+                  size: 14,
+                ),
+                const UIHorizontalSpace(8),
+                Text(
+                  isOnline ? 'Online' : 'Offline mode — all actions are saved and will sync once connection returns',
+                  style: UIStyleText.hintRegular.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: UIColors.textRegular,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        // BlocBuilder<ConnectivityCubit, bool>(
+        //   builder: (context, isOnline) => Icon(
+        //     isOnline ? Icons.wifi : Icons.wifi_off,
+        //     size: 18,
+        //   ),
+        // ),
+        const SizedBox(
+          height: 26,
+          child: VerticalDivider(
+            color: UIColors.borderRegular,
+            thickness: 1.1,
+            width: 30,
+          ),
+        ),
+        Container(
+          // padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+          // decoration: BoxDecoration(
+          //   border: Border.all(color: UIColors.borderRegular),
+          //   borderRadius: BorderRadius.circular(8),
+          // ),
           child: Row(
             children: [
-              BlocConsumer<ConnectivityCubit, bool>(
-                listenWhen: (previous, current) => previous == false && current == true,
-                listener: (context, connected) {
-                  print('AUTOMATIC SYNC AFTER INTERNET REGAIN');
-                  if (connected) context.read<SyncBloc>().add(const SyncEvent.syncNow());
+              BlocBuilder<OperationSyncBloc, OperationSyncState>(
+                builder: (context, state) {
+                  return state.maybeWhen(
+                    // initial: () => Row(
+                    //   children: [
+                    //     const CupertinoActivityIndicator(radius: 8),
+                    //     const UIHorizontalSpace(10),
+                    //     Text(
+                    //       'Sync Pending',
+                    //       style: UIStyleText.label.copyWith(
+                    //         fontSize: 14.2,
+                    //         color: UIColors.textLight,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    syncing: () => Row(
+                      children: [
+                        const CupertinoActivityIndicator(radius: 7.5, color: UIColors.textRegular),
+                        const UIHorizontalSpace(10),
+                        Text(
+                          'Uploading local data..',
+                          style: UIStyleText.hintRegular.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: UIColors.textRegular,
+                          ),
+                        ),
+                      ],
+                    ),
+                    synced: (lastSyncedAt, _) => Tooltip(
+                      message: 'Sync now',
+                      child: GestureDetector(
+                        onTap: () =>
+                            context.read<OperationSyncBloc>().add(const OperationSyncEvent.syncNow(manual: true)),
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.cloud_done_rounded,
+                                size: 14,
+                                color: UIColors.success,
+                              ),
+                              const UIHorizontalSpace(8),
+                              lastSyncedAt == null
+                                  ? const Text('Not synced yet')
+                                  : Text.rich(
+                                      TextSpan(
+                                        text: 'Last upload ',
+                                        style: UIStyleText.hintRegular.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          color: UIColors.textRegular,
+                                          // color: UIColors.completed,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: timeago.format(lastSyncedAt),
+                                            style: UIStyleText.hintRegular.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              color: UIColors.textRegular,
+                                              // color: UIColors.completed,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    failure: (message, lastSyncedAt, _) => Tooltip(
+                      message: 'Retry sync',
+                      child: GestureDetector(
+                        onTap: () =>
+                            context.read<OperationSyncBloc>().add(const OperationSyncEvent.syncNow(manual: true)),
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.sync,
+                                size: 16,
+                                color: UIColors.cancelled,
+                              ),
+                              const UIHorizontalSpace(6),
+                              Text.rich(
+                                TextSpan(
+                                  text: 'Upload failed, ',
+                                  style: UIStyleText.hintRegular.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: UIColors.cancelled,
+                                  ),
+                                  children: lastSyncedAt == null
+                                      ? [
+                                          TextSpan(
+                                            text: 'never synced',
+                                            style: UIStyleText.hintRegular.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              color: UIColors.cancelled,
+                                            ),
+                                          )
+                                        ]
+                                      : [
+                                          TextSpan(
+                                            text: 'last upload ',
+                                            style: UIStyleText.hintRegular.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              color: UIColors.cancelled,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: timeago.format(lastSyncedAt),
+                                            style: UIStyleText.hintRegular.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              color: UIColors.cancelled,
+                                            ),
+                                          ),
+                                        ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    orElse: () => Text(
+                      'Nothing to sync yet',
+                      style: UIStyleText.hintRegular.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: UIColors.textRegular,
+                      ),
+                    ),
+                    // orElse: () => const SizedBox.shrink(),
+                  );
                 },
-                builder: (context, state) => Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Icon(
-                    state ? Icons.wifi : Icons.signal_wifi_connected_no_internet_4,
-                    size: 18,
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () => context.read<SyncBloc>().add(const SyncEvent.syncNow()),
-                borderRadius: BorderRadius.circular(16),
-                child: const Padding(
-                  padding: EdgeInsets.all(4.0),
-                  child: Icon(Icons.refresh_rounded, size: 18, color: UIColors.success),
-                ),
-              ),
-              const UIHorizontalSpace(8),
-              BlocBuilder<SyncBloc, SyncState>(
-                builder: (context, state) => state.maybeWhen(
-                  syncing: () => const CupertinoActivityIndicator(radius: 8),
-                  synced: () => Text(
-                    'Sync successful',
-                    style: UIStyleText.labelMedium.copyWith(color: UIColors.success, fontSize: 12.5),
-                  ),
-                  failure: (message) => Text(
-                    'Sync failed.',
-                    style: UIStyleText.labelMedium.copyWith(color: UIColors.error, fontSize: 12.5),
-                  ),
-                  // synced: (lastSyncedAt) => Text(
-                  //   'Sync successful – last updated on ${lastSyncedAt.toFullDateWithTimeFormat()}',
-                  //   style: UIStyleText.labelMedium.copyWith(color: UIColors.success, fontSize: 12.5),
-                  // ),
-                  // failure: (message, lastSyncedAt) =>
-                  //     Text('$message ${lastSyncedAt == null ? '' : 'Last successful synced at: $lastSyncedAt'}'),
-                  orElse: () => UIText.labelMedium('Manual Sync'),
-                ),
               ),
             ],
           ),
         ),
-
-        // This is syncing for products only, we need a whole sync for all
-        // Padding(
-        //   padding: const EdgeInsets.only(right: 20),
-        //   child: Row(
-        //     children: [
-        //       InkWell(
-        //         onTap: () => context.read<ProductCatalogSyncBloc>().add(const ProductCatalogSyncEvent.deltaSync()),
-        //         borderRadius: BorderRadius.circular(16),
-        //         child: const Padding(
-        //           padding: EdgeInsets.all(4.0),
-        //           child: Icon(Icons.refresh_rounded, size: 18, color: UIColors.success),
-        //         ),
-        //       ),
-        //       const UIHorizontalSpace(8),
-        //       BlocBuilder<ProductCatalogSyncBloc, ProductCatalogSyncState>(
-        //         builder: (context, state) => state.maybeWhen(
-        //           syncing: () => const CupertinoActivityIndicator(radius: 8),
-        //           synced: (lastSyncedAt) => Text(
-        //             'Sync successful – last updated on ${lastSyncedAt.toFullDateWithTimeFormat()}',
-        //             style: UIStyleText.labelMedium.copyWith(color: UIColors.success, fontSize: 12.5),
-        //           ),
-        //           failure: (message, lastSyncedAt) =>
-        //               Text('$message ${lastSyncedAt == null ? '' : 'Last successful synced at: $lastSyncedAt'}'),
-        //           orElse: () => const SizedBox(),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
       ],
     );
   }
 }
 
-class RegisterName extends StatelessWidget {
-  const RegisterName({super.key});
+class RegisterBranchStatus extends StatelessWidget {
+  const RegisterBranchStatus({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppSessionBloc, AppSessionState>(
+    return BlocBuilder<DeviceSetupBloc, DeviceSetupState>(
+      buildWhen: (previous, current) => previous.maybeWhen(
+        loading: () => current.maybeWhen(
+          ready: (_) => true,
+          orElse: () => false,
+        ),
+        orElse: () => false,
+      ),
       builder: (context, state) {
         return state.maybeWhen(
-          loaded: (session) => Row(
-            children: [
-              UIText.bodyRegular('|'),
-              const UIHorizontalSpace(16),
-              Text(
-                session.registerName,
-                style: UIStyleText.labelMedium.copyWith(fontSize: 14),
-              ),
-            ],
-          ),
-          orElse: () => const SizedBox(),
-        );
-      },
-    );
-  }
-}
-
-class RegisterShiftStatusIndicator extends StatelessWidget {
-  const RegisterShiftStatusIndicator({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
-      builder: (context, state) {
-        final isLoading = state.maybeWhen(
-          open: (_, __) => false,
-          closed: (_) => false,
-          orElse: () => true,
-        );
-
-        final isOpen = state.maybeWhen(
-          open: (_, __) => true,
-          orElse: () => false,
-        );
-
-        final status = isOpen ? RegisterShiftStatus.open : RegisterShiftStatus.closed;
-
-        return isLoading
-            ? const CupertinoActivityIndicator()
-            : Chip(
-                avatar: Container(
-                  width: 6.8,
-                  height: 6.8,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isOpen ? UIColors.completed : UIColors.buttonDanger,
+          ready: (settings) => BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
+            builder: (context, state) {
+              return Row(
+                children: [
+                  Text(
+                    '${settings.register.name}  /  ${settings.branch.name}',
+                    style: UIStyleText.labelMedium.copyWith(fontSize: 14.2),
                   ),
-                ),
-                labelPadding: const EdgeInsets.symmetric(horizontal: 6),
-                label: Text(
-                  status.label,
-                  style: UIStyleText.labelSemiBold.copyWith(
-                    color: isOpen ? UIColors.completed : UIColors.buttonDanger,
-                    fontSize: 13,
+                  // const UIHorizontalSpace(16),
+                  // const RegisterStatus(),
+                  const UIHorizontalSpace(18),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: UIColors.borderRegular),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          size: 10,
+                          color: state.maybeWhen(
+                            open: (_, __) => UIColors.success,
+                            orElse: () => Colors.black45,
+                          ),
+                        ),
+                        const UIHorizontalSpace(6.5),
+                        Text(
+                          state.maybeWhen(
+                            open: (_, __) => 'Open',
+                            orElse: () => 'Closed',
+                          ),
+                          style: UIStyleText.labelMedium.copyWith(fontSize: 14.2),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                backgroundColor: UIColors.whiteBg,
-                visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  side: const BorderSide(color: UIColors.transparent),
-                ),
+                ],
               );
+            },
+          ),
+          orElse: () => const SizedBox.shrink(),
+        );
       },
     );
   }
 }
+
+// class RegisterStatus extends StatelessWidget {
+//   const RegisterStatus({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
+//       builder: (context, state) {
+//         final isLoading = state.maybeWhen(
+//           open: (_, __) => false,
+//           closed: (_) => false,
+//           orElse: () => true,
+//         );
+//
+//         final isOpen = state.maybeWhen(
+//           open: (_, __) => true,
+//           orElse: () => false,
+//         );
+//
+//         final status = isOpen ? RegisterShiftStatus.open : RegisterShiftStatus.closed;
+//
+//         return isLoading
+//             ? const CupertinoActivityIndicator(radius: 8)
+//             : Container(
+//                 padding: const EdgeInsets.fromLTRB(10, 4.5, 10, 5),
+//                 decoration: BoxDecoration(
+//                   // color: isOpen ? UIColors.completedBg : UIColors.awaitingActionBg,
+//                   borderRadius: BorderRadius.circular(8),
+//                   border: Border.all(color: isOpen ? UIColors.completedBg : UIColors.borderRegular),
+//                 ),
+//                 child: Row(
+//                   children: [
+//                     Icon(
+//                       Icons.circle_rounded,
+//                       size: 8,
+//                       color: isOpen ? UIColors.success : UIColors.textRegular,
+//                     ),
+//                     const UIHorizontalSpace(6),
+//                     Text(
+//                       status.label,
+//                       style: UIStyleText.label.copyWith(
+//                         color: isOpen ? UIColors.success : UIColors.textRegular,
+//                         fontWeight: FontWeight.w600,
+//                         fontSize: 12,
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               );
+//       },
+//     );
+//   }
+// }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
@@ -53,7 +54,8 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
           SnackbarUtil.success(context, 'Stock Transfer updated successfully.');
         }
         if (state is StockTransferDeleteSuccess) {
-          AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TRANSFERS.name);
+          // AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TRANSFERS.name);
+          context.goNamed('stockTransferList');
           SnackbarUtil.success(context, 'Stock Transfer deleted successfully.');
         }
       },

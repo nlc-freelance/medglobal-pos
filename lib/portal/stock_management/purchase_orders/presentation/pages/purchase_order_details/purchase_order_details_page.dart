@@ -57,6 +57,13 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
       //     ToastNotification.success(context, 'Purchase Order deleted successfully.');
       //   }
       // },
+      // buildWhen: (prev, curr) => prev.maybeWhen(
+      //   updating: () => curr.maybeWhen(
+      //     failure: (_) => true,
+      //     orElse: () => false,
+      //   ),
+      //   orElse: () => true,
+      // ),
       builder: (context, state) => state.maybeWhen(
         loading: () => const LoadingView(),
         loaded: (po) => Column(
@@ -250,7 +257,7 @@ class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
   }
 
   void _onDeleted() {
-    context.pushReplacementNamed('purchaseOrderList');
+    context.goNamed('purchaseOrderList');
     SnackbarUtil.success(context, 'Purchase Order deleted successfully.');
   }
 

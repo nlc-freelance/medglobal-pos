@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
-import 'package:medglobal_admin_portal/core/local_db/db_tables/sync_queue/sync_metadata_dao.dart';
+import 'package:medglobal_admin_portal/core/local_db/db_tables/sync_metadata/sync_metadata_dao.dart';
 import 'package:medglobal_admin_portal/core/models/page_query.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/repositories/local_product_catalog_repository.dart';
@@ -22,12 +22,12 @@ class DeltaSyncProductsUseCase {
         _session = session,
         _syncMetaDataDao = syncMetaDataDao;
 
-  Future<Either<Failure, void>> call() async {
-    // Get last synced timestamp
-    final lastSynced = await _syncMetaDataDao.getLastSyncTime('posCatalog');
-    if (lastSynced == null) {
-      throw ('No last sync timestamp found, initial fetch should be run first.');
-    }
+  Future<Either<Failure, void>> call(DateTime lastSyncedAt) async {
+    // // Get last synced timestamp
+    // final lastSynced = await _syncMetaDataDao.getLastSyncTime('posCatalog');
+    // if (lastSynced == null) {
+    //   throw ('No last sync timestamp found, initial fetch should be run first.');
+    // }
 
     // Get branchId from AppSessionService
     final branchId = _session.branchId;
@@ -48,7 +48,7 @@ class DeltaSyncProductsUseCase {
         page: currentPage,
         size: 50,
         extra: {
-          'lastSynced': lastSynced.millisecondsSinceEpoch,
+          'lastSynced': lastSyncedAt.millisecondsSinceEpoch,
           'branch': branchId,
         },
       );

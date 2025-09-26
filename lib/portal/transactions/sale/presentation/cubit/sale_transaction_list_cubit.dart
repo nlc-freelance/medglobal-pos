@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transaction_repository.dart';
+import 'package:medglobal_admin_portal/portal/transactions/repositories/transaction_repository.dart';
 
 part 'sale_transaction_list_state.dart';
 

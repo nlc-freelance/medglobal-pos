@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/widgets/form/form.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/cubit/product_performance_form_cubit/product_performance_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class ProductPNLSourceData extends StatefulWidget {
@@ -29,6 +30,15 @@ class PerformanceProductPNLSourceDataState extends State<ProductPNLSourceData> {
       builder: (context, state) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          AppDropdownFormField<Branch>.lazy(
+            label: 'Branch',
+            hint: 'Select branch',
+            isRequired: true,
+            value: state.productPNLParams?.branch,
+            getName: (branch) => branch.name,
+            onChanged: (branch) => context.read<ProductPerformanceFormCubit>().setBranch(branch),
+          ),
+          const UIVerticalSpace(16),
           AppDropdownFormField<Category>.lazy(
             label: 'Category',
             hint: 'Select category',

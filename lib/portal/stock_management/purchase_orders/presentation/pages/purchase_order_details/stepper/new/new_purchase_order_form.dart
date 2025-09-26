@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/supplier_dropdown.dart';
+import 'package:medglobal_admin_portal/core/widgets/form/app_dropdown_form_field.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_need/supply_need_cubit.dart';
@@ -23,13 +24,21 @@ class NewPurchaseOrderForm extends StatelessWidget {
           onSelectItem: (Supplier value) => context.read<NewPurchaseOrderCubit>().setSupplierId(value.id!),
         ),
         const UIVerticalSpace(16),
-        BranchDropdown.input_left(
+        AppDropdownFormField<BranchPartial>.lazy(
+          labelPosition: LabelPosition.left,
           label: 'Target Branch',
           hint: 'Select target branch',
-          required: true,
-          selectedItem: context.read<SupplyNeedCubit>().state.purchaseOrderTargetBranch,
-          onSelectItem: (Branch value) => context.read<NewPurchaseOrderCubit>().setBranchId(value.id!),
+          isRequired: true,
+          getName: (branch) => branch.name,
+          onChanged: (branch) => context.read<NewPurchaseOrderCubit>().setBranchId(branch.id),
         ),
+        // BranchDropdown.input_left(
+        //   label: 'Target Branch',
+        //   hint: 'Select target branch',
+        //   required: true,
+        //   selectedItem: context.read<SupplyNeedCubit>().state.purchaseOrderTargetBranch,
+        //   onSelectItem: (Branch value) => context.read<NewPurchaseOrderCubit>().setBranchId(value.id!),
+        // ),
         const UIVerticalSpace(40),
         UICheckboxListTile(
           'Autofill from supply needs',

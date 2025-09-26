@@ -24,3 +24,10 @@ class RefundFormState with _$RefundFormState {
   //       items: items,
   //     );
 }
+
+extension RefundFormStateExt on RefundFormState {
+  /// Get only items for refund
+  List<RefundItem> get itemsForRefund {
+    return items.where((item) => item.isSelectedForRefund).toList();
+  }
+}

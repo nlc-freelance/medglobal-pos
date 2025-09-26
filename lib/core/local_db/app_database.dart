@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:medglobal_admin_portal/core/local_db/db/database_connection.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
-import 'package:medglobal_admin_portal/core/local_db/db_tables/settings/settings_table.dart';
 
 part 'app_database.g.dart';
 
@@ -14,7 +13,6 @@ part 'app_database.g.dart';
     TransactionItems,
     SyncQueue,
     SyncMetadata,
-    ReceiptConfig,
     Settings,
   ],
   daos: [
@@ -24,7 +22,6 @@ part 'app_database.g.dart';
     TransactionDao,
     SyncQueueDao,
     SyncMetadataDao,
-    ReceiptConfigDao,
     SettingsDao,
   ],
 )

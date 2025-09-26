@@ -298,7 +298,10 @@ class SaleTransactionDataSource extends DataGridSource {
           builder: (isHover) => InkWell(
             onTap: () {
               // _context.read<TransactionCubit>().getTransactionById(id);
-              AppRouter.router.goNamed('saleTransactionDetails', pathParameters: {'id': id.toString()});
+              AppRouter.router.goNamed(
+                'saleTransactionDetails',
+                pathParameters: {'id': id.toString()},
+              );
             },
             hoverColor: UIColors.transparent,
             child: UIText.dataGridText(

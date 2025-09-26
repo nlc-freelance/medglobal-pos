@@ -7,6 +7,10 @@ class AuthenticationFailure extends Failure {
   const AuthenticationFailure(super.message);
 }
 
+class ExpiredTokenFailure extends Failure {
+  const ExpiredTokenFailure(super.message);
+}
+
 class ServerFailure extends Failure {
   ServerFailure(super.message);
 }

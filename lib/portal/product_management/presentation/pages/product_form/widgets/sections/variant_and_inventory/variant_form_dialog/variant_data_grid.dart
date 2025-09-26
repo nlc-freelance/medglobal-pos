@@ -122,7 +122,7 @@ class VariantDataSource extends DataGridSource {
             builder: (isHover) => UIText.dataGridText(
               cell.value.toString(),
               color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
-              textDecoration: isHover ? TextDecoration.underline : TextDecoration.none,
+              textDecoration: TextDecoration.underline,
             ),
           ),
         'action' => LayoutBuilder(

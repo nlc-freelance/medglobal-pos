@@ -187,7 +187,7 @@ class SaleItemsDataSource extends DataGridSource {
   }
 
   Widget _buildCell(String column, DataGridCell cell, int id) {
-    double? discount() => _items.singleWhere((sale) => sale.id == id).discountValue;
+    double? discount() => _items.singleWhere((sale) => sale.id == id).discount;
     DiscountType? discountType() => _items.singleWhere((sale) => sale.id == id).discountType;
 
     return switch (column) {

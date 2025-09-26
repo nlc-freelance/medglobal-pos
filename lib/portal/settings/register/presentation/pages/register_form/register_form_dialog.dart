@@ -24,7 +24,6 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
   late RegisterBloc _registerBloc;
 
   late TextEditingController _nameController;
-  late TextEditingController _serialNumberController;
 
   @override
   void initState() {
@@ -38,14 +37,13 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
     _registerBloc.add(const RegisterEvent.reset());
 
     _nameController = TextEditingController(text: _registerFormCubit.state.name);
-    _serialNumberController = TextEditingController(text: _registerFormCubit.state.serialNo);
   }
 
   @override
   Widget build(BuildContext context) {
     return Portal(
       child: AppCustomDialog(
-        title: _registerFormCubit.state.id != null ? 'Edit POS Register' : 'Add POS Register',
+        title: _isEditMode ? 'Edit POS Register' : 'Add POS Register',
         content: Form(
           key: _registerFormKey,
           child: Column(
@@ -58,15 +56,6 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
                 isRequired: true,
                 validator: FormValidators.required('Please enter register name.'),
                 onChanged: (value) => _registerFormCubit.setName(value),
-              ),
-              const UIVerticalSpace(16),
-              AppTextFormField.top(
-                label: 'Serial Number',
-                hint: 'Enter serial number',
-                controller: _serialNumberController,
-                isRequired: true,
-                validator: FormValidators.required('Please enter serial number.'),
-                onChanged: (value) => _registerFormCubit.setSerialNo(value),
               ),
               const UIVerticalSpace(16),
               AppDropdownFormField<Branch>.lazy(
@@ -103,6 +92,18 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                if (_isEditMode) ...[
+                  UIButton.filled(
+                    'Deactivate',
+                    onClick: () => _registerBloc.add(
+                      RegisterEvent.updateRegister(
+                        _registerFormCubit.state.id!,
+                        _registerFormCubit.state.toRegister().copyWith(serialNumber: null),
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                ],
                 UIButton.outlined('Cancel', onClick: () => Navigator.pop(context)),
                 const UIHorizontalSpace(8),
                 UIButton.filled('Save', onClick: _onSave),
@@ -113,6 +114,8 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
       ),
     );
   }
+
+  bool get _isEditMode => _registerFormCubit.state.id != null;
 
   bool get _hasAssignedBranch => _registerFormCubit.state.assignedBranch != null;
 

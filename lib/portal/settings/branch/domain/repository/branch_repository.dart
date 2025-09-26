@@ -3,7 +3,7 @@ import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/domain/entities/receipt_configuration.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/receipt_configuration.dart';
 
 abstract class BranchRepository {
   /// Retrieves a list of all branches

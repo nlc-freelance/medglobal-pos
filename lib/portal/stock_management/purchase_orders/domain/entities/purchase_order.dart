@@ -194,7 +194,7 @@ part 'purchase_order.freezed.dart';
 class PurchaseOrder with _$PurchaseOrder {
   const factory PurchaseOrder({
     int? id,
-    Branch? branch,
+    BranchPartial? branch,
     Supplier? supplier,
     StockOrderStatus? status,
     double? subtotal,

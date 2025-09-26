@@ -13,9 +13,9 @@ part 'stock_transfer_dto.g.dart';
 class StockTransferDto extends Equatable {
   final int? id;
   @JsonKey(name: 'fromStore')
-  final BranchDto? sourceBranch;
+  final BranchPartialDto? sourceBranch;
   @JsonKey(name: 'toStore')
-  final BranchDto? destinationBranch;
+  final BranchPartialDto? destinationBranch;
   final String? status;
   @JsonKey(name: 'stockTransferDetails')
   final List<StockTransferItemDto>? items;
@@ -47,8 +47,8 @@ class StockTransferDto extends Equatable {
 
   StockTransfer toEntity() => StockTransfer(
         id: id,
-        sourceBranch: sourceBranch == null ? null : BranchMapper.fromDto(sourceBranch!),
-        destinationBranch: destinationBranch == null ? null : BranchMapper.fromDto(destinationBranch!),
+        sourceBranch: sourceBranch == null ? null : BranchPartialMapper.fromDto(sourceBranch!),
+        destinationBranch: destinationBranch == null ? null : BranchPartialMapper.fromDto(destinationBranch!),
         status: StatusMapper.status(status),
         items: items?.map((item) => item.toEntity()).toList() ?? [],
         completedAt: completedAt,

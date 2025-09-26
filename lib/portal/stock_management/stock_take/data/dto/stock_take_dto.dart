@@ -14,7 +14,7 @@ part 'stock_take_dto.g.dart';
 class StockTakeDto extends Equatable {
   final int? id;
   @JsonKey(name: 'store')
-  final BranchDto? branch;
+  final BranchPartialDto? branch;
   final Supplier? supplier;
   final bool? isAllSupplier;
   final String? status;
@@ -68,7 +68,7 @@ class StockTakeDto extends Equatable {
 
   StockTake toEntity() => StockTake(
         id: id,
-        branch: branch == null ? null : BranchMapper.fromDto(branch!),
+        branch: branch == null ? null : BranchPartialMapper.fromDto(branch!),
         supplier: supplier,
         isAllSupplier: isAllSupplier,
         status: StatusMapper.status(status),

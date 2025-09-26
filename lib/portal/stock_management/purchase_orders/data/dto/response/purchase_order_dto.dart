@@ -84,7 +84,7 @@ part 'purchase_order_dto.g.dart';
 class PurchaseOrderDto with _$PurchaseOrderDto {
   const factory PurchaseOrderDto({
     required int id,
-    BranchDto? store,
+    BranchPartialDto? store,
     SupplierDto? supplier,
     String? status,
     double? totalAmount,
@@ -103,7 +103,7 @@ class PurchaseOrderDto with _$PurchaseOrderDto {
 
   PurchaseOrder toDomain() => PurchaseOrder(
         id: id,
-        branch: store == null ? null : BranchMapper.fromDto(store!),
+        branch: store == null ? null : BranchPartialMapper.fromDto(store!),
         supplier: supplier?.toDomain(),
         status: StatusMapper.status(status),
         totalAmount: totalAmount,

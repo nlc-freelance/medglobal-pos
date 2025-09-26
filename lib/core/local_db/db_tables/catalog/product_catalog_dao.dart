@@ -112,7 +112,7 @@ class ProductCatalogDao extends DatabaseAccessor<AppDatabase> with _$ProductCata
 
     if (search != null && search.trim().isNotEmpty) {
       final keyword = search.trim().toLowerCase();
-      final hasMatch = productCatalog.name.lower().like(keyword);
+      final hasMatch = productCatalog.name.lower().like('%$keyword%');
       query.where(hasMatch);
     }
 

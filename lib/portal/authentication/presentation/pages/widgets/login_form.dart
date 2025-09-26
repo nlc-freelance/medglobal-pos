@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/widgets/confirm_sign_in_dialog.dart';
-import 'package:medglobal_admin_portal/pos/connectivity_cubit.dart';
-import 'package:medglobal_admin_portal/pos/connectivity_service.dart';
-import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
-import 'package:medglobal_admin_portal/pos/app_session/presentation/app_session_bloc.dart';
+import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+  final bool isCentered;
+
+  const LoginForm({super.key, this.isCentered = false});
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -53,13 +51,6 @@ class _LoginFormState extends State<LoginForm> {
       //   return true;
       // },
       listener: (context, state) {
-        if (state is AuthenticatedState) {
-          PageLoader.close();
-          if (AppConfig.isPOSApp) {
-            GetIt.I<AppSessionService>().setUser(state.user);
-            context.read<AppSessionBloc>().add(AppSessionEvent.initialize(state.user));
-          }
-        }
         if (state is AuthLoadingState) PageLoader.show(context);
         if (state is FirstTimeLoginState) {
           PageLoader.close();
@@ -75,14 +66,28 @@ class _LoginFormState extends State<LoginForm> {
             },
           );
         }
-        if (state is AuthErrorState || state is ConfirmLoginErrorState || state is AuthAccessDeniedState) {
+        if (state is AuthenticatedState) {
           PageLoader.close();
+          if (AppConfig.isPOSApp) {
+            // context.read<SessionBloc>().add(SessionEvent.start(state.user));
+            // print('aaa');
+            // context.read<DeviceSetupBloc>().add(const DeviceSetupEvent.checkup());
+          }
+        }
+        if (state is AuthErrorState ||
+            state is ConfirmLoginErrorState ||
+            state is AuthAccessDeniedState ||
+            state is UnauthenticatedState) {
+          PageLoader.close();
+          emailController.clear();
+          passwordController.clear();
         }
       },
       builder: (context, state) => SizedBox(
         width: 350,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: widget.isCentered ? MainAxisAlignment.center : MainAxisAlignment.start,
+          crossAxisAlignment: widget.isCentered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Assets.images.medglobalLogo.image(),
@@ -97,28 +102,31 @@ class _LoginFormState extends State<LoginForm> {
                     : const Padding(
                         padding: EdgeInsets.only(top: 24, bottom: 16),
                         child: PageErrorBanner(
-                            message:
-                                'Looks like you don\'t have an internet connection right now. Please try again later.'),
+                          message:
+                              'Looks like you don\'t have an internet connection right now. Please try again later.',
+                        ),
                       ),
               )
             else
               const UIVerticalSpace(60.0),
             if (state is AuthErrorState) ...[
               SizedBox(
-                  width: 330,
-                  child: UIText.labelSemiBold(
-                    state.message,
-                    color: UIColors.buttonDanger,
-                  )),
+                width: 330,
+                child: UIText.labelSemiBold(
+                  state.message,
+                  color: UIColors.buttonDanger,
+                ),
+              ),
               const UIVerticalSpace(20.0),
             ],
             if (state is AuthAccessDeniedState) ...[
               SizedBox(
-                  width: 330,
-                  child: UIText.labelSemiBold(
-                    state.message,
-                    color: UIColors.buttonDanger,
-                  )),
+                width: 330,
+                child: UIText.labelSemiBold(
+                  state.message,
+                  color: UIColors.buttonDanger,
+                ),
+              ),
               const UIVerticalSpace(20.0),
             ],
             UITextField.noLabel(

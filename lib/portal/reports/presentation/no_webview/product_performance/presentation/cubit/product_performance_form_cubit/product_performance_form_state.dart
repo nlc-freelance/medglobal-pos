@@ -50,11 +50,12 @@ class ProductPerformanceFormState with _$ProductPerformanceFormState {
         final params = reportParams as ProductPNLParams;
         final topN = params.topN;
 
+        final hasBranch = params.branch != null;
         final hasCategory = params.categories?.isNotEmpty == true;
         final hasTopN = topN != null && topN > 0;
         final hasRankingCriteria = rankingCriteria != null;
 
-        return hasCategory && hasTopN && hasRankingCriteria && _hasPeriod;
+        return hasBranch && hasCategory && hasTopN && hasRankingCriteria && _hasPeriod;
     }
   }
 
@@ -139,6 +140,7 @@ class ProductPerformanceFormState with _$ProductPerformanceFormState {
           endDate: _endDateByPeriod!,
         ).toJson(),
       ProductPerformanceType.pnl => CreateProductPNLDto(
+          branchId: productPNLParams!.branch!.id!,
           productCategoryIds: productPNLParams!.categories!.map((category) => category.id!).toList(),
           topSize: productPNLParams!.topN!,
           rankingCriteria: rankingCriteria!.name,

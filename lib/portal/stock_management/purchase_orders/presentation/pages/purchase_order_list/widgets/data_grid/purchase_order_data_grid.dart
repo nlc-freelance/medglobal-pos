@@ -94,7 +94,7 @@ class _PurchaseOrderDataGridState extends State<PurchaseOrderDataGrid> {
           },
           failure: (message) => FailureView(message),
           orElse: () => DataGridLoading(
-            columns: DataGridUtil.getColumns(DataGridColumn.products),
+            columns: DataGridUtil.getColumns(DataGridColumn.purchaseOrders),
             source: _purchaseOrderDataGridSource = PurchaseOrderDataGridSource(context, purchaseOrders: []),
           ),
         );
@@ -341,7 +341,7 @@ class PurchaseOrderDataGridSource extends DataGridSource {
     required int purchaseOrderId,
   }) =>
       switch (colName) {
-        'id' => HoverBuilder(
+        'date' => HoverBuilder(
             builder: (isHover) => InkWell(
               onTap: () => _onTapPurchaseOrder(purchaseOrderId),
               hoverColor: UIColors.transparent,

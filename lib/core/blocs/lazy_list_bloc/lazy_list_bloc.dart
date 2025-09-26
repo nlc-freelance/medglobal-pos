@@ -21,7 +21,7 @@ class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
 
   Future<void> _onEvent(event, Emitter<LazyListState<T>> emit) async {
     await event.when(
-      fetch: (forceRefresh) async {
+      fetch: (forceRefresh, filters) async {
         if (forceRefresh) {
           _currentPage = 1;
           _totalCount = -1;
@@ -37,7 +37,7 @@ class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
         ));
 
         try {
-          final result = await _fetch(PageQuery(page: _currentPage, size: 10));
+          final result = await _fetch(PageQuery(page: _currentPage, size: 10, extra: filters));
 
           result.fold(
             (error) => emit(state.copyWith(

@@ -7,7 +7,7 @@ import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_ma
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/repository/branch_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_payload.dart';
-import 'package:medglobal_admin_portal/pos/receipt_config/domain/entities/receipt_configuration.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/receipt_configuration.dart';
 
 /// Concrete implementation of [BranchRepository] that uses [BranchApiService] for API calls
 /// and [BaseRepository] to centralize error handling.

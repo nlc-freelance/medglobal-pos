@@ -21,14 +21,15 @@ class GetLastClosedRegisterShiftUseCase {
 
     /// Get userId and registerId from AppSessionService
     try {
-      if (userId == null || registerId == null) {
-        return Left(UserNotFoundFailure('User and/or register details not found.'));
+      if (registerId == null) {
+        // if (userId == null || registerId == null) { // No locking of register shift to a user
+        return Left(UserNotFoundFailure('Register details not found.'));
       }
     } catch (e) {
       return Left(UnexpectedFailure('Unexpected error occurred. Failed to get user and register details.'));
     }
 
-    final result = await _local.getLastClosedShift(userId, registerId);
+    final result = await _local.getLastClosedShift(registerId);
 
     return result.fold(
       (failure) => Left(failure),

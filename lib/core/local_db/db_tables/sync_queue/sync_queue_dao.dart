@@ -24,6 +24,11 @@ class SyncQueueDao extends DatabaseAccessor<AppDatabase> with _$SyncQueueDaoMixi
         .get();
   }
 
+  // Get all pending items for a specific user
+  Future<List<SyncQueueData>> getPendingItemsByUser(int userId) {
+    return (select(syncQueue)..where((t) => t.userId.equals(userId))).get();
+  }
+
   /// Update the error of a queued item
   Future<SyncQueueData?> updateError(int id, String errorMessage) async {
     await (update(syncQueue)..where((tbl) => tbl.id.equals(id))).write(

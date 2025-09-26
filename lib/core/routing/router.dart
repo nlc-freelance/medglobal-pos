@@ -9,7 +9,7 @@ import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/a
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/product_list_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_list_page.dart';
-import 'package:medglobal_admin_portal/pos/sales/presentation/screens/sales_screen.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/screens/register_screen.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 abstract class AppRouter {
@@ -25,7 +25,7 @@ abstract class AppRouter {
         pageBuilder: (_, __) => const NoTransitionPage(child: AccessDeniedPage()),
       ),
       if (AppConfig.isPortalApp) portalRoutes,
-      if (AppConfig.isPOSApp) posRoutes,
+      // if (AppConfig.isPOSApp) posRoutes,
     ],
     redirect: (context, state) {
       final authState = context.read<AuthBloc>().state;
@@ -53,7 +53,7 @@ abstract class AppRouter {
 
         if (AppConfig.isPOSApp) {
           if (userRole == UserType.cashier || userRole == UserType.supervisor) {
-            return SalesScreen.route;
+            return RegisterScreen.route;
           } else {
             return AccessDeniedPage.route;
           }

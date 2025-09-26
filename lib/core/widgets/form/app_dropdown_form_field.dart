@@ -167,28 +167,69 @@ class _DropdownFormFieldState<T> extends State<AppDropdownFormField<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return OverlayBuilder(
-      target: _DropdownLabelFormField(
-        menuKey: menuKey,
-        label: widget.label,
-        labelPosition: widget.labelPosition,
-        isRequired: widget.isRequired,
-        onTap: () => widget.isReadOnly ? {} : setState(() => visible = true),
-        child: widget.isMultiSelect
-            ? _MutliSelectDropdownContainer<T>(
-                hint: widget.hint,
-                values: widget.selectedItems,
-                getName: (item) => widget.getName(item),
-                onRemove: widget.onRemoveFromMultiSelect,
-                showSelectedItems: widget.showSelectedItems,
-              )
-            : _SingleSelectDropdownContainer(
-                value: value == null ? null : widget.getName(value as T),
-                hint: widget.hint,
-                isReadOnly: widget.isReadOnly,
-                showSelectedItem: widget.showSelectedItem,
+    return widget.labelPosition == LabelPosition.top
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _FormLabel(
+                label: widget.label,
+                isRequired: widget.isRequired,
+                textStyle: UIStyleText.labelRegular.copyWith(fontSize: 11),
               ),
-      ),
+              const UIVerticalSpace(6),
+              _buildFormField(),
+            ],
+          )
+        : LayoutBuilder(builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: constraints.maxWidth > 1000 ? 650 : constraints.maxWidth,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: _FormLabel(
+                      label: widget.label,
+                      isRequired: widget.isRequired,
+                      textStyle: UIStyleText.labelMedium,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: _buildFormField(),
+                  ),
+                ],
+              ),
+            );
+          });
+  }
+
+  void _setValue(T? item) => setState(() => value = item);
+
+  void _onShowDropdownList() => widget.isReadOnly ? {} : setState(() => visible = true);
+
+  void _hideDropdownList() => setState(() => visible = false);
+
+  Widget _buildFormField() {
+    return _FormField(
+      onTap: _onShowDropdownList,
+      target: widget.isMultiSelect
+          ? _MutliSelectDropdownContainer<T>(
+              menuKey: menuKey,
+              hint: widget.hint,
+              values: widget.selectedItems,
+              getName: (item) => widget.getName(item),
+              onRemove: widget.onRemoveFromMultiSelect,
+              showSelectedItems: widget.showSelectedItems,
+            )
+          : _SingleSelectDropdownContainer(
+              menuKey: menuKey,
+              value: value == null ? null : widget.getName(value as T),
+              hint: widget.hint,
+              isReadOnly: widget.isReadOnly,
+              showSelectedItem: widget.showSelectedItem,
+            ),
       follower: widget.type == DropdownListType.lazy
           ? DropdownLazyList<T>(
               menuKey: menuKey,
@@ -216,63 +257,67 @@ class _DropdownFormFieldState<T> extends State<AppDropdownFormField<T>> {
       onClose: _hideDropdownList,
     );
   }
-
-  void _setValue(T? item) => setState(() => value = item);
-
-  void _hideDropdownList() => setState(() => visible = false);
 }
 
-class _DropdownLabelFormField extends StatelessWidget {
-  const _DropdownLabelFormField({
+class _FormLabel extends StatelessWidget {
+  const _FormLabel({
     super.key,
-    required this.menuKey,
     required this.label,
-    required this.labelPosition,
     required this.isRequired,
-    required this.onTap,
-    required this.child,
+    required this.textStyle,
   });
 
-  final GlobalKey menuKey;
   final String label;
-  final LabelPosition labelPosition;
   final bool isRequired;
-  final VoidCallback? onTap;
-  final Widget child;
+  final TextStyle textStyle;
 
   @override
   Widget build(BuildContext context) {
-    final field = InkWell(
-      key: menuKey,
-      hoverColor: UIColors.transparent,
-      highlightColor: UIColors.transparent,
-      borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-      onTap: onTap,
-      child: child,
-    );
-
-    return Flex(
-      direction: labelPosition == LabelPosition.top ? Axis.vertical : Axis.horizontal,
-      crossAxisAlignment: labelPosition == LabelPosition.top ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 6),
-          child: Text.rich(
+    return Text.rich(
+      TextSpan(
+        text: label,
+        style: textStyle,
+        children: [
+          if (isRequired)
             TextSpan(
-              text: label,
-              style: UIStyleText.labelRegular.copyWith(fontSize: 11),
-              children: [
-                if (isRequired)
-                  TextSpan(
-                    text: ' *',
-                    style: UIStyleText.labelRegular.copyWith(color: Colors.red),
-                  ),
-              ],
+              text: ' *',
+              style: textStyle.copyWith(color: Colors.red),
             ),
-          ),
-        ),
-        labelPosition == LabelPosition.left ? Expanded(child: field) : field,
-      ],
+        ],
+      ),
+    );
+  }
+}
+
+class _FormField extends StatelessWidget {
+  const _FormField({
+    super.key,
+    required this.onTap,
+    required this.target,
+    required this.follower,
+    required this.visible,
+    required this.onClose,
+    this.anchor,
+  });
+
+  final VoidCallback onTap;
+  final Widget target;
+  final Widget follower;
+  final bool visible;
+  final Anchor? anchor;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: OverlayBuilder(
+        target: target,
+        follower: follower,
+        visible: visible,
+        anchor: anchor,
+        onClose: onClose,
+      ),
     );
   }
 }
@@ -280,12 +325,14 @@ class _DropdownLabelFormField extends StatelessWidget {
 class _SingleSelectDropdownContainer extends StatelessWidget {
   const _SingleSelectDropdownContainer({
     super.key,
+    required this.menuKey,
     required this.hint,
     required this.isReadOnly,
     required this.value,
     this.showSelectedItem = true,
   });
 
+  final GlobalKey menuKey;
   final String hint;
   final bool isReadOnly;
   final String? value;
@@ -294,6 +341,7 @@ class _SingleSelectDropdownContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      key: menuKey,
       readOnly: true,
       enabled: false,
       controller: TextEditingController(text: showSelectedItem ? value : null),
@@ -320,6 +368,7 @@ class _SingleSelectDropdownContainer extends StatelessWidget {
 class _MutliSelectDropdownContainer<T> extends StatelessWidget {
   const _MutliSelectDropdownContainer({
     super.key,
+    required this.menuKey,
     required this.hint,
     required this.values,
     required this.getName,
@@ -327,6 +376,7 @@ class _MutliSelectDropdownContainer<T> extends StatelessWidget {
     required this.showSelectedItems,
   });
 
+  final GlobalKey menuKey;
   final String hint;
   final List<T>? values;
   final String Function(T item) getName;
@@ -335,49 +385,53 @@ class _MutliSelectDropdownContainer<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(minHeight: 42.5),
-      width: double.infinity,
-      padding: values?.isNotEmpty == true && showSelectedItems
-          ? const EdgeInsets.fromLTRB(4, 4, 16, 4)
-          : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: UIColors.borderMuted.withOpacity(0.15),
-        border: Border.all(color: UIColors.borderRegular.withOpacity(0.75)),
-        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          values?.isNotEmpty == true && showSelectedItems
-              ? Expanded(
-                  child: Wrap(
-                    direction: Axis.horizontal,
-                    runAlignment: WrapAlignment.center,
-                    runSpacing: 6,
-                    spacing: 4,
-                    children: values!
-                        .map(
-                          (item) => Chip(
-                            label: Text(getName(item), style: UIStyleText.chip),
-                            backgroundColor: UIColors.whiteBg,
-                            deleteIcon: onRemove != null ? Assets.icons.close.svg() : const SizedBox.shrink(),
-                            onDeleted: onRemove != null ? () => onRemove!(item) : () {},
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: const BorderSide(color: UIColors.borderMuted, width: 0.8),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: Container(
+        key: menuKey,
+        constraints: const BoxConstraints(minHeight: 42.5),
+        width: double.infinity,
+        padding: values?.isNotEmpty == true && showSelectedItems
+            ? const EdgeInsets.fromLTRB(4, 4, 16, 4)
+            : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: UIColors.borderMuted.withOpacity(0.15),
+          border: Border.all(color: UIColors.borderRegular.withOpacity(0.75)),
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            values?.isNotEmpty == true && showSelectedItems
+                ? Expanded(
+                    child: Wrap(
+                      direction: Axis.horizontal,
+                      runAlignment: WrapAlignment.center,
+                      runSpacing: 6,
+                      spacing: 4,
+                      children: values!
+                          .map(
+                            (item) => Chip(
+                              label: Text(getName(item), style: UIStyleText.chip),
+                              backgroundColor: UIColors.whiteBg,
+                              deleteIcon: onRemove != null ? Assets.icons.close.svg() : const SizedBox.shrink(),
+                              onDeleted: onRemove != null ? () => onRemove!(item) : () {},
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: const BorderSide(color: UIColors.borderMuted, width: 0.8),
+                              ),
                             ),
-                          ),
-                        )
-                        .toList(),
+                          )
+                          .toList(),
+                    ),
+                  )
+                : Text(
+                    hint,
+                    style: UIStyleText.chip.copyWith(color: UIColors.textMuted),
                   ),
-                )
-              : Text(
-                  hint,
-                  style: UIStyleText.chip.copyWith(color: UIColors.textMuted),
-                ),
-          Assets.icons.arrowDown.svg(),
-        ],
+            Assets.icons.arrowDown.svg(),
+          ],
+        ),
       ),
     );
   }
