@@ -124,7 +124,13 @@ class DeviceSetupBloc extends Bloc<DeviceSetupEvent, DeviceSetupState> {
   }
 
   Future<void> _onRebindDevice(_RebindDevice event, Emitter<DeviceSetupState> emit) async {
-    /// Clear local db data
+    if (event.reset) {
+      /// Clear local db
+      await GetIt.I<AppDatabase>().settingsDao.clearAll();
+      await GetIt.I<AppDatabase>().productCatalogDao.clearAll();
+      await GetIt.I<AppDatabase>().syncMetadataDao.clearAll();
+    }
+
     emit(const DeviceSetupState.unready());
   }
 }

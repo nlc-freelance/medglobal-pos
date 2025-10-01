@@ -69,7 +69,7 @@ class _PosScaffoldState extends State<PosScaffold> with DialogMixin {
                             children: [
                               if (state == 0) ...[
                                 UIText.bodyRegular(
-                                  'To continue, please start the setup process to reset the device, or contact support if you require assistance.',
+                                  'Please set up again or contact your admin for assistance.',
                                   align: TextAlign.center,
                                 ),
                                 const UIVerticalSpace(16),
@@ -85,7 +85,7 @@ class _PosScaffoldState extends State<PosScaffold> with DialogMixin {
                                     UIButton.outlined(
                                       'Set Up Again',
                                       onClick: () {
-                                        context.read<DeviceSetupBloc>().add(const DeviceSetupEvent.rebind());
+                                        context.read<DeviceSetupBloc>().add(const DeviceSetupEvent.rebind(reset: true));
                                         Navigator.pop(context);
                                       },
                                     ),
@@ -140,62 +140,64 @@ class _PosScaffoldState extends State<PosScaffold> with DialogMixin {
         BlocListener<RegisterShiftBloc, RegisterShiftState>(
           listener: (context, state) {
             state.maybeWhen(
-              open: (shift, _) {
+              open: (shift, hasExistingOpenShiftError) {
                 // This should only show on app startup and not when user regains connection
-                showCustomDialog(
-                  context,
-                  barrierColor: Colors.black12,
-                  dialog: Dialog(
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                    backgroundColor: UIColors.background,
-                    child: Container(
-                      constraints: const BoxConstraints(maxWidth: 500),
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.search, color: UIColors.textMuted, size: 24),
-                          const UIVerticalSpace(14),
-                          UIText.heading5('Open Shift Found', align: TextAlign.center),
-                          const UIVerticalSpace(4),
-                          UIText.bodyRegular(
-                            'A previous shift is still active. You can either continue with this shift or close it and start a new one.',
-                            align: TextAlign.center,
-                          ),
-                          const UIVerticalSpace(24),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              UIButton.text(
-                                'Continue with Shift',
-                                onClick: () => Navigator.pop(context),
-                              ),
-                              const UIHorizontalSpace(24),
-                              UIButton.outlined(
-                                'Close Shift',
-                                onClick: () {
-                                  Navigator.pop(context);
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) => RegisterShiftDialog(
-                                      action: RegisterShiftAction.close,
-                                      dateTime: shift.openedAt,
-                                      onConfirm: (amount) => context
-                                          .read<RegisterShiftBloc>()
-                                          .add(RegisterShiftEvent.close(shift.id!, amount)),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
+                if (hasExistingOpenShiftError == null) {
+                  showCustomDialog(
+                    context,
+                    barrierColor: Colors.black12,
+                    dialog: Dialog(
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                      backgroundColor: UIColors.background,
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 500),
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.search, color: UIColors.textMuted, size: 24),
+                            const UIVerticalSpace(14),
+                            UIText.heading5('Open Shift Found', align: TextAlign.center),
+                            const UIVerticalSpace(4),
+                            UIText.bodyRegular(
+                              'A previous shift is still active. You can either continue with this shift or close it and start a new one.',
+                              align: TextAlign.center,
+                            ),
+                            const UIVerticalSpace(24),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                UIButton.text(
+                                  'Continue with Shift',
+                                  onClick: () => Navigator.pop(context),
+                                ),
+                                const UIHorizontalSpace(24),
+                                UIButton.outlined(
+                                  'Close Shift',
+                                  onClick: () {
+                                    Navigator.pop(context);
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) => RegisterShiftDialog(
+                                        action: RegisterShiftAction.close,
+                                        dateTime: shift.openedAt,
+                                        onConfirm: (amount) => context
+                                            .read<RegisterShiftBloc>()
+                                            .add(RegisterShiftEvent.close(shift.id!, amount)),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
               orElse: () {},
             );

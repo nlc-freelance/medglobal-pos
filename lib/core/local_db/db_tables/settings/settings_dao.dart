@@ -115,7 +115,7 @@ class SettingsDao extends DatabaseAccessor<AppDatabase> with _$SettingsDaoMixin,
     );
   }
 
-  Future<void> clearSettings() async {
+  Future<void> clearAll() async {
     return safeCall(() async {
       await delete(settings).go();
     });

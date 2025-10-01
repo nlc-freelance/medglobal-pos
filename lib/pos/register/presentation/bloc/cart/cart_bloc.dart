@@ -9,7 +9,7 @@ part 'cart_state.dart';
 part 'cart_bloc.freezed.dart';
 part 'cart_bloc.g.dart';
 
-class CartBloc extends HydratedBloc<CartEvent, CartState> {
+class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(CartState.initial()) {
     on<_AddItem>(_onAddItem);
     on<_RemoveItem>(_onRemoveItem);
@@ -98,9 +98,9 @@ class CartBloc extends HydratedBloc<CartEvent, CartState> {
   /// Removes an item from the state by its ID.
   List<OrderItem> _removeItemById(int id) => state.order.items.where((item) => item.id != id).toList();
 
-  @override
-  CartState? fromJson(Map<String, dynamic> json) => CartState.fromJson(json);
-
-  @override
-  Map<String, dynamic>? toJson(CartState state) => state.toJson();
+  // @override
+  // CartState? fromJson(Map<String, dynamic> json) => CartState.fromJson(json);
+  //
+  // @override
+  // Map<String, dynamic>? toJson(CartState state) => state.toJson();
 }

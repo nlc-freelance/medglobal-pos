@@ -248,13 +248,7 @@ class CloseRegisterShiftMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RegisterShiftBloc, RegisterShiftState>(
-      listener: (context, state) {
-        state.maybeWhen(
-          closed: (_) => Navigator.of(context, rootNavigator: true).pop(),
-          orElse: () {},
-        );
-      },
+    return BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
       builder: (context, state) {
         return state.maybeWhen(
           open: (shift, _) => Visibility(

@@ -30,38 +30,32 @@ class CartClosed extends StatelessWidget {
           ),
         ),
         const UIVerticalSpace(24),
-        UIButton.filled(
-          'Open Shift',
-          onClick: () => showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (_) => MultiBlocProvider(
-              providers: [
-                BlocProvider.value(value: context.read<ProductCatalogCubit>()),
-                BlocProvider.value(value: context.read<ProductCatalogBloc>()),
-                BlocProvider.value(value: context.read<RegisterShiftBloc>()),
-              ],
-              child: BlocConsumer<RegisterShiftBloc, RegisterShiftState>(
-                listener: (context, state) {
-                  state.maybeWhen(
-                    open: (_, __) => Navigator.pop(context),
-                    orElse: () {},
-                  );
-                },
-                builder: (context, state) {
-                  return RegisterShiftDialog(
-                    action: RegisterShiftAction.open,
-                    dateTime: state.maybeWhen(
-                      closed: (closedSince) => closedSince,
-                      orElse: () => null,
-                    ),
-                    onConfirm: (amount) => context.read<RegisterShiftBloc>().add(RegisterShiftEvent.open(amount)),
-                    // .add(RegisterShiftOpened(id: context.read<ActiveRegisterCubit>().state.id!, amount: amount)),
-                  );
-                },
+        BlocConsumer<RegisterShiftBloc, RegisterShiftState>(
+          listener: (context, state) {
+            state.maybeWhen(
+              open: (_, error) {
+                if (error == null) Navigator.of(context, rootNavigator: true).pop();
+              },
+              orElse: () {},
+            );
+          },
+          builder: (context, state) {
+            return UIButton.filled(
+              'Open Shift',
+              onClick: () => showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => RegisterShiftDialog(
+                  action: RegisterShiftAction.open,
+                  dateTime: state.maybeWhen(
+                    closed: (closedSince) => closedSince,
+                    orElse: () => null,
+                  ),
+                  onConfirm: (amount) => context.read<RegisterShiftBloc>().add(RegisterShiftEvent.open(amount)),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );

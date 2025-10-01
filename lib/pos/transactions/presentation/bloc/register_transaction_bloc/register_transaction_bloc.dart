@@ -12,7 +12,7 @@ class RegisterTransactionBloc extends Bloc<RegisterTransactionEvent, RegisterTra
 
   RegisterTransactionBloc(this._repository) : super(const RegisterTransactionState.initial()) {
     on<_GetTransactionById>(_onGetTransactionById);
-    // on<_Reset>(_onReset);
+    on<_Reset>(_onReset);
   }
 
   Future<void> _onGetTransactionById(event, emit) async {
@@ -29,5 +29,5 @@ class RegisterTransactionBloc extends Bloc<RegisterTransactionEvent, RegisterTra
     }
   }
 
-  // void _onReset(_Reset event, Emitter<RegisterTransactionState> emit) => emit(const RegisterTransactionState.initial());
+  void _onReset(_Reset event, Emitter<RegisterTransactionState> emit) => emit(const RegisterTransactionState.initial());
 }

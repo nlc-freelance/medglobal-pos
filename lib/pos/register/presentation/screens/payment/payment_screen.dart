@@ -10,6 +10,7 @@ import 'package:medglobal_admin_portal/pos/register/presentation/bloc/sale/sale_
 import 'package:medglobal_admin_portal/pos/register/presentation/screens/cart/cart_open/cart_open.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/screens/payment/widgets/charge_payment.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/screens/payment/widgets/payment_confirmed.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/transaction_list_bloc/transaction_list_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -49,9 +50,15 @@ class _PaymentScreenState extends State<PaymentScreen> with DialogMixin {
       child: BlocConsumer<SaleBloc, SaleState>(
         listener: (context, state) {
           state.maybeWhen(
-            success: (transaction) {
+            success: (sale) {
               setState(() => _hasCompletedPayment = true);
-              context.read<PrintReceiptCubit>().generateAndPrintReceipt(transaction);
+              context.read<PrintReceiptCubit>().generateAndPrintReceipt(sale);
+
+              // To reflect the new transaction in the transaction list view
+              // We do offline first, so the transaction might not be done syncing already even if online, so we just
+              // add refresh on the list view itself. since transaction viewing for offline is not yet implemented
+              // context.read<TransactionListBloc>().add(const TransactionListEvent.fetch(forceRefresh: true));
+              // context.read<TransactionListBloc>().add(TransactionListEvent.insertNewTransaction(sale));
             },
             orElse: () => {},
           );

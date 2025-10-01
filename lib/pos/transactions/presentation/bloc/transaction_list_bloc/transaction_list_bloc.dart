@@ -23,16 +23,17 @@ class TransactionListBloc extends Bloc<TransactionListEvent, TransactionListStat
 
   int _currentPage = 1;
   int _totalCount = -1;
-  final Set<Transaction> _cachedTransactions = {};
+  Set<Transaction> _cachedTransactions = {};
   Set<Transaction> _searchResults = {};
 
   Future<void> _onFetch(event, emit) async {
     final isSearching = event.search?.isNotEmpty == true;
 
-    if (isSearching) {
+    if (isSearching || event.forceRefresh) {
       _currentPage = 1;
       _totalCount = -1;
-      _searchResults = {};
+      _cachedTransactions = {};
+      // _searchResults = {};
     }
 
     emit(state.copyWith(
@@ -59,25 +60,37 @@ class TransactionListBloc extends Bloc<TransactionListEvent, TransactionListStat
           error: failure.message,
         )),
         (data) {
-          if (isSearching && data.items.isEmpty) {
-            // Check if online
-            // If online, fetch remotely and store results in _searchResults
-            // If offline, show message
-            // "Transaction not found. You are currently offline, so only transactions from the past 7 days are available.
-            // Please go online to search for transactions older than 7 days."
-          }
+          // if (isSearching && data.items.isEmpty) {
+          // Check if online
+          // If online, fetch remotely and store results in _searchResults
+          // If offline, show message
+          // "Transaction not found. You are currently offline, so only transactions from the past 7 days are available.
+          // Please go online to search for transactions older than 7 days."
+          // }
 
-          (isSearching ? _searchResults : _cachedTransactions).addAll(data.items);
-          _totalCount = data.totalCount;
+          // (isSearching ? _searchResults : _cachedTransactions).addAll(data.items);
+          // _totalCount = data.totalCount;
+          //
+          // final hasReachedEnd = (isSearching ? _searchResults : _cachedTransactions).length == _totalCount;
+          //
+          // emit(state.copyWith(
+          //   transactions: (isSearching ? _searchResults : _cachedTransactions).toList(),
+          //   isLoadingInitial: false,
+          //   isLoadingMore: false,
+          //   hasReachedEnd: hasReachedEnd,
+          //   error: null,
+          // ));
+          //
+          // if (!hasReachedEnd) _currentPage++;
 
-          final hasReachedEnd = (isSearching ? _searchResults : _cachedTransactions).length == _totalCount;
+          final hasReachedEnd = data.currentPage == data.totalPages;
+          _cachedTransactions = {..._cachedTransactions, ...data.items};
 
           emit(state.copyWith(
-            transactions: (isSearching ? _searchResults : _cachedTransactions).toList(),
             isLoadingInitial: false,
             isLoadingMore: false,
+            transactions: _cachedTransactions.toList(),
             hasReachedEnd: hasReachedEnd,
-            error: null,
           ));
 
           if (!hasReachedEnd) _currentPage++;
