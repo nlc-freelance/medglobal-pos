@@ -28,5 +28,5 @@ class AppVersion extends StatelessWidget {
 
 Future<String> getAppVersion() async {
   final PackageInfo info = await PackageInfo.fromPlatform();
-  return 'v${info.version} (build ${info.buildNumber})';
+  return 'v${info.version}-preprod (build ${info.buildNumber})';
 }

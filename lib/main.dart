@@ -36,24 +36,21 @@ Future<void> main() async {
     // Initialize the window manager
     await windowManager.ensureInitialized();
 
-    // Configure initial window options
-    WindowOptions windowOptions = const WindowOptions(
-      title: "POS",
-      center: true,
-    );
-
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      // Maximize the window on launch
-      await windowManager.maximize();
-      await windowManager.setAsFrameless();
-
-      // Disable resizing
-      await windowManager.setResizable(false);
-
-      // Show the window
-      await windowManager.show();
-      await windowManager.focus();
-    });
+    // // Configure initial window options
+    // WindowOptions windowOptions = const WindowOptions(title: "POS");
+    //
+    // windowManager.waitUntilReadyToShow(windowOptions, () async {
+    //   // Maximize the window on launch
+    //   await windowManager.maximize();
+    //   await windowManager.setAsFrameless();
+    //
+    //   // Disable resizing
+    //   await windowManager.setResizable(false);
+    //
+    //   // Show the window
+    //   await windowManager.show();
+    //   await windowManager.focus();
+    // });
   }
 
   runApp(kIsWeb ? const PortalApp() : const PosApp());

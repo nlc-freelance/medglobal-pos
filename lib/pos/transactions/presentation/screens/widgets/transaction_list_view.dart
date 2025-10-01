@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/register_transaction_bloc/register_transaction_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/transaction_list_bloc/transaction_list_bloc.dart';
@@ -41,28 +42,49 @@ class _TransactionListSectionState extends State<TransactionListView> {
       ),
       child: BlocConsumer<TransactionListBloc, TransactionListState>(
         listener: (context, state) {
-          if (state.newTransactionAdded) {
-            _scrollController.animateTo(
-              0.0,
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-            );
-          }
+          // For offline refund
+          // if (state.newTransactionAdded) {
+          //   _scrollController.animateTo(
+          //     0.0,
+          //     duration: const Duration(milliseconds: 400),
+          //     curve: Curves.easeInOut,
+          //   );
+          // }
         },
         builder: (context, state) {
           return Column(
             children: [
-              UISearchField(
-                fieldWidth: 500.0,
-                hint: 'Search',
-                icon: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Assets.icons.search.svg(),
-                ),
-                controller: _searchController,
-                onChanged: (value) => _debouncer.run(
-                  (() => context.read<TransactionListBloc>().add(TransactionListEvent.fetch(search: value))),
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: UISearchField(
+                      fieldWidth: 500.0,
+                      hint: 'Search',
+                      icon: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Assets.icons.search.svg(),
+                      ),
+                      controller: _searchController,
+                      onChanged: (value) => _debouncer.run(
+                        (() => context.read<TransactionListBloc>().add(TransactionListEvent.fetch(search: value))),
+                      ),
+                    ),
+                  ),
+                  const UIHorizontalSpace(8),
+                  InkWell(
+                    onTap: () =>
+                        context.read<TransactionListBloc>().add(const TransactionListEvent.fetch(forceRefresh: true)),
+                    child: const Tooltip(
+                      message: 'Refresh',
+                      child: Icon(
+                        Icons.sync,
+                        size: 18,
+                        color: UIColors.textRegular,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const UIVerticalSpace(24),
               if (state.isLoadingInitial)
@@ -141,9 +163,11 @@ class _TransactionListSectionState extends State<TransactionListView> {
                                         border: const Border(top: BorderSide(width: 0.8, color: UIColors.borderMuted)),
                                       ),
                                       child: ListTile(
-                                        onTap: () => context.read<RegisterTransactionBloc>().add(
-                                              RegisterTransactionEvent.getById(transaction.id),
-                                            ),
+                                        onTap: () {
+                                          context.read<RegisterTransactionBloc>().add(
+                                                RegisterTransactionEvent.getById(transaction.id),
+                                              );
+                                        },
                                         hoverColor: UIColors.buttonSecondaryHover,
                                         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                         title: Column(

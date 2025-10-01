@@ -101,9 +101,9 @@ extension NullableMapNullRemover on Map<String, dynamic>? {
 }
 
 extension ReadableDateTime on DateTime {
-  /// Formats as: 'Monday, 5 August 2024 3:45 PM'
+  /// Formats as: 'Monday, August 5, 2024, 3:45 PM'
   String toFormattedFullDateTime12Hr() {
-    return DateFormat('EEEE, d MMMM yyyy h:mm a').format(this);
+    return DateFormat('EEEE, MMMM d, yyyy, h:mm a').format(this);
   }
 
   String toFormattedDayAndFullDate() {

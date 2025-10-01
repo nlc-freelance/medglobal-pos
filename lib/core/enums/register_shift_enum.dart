@@ -12,13 +12,13 @@ enum RegisterShiftAction {
     title: 'Open Register Shift',
     message: 'Closed since',
     inputLabel: 'Opening Amount',
-    validationText: 'Please enter the opening register cash.',
+    validationText: 'Opening amount is required.',
   ),
   close(
     title: 'Close register shift',
     message: 'Open since',
     inputLabel: 'Closing Amount',
-    validationText: 'Please enter the closing register cash.',
+    validationText: 'Closing amount is required.',
   );
 
   final String title;

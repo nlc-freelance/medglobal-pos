@@ -57,22 +57,24 @@ class PosApp extends StatelessWidget {
           BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
               if (state is AuthenticatedState) {
-                context.read<AccessValidationBloc>().add(AccessValidationEvent.started(state.user.id!));
+                context.read<SessionBloc>().add(SessionEvent.start(state.user));
+                // context.read<AccessValidationBloc>().add(AccessValidationEvent.started(state.user.id!));
               }
               if (state is UnauthenticatedState) {
                 context.read<SessionBloc>().add(const SessionEvent.end());
               }
             },
           ),
-          BlocListener<AccessValidationBloc, AccessValidationState>(
-            listener: (context, state) {
-              state.maybeWhen(
-                granted: (user) => context.read<SessionBloc>().add(SessionEvent.start(user)),
-                denied: (_) => context.read<AuthBloc>().add(const LogoutEvent()),
-                orElse: () {},
-              );
-            },
-          ),
+          // BlocListener<AccessValidationBloc, AccessValidationState>(
+          //   listener: (context, state) {
+          //     state.maybeWhen(
+          //       granted: (user) => context.read<SessionBloc>().add(SessionEvent.start(user)),
+          //       denied: (_) => context.read<AuthBloc>().add(const LogoutEvent()),
+          //       failure: (_) => context.read<AuthBloc>().add(const LogoutEvent()),
+          //       orElse: () {},
+          //     );
+          //   },
+          // ),
           BlocListener<SessionBloc, SessionState>(
             listener: (context, state) {
               PosAppRouter.router.refresh();
@@ -90,7 +92,7 @@ class PosApp extends StatelessWidget {
                 ready: (_) {
                   context.read<RegisterShiftBloc>().add(const RegisterShiftEvent.checkForOpen());
                   context.read<SyncBloc>().add(const SyncEvent.start());
-                  // context.read<OperationSyncBloc>().add(const OperationSyncEvent.start());
+                  context.read<OperationSyncBloc>().add(const OperationSyncEvent.start());
                 },
                 orElse: () => {},
               );

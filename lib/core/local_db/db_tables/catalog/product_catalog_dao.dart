@@ -123,7 +123,9 @@ class ProductCatalogDao extends DatabaseAccessor<AppDatabase> with _$ProductCata
 
   /// Clear all product catalog items
   Future<void> clearAll() async {
-    await delete(productCatalog).go();
+    return safeCall(() async {
+      await delete(productCatalog).go();
+    });
   }
 }
 

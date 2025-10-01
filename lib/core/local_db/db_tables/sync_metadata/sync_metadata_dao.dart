@@ -24,6 +24,12 @@ class SyncMetadataDao extends DatabaseAccessor<AppDatabase> with _$SyncMetadataD
       );
     });
   }
+
+  Future<void> clearAll() async {
+    return safeCall(() async {
+      await delete(syncMetadata).go();
+    });
+  }
 }
 
 // extension SyncQeueueMapper on SyncQueueItem {

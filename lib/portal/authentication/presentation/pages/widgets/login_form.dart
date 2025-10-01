@@ -4,6 +4,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/widgets/confirm_sign_in_dialog.dart';
+import 'package:medglobal_admin_portal/pos/auth_session/presentation/blocs/session/access_validation_bloc.dart';
 import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -79,7 +80,6 @@ class _LoginFormState extends State<LoginForm> {
             state is AuthAccessDeniedState ||
             state is UnauthenticatedState) {
           PageLoader.close();
-          emailController.clear();
           passwordController.clear();
         }
       },
@@ -129,6 +129,16 @@ class _LoginFormState extends State<LoginForm> {
               ),
               const UIVerticalSpace(20.0),
             ],
+            // BlocBuilder<AccessValidationBloc, AccessValidationState>(
+            //   builder: (context, state) => state.maybeWhen(
+            //     failure: (message) => Container(
+            //       padding: const EdgeInsets.only(bottom: 20),
+            //       width: 330,
+            //       child: UIText.labelSemiBold(message, color: UIColors.buttonDanger),
+            //     ),
+            //     orElse: () => const SizedBox.shrink(),
+            //   ),
+            // ),
             UITextField.noLabel(
               width: 345.0,
               hint: Strings.emailAddress,
