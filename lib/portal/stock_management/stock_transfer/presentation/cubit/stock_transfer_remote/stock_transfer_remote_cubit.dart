@@ -30,9 +30,9 @@ class StockTransferRemoteCubit extends Cubit<StockTransferRemoteState> {
 
     try {
       final result = await _getStockTransferByIdUsecase.call(GetStockTransferByIdParams(id));
-      result.fold(
-        (error) => emit(StockTransferByIdError(message: error.message)),
-        (data) => emit(StockTransferByIdSuccess(stockTransfer: data)),
+      result.when(
+        success: (data) => emit(StockTransferByIdSuccess(stockTransfer: data)),
+        failure: (error) => emit(StockTransferByIdError(message: error.message)),
       );
     } catch (e) {
       emit(StockTransferByIdError(message: e.toString()));
@@ -44,9 +44,9 @@ class StockTransferRemoteCubit extends Cubit<StockTransferRemoteState> {
 
     try {
       final result = await _createStockTransferUsecase.call(CreateStockTransferParams(payload));
-      result.fold(
-        (error) => emit(StockTransferError(message: error.message)),
-        (data) => emit(StockTransferCreateSuccess(stockTransfer: data)),
+      result.when(
+        success: (data) => emit(StockTransferCreateSuccess(stockTransfer: data)),
+        failure: (error) => emit(StockTransferError(message: error.message)),
       );
     } catch (e) {
       emit(StockTransferError(message: e.toString()));
@@ -65,9 +65,9 @@ class StockTransferRemoteCubit extends Cubit<StockTransferRemoteState> {
     try {
       final result =
           await _updateStockTransferUsecase.call(UpdateStockTransferParams(type, id: id, stockTransfer: stockTransfer));
-      result.fold(
-        (error) => emit(StockTransferError(message: error.message)),
-        (data) => emit(StockTransferSuccess(stockTransfer: data)),
+      result.when(
+        success: (data) => emit(StockTransferSuccess(stockTransfer: data)),
+        failure: (error) => emit(StockTransferError(message: error.message)),
       );
     } catch (e) {
       emit(StockTransferError(message: e.toString()));
@@ -79,9 +79,9 @@ class StockTransferRemoteCubit extends Cubit<StockTransferRemoteState> {
 
     try {
       final result = await _deleteStockTransferUseCase.call(DeleteStockTransferParams(id));
-      result.fold(
-        (error) => emit(StockTransferError(message: error.message)),
-        (_) => emit(StockTransferDeleteSuccess()),
+      result.when(
+        success: (_) => emit(StockTransferDeleteSuccess()),
+        failure: (error) => emit(StockTransferError(message: error.message)),
       );
     } catch (e) {
       emit(StockTransferError(message: e.toString()));

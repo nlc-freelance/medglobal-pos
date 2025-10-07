@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dialog/app_blurred_dialog.dart';
-import 'package:medglobal_admin_portal/core/widgets/dialog/app_custom_dialog.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/pos_header.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/pos_drawer.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
@@ -13,7 +12,7 @@ import 'package:medglobal_admin_portal/pos/device_setup/presentation/cubit/unsyn
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/screens/register_shift_dialog.dart';
 import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_cubit.dart';
-import 'package:medglobal_admin_portal/pos/syncing/sync/operation_sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/syncing/sync/write_sync_bloc/write_sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PosScaffold extends StatefulWidget {
@@ -103,12 +102,11 @@ class _PosScaffoldState extends State<PosScaffold> with DialogMixin {
                                 const UIVerticalSpace(16),
                                 UIButton.outlined(
                                   'Sync Now',
-                                  onClick: () => context
-                                      .read<OperationSyncBloc>()
-                                      .add(const OperationSyncEvent.syncNow(manual: true)),
+                                  onClick: () =>
+                                      context.read<WriteSyncBloc>().add(const WriteSyncEvent.syncNow(manual: true)),
                                 ),
                                 const UIVerticalSpace(8),
-                                BlocConsumer<OperationSyncBloc, OperationSyncState>(
+                                BlocConsumer<WriteSyncBloc, WriteSyncState>(
                                   listener: (context, state) {
                                     state.maybeWhen(
                                       synced: (_, __) =>

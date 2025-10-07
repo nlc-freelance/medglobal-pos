@@ -28,9 +28,9 @@ class ProductHistoryListCubit extends Cubit<ProductHistoryListState> {
         page: page,
         size: size,
       ));
-      result.fold(
-        (error) => emit(ProductHistoryListError(message: error.message)),
-        (data) => emit(ProductHistoryListLoaded(data: data)),
+      result.when(
+        success: (data) => emit(ProductHistoryListLoaded(data: data)),
+        failure: (error) => emit(ProductHistoryListError(message: error.message)),
       );
     } catch (e) {
       emit(ProductHistoryListError(message: e.toString()));

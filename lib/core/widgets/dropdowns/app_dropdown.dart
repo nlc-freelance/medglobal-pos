@@ -199,21 +199,23 @@ class _DropdownButton<T> extends StatelessWidget {
       onTap: isEnabled ? onTap : null,
       child: HoverBuilder(
         builder: (isHover) {
-          // final highlight = value?.isNotEmpty == true;
+          final highlight = value?.isNotEmpty == true;
           return Container(
             constraints: const BoxConstraints(minWidth: 200),
             padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: UIColors.borderRegular),
+              // border: Border.all(color: UIColors.borderRegular),
               color: isEnabled
-                  ? isHover
-                      ? UIColors.whiteBg
-                      : UIColors.background
+                  ? highlight
+                      ? UIColors.secondary
+                      : isHover
+                          ? UIColors.whiteBg
+                          : UIColors.background
                   : UIColors.borderMuted.withValues(alpha: 0.5),
-              // border: Border.all(
-              //   color: highlight ? UIColors.primary.withValues(alpha: 0.2) : UIColors.borderRegular,
-              // ),
+              border: Border.all(
+                color: highlight ? UIColors.primary.withValues(alpha: 0.2) : UIColors.borderRegular,
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

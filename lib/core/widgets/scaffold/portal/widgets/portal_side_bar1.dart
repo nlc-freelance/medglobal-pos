@@ -232,35 +232,35 @@ class _PortalSideBar1State extends State<PortalSideBar1> {
 
                         /// Settings
                         ///
-                        // SidebarSection(
-                        //   leading: icon('/settings'),
-                        //   title: 'Settings',
-                        //   isExpanded: expandedKey == '/settings',
-                        //   onToggle: () => toggleExpansion('/settings'),
-                        //   hasSelection: context.isSubrouteOf('/settings'),
-                        //   children: const [
-                        //     SidebarItem(
-                        //       title: 'Tax',
-                        //       route: '/settings/tax-codes',
-                        //       routeName: 'taxCodeList',
-                        //     ),
-                        //     SidebarItem(
-                        //       title: 'Branch',
-                        //       route: '/settings/branches',
-                        //       routeName: 'branchList',
-                        //     ),
-                        //     SidebarItem(
-                        //       title: 'POS Register',
-                        //       route: '/settings/pos-registers',
-                        //       routeName: 'posRegisterList',
-                        //     ),
-                        //     SidebarItem(
-                        //       title: 'Receipt Template',
-                        //       route: '/settings/receipt-templates',
-                        //       routeName: 'receiptTemplateList',
-                        //     ),
-                        //   ],
-                        // ),
+                        SidebarSection(
+                          leading: icon('/settings'),
+                          title: 'Settings',
+                          isExpanded: expandedKey == '/settings',
+                          onToggle: () => toggleExpansion('/settings'),
+                          hasSelection: context.isSubrouteOf('/settings'),
+                          children: const [
+                            SidebarItem(
+                              title: 'Tax',
+                              route: '/settings/tax-codes',
+                              routeName: 'taxCodeList',
+                            ),
+                            SidebarItem(
+                              title: 'Branch',
+                              route: '/settings/branches',
+                              routeName: 'branchList',
+                            ),
+                            SidebarItem(
+                              title: 'POS Register',
+                              route: '/settings/pos-registers',
+                              routeName: 'posRegisterList',
+                            ),
+                            SidebarItem(
+                              title: 'Receipt Template',
+                              route: '/settings/receipt-templates',
+                              routeName: 'receiptTemplateList',
+                            ),
+                          ],
+                        ),
                       ],
                     );
                   },

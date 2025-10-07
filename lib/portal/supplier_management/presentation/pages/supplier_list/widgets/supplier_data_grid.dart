@@ -46,7 +46,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierDataGrid> {
         return state.maybeWhen(
           loaded: (data) {
             final paginatedData = data;
-            _supplierDataGridSource = SupplierDataGridSource(context, suppliers: paginatedData.items);
+            _supplierDataGridSource = SupplierDataGridSource(suppliers: paginatedData.items);
 
             return Column(
               children: [
@@ -119,7 +119,7 @@ class _SupplierPaginatedDataGridState extends State<SupplierDataGrid> {
           failure: (message) => FailureView(message),
           orElse: () => DataGridLoading(
             columns: DataGridUtil.getColumns(DataGridColumn.suppliers),
-            source: _supplierDataGridSource = SupplierDataGridSource(context, suppliers: []),
+            source: _supplierDataGridSource = SupplierDataGridSource(suppliers: []),
           ),
         );
         //   if (state is SupplierListError) {
@@ -322,13 +322,11 @@ class _SupplierPaginatedDataGridState extends State<SupplierDataGrid> {
 }
 
 class SupplierDataGridSource extends DataGridSource {
-  SupplierDataGridSource(BuildContext context, {required List<Supplier> suppliers}) {
-    _context = context;
+  SupplierDataGridSource({required List<Supplier> suppliers}) {
     _suppliers = suppliers;
     buildDataGridRows();
   }
 
-  late BuildContext _context;
   List<Supplier> _suppliers = [];
   List<DataGridRow> dataGridRows = [];
 
@@ -341,19 +339,25 @@ class SupplierDataGridSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
-        return cell.columnName == 'name'
-            ? HoverBuilder(
-                builder: (isHover) => UIText.dataGridText(
-                  cell.value.toString(),
-                  color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
-                  textDecoration: TextDecoration.underline,
-                ),
-              )
-            : Container(
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: UIText.dataGridText(cell.value.toString()),
-              );
+        return Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: cell.columnName == 'name'
+              ? HoverBuilder(
+                  builder: (isHover) => UIText.dataGridText(
+                    cell.value.toString(),
+                    color: isHover ? UIColors.buttonPrimaryHover : UIColors.textRegular,
+                    textDecoration: TextDecoration.underline,
+                  ),
+                )
+              :
+              // Container(
+              //         alignment: Alignment.centerLeft,
+              //         padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              //         child:
+              UIText.dataGridText(cell.value.toString()),
+        );
+        // );
       }).toList(),
     );
   }

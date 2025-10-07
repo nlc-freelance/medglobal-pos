@@ -1,6 +1,6 @@
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register_dto.dart';
-import 'package:medglobal_admin_portal/pos/register_shift/data/dto/register_shift_mapper.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register_shift_detail_mapper.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 
 class RegisterMapper {
@@ -12,7 +12,7 @@ class RegisterMapper {
       name: dto.name,
       serialNumber: dto.serialNumber,
       assignedBranch: dto.store != null ? BranchMapper.fromDto(dto.store!) : null,
-      shiftDetail: dto.shiftDetail != null ? RegisterShiftMapper.fromDto(dto.shiftDetail!) : null,
+      shiftDetail: dto.shiftDetail != null ? RegisterShiftDetailMapper.fromDto(dto.shiftDetail!) : null,
     );
   }
 }

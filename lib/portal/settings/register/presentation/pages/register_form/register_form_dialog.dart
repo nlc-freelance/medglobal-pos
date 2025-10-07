@@ -92,7 +92,7 @@ class _RegisterFormDialogState extends State<RegisterFormDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (_isEditMode) ...[
+                if (_isEditMode && _registerFormCubit.state.serialNo != null) ...[
                   UIButton.filled(
                     'Deactivate',
                     onClick: () => _registerBloc.add(

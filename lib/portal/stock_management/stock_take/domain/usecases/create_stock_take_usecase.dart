@@ -1,5 +1,4 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/core/usecases/usecase.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/new_stock_take.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take.dart';
@@ -11,7 +10,7 @@ class CreateStockTakeUseCase implements UseCase<StockTake, CreateStockTakeParams
   const CreateStockTakeUseCase(this.repository);
 
   @override
-  Future<Either<Failure, StockTake>> call(CreateStockTakeParams params) => repository.create(params.stockTake);
+  Future<ApiResult<StockTake>> call(CreateStockTakeParams params) => repository.create(params.stockTake);
 }
 
 class CreateStockTakeParams {

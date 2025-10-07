@@ -24,9 +24,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
       final result = await _repository.createCategory(payload);
 
-      result.fold(
-        (error) => emit(CategoryState.failure(error.message)),
-        (category) => emit(CategoryState.success(category)),
+      result.when(
+        success: (category) => emit(CategoryState.success(category)),
+        failure: (failure) => emit(CategoryState.failure(failure.message)),
       );
     } catch (e) {
       emit(CategoryState.failure(e.toString()));

@@ -1,25 +1,26 @@
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
+import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 
 class RemoteProductCatalogDataSource {
-  final BaseApiService _api;
+  final ApiService _api;
 
-  RemoteProductCatalogDataSource(this._api);
+  RemoteProductCatalogDataSource({required ApiService api}) : _api = api;
 
   Future<PaginatedList<ProductVariantDto>> getProducts(PageQuery query, {bool isDeltaSync = false}) async {
-    final response = await _api.getPaginated<ProductVariantDto>(
+    final data = await _api.getPaginated<ProductVariantDto>(
       isDeltaSync ? ApiEndpoints.productVariantsDeltaSync : ApiEndpoints.productVariants,
       queryParams: query.toJson(),
-      fromJson: ProductVariantDto.fromJson,
+      parser: (json) => parse(json, ProductVariantDto.fromJson),
     );
 
     return PaginatedList<ProductVariantDto>(
-      items: response.data.items,
-      currentPage: response.data.page,
-      currentSize: response.data.size,
-      totalPages: response.data.totalPages,
-      totalCount: response.data.totalCount,
+      items: data.items,
+      currentPage: data.page,
+      currentSize: data.size,
+      totalPages: data.totalPages,
+      totalCount: data.totalCount,
     );
   }
 }

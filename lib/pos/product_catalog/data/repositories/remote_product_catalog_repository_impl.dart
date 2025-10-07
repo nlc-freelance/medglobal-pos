@@ -1,8 +1,7 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/page_query.dart';
 import 'package:medglobal_admin_portal/core/models/paginated_list.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/data/datasources/remote_product_catalog_datasource.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/entities/catalog_item.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/repositories/remote_product_catalog_repository.dart';
@@ -15,7 +14,7 @@ class RemoteProductCatalogRepositoryImpl extends BaseRepository implements Remot
   }) : _remoteDataSource = remoteDataSource;
 
   @override
-  Future<Either<Failure, PaginatedList<CatalogItem>>> getProducts(PageQuery query, {bool isDeltaSync = false}) {
+  Future<ApiResult<PaginatedList<CatalogItem>>> getProducts(PageQuery query, {bool isDeltaSync = false}) {
     return call(() async {
       final data = await _remoteDataSource.getProducts(query, isDeltaSync: isDeltaSync);
 

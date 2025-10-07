@@ -1,11 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/network/new/api/api_result.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/local_register_shift_repository.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/remote_register_shift_repository.dart';
 import 'package:medglobal_admin_portal/pos/syncing/sync_queue/sync_queue_repository.dart';
-import 'package:medglobal_admin_portal/pos/syncing/services/connectivity_service.dart';
+import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_service.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/entities/register_shift.dart';
 
 class CloseRegisterShiftUseCase {
@@ -27,24 +28,24 @@ class CloseRegisterShiftUseCase {
         _connection = connection,
         _sync = sync;
 
-  Future<Either<Failure, RegisterShift>> call(int shiftId, double amount) async {
+  Future<ApiResult<RegisterShift>> call(int shiftId, double amount) async {
     final userId = _session.userId;
     final registerId = _session.registerId;
 
     /// Get userId and registerId from AppSessionService
     try {
       if (userId == null || registerId == null) {
-        return Left(UserNotFoundFailure('User and/or register details not found.'));
+        return ApiResult.failure(UserNotFoundFailure('User and/or register details not found.'));
       }
     } catch (e) {
-      return Left(UnexpectedFailure('Unexpected error occurred. Failed to get user and register details.'));
+      return ApiResult.failure(
+          UnexpectedFailure('Unexpected error occurred. Failed to get user and register details.'));
     }
 
     final localResult = await _local.closeShift(shiftId, amount);
 
-    return localResult.fold(
-      (failure) => Left(failure),
-      (shift) {
+    return localResult.when(
+      success: (shift) {
         // Try to send to remote if online
         _connection.isOnline.then((online) {
           if (online) {
@@ -52,16 +53,16 @@ class CloseRegisterShiftUseCase {
             // We use `.then()` instead of `await` to run this in the background,
             // allowing the main function to return immediately after saving locally.
             _remote.sendShift(shift.toClosePayload()).then((result) {
-              result.fold(
+              result.when(
+                // If successful, do nothing — the shift is now synced.
+                success: (_) {},
                 // If remote send failed, add it to the sync queue for retry later.
-                (failure) => _sync.enqueue(
+                failure: (failure) => _sync.enqueue(
                   itemId: shift.id!,
                   table: 'registerShifts',
                   data: shift.toClosePayload(),
                   error: failure.message,
                 ),
-                // If successful, do nothing — the shift is now synced.
-                (_) {},
               );
             });
           } else {
@@ -75,8 +76,9 @@ class CloseRegisterShiftUseCase {
         });
 
         // Return the successfully saved shift (from local DB).
-        return Right(shift);
+        return ApiResult.success(shift);
       },
+      failure: (failure) => ApiResult.failure(failure),
     );
   }
 }

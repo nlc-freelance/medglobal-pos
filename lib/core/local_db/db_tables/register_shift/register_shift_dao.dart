@@ -90,6 +90,13 @@ class RegisterShiftDao extends DatabaseAccessor<AppDatabase> with _$RegisterShif
 
     return shift;
   }
+
+  /// Clear all register shifts
+  Future<void> clearAll() async {
+    return safeCall(() async {
+      await delete(registerShifts).go();
+    });
+  }
 }
 
 extension RegisterShiftModelMapper on RegisterShiftModel {

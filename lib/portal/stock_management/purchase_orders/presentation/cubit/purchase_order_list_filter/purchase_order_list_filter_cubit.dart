@@ -20,4 +20,6 @@ class PurchaseOrderListFilterCubit extends Cubit<PurchaseOrderListFilterState> {
   void setEndDate(String? value) => emit(state.copyWith(endDate: value));
 
   void reset() => emit(PurchaseOrderListFilterState.initial());
+
+  void resetPageAndSize() => emit(state.copyWith(page: 1, size: 20));
 }

@@ -1,5 +1,4 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/core/usecases/usecase.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/domain/entities/product_history_paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/domain/repositories/product_history_repository.dart';
@@ -10,8 +9,7 @@ class GetProductHistoryUseCase implements UseCase<ProductHistoryPaginatedList, G
   const GetProductHistoryUseCase(this.repository);
 
   @override
-  Future<Either<Failure, ProductHistoryPaginatedList>> call(GetProductHistoryParams params) =>
-      repository.getProductHistory(
+  Future<ApiResult<ProductHistoryPaginatedList>> call(GetProductHistoryParams params) => repository.getProductHistory(
         variantId: params.variantId,
         branchId: params.branchId,
         startDate: params.startDate,

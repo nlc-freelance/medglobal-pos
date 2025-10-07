@@ -24,9 +24,9 @@ class ShiftTransactionsCubit extends Cubit<ShiftTransactionsState> {
         size: size,
         shift: shiftId,
       );
-      result.fold(
-        (error) => emit(ShiftTransactionsError(message: error.message)),
-        (data) => emit(ShiftTransactionsLoaded(data: data)),
+      result.when(
+        success: (data) => emit(ShiftTransactionsLoaded(data: data)),
+        failure: (error) => emit(ShiftTransactionsError(message: error.message)),
       );
     } catch (e) {
       emit(ShiftTransactionsError(message: e.toString()));

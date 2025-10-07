@@ -1,8 +1,7 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
 import 'package:medglobal_admin_portal/core/models/paginated_list.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/datasources/transactions/local_transaction_datasource.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transactions/register_transaction_repository.dart';
@@ -16,7 +15,7 @@ class LocalTransactionRepositoryImpl extends BaseRepository implements RegisterT
 
   /// Retrieves a list of transactions from local DB
   @override
-  Future<Either<Failure, PaginatedList<Transaction>>> getTransactions({
+  Future<ApiResult<PaginatedList<Transaction>>> getTransactions({
     required int page,
     required int size,
     required int branchId,
@@ -37,7 +36,7 @@ class LocalTransactionRepositoryImpl extends BaseRepository implements RegisterT
 
   /// Retrieves a single transaction by given ID from local DB
   @override
-  Future<Either<Failure, Transaction>> getTransactionById(int id) {
+  Future<ApiResult<Transaction>> getTransactionById(int id) {
     return call(() async {
       final data = await _localDataSource.getTransaction(id);
       return data.toEntity();

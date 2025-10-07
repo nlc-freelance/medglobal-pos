@@ -36,9 +36,8 @@ class SupplierLazyListCubit extends Cubit<SupplierLazyListState> {
 
       try {
         final result = await _repository.getSuppliers(PageQuery(page: _currentPage, size: 10));
-        result.fold(
-          (error) => emit(state.copyWith(isInitLoading: false, isLoadingMore: false, error: error.message)),
-          (data) {
+        result.when(
+          success: (data) {
             _currentPage++;
             _suppliers = {..._suppliers, ...data.items};
             _totalCount = data.totalCount;
@@ -50,6 +49,7 @@ class SupplierLazyListCubit extends Cubit<SupplierLazyListState> {
               hasReachedMax: data.currentPage == data.totalPages,
             ));
           },
+          failure: (error) => emit(state.copyWith(isInitLoading: false, isLoadingMore: false, error: error.message)),
         );
       } catch (e) {
         emit(state.copyWith(isInitLoading: false, isLoadingMore: false, error: e.toString()));

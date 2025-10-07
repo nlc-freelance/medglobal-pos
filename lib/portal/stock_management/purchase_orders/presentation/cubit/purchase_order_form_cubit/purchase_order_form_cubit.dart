@@ -17,12 +17,12 @@ class PurchaseOrderFormCubit extends Cubit<PurchaseOrderFormState> {
     emit(state.copyWith(purchaseOrder: purchaseOrder));
   }
 
-  void setQuantityToOrderPerItem({required int id, int? qty, required double total}) {
+  void setQuantityToOrderPerItem({required int id, required int? qty}) {
     final updatedItems = state.purchaseOrder.items?.map((item) {
           if (item.id == id) {
             return item.copyWith(
               quantityOrdered: qty,
-              total: total.roundToTwoDecimalPlaces(), //
+              total: (qty ?? 0) * (item.supplierPrice ?? 0), // total.roundToTwoDecimalPlaces(), //
             );
           }
           return item;
@@ -33,14 +33,15 @@ class PurchaseOrderFormCubit extends Cubit<PurchaseOrderFormState> {
     emit(state.copyWith(purchaseOrder: updatedPurchaseOrder));
   }
 
-  void setQuantityReceivedPerItem({required int id, int? qty, required double total}) {
+  void setQuantityReceivedPerItem({required int id, required int? qty}) {
     final updatedItems = state.purchaseOrder.items?.map((item) {
           if (item.id == id) {
             return item.copyWith(
               quantityReceived: qty,
-              total: total.roundToTwoDecimalPlaces(), //
+              total: (qty ?? 0) * (item.supplierPrice ?? 0), // total.roundToTwoDecimalPlaces(), //
             );
           }
+
           return item;
         }).toList() ??
         [];
@@ -49,12 +50,12 @@ class PurchaseOrderFormCubit extends Cubit<PurchaseOrderFormState> {
     emit(state.copyWith(purchaseOrder: updatedPurchaseOrder));
   }
 
-  void setSupplierPricePerItem({required int id, double? price, required double total}) {
+  void setSupplierPricePerItem({required int id, double? price}) {
     final updatedItems = state.purchaseOrder.items?.map((item) {
           if (item.id == id) {
             return item.copyWith(
               supplierPrice: price,
-              total: total.roundToTwoDecimalPlaces(),
+              total: (price ?? 0) * (item.quantityOrdered ?? 0), // total.roundToTwoDecimalPlaces(),
             );
           }
           return item;
@@ -83,8 +84,11 @@ class PurchaseOrderFormCubit extends Cubit<PurchaseOrderFormState> {
     emit(state.copyWith(purchaseOrder: purchaseOrder));
   }
 
-  void setDiscount(double value) {
-    final purchaseOrder = state.purchaseOrder.copyWith(discount: value.roundToTwoDecimalPlaces());
+  void setDiscount(double? value) {
+    final purchaseOrder = state.purchaseOrder.copyWith(
+      discount: value.roundToTwoDecimalPlaces(),
+      totalAmount: (state.purchaseOrder.totalAmount ?? 0) - (value ?? 0),
+    );
     emit(state.copyWith(purchaseOrder: purchaseOrder));
   }
 
@@ -97,4 +101,6 @@ class PurchaseOrderFormCubit extends Cubit<PurchaseOrderFormState> {
     final purchaseOrder = state.purchaseOrder.copyWith(notes: value);
     emit(state.copyWith(purchaseOrder: purchaseOrder));
   }
+
+  void reset() => emit(PurchaseOrderFormState.initial());
 }

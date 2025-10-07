@@ -81,7 +81,7 @@ class _SaleTransactionDetailsPageState extends State<SaleTransactionDetailsPage>
                           ),
                           LabelValue.text(
                             label: 'Register',
-                            value: (transaction.register.id).toString(),
+                            value: transaction.register.name,
                           ),
                         ],
                       ),

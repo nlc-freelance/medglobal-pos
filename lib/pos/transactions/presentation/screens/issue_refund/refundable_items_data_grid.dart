@@ -37,15 +37,6 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
     _refundableItemsDataSource = RefundableItemsDataSource(items, context);
 
     context.read<RefundFormCubit>().loadItems(items);
-
-    /// Set a new transaction in RefundCubit and copy the items of the original sale transaction register, id and items
-    // context.read<RefundCubit>().setRefund(
-    //       Transaction(
-    //         register: widget.transaction.register,
-    //         saleTransactionId: widget.transaction.id,
-    //         items: _items,
-    //       ),
-    //     );
   }
 
   @override
@@ -98,7 +89,7 @@ class _RefundableItemsDataGridState extends State<RefundableItemsDataGrid> {
               data: DataGridUtil.cellNavigationStyle,
               child: BlocConsumer<RefundFormCubit, RefundFormState>(
                 listener: (context, state) {
-                  _refundableItemsDataSource._items = state.items ?? [];
+                  _refundableItemsDataSource._items = state.items;
 
                   _refundableItemsDataSource.buildDataGridRows();
                   _refundableItemsDataSource.updateDataGridSource();
@@ -261,7 +252,7 @@ class RefundableItemsDataSource extends DataGridSource {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (discount() != null && discount() != 0 && discountType() == DiscountType.percentage) ...[
-              UIText.bodyRegular(discountInPesoPerUnit().toPesoString()),
+              UIText.dataGridText(discountInPesoPerUnit().toPesoString()),
               const UIHorizontalSpace(8),
               Container(
                 margin: const EdgeInsets.only(top: 0),
@@ -283,15 +274,10 @@ class RefundableItemsDataSource extends DataGridSource {
                 ),
               ),
             ] else
-              UIText.bodyRegular(0.0.toPesoString()),
+              UIText.dataGridText(0.0.toPesoString()),
           ],
         ),
-      _ => UIText.bodyRegular(
-          // cell.runtimeType.toString().contains('double')
-          //     ? (cell.value as double).toPesoString()
-          //     :
-          cell.value.toString(),
-        ),
+      _ => UIText.dataGridText(cell.value.toString()),
     };
   }
 
@@ -375,32 +361,6 @@ class RefundableItemsDataSource extends DataGridSource {
       },
       submitCell: submitCell,
     );
-
-    // return Container(
-    //   alignment: Alignment.centerLeft,
-    //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    //   child: TextField(
-    //     controller: editingController..text = displayText,
-    //     autofocus: true,
-    //     cursorHeight: 15.0,
-    //     style: UIStyleText.bodyRegular,
-    //     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-    //     decoration: const InputDecoration(
-    //       contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-    //       focusedBorder: OutlineInputBorder(
-    //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
-    //         borderSide: BorderSide(color: UIColors.textGray),
-    //       ),
-    //     ),
-    //     onTapOutside: (event) => submitCell(),
-    //     onChanged: (String value) => newCellValue = value.isNotEmpty ? value : null,
-    //     onSubmitted: (String value) {
-    //       /// Call [CellSubmit] callback to fire the canSubmitCell and
-    //       /// onCellSubmit to commit the new value in single place.
-    //       submitCell();
-    //     },
-    //   ),
-    // );
   }
 
   @override

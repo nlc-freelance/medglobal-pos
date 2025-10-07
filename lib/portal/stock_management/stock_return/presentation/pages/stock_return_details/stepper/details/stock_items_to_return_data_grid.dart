@@ -87,125 +87,133 @@ class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid>
             decoration: UIStyleContainer.topBorder,
             child: state.stockReturn.items?.isEmpty == true
                 ? DataGridNoData(
-                    columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS), source: _stockItemsToReturnDataSource)
-                : ClipRect(
-                    clipper: HorizontalBorderClipper(),
-                    child: SfDataGridTheme(
-                      data: DataGridUtil.cellNavigationStyle,
-                      child: SfDataGrid(
-                        source: _stockItemsToReturnDataSource,
-                        columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS),
-                        controller: _dataGridController,
-                        selectionManager: customSelectionManager,
-                        shrinkWrapRows: true,
-                        allowEditing: true,
-                        navigationMode: GridNavigationMode.cell,
-                        selectionMode: SelectionMode.single,
-                        columnWidthMode: ColumnWidthMode.fill,
-                        headerGridLinesVisibility: GridLinesVisibility.none,
-                        editingGestureType: EditingGestureType.tap,
-                        footerHeight: 80,
-                        footer: Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: MediaQuery.sizeOf(context).width * 0.3,
-                                child: TypeAheadSearch(
-                                  supplierId: context.read<StockReturnCubit>().state.stockReturn.supplier?.id,
-                                  branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
-                                  onSelected: (value) {
-                                    if (_stockItemsToReturnDataSource._itemsToReturn
-                                            .any((item) => item.variantId == value.id) ==
-                                        true) {
-                                      SnackbarUtil.duplicate(context, 'Item was already added.');
-                                      return;
-                                    }
-                                    final purchaseOrderItem = value.toStockReturnItem();
+                    columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS),
+                    source: _stockItemsToReturnDataSource,
+                    showTopBorder: false,
+                  )
+                : Container(
+                    // constraints: const BoxConstraints(maxHeight: 500),
+                    child: ClipRect(
+                      clipper: HorizontalBorderClipper(),
+                      child: SfDataGridTheme(
+                        data: DataGridUtil.cellNavigationStyle,
+                        child: SfDataGrid(
+                          source: _stockItemsToReturnDataSource,
+                          columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS),
+                          controller: _dataGridController,
+                          selectionManager: customSelectionManager,
+                          allowEditing: true,
+                          shrinkWrapRows: true,
+                          navigationMode: GridNavigationMode.cell,
+                          selectionMode: SelectionMode.single,
+                          columnWidthMode: ColumnWidthMode.fill,
+                          headerRowHeight: 38,
+                          headerGridLinesVisibility: GridLinesVisibility.none,
+                          editingGestureType: EditingGestureType.tap,
+                          isScrollbarAlwaysShown: true,
+                          footerHeight: 80,
+                          footer: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.sizeOf(context).width * 0.3,
+                                  child: TypeAheadSearch(
+                                    supplierId: context.read<StockReturnCubit>().state.stockReturn.supplier?.id,
+                                    branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
+                                    onSelected: (value) {
+                                      if (_stockItemsToReturnDataSource._itemsToReturn
+                                              .any((item) => item.variantId == value.id) ==
+                                          true) {
+                                        SnackbarUtil.duplicate(context, 'Item was already added.');
+                                        return;
+                                      }
+                                      final purchaseOrderItem = value.toStockReturnItem();
 
-                                    /// Add newly added items to the current stock return in state
-                                    context.read<StockReturnCubit>().addItem(purchaseOrderItem);
-                                  },
+                                      /// Add newly added items to the current stock return in state
+                                      context.read<StockReturnCubit>().addItem(purchaseOrderItem);
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+                          tableSummaryRows: [
+                            GridTableSummaryRow(
+                              color: UIColors.background,
+                              position: GridTableSummaryRowPosition.bottom,
+                              showSummaryInRow: false,
+                              title: 'Subtotal',
+                              columns: [
+                                const GridSummaryColumn(
+                                  name: '',
+                                  columnName: 'supplier_price',
+                                  summaryType: GridSummaryType.sum,
+                                ),
+                                const GridSummaryColumn(
+                                  name: '',
+                                  columnName: 'total',
+                                  summaryType: GridSummaryType.sum,
+                                ),
+                              ],
+                            ),
+                            GridTableSummaryRow(
+                              color: UIColors.background,
+                              position: GridTableSummaryRowPosition.bottom,
+                              showSummaryInRow: false,
+                              title: 'Tax',
+                              columns: [
+                                const GridSummaryColumn(
+                                  name: '',
+                                  columnName: 'supplier_price',
+                                  summaryType: GridSummaryType.sum,
+                                ),
+                                const GridSummaryColumn(
+                                  name: '',
+                                  columnName: 'total',
+                                  summaryType: GridSummaryType.sum,
+                                ),
+                              ],
+                            ),
+                            GridTableSummaryRow(
+                              color: UIColors.background,
+                              position: GridTableSummaryRowPosition.bottom,
+                              showSummaryInRow: false,
+                              title: 'Discount',
+                              columns: [
+                                const GridSummaryColumn(
+                                  name: '',
+                                  columnName: 'supplier_price',
+                                  summaryType: GridSummaryType.sum,
+                                ),
+                                const GridSummaryColumn(
+                                  name: '',
+                                  columnName: 'total',
+                                  summaryType: GridSummaryType.sum,
+                                ),
+                              ],
+                            ),
+                            GridTableSummaryRow(
+                              color: UIColors.background,
+                              position: GridTableSummaryRowPosition.bottom,
+                              showSummaryInRow: false,
+                              title: 'Total',
+                              columns: [
+                                const GridSummaryColumn(
+                                  name: '',
+                                  columnName: 'supplier_price',
+                                  summaryType: GridSummaryType.sum,
+                                ),
+                                const GridSummaryColumn(
+                                  name: '',
+                                  columnName: 'total',
+                                  summaryType: GridSummaryType.sum,
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        tableSummaryRows: [
-                          GridTableSummaryRow(
-                            color: UIColors.background,
-                            position: GridTableSummaryRowPosition.bottom,
-                            showSummaryInRow: false,
-                            title: 'Subtotal',
-                            columns: [
-                              const GridSummaryColumn(
-                                name: '',
-                                columnName: 'supplier_price',
-                                summaryType: GridSummaryType.sum,
-                              ),
-                              const GridSummaryColumn(
-                                name: '',
-                                columnName: 'total',
-                                summaryType: GridSummaryType.sum,
-                              ),
-                            ],
-                          ),
-                          GridTableSummaryRow(
-                            color: UIColors.background,
-                            position: GridTableSummaryRowPosition.bottom,
-                            showSummaryInRow: false,
-                            title: 'Tax',
-                            columns: [
-                              const GridSummaryColumn(
-                                name: '',
-                                columnName: 'supplier_price',
-                                summaryType: GridSummaryType.sum,
-                              ),
-                              const GridSummaryColumn(
-                                name: '',
-                                columnName: 'total',
-                                summaryType: GridSummaryType.sum,
-                              ),
-                            ],
-                          ),
-                          GridTableSummaryRow(
-                            color: UIColors.background,
-                            position: GridTableSummaryRowPosition.bottom,
-                            showSummaryInRow: false,
-                            title: 'Discount',
-                            columns: [
-                              const GridSummaryColumn(
-                                name: '',
-                                columnName: 'supplier_price',
-                                summaryType: GridSummaryType.sum,
-                              ),
-                              const GridSummaryColumn(
-                                name: '',
-                                columnName: 'total',
-                                summaryType: GridSummaryType.sum,
-                              ),
-                            ],
-                          ),
-                          GridTableSummaryRow(
-                            color: UIColors.background,
-                            position: GridTableSummaryRowPosition.bottom,
-                            showSummaryInRow: false,
-                            title: 'Total',
-                            columns: [
-                              const GridSummaryColumn(
-                                name: '',
-                                columnName: 'supplier_price',
-                                summaryType: GridSummaryType.sum,
-                              ),
-                              const GridSummaryColumn(
-                                name: '',
-                                columnName: 'total',
-                                summaryType: GridSummaryType.sum,
-                              ),
-                            ],
-                          ),
-                        ],
                       ),
                     ),
                   ),

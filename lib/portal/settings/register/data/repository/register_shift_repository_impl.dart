@@ -3,9 +3,9 @@
 // import 'package:medglobal_admin_portal/core/errors/failures.dart';
 // import 'package:medglobal_admin_portal/core/local_db/base_repository.dart';
 // import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_shift_api_service.dart';
-// import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register_shift/register_shift_mapper.dart';
+// import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register_shift/register_shift_detail_mapper.dart';
 // import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register_shift/register_shift_payload.dart';
-// import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register_shift.dart';
+// import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register_shift_detail.dart';
 // import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_shift_repository.dart';
 //
 // /// Concrete implementation of [RegisterShiftRepository] that uses [RegisterShiftApiService] for API calls

@@ -27,9 +27,9 @@ class PrintReceiptCubit extends Cubit<PrintReceiptState> {
 
       final result = await _printReceiptUseCase.call(transaction);
 
-      result.fold(
-        (failure) => emit(PrintReceiptError(failure.message)),
-        (_) => emit(PrintReceiptSuccess()),
+      result.when(
+        success: (_) => emit(PrintReceiptSuccess()),
+        failure: (failure) => emit(PrintReceiptError(failure.message)),
       );
     } catch (e) {
       emit(PrintReceiptError(e.toString()));

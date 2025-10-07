@@ -20,9 +20,9 @@ class RegisterTransactionBloc extends Bloc<RegisterTransactionEvent, RegisterTra
 
     try {
       final result = await _repository.getTransactionById(event.id);
-      result.fold(
-        (failure) => emit(RegisterTransactionState.failure(failure.message)),
-        (transaction) => emit(RegisterTransactionState.loaded(transaction)),
+      result.when(
+        success: (transaction) => emit(RegisterTransactionState.loaded(transaction)),
+        failure: (failure) => emit(RegisterTransactionState.failure(failure.message)),
       );
     } catch (e) {
       emit(RegisterTransactionState.failure(e.toString()));

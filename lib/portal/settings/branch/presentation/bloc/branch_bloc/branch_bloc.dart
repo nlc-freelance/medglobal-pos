@@ -33,9 +33,8 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
     try {
       final result = await _receiptTemplateRepository.getReceiptTemplates(const PageQuery());
 
-      result.fold(
-        (failure) => emit(BranchState.failure(failure.message)),
-        (data) {
+      result.when(
+        success: (data) {
           // Check if there's a user-defined default receipt template
           // If not, use the system default
           final userDefault = data.items.firstWhereOrNull((item) => item.isDefault);
@@ -47,6 +46,7 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
             emit(BranchState.newBranch(systemDefault));
           }
         },
+        failure: (failure) => emit(BranchState.failure(failure.message)),
       );
     } catch (e) {
       emit(BranchState.failure(e.toString()));
@@ -58,9 +58,9 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
     try {
       final result = await _branchRepository.getBranch(event.id);
 
-      result.fold(
-        (failure) => emit(BranchState.loadFailed(failure.message)),
-        (branch) => emit(BranchState.loaded(branch)),
+      result.when(
+        success: (branch) => emit(BranchState.loaded(branch)),
+        failure: (failure) => emit(BranchState.loadFailed(failure.message)),
       );
     } catch (e) {
       emit(BranchState.loadFailed(e.toString()));
@@ -73,9 +73,9 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
       final payload = BranchPayload.fromBranch(event.branch);
       final result = await _branchRepository.createBranch(payload);
 
-      result.fold(
-        (failure) => emit(BranchState.failure(failure.message)),
-        (branch) => emit(BranchState.success('${branch.name} successfully created.')),
+      result.when(
+        success: (branch) => emit(BranchState.success('${branch.name} successfully created.')),
+        failure: (failure) => emit(BranchState.failure(failure.message)),
       );
     } catch (e) {
       emit(BranchState.failure(e.toString()));
@@ -90,9 +90,9 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
 
       final result = await _branchRepository.updateBranch(branch.id!, payload);
 
-      result.fold(
-        (failure) => emit(BranchState.failure(failure.message)),
-        (branch) => emit(BranchState.success('${branch.name} successfully updated.')),
+      result.when(
+        success: (branch) => emit(BranchState.success('${branch.name} successfully updated.')),
+        failure: (failure) => emit(BranchState.failure(failure.message)),
       );
     } catch (e) {
       emit(BranchState.failure(e.toString()));
@@ -104,9 +104,9 @@ class BranchBloc extends Bloc<BranchEvent, BranchState> {
     try {
       final result = await _branchRepository.deleteBranch(event.id);
 
-      result.fold(
-        (failure) => emit(BranchState.failure('Deletion failed. ${failure.message}')),
-        (_) => emit(BranchState.success('${event.name} successfully deleted.')),
+      result.when(
+        success: (_) => emit(BranchState.success('${event.name} successfully deleted.')),
+        failure: (failure) => emit(BranchState.failure('Deletion failed. ${failure.message}')),
       );
     } catch (e) {
       emit(BranchState.failure(e.toString()));

@@ -25,14 +25,13 @@ class AccessValidationBloc extends Bloc<AccessValidationEvent, AccessValidationS
 
       BranchPartial? branch;
 
-      deviceSettings.fold(
-        (failure) => emit(AccessValidationState.failure(failure.message)),
-        (settings) => branch = settings?.branch,
+      deviceSettings.when(
+        success: (settings) => branch = settings?.branch,
+        failure: (failure) => emit(AccessValidationState.failure(failure.message)),
       );
 
-      result.fold(
-        (failure) => emit(AccessValidationState.failure(failure.message)),
-        (employee) {
+      result.when(
+        success: (employee) {
           final user = employee.toUser();
 
           if (branch == null) {
@@ -50,6 +49,7 @@ class AccessValidationBloc extends Bloc<AccessValidationEvent, AccessValidationS
             ));
           }
         },
+        failure: (failure) => emit(AccessValidationState.failure(failure.message)),
       );
     } catch (e) {
       emit(AccessValidationState.failure(e.toString()));

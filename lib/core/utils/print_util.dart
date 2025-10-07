@@ -2,11 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
-import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
-import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/receipt_configuration.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
@@ -344,7 +341,7 @@ class PrintUtil {
                 Text(order.supplier!.address, style: theme.header4),
                 SizedBox(height: 20),
                 Text('${order.branch!.name.toUpperCase()} BRANCH', style: theme.header3),
-                Text(order.branch!.address!, style: theme.header4),
+                Text(order.branch!.address ?? Strings.noValue, style: theme.header4),
                 SizedBox(height: 16),
                 SizedBox(
                   height: 40,
@@ -407,7 +404,7 @@ class PrintUtil {
                   Text('Delivery Details', style: theme.header3),
                   Divider(color: PdfColors.grey),
                   Text('${order.branch!.name.toUpperCase()} BRANCH', style: theme.header4),
-                  Text(order.branch!.address!, style: theme.header4),
+                  Text(order.branch!.address ?? Strings.noValue, style: theme.header4),
                   SizedBox(height: 20),
                   Text('Notes', style: theme.header3),
                   Divider(color: PdfColors.grey),
@@ -433,7 +430,7 @@ class PrintUtil {
                   Text('Delivery Details', style: theme.header3),
                   Divider(color: PdfColors.grey),
                   Text('${order.branch!.name.toUpperCase()} BRANCH', style: theme.header4),
-                  Text(order.branch!.address!, style: theme.header4),
+                  Text(order.branch!.address ?? Strings.noValue, style: theme.header4),
                   SizedBox(height: 30),
                   Text('Notes', style: theme.header3),
                   Divider(color: PdfColors.grey),
@@ -482,7 +479,7 @@ class PrintUtil {
                     Text('Delivery Details', style: theme.header3),
                     Divider(color: PdfColors.grey),
                     Text('${order.branch!.name.toUpperCase()} BRANCH', style: theme.header4),
-                    Text(order.branch!.address!, style: theme.header4),
+                    Text(order.branch!.address ?? Strings.noValue, style: theme.header4),
                     SizedBox(height: 30),
                     Text('Notes', style: theme.header3),
                     Divider(color: PdfColors.grey),

@@ -16,6 +16,7 @@ class PurchaseOrderHeader extends StatelessWidget {
           'New Purchase Order',
           icon: Assets.icons.add.setSize(12.0),
           onClick: () => context.goNamed('purchaseOrderCreate'),
+          // onClick: () => context.goNamed('purchaseOrderCreate'),
         ),
       ],
     );

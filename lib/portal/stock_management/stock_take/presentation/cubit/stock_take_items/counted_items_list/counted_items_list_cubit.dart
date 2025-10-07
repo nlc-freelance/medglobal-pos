@@ -24,9 +24,9 @@ class CountedItemsListCubit extends Cubit<CountedItemsListState> {
           search: search,
         ),
       );
-      result.fold(
-        (error) => emit(CountedItemsListError(message: error.message)),
-        (data) => emit(CountedItemsListLoaded(data: data, search: search)),
+      result.when(
+        success: (data) => emit(CountedItemsListLoaded(data: data, search: search)),
+        failure: (error) => emit(CountedItemsListError(message: error.message)),
       );
     } catch (e) {
       emit(CountedItemsListError(message: e.toString()));

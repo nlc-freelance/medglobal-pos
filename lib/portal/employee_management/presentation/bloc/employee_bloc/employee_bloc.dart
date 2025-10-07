@@ -22,9 +22,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     try {
       final result = await _repository.getEmployee(event.id);
 
-      result.fold(
-        (failure) => emit(EmployeeState.loadFailed(failure.message)),
-        (branch) => emit(EmployeeState.loaded(branch)),
+      result.when(
+        success: (branch) => emit(EmployeeState.loaded(branch)),
+        failure: (failure) => emit(EmployeeState.loadFailed(failure.message)),
       );
     } catch (e) {
       emit(EmployeeState.loadFailed(e.toString()));
@@ -36,9 +36,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     try {
       final result = await _repository.createEmployee(event.employee);
 
-      result.fold(
-        (failure) => emit(EmployeeState.failure(failure.message)),
-        (_) => emit(EmployeeState.success('${event.employee.name} successfully created.')),
+      result.when(
+        success: (_) => emit(EmployeeState.success('${event.employee.name} successfully created.')),
+        failure: (failure) => emit(EmployeeState.failure(failure.message)),
       );
     } catch (e) {
       emit(EmployeeState.failure(e.toString()));
@@ -50,9 +50,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     try {
       final result = await _repository.updateEmployee(event.employee);
 
-      result.fold(
-        (failure) => emit(EmployeeState.failure(failure.message)),
-        (_) => emit(EmployeeState.success('${event.employee.name} successfully updated.')),
+      result.when(
+        success: (_) => emit(EmployeeState.success('${event.employee.name} successfully updated.')),
+        failure: (failure) => emit(EmployeeState.failure(failure.message)),
       );
     } catch (e) {
       emit(EmployeeState.failure(e.toString()));
@@ -64,9 +64,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     try {
       final result = await _repository.deleteEmployee(event.employee.id);
 
-      result.fold(
-        (failure) => emit(EmployeeState.failure('Deletion failed. ${failure.message}')),
-        (_) => emit(EmployeeState.success('${event.employee.name} successfully deleted.')),
+      result.when(
+        success: (_) => emit(EmployeeState.success('${event.employee.name} successfully deleted.')),
+        failure: (failure) => emit(EmployeeState.failure('Deletion failed. ${failure.message}')),
       );
     } catch (e) {
       emit(EmployeeState.failure(e.toString()));

@@ -47,93 +47,96 @@ class _StockItemsReturnedDataGridState extends State<StockItemsReturnedDataGrid>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageSectionTitle(title: 'Items Returned'),
-        ClipRect(
-          clipper: HorizontalBorderClipper(),
-          child: SfDataGridTheme(
-            data: DataGridUtil.cellNavigationStyle,
-            child: SfDataGrid(
-              source: _stockItemsReturnedDataSource,
-              columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS_RETURNED),
-              controller: _dataGridController,
-              selectionManager: customSelectionManager,
-              shrinkWrapRows: true,
-              selectionMode: SelectionMode.single,
-              columnWidthMode: ColumnWidthMode.fill,
-              headerGridLinesVisibility: GridLinesVisibility.none,
-              tableSummaryRows: [
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Subtotal',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Tax',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Discount',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-                GridTableSummaryRow(
-                  color: UIColors.background,
-                  position: GridTableSummaryRowPosition.bottom,
-                  showSummaryInRow: false,
-                  title: 'Total',
-                  columns: [
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'supplier_price',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                    const GridSummaryColumn(
-                      name: '',
-                      columnName: 'total',
-                      summaryType: GridSummaryType.sum,
-                    ),
-                  ],
-                ),
-              ],
+        Container(
+          constraints: const BoxConstraints(maxHeight: 530),
+          child: ClipRect(
+            clipper: HorizontalBorderClipper(),
+            child: SfDataGridTheme(
+              data: DataGridUtil.cellNavigationStyle,
+              child: SfDataGrid(
+                source: _stockItemsReturnedDataSource,
+                columns: DataGridUtil.getColumns(DataGridColumn.SR_ITEMS_RETURNED),
+                controller: _dataGridController,
+                selectionManager: customSelectionManager,
+                selectionMode: SelectionMode.single,
+                columnWidthMode: ColumnWidthMode.fill,
+                headerRowHeight: 38,
+                headerGridLinesVisibility: GridLinesVisibility.none,
+                tableSummaryRows: [
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Subtotal',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Tax',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Discount',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                  GridTableSummaryRow(
+                    color: UIColors.background,
+                    position: GridTableSummaryRowPosition.bottom,
+                    showSummaryInRow: false,
+                    title: 'Total',
+                    columns: [
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'supplier_price',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                      const GridSummaryColumn(
+                        name: '',
+                        columnName: 'total',
+                        summaryType: GridSummaryType.sum,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -175,8 +178,8 @@ class StockItemsReturnedDataSource extends DataGridSource {
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: cell.columnName == 'supplier_price'
-              ? UIText.bodyRegular((cell.value as double).toStringAsFixed(3))
-              : UIText.bodyRegular(
+              ? UIText.dataGridText((cell.value as double).toStringAsFixed(3))
+              : UIText.dataGridText(
                   cell.runtimeType.toString().contains('double')
                       ? (cell.value as double).toPesoString()
                       : cell.value.toString(),
@@ -205,12 +208,10 @@ class StockItemsReturnedDataSource extends DataGridSource {
   }
 
   String summaryCellValue(BuildContext context, String summaryRowTitle, String summaryValue) {
-    if (summaryRowTitle == 'Tax') {
-      return _tax.toPesoString();
-    }
-    if (summaryRowTitle == 'Discount') {
-      return _discount.toPesoString();
-    }
-    return summaryValue.toPesoString();
+    if (summaryRowTitle == 'Subtotal') return summaryValue.toPesoString();
+    if (summaryRowTitle == 'Tax') return _tax.toPesoString();
+    if (summaryRowTitle == 'Discount') return _discount.toPesoString();
+
+    return ((summaryValue.toDouble() ?? 0) - (_discount)).toPesoString();
   }
 }

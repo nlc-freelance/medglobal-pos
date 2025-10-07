@@ -5,8 +5,6 @@ import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/domain/entities/product_history_item.dart';
-import 'package:medglobal_admin_portal/portal/reports/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/shared/report_bloc/report_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
@@ -24,7 +22,7 @@ import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/domain/entity/receipt_template.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/domain/entity/tax.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order_form/new_purchase_order_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/new_stock_return/new_stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_filter/stock_return_list_filter_cubit.dart';
@@ -67,9 +65,6 @@ class PortalApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => GetIt.I<AuthBloc>()..add(const AppInitEvent())),
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<Register>>()),
-
-        // if (AppConfig.isPortalApp) ...[
-        // Portal only
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<Category>>()),
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<Supplier>>()),
         BlocProvider(create: (_) => GetIt.I<LazyListBloc<Branch>>()),
@@ -80,24 +75,11 @@ class PortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<ReportManagerCubit>()),
         BlocProvider(create: (_) => GetIt.I<TransactionBloc>()),
         BlocProvider(create: (_) => GetIt.I<SidebarCubit>()),
-        // ],
-
-        // if (AppConfig.isPOSApp) ...[
-        //   //  POS only
-        //   BlocProvider(create: (_) => GetIt.I<SyncBloc>()..add(SyncEvent.start())),
-        //   BlocProvider(create: (_) => GetIt.I<RegisterShiftBloc>()),
-        //   BlocProvider(create: (_) => GetIt.I<ConnectivityCubit>()..monitorConnection()),
-        //   BlocProvider(create: (_) => GetIt.I<SessionBloc>()),
-        //   BlocProvider(create: (_) => GetIt.I<DeviceSetupBloc>()),
-        //   BlocProvider(create: (_) => ActiveRegisterCubit()),
-        //   BlocProvider(create: (_) => GetIt.I<UnassignedRegisterListCubit>()),
-        //   // BlocProvider(create: (_) => GetIt.I<ReceiptConfigurationBloc>()),
-        // ],
 
         /// TODOs: Add to portal only
         // Portal > Stock Management
         BlocProvider(create: (_) => GetIt.I<SupplyNeedCubit>()),
-        BlocProvider(create: (_) => GetIt.I<NewPurchaseOrderCubit>()),
+        BlocProvider(create: (_) => GetIt.I<NewPurchaseOrderFormCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnListRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnListFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnRemoteCubit>()),
@@ -110,14 +92,14 @@ class PortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<StockTransferCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewStockTransferCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockTakeListRemoteCubit>()),
-        BlocProvider(create: (_) => GetIt.I<StockTakeListFilterCubit>()),
-        BlocProvider(create: (_) => GetIt.I<StockTakeBloc>()),
+        BlocProvider(create: (_) => StockTakeListFilterCubit()),
+        // BlocProvider(create: (_) => GetIt.I<StockTakeBloc>()),
         BlocProvider(create: (_) => GetIt.I<UncountedItemsListCubit>()),
         BlocProvider(create: (_) => GetIt.I<UncountedItemsListFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<CountedItemsListCubit>()),
         BlocProvider(create: (_) => GetIt.I<CountedItemsListFilterCubit>()),
-        BlocProvider(create: (_) => GetIt.I<StockTakeCubit>()),
-        BlocProvider(create: (_) => GetIt.I<NewStockTakeCubit>()),
+        BlocProvider(create: (_) => StockTakeCubit()),
+        BlocProvider(create: (_) => NewStockTakeCubit()),
         BlocProvider(create: (_) => GetIt.I<UncountedItemsDraftCubit>()),
 
         // Portal > Transactions
@@ -145,15 +127,7 @@ class PortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<ShiftTransactionPageSizeCubit>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          // if (state is AuthenticatedState) {
-          //   if (AppConfig.isPOSApp && state.user.type == UserType.cashier) {
-          //     context.read<ActiveRegisterCubit>().loadRegister();
-          //   }
-          // }
-
-          AppRouter.router.refresh();
-        },
+        listener: (context, state) => AppRouter.router.refresh(),
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
           title: 'MedGlobal Portal',

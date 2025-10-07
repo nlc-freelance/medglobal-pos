@@ -14,7 +14,6 @@ class ProductFormState with _$ProductFormState {
   factory ProductFormState.initial() => const ProductFormState();
 
   factory ProductFormState.load(Product product) {
-    print('load here');
     return ProductFormState(
       id: product.id,
       name: product.name,

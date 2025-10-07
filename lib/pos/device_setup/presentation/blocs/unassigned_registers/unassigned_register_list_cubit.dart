@@ -21,9 +21,9 @@ class UnassignedRegisterListCubit extends Cubit<UnassignedRegisterListState> {
       final result =
           await _registerRepository.getRegisters(const PageQuery(page: 1, size: 20, extra: {'assigned': false}));
 
-      result.fold(
-        (failure) => emit(UnassignedRegisterListState.failure(failure.message)),
-        (registers) => emit(UnassignedRegisterListState.loaded(registers.items)),
+      result.when(
+        success: (registers) => emit(UnassignedRegisterListState.loaded(registers.items)),
+        failure: (failure) => emit(UnassignedRegisterListState.failure(failure.message)),
       );
     } catch (e) {
       emit(UnassignedRegisterListState.failure(e.toString()));

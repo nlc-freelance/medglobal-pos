@@ -1,57 +1,58 @@
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
+import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/payload/product_bulk_delete_payload.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/payload/product_bulk_update_payload.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/payload/product_payload.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/product_dto.dart';
 
 class ProductApi {
-  final BaseApiService _api;
+  final ApiService _api;
 
   ProductApi(this._api);
 
   Future<PaginatedList<ProductDto>> getProducts(PageQuery query) async {
-    final response = await _api.getPaginated<ProductDto>(
+    final data = await _api.getPaginated<ProductDto>(
       ApiEndpoints.products,
       queryParams: query.toJson(),
-      fromJson: ProductDto.fromJson,
+      parser: (json) => parse(json, ProductDto.fromJson),
     );
 
     return PaginatedList<ProductDto>(
-      items: response.data.items,
-      currentSize: response.data.size,
-      currentPage: response.data.page,
-      totalPages: response.data.totalPages,
-      totalCount: response.data.totalCount,
+      items: data.items,
+      currentSize: data.size,
+      currentPage: data.page,
+      totalPages: data.totalPages,
+      totalCount: data.totalCount,
     );
   }
 
   Future<ProductDto> getProductById(int id) async {
-    final response = await _api.get(
+    final data = await _api.get(
       ApiEndpoints.productById(id),
-      fromJson: ProductDto.fromJson,
+      parser: (json) => parse(json, ProductDto.fromJson),
     );
-    return response.data;
+    return data;
   }
 
   Future<ProductDto> createProduct(ProductPayload payload) async {
-    final response = await _api.post(
+    final data = await _api.post(
       ApiEndpoints.products,
       data: payload.toJson(),
-      fromJson: ProductDto.fromJson,
+      parser: (json) => parse(json, ProductDto.fromJson),
     );
 
-    return response.data;
+    return data;
   }
 
   Future<ProductDto> updateProduct(int id, ProductPayload payload) async {
-    final response = await _api.update(
+    final data = await _api.update(
       ApiEndpoints.productById(id),
       data: payload.toJson(),
-      fromJson: ProductDto.fromJson,
+      parser: (json) => parse(json, ProductDto.fromJson),
     );
-    return response.data;
+    return data;
   }
 
   Future<void> deleteProduct(int id) async {
@@ -73,13 +74,13 @@ class ProductApi {
   }
 
   Future<List<ProductDto>> getProductsBy({String? search}) async {
-    final response = await _api.getList(
+    final data = await _api.getList(
       ApiEndpoint.products(),
       queryParams: {'size': 10, 'search': search},
-      fromJson: ProductDto.fromJson,
+      parser: (json) => parse(json, ProductDto.fromJson),
     );
 
-    return response.data;
+    return data;
   }
 }
 

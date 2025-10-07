@@ -26,9 +26,8 @@ class ProductCatalogCubit extends Cubit<ProductCatalogLocalState> {
 
     try {
       final result = await _getProductCatalogUseCase.call(PageQuery(page: _currentPage, search: search));
-      result.fold(
-        (error) => emit(ProductCatalogFailure(message: error.message)),
-        (data) {
+      result.when(
+        success: (data) {
           _currentPage++;
           _products = {..._products, ...data.items};
 
@@ -37,6 +36,7 @@ class ProductCatalogCubit extends Cubit<ProductCatalogLocalState> {
             hasReachedMax: _products.length >= data.totalCount,
           ));
         },
+        failure: (error) => emit(ProductCatalogFailure(message: error.message)),
       );
     } catch (e) {
       emit(ProductCatalogFailure(message: e.toString()));

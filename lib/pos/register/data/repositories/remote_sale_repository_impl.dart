@@ -1,6 +1,5 @@
-import 'package:dartz/dartz.dart' hide Order;
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/pos/register/data/datasources/sale_remote_datasource.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/repositories/remote_sale_repository.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction/transaction_dto.dart';
@@ -12,7 +11,7 @@ class RemoteSaleRepositoryImpl extends BaseRepository implements RemoteSaleRepos
   RemoteSaleRepositoryImpl({required RemoteSaleDataSource remoteDataSource}) : _remoteDataSource = remoteDataSource;
 
   @override
-  Future<Either<Failure, Transaction>> createSale(Map<String, dynamic> payload) {
+  Future<ApiResult<Transaction>> createSale(Map<String, dynamic> payload) {
     // Future<Either<Failure, Transaction>> createSale(OrderPayload payload) {
     return call(() async {
       // final payload = OrderPayload.fromDomain(registerId, order);

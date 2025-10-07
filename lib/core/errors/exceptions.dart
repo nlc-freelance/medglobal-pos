@@ -1,17 +1,23 @@
 abstract class AppException implements Exception {
   final String message;
-  const AppException(this.message);
+  final int? code;
+
+  const AppException(this.message, {this.code});
 
   @override
   String toString() => message;
 }
 
 class ServerException extends AppException {
-  ServerException(super.message);
+  ServerException(super.message, {super.code});
+}
+
+class ClientException extends AppException {
+  ClientException(super.message, {super.code});
 }
 
 class NetworkException extends AppException {
-  NetworkException(super.message);
+  NetworkException() : super('No internet connection. Please check your network and try again.');
 }
 
 class LocalDatabaseException extends AppException {

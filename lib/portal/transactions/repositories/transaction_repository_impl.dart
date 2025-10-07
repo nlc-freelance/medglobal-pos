@@ -1,21 +1,21 @@
-import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/enums/transaction_enum.dart';
-import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/transactions/repositories/transaction_repository.dart';
-import 'package:medglobal_admin_portal/pos/transactions/data/api/transaction_api.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/datasources/transactions/transaction_api.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction/transaction_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 
+/// Concrete implementation of [TransactionRepository] that uses [TransactionApi] for API calls
+/// and [BaseRepository] to centralize error handling.
 class TransactionRepositoryImpl extends BaseRepository implements TransactionRepository {
   final TransactionApi _api;
 
   TransactionRepositoryImpl({required TransactionApi api}) : _api = api;
 
   @override
-  Future<Either<Failure, PaginatedList<Transaction>>> getTransactions({
+  Future<ApiResult<PaginatedList<Transaction>>> getTransactions({
     TransactionType? type,
     required int page,
     required int size,
@@ -61,7 +61,7 @@ class TransactionRepositoryImpl extends BaseRepository implements TransactionRep
   }
 
   @override
-  Future<Either<Failure, Transaction>> getTransactionById(int id) async {
+  Future<ApiResult<Transaction>> getTransactionById(int id) async {
     return call(() async {
       final response = await _api.getTransactionById(id);
       return response.toDomain();

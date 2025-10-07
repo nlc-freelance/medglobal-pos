@@ -38,9 +38,9 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
 
       User? userSavedLocally;
 
-      result.fold(
-        (failure) => emit(SessionState.failure(failure.message)),
-        (user) => userSavedLocally = user,
+      result.when(
+        success: (user) => userSavedLocally = user,
+        failure: (failure) => emit(SessionState.failure(failure.message)),
       );
 
       if (userSavedLocally == null) {
@@ -56,20 +56,20 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
           /// When session is not signed in anymore or when refresh token is expired, we force logout
           final authSession = await _getAuthSession.call(NoParams());
 
-          authSession.fold(
-            (failure) {
-              if (failure is ExpiredTokenFailure) {
-                emit(const SessionState.inactive());
-              } else {
-                emit(SessionState.failure(failure.message));
-              }
-            },
-            (data) {
+          authSession.when(
+            success: (data) {
               if (data.isLoggedIn == true) {
                 GetIt.I<AppSessionService>().setUser(userSavedLocally!);
                 emit(SessionState.active(userSavedLocally!));
               } else {
                 emit(const SessionState.inactive());
+              }
+            },
+            failure: (failure) {
+              if (failure is ExpiredTokenFailure) {
+                emit(const SessionState.inactive());
+              } else {
+                emit(SessionState.failure(failure.message));
               }
             },
           );
@@ -87,13 +87,13 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     try {
       final result = await _sessionRepository.saveSession(event.user);
 
-      result.fold(
-        (failure) => emit(SessionState.failure(failure.message)),
-        (_) {
+      result.when(
+        success: (_) {
           _sessionRepository.saveSession(event.user);
           GetIt.I<AppSessionService>().setUser(event.user);
           emit(SessionState.active(event.user));
         },
+        failure: (failure) => emit(SessionState.failure(failure.message)),
       );
     } catch (e) {
       emit(SessionState.failure(e.toString()));
@@ -104,9 +104,9 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
     try {
       final result = await _sessionRepository.clearSession();
 
-      result.fold(
-        (failure) => emit(SessionState.failure(failure.message)),
-        (_) => emit(const SessionState.inactive()),
+      result.when(
+        success: (_) => emit(const SessionState.inactive()),
+        failure: (failure) => emit(SessionState.failure(failure.message)),
       );
     } catch (e) {
       emit(SessionState.failure(e.toString()));

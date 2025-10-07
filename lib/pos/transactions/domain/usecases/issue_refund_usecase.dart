@@ -1,12 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/helper/branch_code.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/local_register_shift_repository.dart';
-import 'package:medglobal_admin_portal/pos/syncing/services/connectivity_service.dart';
+import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_service.dart';
 import 'package:medglobal_admin_portal/pos/syncing/sync_queue/sync_queue_repository.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/dto/refund/create_refund_dto.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/refund_item.dart';
@@ -15,6 +16,7 @@ import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refu
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund/remote_refund_repository.dart';
 import 'package:ulid/ulid.dart';
 
+// Hide offline support for refund for now
 class IssueRefundUseCase {
   final LocalRegisterShiftRepository _localRegisterShiftRepository;
   final LocalRefundRepository _local;
@@ -37,39 +39,40 @@ class IssueRefundUseCase {
         _connection = connection,
         _syncQueue = syncQueue;
 
-  Future<Either<Failure, Transaction>> call({
+  Future<ApiResult<Transaction>> call({
     required Transaction saleTransaction,
     required List<RefundItem> items,
     required String? reasonForRefund,
   }) async {
     // Validate inputs
     if (items.isEmpty) {
-      return Left(UnexpectedFailure('Add a refund quantity to at least one item to continue.'));
+      return ApiResult.failure(UnexpectedFailure('Add a refund quantity to at least one item to continue.'));
     }
 
     if (items.hasInvalidRefundQuantity()) {
-      return Left(UnexpectedFailure('Refund quantities cannot be greater than the sold quantity.'));
+      return ApiResult.failure(UnexpectedFailure('Refund quantities cannot be greater than the sold quantity.'));
     }
 
     // Load and validate session
     final session = _appContext.session;
 
     if (session == null) {
-      return Left(UserNotFoundFailure('App session not loaded.'));
+      return ApiResult.failure(UserNotFoundFailure('App session not loaded.'));
     }
 
     if (saleTransaction.branch.id != session.branchId) {
-      return Left(UnexpectedFailure('Could not issue refund. This transaction did not come from this branch.'));
+      return ApiResult.failure(
+          UnexpectedFailure('Could not issue refund. This transaction did not come from this branch.'));
     }
 
     // Check if there's an open shift
     final validateOpenShift = await _localRegisterShiftRepository.getOpenShift(session.registerId);
 
-    return validateOpenShift.fold(
-      (failure) => Left(failure),
-      (openShift) async {
+    return validateOpenShift.when(
+      success: (openShift) async {
         if (openShift == null) {
-          return Left(UnexpectedFailure('There is no open shift. Cannot issue a refund without an open shift.'));
+          return ApiResult.failure(
+              UnexpectedFailure('There is no open shift. Cannot issue a refund without an open shift.'));
         }
 
         // If there's an open shift, proceed to create the refund
@@ -107,10 +110,10 @@ class IssueRefundUseCase {
         );
 
         final result = await _remote.createRefund(payload);
-        return result.fold(
-          // If saving locally failed, return the failure immediately.
-          (failure) => Left(failure),
-          (transaction) => Right(transaction),
+
+        return result.when(
+          success: (transaction) => ApiResult.success(transaction),
+          failure: (failure) => ApiResult.failure(failure),
         );
 
         // // Save the refund locally first and get the result.
@@ -168,6 +171,7 @@ class IssueRefundUseCase {
         // },
         // );
       },
+      failure: (failure) => ApiResult.failure(failure),
     );
   }
 }

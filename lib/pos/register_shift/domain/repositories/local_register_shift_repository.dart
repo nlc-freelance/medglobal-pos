@@ -1,12 +1,14 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
-
-import '../entities/register_shift.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
+import 'package:medglobal_admin_portal/pos/register_shift/domain/entities/register_shift.dart';
 
 abstract class LocalRegisterShiftRepository {
-  Future<Either<Failure, RegisterShift>> openShift(RegisterShift shift);
-  Future<Either<Failure, RegisterShift?>> getOpenShift(int registerId);
-  Future<Either<Failure, RegisterShift>> closeShift(int shiftId, double amount);
-  Future<Either<Failure, RegisterShift?>> getLastClosedShift(int registerId);
-  Future<Either<Failure, RegisterShift>> getShiftById(int id);
+  Future<ApiResult<RegisterShift>> openShift(RegisterShift shift);
+
+  Future<ApiResult<RegisterShift?>> getOpenShift(int registerId);
+
+  Future<ApiResult<RegisterShift>> closeShift(int shiftId, double amount);
+
+  Future<ApiResult<RegisterShift?>> getLastClosedShift(int registerId);
+
+  Future<ApiResult<RegisterShift>> getShiftById(int id);
 }

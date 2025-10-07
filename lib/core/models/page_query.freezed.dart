@@ -19,7 +19,7 @@ mixin _$PageQuery {
   int get page => throw _privateConstructorUsedError;
   int get size => throw _privateConstructorUsedError;
   String? get search => throw _privateConstructorUsedError;
-  Map<String, dynamic> get extra => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get extra => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $PageQueryCopyWith<PageQuery> get copyWith =>
@@ -31,7 +31,7 @@ abstract class $PageQueryCopyWith<$Res> {
   factory $PageQueryCopyWith(PageQuery value, $Res Function(PageQuery) then) =
       _$PageQueryCopyWithImpl<$Res, PageQuery>;
   @useResult
-  $Res call({int page, int size, String? search, Map<String, dynamic> extra});
+  $Res call({int page, int size, String? search, Map<String, dynamic>? extra});
 }
 
 /// @nodoc
@@ -50,7 +50,7 @@ class _$PageQueryCopyWithImpl<$Res, $Val extends PageQuery>
     Object? page = null,
     Object? size = null,
     Object? search = freezed,
-    Object? extra = null,
+    Object? extra = freezed,
   }) {
     return _then(_value.copyWith(
       page: null == page
@@ -65,10 +65,10 @@ class _$PageQueryCopyWithImpl<$Res, $Val extends PageQuery>
           ? _value.search
           : search // ignore: cast_nullable_to_non_nullable
               as String?,
-      extra: null == extra
+      extra: freezed == extra
           ? _value.extra
           : extra // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
+              as Map<String, dynamic>?,
     ) as $Val);
   }
 }
@@ -81,7 +81,7 @@ abstract class _$$PageQueryImplCopyWith<$Res>
       __$$PageQueryImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int page, int size, String? search, Map<String, dynamic> extra});
+  $Res call({int page, int size, String? search, Map<String, dynamic>? extra});
 }
 
 /// @nodoc
@@ -98,7 +98,7 @@ class __$$PageQueryImplCopyWithImpl<$Res>
     Object? page = null,
     Object? size = null,
     Object? search = freezed,
-    Object? extra = null,
+    Object? extra = freezed,
   }) {
     return _then(_$PageQueryImpl(
       page: null == page
@@ -113,10 +113,10 @@ class __$$PageQueryImplCopyWithImpl<$Res>
           ? _value.search
           : search // ignore: cast_nullable_to_non_nullable
               as String?,
-      extra: null == extra
+      extra: freezed == extra
           ? _value._extra
           : extra // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
+              as Map<String, dynamic>?,
     ));
   }
 }
@@ -128,7 +128,7 @@ class _$PageQueryImpl implements _PageQuery {
       {this.page = 1,
       this.size = 20,
       this.search,
-      final Map<String, dynamic> extra = const {}})
+      final Map<String, dynamic>? extra})
       : _extra = extra;
 
   @override
@@ -139,13 +139,14 @@ class _$PageQueryImpl implements _PageQuery {
   final int size;
   @override
   final String? search;
-  final Map<String, dynamic> _extra;
+  final Map<String, dynamic>? _extra;
   @override
-  @JsonKey()
-  Map<String, dynamic> get extra {
+  Map<String, dynamic>? get extra {
+    final value = _extra;
+    if (value == null) return null;
     if (_extra is EqualUnmodifiableMapView) return _extra;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_extra);
+    return EqualUnmodifiableMapView(value);
   }
 
   @override
@@ -180,7 +181,7 @@ abstract class _PageQuery implements PageQuery {
       {final int page,
       final int size,
       final String? search,
-      final Map<String, dynamic> extra}) = _$PageQueryImpl;
+      final Map<String, dynamic>? extra}) = _$PageQueryImpl;
 
   @override
   int get page;
@@ -189,7 +190,7 @@ abstract class _PageQuery implements PageQuery {
   @override
   String? get search;
   @override
-  Map<String, dynamic> get extra;
+  Map<String, dynamic>? get extra;
   @override
   @JsonKey(ignore: true)
   _$$PageQueryImplCopyWith<_$PageQueryImpl> get copyWith =>

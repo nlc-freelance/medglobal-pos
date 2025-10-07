@@ -1,5 +1,4 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/core/usecases/usecase.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/entities/sales_per_category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/repositories/sales_per_category_repository.dart';
@@ -10,7 +9,7 @@ class GetSalesPerCategoryUseCase implements UseCase<List<SalesPerCategory>, GetS
   const GetSalesPerCategoryUseCase(this.repository);
 
   @override
-  Future<Either<Failure, List<SalesPerCategory>>> call(GetSalesPerCategoryParams params) =>
+  Future<ApiResult<List<SalesPerCategory>>> call(GetSalesPerCategoryParams params) =>
       repository.getSalesPerCategory(params.payload);
 }
 

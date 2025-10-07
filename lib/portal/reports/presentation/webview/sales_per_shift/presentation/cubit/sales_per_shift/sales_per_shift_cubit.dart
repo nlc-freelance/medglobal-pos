@@ -14,9 +14,9 @@ class SalesPerShiftCubit extends Cubit<SalesPerShiftState> {
 
     try {
       final result = await _getSalesPerShiftByIdUseCase.call(GetSalesPerShiftByIdParams(id));
-      result.fold(
-        (error) => emit(SalesPerShiftError(message: error.message)),
-        (data) => emit(SalesPerShiftLoaded(salesPerShift: data)),
+      result.when(
+        success: (data) => emit(SalesPerShiftLoaded(salesPerShift: data)),
+        failure: (error) => emit(SalesPerShiftError(message: error.message)),
       );
     } catch (e) {
       emit(SalesPerShiftError(message: e.toString()));

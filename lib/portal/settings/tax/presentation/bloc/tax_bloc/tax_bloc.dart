@@ -24,9 +24,9 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
     try {
       final result = await _repository.getDefaultTaxCode();
 
-      result.fold(
-        (failure) => emit(TaxState.failure(failure.message)),
-        (defaultTax) => emit(TaxState.hasExistingDefault(defaultTax)),
+      result.when(
+        success: (defaultTax) => emit(TaxState.hasExistingDefault(defaultTax)),
+        failure: (failure) => emit(TaxState.failure(failure.message)),
       );
     } catch (e) {
       emit(TaxState.failure(e.toString()));
@@ -39,9 +39,9 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
       final payload = TaxPayload.fromTax(event.tax);
       final result = await _repository.createTaxCode(payload);
 
-      result.fold(
-        (failure) => emit(TaxState.failure(failure.message)),
-        (tax) => emit(TaxState.success('${tax.code} successfully created.')),
+      result.when(
+        success: (tax) => emit(TaxState.success('${tax.code} successfully created.')),
+        failure: (failure) => emit(TaxState.failure(failure.message)),
       );
     } catch (e) {
       emit(TaxState.failure(e.toString()));
@@ -54,9 +54,9 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
       final payload = TaxPayload.fromTax(event.tax);
       final result = await _repository.updateTaxCode(event.id, payload);
 
-      result.fold(
-        (failure) => emit(TaxState.failure(failure.message)),
-        (tax) => emit(TaxState.success('${tax.code} successfully updated.')),
+      result.when(
+        success: (tax) => emit(TaxState.success('${tax.code} successfully updated.')),
+        failure: (failure) => emit(TaxState.failure(failure.message)),
       );
     } catch (e) {
       emit(TaxState.failure(e.toString()));
@@ -68,9 +68,9 @@ class TaxBloc extends Bloc<TaxEvent, TaxState> {
     try {
       final result = await _repository.deleteTaxCode(event.id);
 
-      result.fold(
-        (failure) => emit(TaxState.failure(failure.message)),
-        (_) => emit(TaxState.deleted('${event.tax.code} successfully deleted.')),
+      result.when(
+        success: (_) => emit(TaxState.deleted('${event.tax.code} successfully deleted.')),
+        failure: (failure) => emit(TaxState.failure(failure.message)),
       );
     } catch (e) {
       emit(TaxState.failure(e.toString()));

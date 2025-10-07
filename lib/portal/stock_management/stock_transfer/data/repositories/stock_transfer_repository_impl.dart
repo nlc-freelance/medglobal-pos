@@ -1,48 +1,37 @@
-import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/enums/enums.dart';
-import 'package:medglobal_admin_portal/core/errors/errors.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/data/api/stock_transfer_api.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/new_stock_transfer.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/repositories/stock_transfer_repository.dart';
 
-class StockTransferRepositoryImpl implements StockTransferRepository {
-  final StockTransferApi _stockTransferApi;
+/// Concrete implementation of [StockTransferRepository] that uses [StockTransferApi] for API calls
+/// and [BaseRepository] to centralize error handling.
+class StockTransferRepositoryImpl extends BaseRepository implements StockTransferRepository {
+  final StockTransferApi _api;
 
-  StockTransferRepositoryImpl(this._stockTransferApi);
+  StockTransferRepositoryImpl(this._api);
 
   @override
-  Future<Either<Failure, StockTransfer>> create(NewStockTransfer payload) async {
-    try {
-      final response = await _stockTransferApi.create(payload);
-      return Right(response.toEntity());
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+  Future<ApiResult<StockTransfer>> create(NewStockTransfer payload) {
+    return call(() async {
+      final response = await _api.create(payload);
+      return response.toEntity();
+    });
   }
 
   @override
-  Future<Either<Failure, StockTransfer>> getStockTransferById(int id) async {
-    try {
-      final response = await _stockTransferApi.getStockTransferById(id);
-      return Right(response.toEntity());
-      // } on DioException catch (e) {
-      //   return Left(ServerFailure(e.message!));
-      // }
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on UnexpectedException catch (e) {
-      return Left(UnexpectedFailure(e.message));
-    } catch (e) {
-      return Left(UnexpectedFailure(e.toString()));
-    }
+  Future<ApiResult<StockTransfer>> getStockTransferById(int id) {
+    return call(() async {
+      final response = await _api.getStockTransferById(id);
+      return response.toEntity();
+    });
   }
 
   @override
-  Future<Either<Failure, StockTransferPaginatedList>> getStockTransfers({
+  Future<ApiResult<StockTransferPaginatedList>> getStockTransfers({
     required int page,
     required int size,
     StockOrderStatus? status,
@@ -50,9 +39,9 @@ class StockTransferRepositoryImpl implements StockTransferRepository {
     int? destinationBranchId,
     String? startDate,
     String? endDate,
-  }) async {
-    try {
-      final response = await _stockTransferApi.getStockTransfers(
+  }) {
+    return call(() async {
+      final response = await _api.getStockTransfers(
         page: page,
         size: size,
         status: status,
@@ -61,29 +50,26 @@ class StockTransferRepositoryImpl implements StockTransferRepository {
         startDate: startDate,
         endDate: endDate,
       );
-      return Right(response);
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+      return response;
+    });
   }
 
   @override
-  Future<Either<Failure, StockTransfer>> update(StockOrderUpdate type,
-      {required int id, required StockTransfer stockTransfer}) async {
-    try {
-      final response = await _stockTransferApi.update(type, id: id, stockTransfer: stockTransfer);
-      return Right(response.toEntity());
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+  Future<ApiResult<StockTransfer>> update(
+    StockOrderUpdate type, {
+    required int id,
+    required StockTransfer stockTransfer,
+  }) {
+    return call(() async {
+      final response = await _api.update(type, id: id, stockTransfer: stockTransfer);
+      return response.toEntity();
+    });
   }
 
   @override
-  Future<Either<Failure, void>> delete(int id) async {
-    try {
-      return Right(await _stockTransferApi.delete(id));
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+  Future<ApiResult<void>> delete(int id) {
+    return call(() async {
+      return await _api.delete(id);
+    });
   }
 }

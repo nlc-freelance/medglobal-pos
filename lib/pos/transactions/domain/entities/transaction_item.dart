@@ -257,9 +257,9 @@ class TransactionItem with _$TransactionItem {
           DataGridCell<String>(columnName: 'name', value: name),
           DataGridCell<String>(columnName: 'sku', value: sku),
           DataGridCell<int>(columnName: 'return_qty', value: quantity),
-          DataGridCell<int>(columnName: 'write_off_qty', value: writeOffQty ?? 0),
-          DataGridCell<int>(columnName: 'restock_qty', value: restockQty ?? 0),
-          DataGridCell<String>(columnName: 'comment', value: comment ?? Strings.empty),
+          DataGridCell<int>(columnName: 'write_off_qty', value: writeOffQty),
+          DataGridCell<int>(columnName: 'restock_qty', value: restockQty),
+          DataGridCell<String>(columnName: 'comment', value: comment),
         ],
       );
 

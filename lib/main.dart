@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/di/di_portal.dart';
+import 'package:medglobal_admin_portal/core/di/di_pos.dart';
 import 'package:medglobal_admin_portal/portal_app.dart';
 import 'package:medglobal_admin_portal/pos_app.dart';
 import 'package:path_provider/path_provider.dart';
@@ -28,10 +30,10 @@ Future<void> main() async {
     usePathUrlStrategy();
 
     // Initializes Portal dependencies
-    initDependencyInjection();
+    initPortalDependencies();
   } else {
     // Initializes POS dependencies
-    initDesktopDependencies();
+    initPosDependencies();
 
     // Initialize the window manager
     await windowManager.ensureInitialized();

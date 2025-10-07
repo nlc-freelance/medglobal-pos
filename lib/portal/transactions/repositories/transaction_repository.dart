@@ -1,18 +1,18 @@
-import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 
 abstract class TransactionRepository {
   // /// Retrieves a list of transactions from the branch the current user is assigned to.
-  // Future<Either<Failure, PaginatedList<Transaction>>> getBranchTransactions({
+  // Future<ApiResult<PaginatedList<Transaction>>> getBranchTransactions({
   //   required int page,
   //   required int size,
   //   String? search,
   // });
 
   /// Retrieves a list of all transactions based on given parameters
-  Future<Either<Failure, PaginatedList<Transaction>>> getTransactions({
+  Future<ApiResult<PaginatedList<Transaction>>> getTransactions({
     TransactionType? type,
     required int page,
     required int size,
@@ -25,5 +25,5 @@ abstract class TransactionRepository {
   });
 
   /// Retrieves a single transaction by given ID
-  Future<Either<Failure, Transaction>> getTransactionById(int id);
+  Future<ApiResult<Transaction>> getTransactionById(int id);
 }

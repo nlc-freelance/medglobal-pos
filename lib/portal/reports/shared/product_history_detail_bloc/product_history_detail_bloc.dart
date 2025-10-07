@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/repositories/stock_return_repository.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/repositories/stock_take_repository.dart';
@@ -34,15 +34,13 @@ class ProductHistoryDetailBloc extends Bloc<ProductHistoryDetailEvent, ProductHi
     on<_GetDetailsById>(_onGetDetails);
   }
 
-  Future<Either<Failure, dynamic>> _castResult(Either<Failure, dynamic> result) async {
-    return result.map((res) => res as dynamic);
-  }
+  Future<ApiResult<dynamic>> _castResult(ApiResult<dynamic> result) async => result;
 
   Future<void> _onGetDetails(_GetDetailsById event, Emitter<ProductHistoryDetailState> emit) async {
     emit(const ProductHistoryDetailState.loading());
 
     try {
-      final Map<ProductHistoryAction, Future<Either<Failure, dynamic>> Function(int)> getterMap = {
+      final Map<ProductHistoryAction, Future<ApiResult<dynamic>> Function(int)> getterMap = {
         ProductHistoryAction.PURCHASE: (id) async {
           return _purchaseOrderRepository.getPurchaseOrderById(id).then(_castResult);
         },
@@ -68,11 +66,9 @@ class ProductHistoryDetailBloc extends Bloc<ProductHistoryDetailEvent, ProductHi
       }
 
       final result = await getByIdFn(event.id);
-      result.fold(
-        (failure) {
-          emit(ProductHistoryDetailState.failure(failure.message));
-        },
-        (data) => emit(ProductHistoryDetailState.loaded(data, event.action)),
+      result.map(
+        success: (data) => emit(ProductHistoryDetailState.loaded(data, event.action)),
+        failure: (failure) => emit(ProductHistoryDetailState.failure(failure.failure.message)),
       );
     } catch (e) {
       emit(ProductHistoryDetailState.failure(e.toString()));

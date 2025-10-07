@@ -23,7 +23,7 @@ class SupplierListPage extends StatelessWidget {
         BlocProvider(
           create: (context) => GetIt.I<PaginatedListBloc<Supplier>>()..add(const PaginatedListEvent<Supplier>.fetch()),
         ),
-        BlocProvider(create: (_) => GetIt.I<SupplierListFilterCubit>()),
+        BlocProvider(create: (_) => SupplierListFilterCubit()),
         BlocProvider(create: (context) => GetIt.I<SupplierBloc>()),
         // TODO: Create SupplierFormCubit
       ],

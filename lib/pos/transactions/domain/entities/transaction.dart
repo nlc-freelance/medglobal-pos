@@ -341,7 +341,7 @@ class Transaction with _$Transaction {
             value: DateFormat('MM/dd/yyyy HH:mm').format(createdAt),
           ),
           DataGridCell<String>(columnName: 'branch', value: branch.name),
-          DataGridCell<String>(columnName: 'register_id', value: (register.id).toString()),
+          DataGridCell<String>(columnName: 'register', value: register.name),
           DataGridCell<String>(columnName: 'employee', value: '${employee.firstName} ${employee.lastName}'),
           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
           DataGridCell<double>(columnName: 'total_discount', value: totalDiscountAmount ?? 0),

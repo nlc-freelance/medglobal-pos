@@ -24,9 +24,9 @@ class UncountedItemsListCubit extends Cubit<UncountedItemsListState> {
           search: search,
         ),
       );
-      result.fold(
-        (error) => emit(UncountedItemsListError(message: error.message)),
-        (data) => emit(UncountedItemsListLoaded(data: data, search: search)),
+      result.when(
+        success: (data) => emit(UncountedItemsListLoaded(data: data, search: search)),
+        failure: (error) => emit(UncountedItemsListError(message: error.message)),
       );
     } catch (e) {
       emit(UncountedItemsListError(message: e.toString()));

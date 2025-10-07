@@ -23,9 +23,9 @@ class ReceiptTemplateBloc extends Bloc<ReceiptTemplateEvent, ReceiptTemplateStat
     try {
       final result = await _repository.getReceiptTemplate(event.id);
 
-      result.fold(
-        (failure) => emit(ReceiptTemplateState.loadFailed(failure.message)),
-        (template) => emit(ReceiptTemplateState.loaded(template)),
+      result.when(
+        success: (template) => emit(ReceiptTemplateState.loaded(template)),
+        failure: (failure) => emit(ReceiptTemplateState.loadFailed(failure.message)),
       );
     } catch (e) {
       emit(ReceiptTemplateState.loadFailed(e.toString()));
@@ -38,9 +38,9 @@ class ReceiptTemplateBloc extends Bloc<ReceiptTemplateEvent, ReceiptTemplateStat
       final payload = ReceiptTemplatePayload.fromReceiptTemplate(event.template);
       final result = await _repository.createReceiptTemplate(payload);
 
-      result.fold(
-        (failure) => emit(ReceiptTemplateState.failure(failure.message)),
-        (template) => emit(ReceiptTemplateState.success('${template.name} successfully created.')),
+      result.when(
+        success: (template) => emit(ReceiptTemplateState.success('${template.name} successfully created.')),
+        failure: (failure) => emit(ReceiptTemplateState.failure(failure.message)),
       );
     } catch (e) {
       emit(ReceiptTemplateState.failure(e.toString()));
@@ -55,9 +55,9 @@ class ReceiptTemplateBloc extends Bloc<ReceiptTemplateEvent, ReceiptTemplateStat
 
       final result = await _repository.updateReceiptTemplate(template.id!, payload);
 
-      result.fold(
-        (failure) => emit(ReceiptTemplateState.failure(failure.message)),
-        (template) => emit(ReceiptTemplateState.success('${template.name} successfully updated.')),
+      result.when(
+        success: (template) => emit(ReceiptTemplateState.success('${template.name} successfully updated.')),
+        failure: (failure) => emit(ReceiptTemplateState.failure(failure.message)),
       );
     } catch (e) {
       emit(ReceiptTemplateState.failure(e.toString()));
@@ -71,9 +71,9 @@ class ReceiptTemplateBloc extends Bloc<ReceiptTemplateEvent, ReceiptTemplateStat
 
       final result = await _repository.deleteReceiptTemplate(template.id!);
 
-      result.fold(
-        (failure) => emit(ReceiptTemplateState.failure(failure.message)),
-        (_) => emit(ReceiptTemplateState.success('${template.name} successfully deleted.')),
+      result.when(
+        success: (_) => emit(ReceiptTemplateState.success('${template.name} successfully deleted.')),
+        failure: (failure) => emit(ReceiptTemplateState.failure(failure.message)),
       );
     } catch (e) {
       emit(ReceiptTemplateState.failure(e.toString()));

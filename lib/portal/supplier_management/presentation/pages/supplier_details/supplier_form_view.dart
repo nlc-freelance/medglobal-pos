@@ -7,6 +7,7 @@ import 'package:medglobal_admin_portal/portal/supplier_management/presentation/p
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_details/widgets/address_information.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_details/widgets/contact_information.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_details/widgets/supplier_actions.dart';
+import 'package:medglobal_shared/widgets/ui_spacer.dart';
 
 class SupplierFormView extends StatefulWidget {
   // const SupplierFormView(this.dialogContext, {super.key});
@@ -97,23 +98,32 @@ class _SupplierFormViewState extends State<SupplierFormView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            GeneralInformation(isSupplierNew, supplierNameController: _supplierNameController),
-            ContactInformation(
-              mainContactNameController: _mainContactNameController,
-              faxController: _faxController,
-              emailController: _emailController,
-              websiteController: _websiteController,
-              phoneController: _phoneController,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GeneralInformation(isSupplierNew, supplierNameController: _supplierNameController),
+                    ContactInformation(
+                      mainContactNameController: _mainContactNameController,
+                      faxController: _faxController,
+                      emailController: _emailController,
+                      websiteController: _websiteController,
+                      phoneController: _phoneController,
+                    ),
+                    AddressInformation(
+                      address1Controller: _address1Controller,
+                      address2Controller: _address2Controller,
+                      cityController: _cityController,
+                      provinceController: _provinceController,
+                      postalCodeController: _postalCodeController,
+                      countryController: _countryController,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            AddressInformation(
-              address1Controller: _address1Controller,
-              address2Controller: _address2Controller,
-              cityController: _cityController,
-              provinceController: _provinceController,
-              postalCodeController: _postalCodeController,
-              countryController: _countryController,
-            ),
-            const Spacer(),
+            const UIVerticalSpace(24),
             SupplierActions(
               isSupplierExisting: isSupplierExisting,
               isSupplierValid: isSupplierValid,

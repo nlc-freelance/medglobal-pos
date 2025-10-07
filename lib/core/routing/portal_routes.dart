@@ -18,7 +18,7 @@ import 'package:medglobal_admin_portal/portal/product_management/presentation/cu
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_form/product_form_page.dart';
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/product_list_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list_bloc/product_performance_list_bloc.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list/product_performance_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/product_performance_list_page.dart';
 import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
@@ -47,12 +47,18 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/p
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/new/new_stock_return_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stock_return_details_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_list/stock_returns_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_details/stock_take_details_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/stock_takes_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stepper/new/new_stock_transfer_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stock_transfer_details_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfers_page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/pages/supply_needs_page.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list_filter/supplier_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/supplier_list_page.dart';
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/pages/return_transaction_details/return_transaction_details_page.dart';
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/pages/return_transaction_list/returns_page.dart';
@@ -178,33 +184,18 @@ final ShellRoute portalRoutes = ShellRoute(
       path: '/stocks',
       builder: (context, state) => const SizedBox(),
       routes: [
-        GoRoute(
-          path: 'supply-needs',
-          name: 'supplyNeedList',
-          pageBuilder: (context, state) => const NoTransitionPage(child: SupplyNeedListPage()),
-        ),
+        // GoRoute(
+        //   path: 'supply-needs',
+        //   name: 'supplyNeedList',
+        //   pageBuilder: (context, state) => const NoTransitionPage(child: SupplyNeedListPage()),
+        // ),
         ShellRoute(
           pageBuilder: (context, state, child) => NoTransitionPage(
             child: MultiBlocProvider(
               providers: [
-                BlocProvider(
-                  create: (context) => GetIt.I<PaginatedListBloc<PurchaseOrder>>()
-                    ..add(
-                      const PaginatedListEvent<PurchaseOrder>.fetch(),
-                    ),
-                ),
+                BlocProvider(create: (context) => GetIt.I<PaginatedListBloc<PurchaseOrder>>()),
                 BlocProvider(create: (context) => PurchaseOrderListFilterCubit()),
                 BlocProvider(create: (context) => PurchaseOrderFormCubit()),
-                BlocProvider(create: (context) => GetIt.I<PurchaseOrderBloc>()),
-
-                // BlocProvider(
-                //   create: (context) => GetIt.I<PaginatedListBloc<Product>>()
-                //     ..add(
-                //       const PaginatedListEvent<Product>.fetch(),
-                //     ),
-                // ),
-                // BlocProvider(create: (context) => GetIt.I<ProductBulkBloc>()),
-                // BlocProvider(create: (context) => ProductListFilterCubit()),
               ],
               child: child,
             ),
@@ -218,7 +209,7 @@ final ShellRoute portalRoutes = ShellRoute(
                 GoRoute(
                   path: 'new',
                   name: 'purchaseOrderCreate',
-                  pageBuilder: (context, state) => const NoTransitionPage(child: NewPurchaseOrderPage()),
+                  pageBuilder: (context, state) => const NoTransitionPage(child: PurchaseOrderDetailsPage()),
                 ),
                 GoRoute(
                   path: ':id',
@@ -252,41 +243,57 @@ final ShellRoute portalRoutes = ShellRoute(
             ),
           ],
         ),
-        GoRoute(
-          path: 'stock-takes',
-          name: 'stockTakeList',
-          pageBuilder: (context, state) => const NoTransitionPage(child: StockTakeListPage()),
+        ShellRoute(
+          pageBuilder: (context, state, child) => NoTransitionPage(
+            child: MultiBlocProvider(
+              providers: [
+                // BlocProvider(create: (context) => GetIt.I<PaginatedListBloc<StockTake>>()),
+                // BlocProvider(create: (context) => StockTakeListFilterCubit()),
+                // BlocProvider(create: (context) => NewStockTakeCubit()),
+                BlocProvider(create: (context) => GetIt.I<StockTakeBloc>()),
+              ],
+              child: child,
+            ),
+          ),
           routes: [
             GoRoute(
-              path: ':id',
-              name: 'stockTakeDetails',
-              pageBuilder: (context, state) {
-                final id = state.pathParameters['id']!;
-                return NoTransitionPage(child: StockTakeDetailsPage(id: id));
-              },
+              path: 'stock-takes',
+              name: 'stockTakeList',
+              pageBuilder: (context, state) => const NoTransitionPage(child: StockTakeListPage()),
+              routes: [
+                GoRoute(
+                  path: ':id',
+                  name: 'stockTakeDetails',
+                  pageBuilder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    return NoTransitionPage(child: StockTakeDetailsPage(id: id));
+                  },
+                ),
+              ],
             ),
           ],
         ),
-        GoRoute(
-          path: 'stock-transfers',
-          name: 'stockTransferList',
-          pageBuilder: (context, state) => const NoTransitionPage(child: StockTransferListPage()),
-          routes: [
-            GoRoute(
-              path: 'new',
-              name: 'stockTransferCreate',
-              pageBuilder: (context, state) => const NoTransitionPage(child: NewStockTransferPage()),
-            ),
-            GoRoute(
-              path: ':id',
-              name: 'stockTransferDetails',
-              pageBuilder: (context, state) {
-                final id = state.pathParameters['id']!;
-                return NoTransitionPage(child: StockTransferDetailsPage(id: id));
-              },
-            ),
-          ],
-        ),
+
+        // GoRoute(
+        //   path: 'stock-transfers',
+        //   name: 'stockTransferList',
+        //   pageBuilder: (context, state) => const NoTransitionPage(child: StockTransferListPage()),
+        //   routes: [
+        //     GoRoute(
+        //       path: 'new',
+        //       name: 'stockTransferCreate',
+        //       pageBuilder: (context, state) => const NoTransitionPage(child: NewStockTransferPage()),
+        //     ),
+        //     GoRoute(
+        //       path: ':id',
+        //       name: 'stockTransferDetails',
+        //       pageBuilder: (context, state) {
+        //         final id = state.pathParameters['id']!;
+        //         return NoTransitionPage(child: StockTransferDetailsPage(id: id));
+        //       },
+        //     ),
+        //   ],
+        // ),
       ],
     ),
 
@@ -372,29 +379,6 @@ final ShellRoute portalRoutes = ShellRoute(
                 )
               ],
             ),
-            // GoRoute(
-            //   path: 'product-history',
-            //   name: 'productHistoryReport',
-            //   pageBuilder: (context, state) => const NoTransitionPage(child: ProductHistoryPage()),
-            // ),
-            // GoRoute(
-            //   path: 'product-sales-history',
-            //   name: 'productSalesHistoryReport',
-            //   pageBuilder: (context, state) => NoTransitionPage(
-            //     child: MultiBlocProvider(
-            //       providers: [
-            //         BlocProvider(create: (context) => GetIt.I<ProductSalesHistoryBloc>()),
-            //         BlocProvider(create: (context) => ProductSalesHistoryFilterCubit()),
-            //       ],
-            //       child: const ProductSalesHistoryPage(),
-            //     ),
-            //   ),
-            // ),
-            // GoRoute(
-            //   path: 'product-performance',
-            //   name: 'productPerformanceReports',
-            //   pageBuilder: (context, state) => const NoTransitionPage(child: ProductPerformanceListPage()),
-            // ),
             GoRoute(
               path: 'sales',
               builder: (context, state) => const SizedBox(),
@@ -429,39 +413,39 @@ final ShellRoute portalRoutes = ShellRoute(
     /// Employee
     ///
 
-    ShellRoute(
-      pageBuilder: (context, state, child) => NoTransitionPage(
-        child: BlocProvider(
-          create: (context) => GetIt.I<PaginatedListBloc<Employee>>()
-            ..add(
-              const PaginatedListEvent<Employee>.fetch(),
-            ),
-          child: child,
-        ),
-      ),
-      routes: [
-        GoRoute(
-          path: '/employees',
-          name: 'employeeList',
-          pageBuilder: (context, state) => const NoTransitionPage(child: EmployeeListPage()),
-          routes: [
-            GoRoute(
-              path: 'new',
-              name: 'employeeCreate',
-              pageBuilder: (context, state) => const NoTransitionPage(child: EmployeeFormPage()),
-            ),
-            GoRoute(
-              path: ':id',
-              name: 'employeeDetails',
-              pageBuilder: (context, state) {
-                final id = state.pathParameters['id'];
-                return NoTransitionPage(child: EmployeeFormPage(id: id));
-              },
-            ),
-          ],
-        ),
-      ],
-    ),
+    // ShellRoute(
+    //   pageBuilder: (context, state, child) => NoTransitionPage(
+    //     child: BlocProvider(
+    //       create: (context) => GetIt.I<PaginatedListBloc<Employee>>()
+    //         ..add(
+    //           const PaginatedListEvent<Employee>.fetch(),
+    //         ),
+    //       child: child,
+    //     ),
+    //   ),
+    //   routes: [
+    //     GoRoute(
+    //       path: '/employees',
+    //       name: 'employeeList',
+    //       pageBuilder: (context, state) => const NoTransitionPage(child: EmployeeListPage()),
+    //       routes: [
+    //         GoRoute(
+    //           path: 'new',
+    //           name: 'employeeCreate',
+    //           pageBuilder: (context, state) => const NoTransitionPage(child: EmployeeFormPage()),
+    //         ),
+    //         GoRoute(
+    //           path: ':id',
+    //           name: 'employeeDetails',
+    //           pageBuilder: (context, state) {
+    //             final id = state.pathParameters['id'];
+    //             return NoTransitionPage(child: EmployeeFormPage(id: id));
+    //           },
+    //         ),
+    //       ],
+    //     ),
+    //   ],
+    // ),
 
     /// Settings
     ///

@@ -1,7 +1,6 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/api/receipt_template_api_service.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/receipt_template_mapper.dart';
 import 'package:medglobal_admin_portal/portal/settings/receipt_template/data/dto/receipt_template_payload.dart';
@@ -16,7 +15,7 @@ class ReceiptTemplateRepositoryImpl extends BaseRepository implements ReceiptTem
   ReceiptTemplateRepositoryImpl({required ReceiptTemplateApiService api}) : _api = api;
 
   @override
-  Future<Either<Failure, PaginatedList<ReceiptTemplate>>> getReceiptTemplates(PageQuery query) async {
+  Future<ApiResult<PaginatedList<ReceiptTemplate>>> getReceiptTemplates(PageQuery query) async {
     return call(() async {
       final data = await _api.getReceiptTemplates(query);
       final paginatedReceiptTemplates = data.convert((dto) => ReceiptTemplateMapper.fromDto(dto));
@@ -26,7 +25,7 @@ class ReceiptTemplateRepositoryImpl extends BaseRepository implements ReceiptTem
   }
 
   @override
-  Future<Either<Failure, ReceiptTemplate>> getReceiptTemplate(int id) async {
+  Future<ApiResult<ReceiptTemplate>> getReceiptTemplate(int id) async {
     return call(() async {
       final data = await _api.getReceiptTemplateById(id);
       return ReceiptTemplateMapper.fromDto(data);
@@ -34,7 +33,7 @@ class ReceiptTemplateRepositoryImpl extends BaseRepository implements ReceiptTem
   }
 
   @override
-  Future<Either<Failure, ReceiptTemplate>> createReceiptTemplate(ReceiptTemplatePayload payload) async {
+  Future<ApiResult<ReceiptTemplate>> createReceiptTemplate(ReceiptTemplatePayload payload) async {
     return call(() async {
       final data = await _api.createReceiptTemplate(payload);
       return ReceiptTemplateMapper.fromDto(data);
@@ -42,7 +41,7 @@ class ReceiptTemplateRepositoryImpl extends BaseRepository implements ReceiptTem
   }
 
   @override
-  Future<Either<Failure, ReceiptTemplate>> updateReceiptTemplate(int id, ReceiptTemplatePayload payload) async {
+  Future<ApiResult<ReceiptTemplate>> updateReceiptTemplate(int id, ReceiptTemplatePayload payload) async {
     return call(() async {
       final data = await _api.updateReceiptTemplate(id, payload);
       return ReceiptTemplateMapper.fromDto(data);
@@ -50,7 +49,7 @@ class ReceiptTemplateRepositoryImpl extends BaseRepository implements ReceiptTem
   }
 
   @override
-  Future<Either<Failure, void>> deleteReceiptTemplate(int id) async {
+  Future<ApiResult<void>> deleteReceiptTemplate(int id) async {
     return call(() async => await _api.deleteReceiptTemplate(id));
   }
 }

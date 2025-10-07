@@ -47,16 +47,16 @@ class SyncService {
     switch (tableName) {
       case 'transactions':
         final result = await _saleRemoteRepo.createSale(payload);
-        result.fold(
-          (failure) => throw (SyncException(failure.message)),
-          (_) => null,
+        result.when(
+          success: (_) => null,
+          failure: (failure) => throw (SyncException(failure.message)),
         );
         break;
       case 'registerShifts':
         final result = await _registerShiftRemoteRepo.sendShift(payload);
-        result.fold(
-          (failure) => throw (SyncException(failure.message)),
-          (_) => null,
+        result.when(
+          success: (_) => null,
+          failure: (failure) => throw (SyncException(failure.message)),
         );
         break;
     }
@@ -76,9 +76,9 @@ class SyncService {
                 ? await GetIt.I<InitialFetchProductsUseCase>().call()
                 : await GetIt.I<DeltaSyncProductsUseCase>().call(catalogLastSyncedAt);
 
-            result.fold(
-              (failure) => throw SyncException(failure.message),
-              (_) {},
+            result.when(
+              success: (_) {},
+              failure: (failure) => throw SyncException(failure.message),
             );
             break;
           case 'receiptConfig':
@@ -94,9 +94,9 @@ class SyncService {
               lastSynced: lastSyncedTime?.millisecondsSinceEpoch,
             );
 
-            result.fold(
-              (failure) => throw SyncException(failure.message),
-              (_) {},
+            result.when(
+              success: (_) {},
+              failure: (failure) => throw SyncException(failure.message),
             );
         }
       }

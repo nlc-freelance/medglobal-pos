@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/refund_item.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund/remote_refund_repository.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/usecases/issue_refund_usecase.dart';
 
@@ -23,24 +22,14 @@ class RefundBloc extends Bloc<RefundEvent, RefundState> {
     emit(const RefundState.processing());
 
     try {
-      // final result = await _repository.createRefund(
-      //   registerId: event.registerId,
-      //   saleId: event.saleId,
-      //   items: event.items,
-      //   reasonForRefund: event.reasonForRefund,
-      // );
-      // result.fold(
-      //   (error) => emit(RefundState.failure(error.message)),
-      //   (refund) => emit(RefundState.success(refund)),
-      // );
       final result = await _issueRefundUseCase.call(
         saleTransaction: event.saleTransaction,
         items: event.items,
         reasonForRefund: event.reasonForRefund,
       );
-      result.fold(
-        (error) => emit(RefundState.failure(error.message)),
-        (refund) => emit(RefundState.success(refund)),
+      result.when(
+        success: (refund) => emit(RefundState.success(refund)),
+        failure: (error) => emit(RefundState.failure(error.message)),
       );
     } catch (e) {
       emit(RefundState.failure(e.toString()));

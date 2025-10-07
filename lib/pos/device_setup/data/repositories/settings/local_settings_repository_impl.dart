@@ -1,8 +1,7 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/device_settings.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/domain/repositories/settings/local_settings_repository.dart';
@@ -16,28 +15,28 @@ class LocalSettingsRepositoryImpl extends BaseRepository implements LocalSetting
   LocalSettingsRepositoryImpl({required SettingsDao dao}) : _dao = dao;
 
   @override
-  Future<Either<Failure, void>> saveRegister(Register register) {
+  Future<ApiResult<void>> saveRegister(Register register) {
     return call(() async {
       return await _dao.upsertRegisterAndBranch(register);
     });
   }
 
   @override
-  Future<Either<Failure, void>> savePrinter(String name) {
+  Future<ApiResult<void>> savePrinter(String name) {
     return call(() async {
       return await _dao.upsertPrinter(name);
     });
   }
 
   @override
-  Future<Either<Failure, void>> saveReceiptConfig(ReceiptConfiguration config) {
+  Future<ApiResult<void>> saveReceiptConfig(ReceiptConfiguration config) {
     return call(() async {
       return await _dao.upsertReceiptConfig(config);
     });
   }
 
   @override
-  Future<Either<Failure, DeviceSettings?>> getSettings() {
+  Future<ApiResult<DeviceSettings?>> getSettings() {
     return call(() async {
       final settings = await _dao.getSettings();
       if (settings == null) return null;

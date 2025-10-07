@@ -24,9 +24,9 @@ class ProductSalesHistoryBloc extends Bloc<ProductSalesHistoryEvent, ProductSale
     try {
       final result = await _repository.getProductSaleHistory(event.variantId, event.query);
 
-      result.fold(
-        (failure) => emit(ProductSalesHistoryState.failure(failure.message)),
-        (data) => emit(ProductSalesHistoryState.loaded(data)),
+      result.when(
+        success: (data) => emit(ProductSalesHistoryState.loaded(data)),
+        failure: (failure) => emit(ProductSalesHistoryState.failure(failure.message)),
       );
     } catch (e) {
       emit(ProductSalesHistoryState.failure(e.toString()));

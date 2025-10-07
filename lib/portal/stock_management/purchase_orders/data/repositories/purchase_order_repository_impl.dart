@@ -1,8 +1,8 @@
-import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/enums/purchase_order_enum.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/api/purchase_order_api.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/dto/request/create_purchase_order_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/dto/request/update_purchase_order_dto.dart';
@@ -19,7 +19,7 @@ class PurchaseOrderRepositoryImpl extends BaseRepository implements PurchaseOrde
   PurchaseOrderRepositoryImpl({required PurchaseOrderApi api}) : _api = api;
 
   @override
-  Future<Either<Failure, PurchaseOrder>> create(NewPurchaseOrder po) {
+  Future<ApiResult<PurchaseOrder>> create(NewPurchaseOrder po) {
     return call(() async {
       final requestDto = CreatePurchaseOrderDto.fromDomain(po);
       final response = await _api.createPurchaseOrder(requestDto);
@@ -28,7 +28,7 @@ class PurchaseOrderRepositoryImpl extends BaseRepository implements PurchaseOrde
   }
 
   @override
-  Future<Either<Failure, PurchaseOrder>> getPurchaseOrderById(int id) {
+  Future<ApiResult<PurchaseOrder>> getPurchaseOrderById(int id) {
     return call(() async {
       final response = await _api.getPurchaseOrderById(id);
       return response.toDomain();
@@ -36,31 +36,15 @@ class PurchaseOrderRepositoryImpl extends BaseRepository implements PurchaseOrde
   }
 
   @override
-  Future<Either<Failure, PaginatedList<PurchaseOrder>>> getPurchaseOrders(PageQuery query
-      //   {
-      //   required int page,
-      //   required int size,
-      //   StockOrderStatus? status,
-      //   int? branchId,
-      //   String? startDate,
-      //   String? endDate,
-      // }
-      ) {
+  Future<ApiResult<PaginatedList<PurchaseOrder>>> getPurchaseOrders(PageQuery query) {
     return call(() async {
-      final response = await _api.getPurchaseOrders(query
-          // page: page,
-          // size: size,
-          // status: status,
-          // branchId: branchId,
-          // startDate: startDate,
-          // endDate: endDate,
-          );
+      final response = await _api.getPurchaseOrders(query);
       return response.convert((po) => po.toDomain());
     });
   }
 
   @override
-  Future<Either<Failure, PurchaseOrder>> update({
+  Future<ApiResult<PurchaseOrder>> update({
     required UpdatePurchaseOrder action,
     required int id,
     required PurchaseOrder po,
@@ -68,7 +52,7 @@ class PurchaseOrderRepositoryImpl extends BaseRepository implements PurchaseOrde
     return call(() async {
       final requestDto = switch (action) {
         UpdatePurchaseOrder.save => UpdatePurchaseOrderDto.saveOrShip(
-            status: po.status!.label.toLowerCase(),
+            status: StockOrderStatus.NEW.label.toLowerCase(),
             purchaseOrderDetails: po.items
                 ?.map((item) => UpdatePurchaseOrderItemDto.save(
                       variantId: item.id!,
@@ -82,10 +66,10 @@ class PurchaseOrderRepositoryImpl extends BaseRepository implements PurchaseOrde
             notes: po.notes,
           ),
         UpdatePurchaseOrder.saveAndMarkAsShippedWithNewItems => UpdatePurchaseOrderDto.saveOrShip(
-            status: po.status!.label.toLowerCase(),
+            status: StockOrderStatus.FOR_RECEIVING.label.toLowerCase(),
             purchaseOrderDetails: po.items
                 ?.map((item) => UpdatePurchaseOrderItemDto.saveAndMarkAsShippedWithNewItems(
-                      variantId: item.id!,
+                      variantId: item.variantId!,
                       orderedQuantity: item.quantityOrdered!,
                       supplierPrice: item.supplierPrice!,
                     ))
@@ -96,7 +80,7 @@ class PurchaseOrderRepositoryImpl extends BaseRepository implements PurchaseOrde
             notes: po.notes,
           ),
         UpdatePurchaseOrder.saveAndMarkAsShipped => UpdatePurchaseOrderDto.saveOrShip(
-            status: po.status!.label.toLowerCase(),
+            status: StockOrderStatus.FOR_RECEIVING.label.toLowerCase(),
             purchaseOrderDetails: po.items
                 ?.map((item) => UpdatePurchaseOrderItemDto.saveAndMarkAsShipped(
                       id: item.id!,
@@ -110,16 +94,17 @@ class PurchaseOrderRepositoryImpl extends BaseRepository implements PurchaseOrde
             notes: po.notes,
           ),
         UpdatePurchaseOrder.saveAndReceived => UpdatePurchaseOrderDto.receive(
-            status: po.status!.label.toLowerCase(),
+            status: StockOrderStatus.COMPLETED.label.toLowerCase(),
             purchaseOrderDetails: po.items
                 ?.map((item) => UpdatePurchaseOrderItemDto.saveAndReceived(
                       id: item.id!,
-                      receivedQuantity: item.quantityReceived!,
+                      receivedQuantity: item.quantityReceived ?? 0,
                     ))
                 .toList(),
             notes: po.notes,
           ),
-        UpdatePurchaseOrder.cancel => const UpdatePurchaseOrderDto.cancel(status: 'cancelled'),
+        UpdatePurchaseOrder.cancel =>
+          UpdatePurchaseOrderDto.cancel(status: StockOrderStatus.CANCELLED.label.toLowerCase()),
       };
 
       final response = await _api.updatePurchaseOrder(
@@ -131,7 +116,7 @@ class PurchaseOrderRepositoryImpl extends BaseRepository implements PurchaseOrde
   }
 
   @override
-  Future<Either<Failure, void>> delete(int id) {
+  Future<ApiResult<void>> delete(int id) {
     return call(() async => await _api.delete(id));
   }
 }

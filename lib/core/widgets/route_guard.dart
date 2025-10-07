@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
-import 'package:medglobal_admin_portal/pos/auth_session/presentation/blocs/session/session_bloc.dart';
-import 'package:medglobal_admin_portal/pos/authentication/presentation/presentation/screens/pos_login_screen.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class RouteGuard extends StatelessWidget {

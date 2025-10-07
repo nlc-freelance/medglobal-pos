@@ -23,9 +23,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       final result = await _repository.getProductById(event.id);
 
-      result.fold(
-        (failure) => emit(ProductState.loadFailed(failure.message)),
-        (product) => emit(ProductState.loaded(product)),
+      result.when(
+        success: (product) => emit(ProductState.loaded(product)),
+        failure: (failure) => emit(ProductState.loadFailed(failure.message)),
       );
     } catch (e) {
       emit(ProductState.loadFailed(e.toString()));
@@ -39,9 +39,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
       final result = await _repository.createProduct(payload);
 
-      result.fold(
-        (failure) => emit(ProductState.failure(failure.message)),
-        (product) => emit(ProductState.success('${product.name} successfully created.')),
+      result.when(
+        success: (product) => emit(ProductState.success('${product.name} successfully created.')),
+        failure: (failure) => emit(ProductState.failure(failure.message)),
       );
     } catch (e) {
       emit(ProductState.failure(e.toString()));
@@ -56,9 +56,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
       final result = await _repository.updateProduct(product.id!, payload);
 
-      result.fold(
-        (failure) => emit(ProductState.failure(failure.message)),
-        (product) => emit(ProductState.success('${product.name} successfully updated.')),
+      result.when(
+        success: (product) => emit(ProductState.success('${product.name} successfully updated.')),
+        failure: (failure) => emit(ProductState.failure(failure.message)),
       );
     } catch (e) {
       emit(ProductState.failure(e.toString()));
@@ -70,9 +70,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       final result = await _repository.deleteProduct(event.productId);
 
-      result.fold(
-        (failure) => emit(ProductState.failure(failure.message)),
-        (_) => emit(ProductState.success('${event.productName} successfully deleted.')),
+      result.when(
+        success: (_) => emit(ProductState.success('${event.productName} successfully deleted.')),
+        failure: (failure) => emit(ProductState.failure(failure.message)),
       );
     } catch (e) {
       emit(ProductState.failure(e.toString()));

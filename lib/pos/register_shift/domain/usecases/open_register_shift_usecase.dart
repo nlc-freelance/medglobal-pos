@@ -1,11 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/local_register_shift_repository.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/remote_register_shift_repository.dart';
 import 'package:medglobal_admin_portal/pos/syncing/sync_queue/sync_queue_repository.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/entities/register_shift.dart';
-import 'package:medglobal_admin_portal/pos/syncing/services/connectivity_service.dart';
+import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_service.dart';
 
 class OpenRegisterShiftUseCase {
   final LocalRegisterShiftRepository _local;
@@ -26,27 +27,27 @@ class OpenRegisterShiftUseCase {
         _connection = connection,
         _sync = sync;
 
-  Future<Either<Failure, RegisterShift>> call(double amount) async {
+  Future<ApiResult<RegisterShift>> call(double amount) async {
     final userId = _session.userId;
     final registerId = _session.registerId;
 
     /// Get userId and registerId from AppSessionService
     try {
       if (userId == null || registerId == null) {
-        return Left(UserNotFoundFailure('User and/or register details not found.'));
+        return ApiResult.failure(UserNotFoundFailure('User and/or register details not found.'));
       }
     } catch (e) {
-      return Left(UnexpectedFailure('Unexpected error occurred. Failed to get user and register details.'));
+      return ApiResult.failure(
+          UnexpectedFailure('Unexpected error occurred. Failed to get user and register details.'));
     }
 
     // Check if there's an open shift. If there's an open shift, restrict user from opening a new one
     final lookForOpenShift = await _local.getOpenShift(registerId);
 
-    return lookForOpenShift.fold(
-      (failure) => Left(failure),
-      (openShift) async {
+    return lookForOpenShift.when(
+      success: (openShift) async {
         if (openShift != null) {
-          return Left(AlreadyExistsFailure(openShift, 'An open shift already exists.'));
+          return ApiResult.failure(AlreadyExistsFailure(openShift, 'An open shift already exists.'));
         }
 
         // If there's no open shift, proceed to create a new one
@@ -60,12 +61,9 @@ class OpenRegisterShiftUseCase {
         // Save the shift locally first and get the result.
         final localSave = await _local.openShift(shift);
 
-        return localSave.fold(
-          // If saving locally failed, return the failure immediately.
-          (failure) => Left(failure),
-
+        return localSave.when(
           // If successful, continue with remote sync logic.
-          (shift) {
+          success: (shift) {
             final payload = shift.toOpenPayload();
 
             // Try to send to remote if online
@@ -75,16 +73,16 @@ class OpenRegisterShiftUseCase {
                 // We use `.then()` instead of `await` to run this in the background,
                 // allowing the main function to return immediately after saving locally.
                 _remote.sendShift(shift.toOpenPayload()).then((result) {
-                  result.fold(
+                  result.when(
+                    // If successful, do nothing — the shift is now synced.
+                    success: (_) {},
                     // If remote send failed, add it to the sync queue for retry later.
-                    (failure) => _sync.enqueue(
+                    failure: (failure) => _sync.enqueue(
                       itemId: shift.id!,
                       table: 'registerShifts',
                       data: payload,
                       error: failure.message,
                     ),
-                    // If successful, do nothing — the shift is now synced.
-                    (_) {},
                   );
                 });
               } else {
@@ -98,10 +96,13 @@ class OpenRegisterShiftUseCase {
             });
 
             // Return the successfully saved shift (from local DB).
-            return Right(shift);
+            return ApiResult.success(shift);
           },
+          // If saving locally failed, return the failure immediately.
+          failure: (failure) => ApiResult.failure(failure),
         );
       },
+      failure: (failure) => ApiResult.failure(failure),
     );
 
     //

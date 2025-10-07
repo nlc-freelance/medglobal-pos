@@ -4,6 +4,7 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/details/stock_return_details.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/stock_return_stepper.dart';
@@ -38,6 +39,9 @@ class _StockReturnDetailsPageState extends State<StockReturnDetailsPage> {
         if (state is StockReturnSuccess) {
           _stockReturn = state.stockReturn;
           SnackbarUtil.success(context, 'Stock Return updated successfully.');
+
+          // Reload list
+          context.read<StockReturnListRemoteCubit>().getStockReturns();
         }
       },
       builder: (context, state) {

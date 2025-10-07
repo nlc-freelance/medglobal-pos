@@ -27,9 +27,9 @@ class SalesPerShiftListCubit extends Cubit<SalesPerShiftListState> {
         startDate: startDate,
         endDate: endDate,
       ));
-      result.fold(
-        (error) => emit(SalesPerShiftListError(message: error.message)),
-        (data) => emit(SalesPerShiftListLoaded(data: data)),
+      result.when(
+        success: (data) => emit(SalesPerShiftListLoaded(data: data)),
+        failure: (error) => emit(SalesPerShiftListError(message: error.message)),
       );
     } catch (e) {
       emit(SalesPerShiftListError(message: e.toString()));

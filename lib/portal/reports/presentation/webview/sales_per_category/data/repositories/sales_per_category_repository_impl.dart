@@ -1,22 +1,21 @@
-import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/data/api/sales_per_category_api.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/entities/sales_per_category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/repositories/sales_per_category_repository.dart';
 
-class SalesPerCategoryRepositoryImpl implements SalesPerCategoryRepository {
-  final SalesPerCategoryApi _salesPerCategoryApi;
+/// Concrete implementation of [SalesPerCategoryRepository] that uses [SalesPerCategoryApi] for API calls
+/// and [BaseRepository] to centralize error handling.
+class SalesPerCategoryRepositoryImpl extends BaseRepository implements SalesPerCategoryRepository {
+  final SalesPerCategoryApi _api;
 
-  SalesPerCategoryRepositoryImpl(this._salesPerCategoryApi);
+  SalesPerCategoryRepositoryImpl(this._api);
 
   @override
-  Future<Either<Failure, List<SalesPerCategory>>> getSalesPerCategory(SalesPerCategoryPayload payload) async {
-    try {
-      final response = await _salesPerCategoryApi.getSalesPerCategory(payload);
-      return Right(response.map((value) => value.toEntity()).toList());
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+  Future<ApiResult<List<SalesPerCategory>>> getSalesPerCategory(SalesPerCategoryPayload payload) {
+    return call(() async {
+      final response = await _api.getSalesPerCategory(payload);
+      return response.map((value) => value.toEntity()).toList();
+    });
   }
 }

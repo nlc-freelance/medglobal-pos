@@ -26,7 +26,7 @@
 //       providers: [
 //         BlocProvider(create: (_) => GetIt.I<SessionBloc>()..add(const SessionEvent.check())),
 //         BlocProvider(create: (context) => GetIt.I<ProductCatalogBloc>()),
-//         // BlocProvider(create: (context) => GetIt.I<SyncBloc>()),
+//         // BlocProvider(create: (context) => GetIt.I<ReadSyncBloc>()),
 //       ],
 //       child: PosScaffold(
 //         route: state,

@@ -3,7 +3,7 @@
 // import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register_shift/register_shift_payload.dart';
 //
 // class RegisterShiftApiService {
-//   final BaseApiService _api;
+//   final ApiService _api;
 //
 //   RegisterShiftApiService(this._api);
 //

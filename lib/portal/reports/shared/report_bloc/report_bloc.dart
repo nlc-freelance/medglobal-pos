@@ -21,9 +21,9 @@ class ReportBloc extends Bloc<ReportEvent, ReportState> {
 
     try {
       final result = await _repository.getReport(event.id);
-      result.fold(
-        (error) => emit(ReportState.failure(error.message)),
-        (report) => emit(ReportState.loaded(report)),
+      result.when(
+        success: (report) => emit(ReportState.loaded(report)),
+        failure: (error) => emit(ReportState.failure(error.message)),
       );
     } catch (e) {
       emit(ReportState.failure(e.toString()));

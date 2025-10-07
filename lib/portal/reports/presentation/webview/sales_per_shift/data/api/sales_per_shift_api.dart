@@ -1,25 +1,15 @@
 import 'package:medglobal_admin_portal/core/network/api_service.dart';
+import 'package:medglobal_admin_portal/core/network/new/api/base_api_service.dart';
+import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/data/dto/sales_per_shift_details_dto.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/data/dto/sales_per_shift_dto.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_shift/domain/entities/sales_per_shift_paginated_list.dart';
 
-abstract class SalesPerShiftApi {
-  Future<SalesPerShiftPaginatedList> getSalesPerShift({
-    required int page,
-    required int size,
-    int? branchId,
-    String? startDate,
-    String? endDate,
-  });
-  Future<SalesPerShiftDetailsDto> getSalesPerShiftById(int id);
-}
+class SalesPerShiftApi {
+  final ApiService _api;
 
-class SalesPerShiftApiImpl implements SalesPerShiftApi {
-  final ApiService _apiService;
+  SalesPerShiftApi({required ApiService api}) : _api = api;
 
-  SalesPerShiftApiImpl(this._apiService);
-
-  @override
   Future<SalesPerShiftPaginatedList> getSalesPerShift({
     required int page,
     required int size,
@@ -27,39 +17,32 @@ class SalesPerShiftApiImpl implements SalesPerShiftApi {
     String? startDate,
     String? endDate,
   }) async {
-    try {
-      final response = await _apiService.collection<SalesPerShiftDto>(
-        '/reports/shifts',
-        queryParams: {
-          'page': page,
-          'size': size,
-          if (branchId != null) 'branch': branchId,
-          if (startDate != null) 'startDate': startDate,
-          if (endDate != null) 'endDate': endDate,
-        },
-        converter: SalesPerShiftDto.fromJson,
-      );
+    final data = await _api.getPaginated<SalesPerShiftDto>(
+      '/reports/shifts',
+      queryParams: {
+        'page': page,
+        'size': size,
+        if (branchId != null) 'branch': branchId,
+        if (startDate != null) 'startDate': startDate,
+        if (endDate != null) 'endDate': endDate,
+      },
+      parser: (json) => parse(json, SalesPerShiftDto.fromJson),
+    );
 
-      return SalesPerShiftPaginatedList(
-        salesPerShift: response.items?.map((item) => item.toEntity()).toList(),
-        currentPage: response.pageInfo?.page,
-        totalPages: response.pageInfo?.totalPages,
-        totalCount: response.pageInfo?.totalCount,
-      );
-    } catch (e) {
-      rethrow;
-    }
+    return SalesPerShiftPaginatedList(
+      salesPerShift: data.items.map((item) => item.toEntity()).toList(),
+      currentPage: data.page,
+      totalPages: data.totalPages,
+      totalCount: data.totalCount,
+    );
   }
 
-  @override
   Future<SalesPerShiftDetailsDto> getSalesPerShiftById(int id) async {
-    try {
-      return await _apiService.get<SalesPerShiftDetailsDto>(
-        '/reports/shifts/$id',
-        converter: SalesPerShiftDetailsDto.fromJson,
-      );
-    } catch (_) {
-      rethrow;
-    }
+    final data = await _api.get<SalesPerShiftDetailsDto>(
+      '/reports/shifts/$id',
+      parser: (json) => parse(json, SalesPerShiftDetailsDto.fromJson),
+    );
+
+    return data;
   }
 }

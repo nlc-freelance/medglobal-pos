@@ -33,15 +33,15 @@ class SaleTransactionListCubit extends Cubit<SaleTransactionListState> {
         startDate: startDate,
         endDate: endDate,
       );
-      result.fold(
-        (error) => emit(SaleTransactionListError(message: error.message)),
-        (data) {
+      result.when(
+        success: (data) {
           if (search != null && data.totalCount == 0 && data.items.isEmpty == true) {
             emit(SaleTransactionSearchNoResult(message: 'No results found for \'$search\''));
           } else {
             emit(SaleTransactionListLoaded(data: data));
           }
         },
+        failure: (error) => emit(SaleTransactionListError(message: error.message)),
       );
     } catch (e) {
       emit(SaleTransactionListError(message: e.toString()));

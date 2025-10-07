@@ -261,7 +261,6 @@ class _DropdownFormFieldState<T> extends State<AppDropdownFormField<T>> {
 
 class _FormLabel extends StatelessWidget {
   const _FormLabel({
-    super.key,
     required this.label,
     required this.isRequired,
     required this.textStyle,
@@ -291,7 +290,6 @@ class _FormLabel extends StatelessWidget {
 
 class _FormField extends StatelessWidget {
   const _FormField({
-    super.key,
     required this.onTap,
     required this.target,
     required this.follower,
@@ -324,7 +322,6 @@ class _FormField extends StatelessWidget {
 
 class _SingleSelectDropdownContainer extends StatelessWidget {
   const _SingleSelectDropdownContainer({
-    super.key,
     required this.menuKey,
     required this.hint,
     required this.isReadOnly,
@@ -395,8 +392,8 @@ class _MutliSelectDropdownContainer<T> extends StatelessWidget {
             ? const EdgeInsets.fromLTRB(4, 4, 16, 4)
             : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: UIColors.borderMuted.withOpacity(0.15),
-          border: Border.all(color: UIColors.borderRegular.withOpacity(0.75)),
+          color: UIColors.borderMuted.withValues(alpha: 0.15),
+          border: Border.all(color: UIColors.borderRegular.withValues(alpha: 0.75)),
           borderRadius: const BorderRadius.all(Radius.circular(12.0)),
         ),
         child: Row(

@@ -37,9 +37,8 @@ class StockTakeBloc extends Bloc<StockTakeEvent, StockTakeBlocRemoteState> {
       emit(StockTakePolling(event.targetStatus));
       try {
         final result = await _getStockTakeByIdUsecase.call(GetStockTakeByIdParams(event.id));
-        result.fold(
-          (error) => emit(StockTakeByIdError(message: error.message)),
-          (data) {
+        result.when(
+          success: (data) {
             if (data.status == event.targetStatus) {
               // Stop polling after receiving IN_PROGRESS/COMPLETED
               _isPolling = false;
@@ -47,6 +46,7 @@ class StockTakeBloc extends Bloc<StockTakeEvent, StockTakeBlocRemoteState> {
               emit(StockTakePollingComplete(event.targetStatus));
             }
           },
+          failure: (error) => emit(StockTakeByIdError(message: error.message)),
         );
       } catch (e) {
         emit(StockTakeError(message: e.toString()));
@@ -64,9 +64,9 @@ class StockTakeBloc extends Bloc<StockTakeEvent, StockTakeBlocRemoteState> {
 
     try {
       final result = await _getStockTakeByIdUsecase.call(GetStockTakeByIdParams(event.id));
-      result.fold(
-        (error) => emit(StockTakeByIdError(message: error.message)),
-        (data) => emit(StockTakeByIdSuccess(stockTake: data)),
+      result.when(
+        success: (data) => emit(StockTakeByIdSuccess(stockTake: data)),
+        failure: (error) => emit(StockTakeByIdError(message: error.message)),
       );
     } catch (e) {
       emit(StockTakeByIdError(message: e.toString()));
@@ -78,9 +78,9 @@ class StockTakeBloc extends Bloc<StockTakeEvent, StockTakeBlocRemoteState> {
 
     try {
       final result = await _createStockTakeUsecase.call(CreateStockTakeParams(event.payload));
-      result.fold(
-        (error) => emit(StockTakeError(message: error.message)),
-        (data) => emit(StockTakeCreateSuccess(stockTake: data)),
+      result.when(
+        success: (data) => emit(StockTakeCreateSuccess(stockTake: data)),
+        failure: (error) => emit(StockTakeError(message: error.message)),
       );
     } catch (e) {
       emit(StockTakeError(message: e.toString()));
@@ -106,14 +106,23 @@ class StockTakeBloc extends Bloc<StockTakeEvent, StockTakeBlocRemoteState> {
         stockTake: event.stockTake,
         uncountedItemsValue: uncountedItemValue,
       ));
-      result.fold(
-        (error) => emit(StockTakeMarkAsCompletedError(message: error.message)),
-        (data) => event.type == StockOrderUpdate.MARK_AS_COMPLETE
+      result.when(
+        success: (data) => event.type == StockOrderUpdate.MARK_AS_COMPLETE
             ? emit(StockTakeMarkAsCompletedSuccess(stockTake: data))
             : emit(StockTakeSuccess(stockTake: data)),
+        failure: (error) => emit(StockTakeMarkAsCompletedError(message: error.message)),
       );
     } catch (e) {
       emit(StockTakeMarkAsCompletedError(message: e.toString()));
     }
+  }
+
+  @override
+  Future<void> close() {
+    // Added to stop infinite polling upon leaving Stock Take menu.
+    // Remove this when error is being returned when something fails in the server.
+    // As we might want the feature to still poll in the background as long as it is not infinite.
+    _isPolling = false;
+    return super.close();
   }
 }

@@ -1,11 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:medglobal_admin_portal/portal/transactions/repositories/transaction_repository.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transactions/register_transaction_repository.dart';
-
-import '../../../../../portal/transactions/repositories/transaction_repository.dart';
 
 part 'transaction_list_event.dart';
 part 'transaction_list_state.dart';
@@ -53,13 +51,8 @@ class TransactionListBloc extends Bloc<TransactionListEvent, TransactionListStat
         search: event.search,
       );
 
-      result.fold(
-        (failure) => emit(state.copyWith(
-          isLoadingInitial: false,
-          isLoadingMore: false,
-          error: failure.message,
-        )),
-        (data) {
+      result.when(
+        success: (data) {
           // if (isSearching && data.items.isEmpty) {
           // Check if online
           // If online, fetch remotely and store results in _searchResults
@@ -95,6 +88,11 @@ class TransactionListBloc extends Bloc<TransactionListEvent, TransactionListStat
 
           if (!hasReachedEnd) _currentPage++;
         },
+        failure: (failure) => emit(state.copyWith(
+          isLoadingInitial: false,
+          isLoadingMore: false,
+          error: failure.message,
+        )),
       );
     } catch (e) {
       emit(state.copyWith(

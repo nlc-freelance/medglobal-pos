@@ -1,54 +1,55 @@
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
+import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_payload.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/receipt_configuration.dart';
 
 class BranchApiService {
-  final BaseApiService _api;
+  final ApiService _api;
 
-  BranchApiService(this._api);
+  BranchApiService({required ApiService api}) : _api = api;
 
   Future<PaginatedList<BranchDto>> getBranches(PageQuery query) async {
-    final response = await _api.getPaginated<BranchDto>(
+    final data = await _api.getPaginated<BranchDto>(
       ApiEndpoints.branches,
       queryParams: query.toJson(),
-      fromJson: BranchDto.fromJson,
+      parser: (json) => parse(json, BranchDto.fromJson),
     );
 
     return PaginatedList<BranchDto>(
-      items: response.data.items,
-      currentSize: response.data.size,
-      currentPage: response.data.page,
-      totalPages: response.data.totalPages,
-      totalCount: response.data.totalCount,
+      items: data.items,
+      currentSize: data.size,
+      currentPage: data.page,
+      totalPages: data.totalPages,
+      totalCount: data.totalCount,
     );
   }
 
   Future<BranchDto> getBranchById(int id) async {
-    final response = await _api.get(
+    final data = await _api.get(
       ApiEndpoints.branchById(id),
-      fromJson: BranchDto.fromJson,
+      parser: (json) => parse(json, BranchDto.fromJson),
     );
-    return response.data;
+    return data;
   }
 
   Future<BranchDto> createBranch(BranchPayload payload) async {
-    final response = await _api.post(
+    final data = await _api.post(
       ApiEndpoints.branches,
       data: payload.toJson(),
-      fromJson: BranchDto.fromJson,
+      parser: (json) => parse(json, BranchDto.fromJson),
     );
-    return response.data;
+    return data;
   }
 
   Future<BranchDto> updateBranch(int id, BranchPayload payload) async {
-    final response = await _api.update(
+    final data = await _api.update(
       ApiEndpoints.branchById(id),
       data: payload.toJson(),
-      fromJson: BranchDto.fromJson,
+      parser: (json) => parse(json, BranchDto.fromJson),
     );
-    return response.data;
+    return data;
   }
 
   Future<void> deleteBranch(int id) async {
@@ -56,26 +57,26 @@ class BranchApiService {
   }
 
   Future<ReceiptConfiguration> getReceiptConfigurationByBranchId(int id) async {
-    final response = await _api.get(
+    final data = await _api.get(
       ApiEndpoints.receiptConfigByBranchId(id),
-      fromJson: ReceiptConfiguration.fromJson,
+      parser: (json) => parse(json, ReceiptConfiguration.fromJson),
     );
-    return response.data;
+    return data;
   }
 
   Future<PaginatedList<BranchPartialDto>> getBranchesPartial(PageQuery query) async {
-    final response = await _api.getPaginated<BranchPartialDto>(
+    final data = await _api.getPaginated<BranchPartialDto>(
       ApiEndpoints.branches,
       queryParams: query.toJson(),
-      fromJson: BranchPartialDto.fromJson,
+      parser: (json) => parse(json, BranchPartialDto.fromJson),
     );
 
     return PaginatedList<BranchPartialDto>(
-      items: response.data.items,
-      currentSize: response.data.size,
-      currentPage: response.data.page,
-      totalPages: response.data.totalPages,
-      totalCount: response.data.totalCount,
+      items: data.items,
+      currentSize: data.size,
+      currentPage: data.page,
+      totalPages: data.totalPages,
+      totalCount: data.totalCount,
     );
   }
 }

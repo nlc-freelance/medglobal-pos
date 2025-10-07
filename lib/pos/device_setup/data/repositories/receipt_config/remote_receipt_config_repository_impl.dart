@@ -1,6 +1,5 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/receipt_configuration.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/data/datasources/remote_receipt_config_datasource.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/domain/repositories/receipt_config/remote_receipt_config_repository.dart';
@@ -13,7 +12,7 @@ class RemoteReceiptConfigRepositoryImpl extends BaseRepository implements Remote
   }) : _remoteDataSource = remoteDataSource;
 
   @override
-  Future<Either<Failure, ReceiptConfiguration>> getReceiptConfigByBranch(int id, {int? lastSynced}) {
+  Future<ApiResult<ReceiptConfiguration>> getReceiptConfigByBranch(int id, {int? lastSynced}) {
     return call(() async {
       return await _remoteDataSource.getReceiptConfigByBranch(id, lastSynced);
     });

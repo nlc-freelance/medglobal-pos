@@ -1,55 +1,57 @@
 import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
+import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_dto.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/data/dto/supplier_payload.dart';
 
 class SupplierApi {
-  final BaseApiService _api;
-  SupplierApi(this._api);
+  final ApiService _api;
+
+  SupplierApi({required ApiService api}) : _api = api;
 
   Future<PaginatedList<SupplierDto>> getSuppliers(PageQuery query) async {
-    final response = await _api.getPaginated<SupplierDto>(
+    final data = await _api.getPaginated<SupplierDto>(
       ApiEndpoint.suppliers(),
       queryParams: query.toJson(),
-      fromJson: SupplierDto.fromJson,
+      parser: (json) => parse(json, SupplierDto.fromJson),
     );
 
     return PaginatedList<SupplierDto>(
-      items: response.data.items,
-      currentSize: response.data.size,
-      currentPage: response.data.page,
-      totalPages: response.data.totalPages,
-      totalCount: response.data.totalCount,
+      items: data.items,
+      currentSize: data.size,
+      currentPage: data.page,
+      totalPages: data.totalPages,
+      totalCount: data.totalCount,
     );
   }
 
   Future<SupplierDto> getSupplier(int id) async {
-    final response = await _api.get<SupplierDto>(
+    final data = await _api.get<SupplierDto>(
       ApiEndpoint.suppliers(id),
-      fromJson: SupplierDto.fromJson,
+      parser: (json) => parse(json, SupplierDto.fromJson),
     );
-    return response.data;
+    return data;
   }
 
   Future<SupplierDto> create(SupplierPayload payload) async {
-    final response = await _api.post<SupplierDto>(
+    final data = await _api.post<SupplierDto>(
       ApiEndpoint.suppliers(),
       data: payload.toJson(),
-      fromJson: SupplierDto.fromJson,
+      parser: (json) => parse(json, SupplierDto.fromJson),
     );
 
-    return response.data;
+    return data;
   }
 
   Future<SupplierDto> update(int id, SupplierPayload payload) async {
-    final response = await _api.update<SupplierDto>(
+    final data = await _api.update<SupplierDto>(
       ApiEndpoint.suppliers(id),
       data: payload.toJson(),
-      fromJson: SupplierDto.fromJson,
+      parser: (json) => parse(json, SupplierDto.fromJson),
     );
 
-    return response.data;
+    return data;
   }
 
   Future<void> delete(int id) async {

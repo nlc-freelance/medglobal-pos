@@ -33,15 +33,15 @@ class ReturnTransactionListCubit extends Cubit<ReturnTransactionListState> {
         startDate: startDate,
         endDate: endDate,
       );
-      result.fold(
-        (error) => emit(ReturnTransactionListError(message: error.message)),
-        (data) {
+      result.when(
+        success: (data) {
           if (search != null && data.totalCount == 0 && data.items.isEmpty == true) {
             emit(ReturnTransactionSearchNoResult(message: 'No results found for \'$search\''));
           } else {
             emit(ReturnTransactionListLoaded(data: data));
           }
         },
+        failure: (error) => emit(ReturnTransactionListError(message: error.message)),
       );
     } catch (e) {
       emit(ReturnTransactionListError(message: e.toString()));

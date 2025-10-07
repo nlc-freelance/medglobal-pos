@@ -27,9 +27,9 @@ class StockReturnRemoteCubit extends Cubit<StockReturnRemoteState> {
 
     try {
       final result = await _getStockReturnByIdUsecase.call(GetStockReturnByIdParams(id));
-      result.fold(
-        (error) => emit(StockReturnByIdError(message: error.message)),
-        (data) => emit(StockReturnByIdSuccess(stockReturn: data)),
+      result.when(
+        success: (data) => emit(StockReturnByIdSuccess(stockReturn: data)),
+        failure: (error) => emit(StockReturnByIdError(message: error.message)),
       );
     } catch (e) {
       emit(StockReturnByIdError(message: e.toString()));
@@ -41,9 +41,9 @@ class StockReturnRemoteCubit extends Cubit<StockReturnRemoteState> {
 
     try {
       final result = await _createStockReturnUsecase.call(CreateStockReturnParams(payload));
-      result.fold(
-        (error) => emit(StockReturnError(message: error.message)),
-        (data) => emit(StockReturnCreateSuccess(stockReturn: data)),
+      result.when(
+        success: (data) => emit(StockReturnCreateSuccess(stockReturn: data)),
+        failure: (error) => emit(StockReturnError(message: error.message)),
       );
     } catch (e) {
       emit(StockReturnError(message: e.toString()));
@@ -58,11 +58,14 @@ class StockReturnRemoteCubit extends Cubit<StockReturnRemoteState> {
     }
 
     try {
-      final result =
-          await _updateStockReturnUsecase.call(UpdateStockReturnParams(type, id: id, stockReturn: stockReturn));
-      result.fold(
-        (error) => emit(StockReturnError(message: error.message)),
-        (data) => emit(StockReturnSuccess(stockReturn: data)),
+      final result = await _updateStockReturnUsecase.call(UpdateStockReturnParams(
+        type,
+        id: id,
+        stockReturn: stockReturn,
+      ));
+      result.when(
+        success: (data) => emit(StockReturnSuccess(stockReturn: data)),
+        failure: (error) => emit(StockReturnError(message: error.message)),
       );
     } catch (e) {
       emit(StockReturnError(message: e.toString()));

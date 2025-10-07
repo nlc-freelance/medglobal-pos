@@ -22,15 +22,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrderListPage> {
   @override
   void initState() {
     super.initState();
-
-    /// TODO: The list does not update when using the back button or side menu to navigate back to this page
-    /// Side menu which uses goNamed does not trigger initState if the path is in the same shell branch
-    /// Ex. /stock-management/purchase-orders/id=1 to /stock-management/purchase-orders/
-    // context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders();
-
-    /// Reset last selected purchase order
-    // context.read<PurchaseOrderCubit>().reset();
-    // context.read<PurchaseOrderListFilterCubit>().reset();
+    context.read<PaginatedListBloc<PurchaseOrder>>().add(const PaginatedListEvent<PurchaseOrder>.fetch());
   }
 
   @override
@@ -55,6 +47,8 @@ class _PurchaseOrdersPageState extends State<PurchaseOrderListPage> {
   void _scheduleFetch() {
     final filterCubit = context.read<PurchaseOrderListFilterCubit>();
     final listBloc = context.read<PaginatedListBloc<PurchaseOrder>>();
+
+    context.read<PurchaseOrderListFilterCubit>().resetPageAndSize();
 
     Future.microtask(() {
       final updatedQuery = filterCubit.state.toPageQuery;

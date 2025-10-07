@@ -49,10 +49,10 @@ class SyncQueueRepository {
     return _dao.getPendingItemsByUser(userId);
   }
 
-  // Future<void> removeItem(int id) {
-  //   return _dao.deleteItem(id);
-  // }
-  //
+  Future<void> removeItem(int id) {
+    return _dao.deleteItem(id);
+  }
+
   // Future<void> updateError(int id, String error) {
   //   return _dao.updateError(id, error);
   // }

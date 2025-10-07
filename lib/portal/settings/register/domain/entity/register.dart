@@ -1,7 +1,7 @@
 // import 'package:equatable/equatable.dart';
 // import 'package:json_annotation/json_annotation.dart';
 // import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-// import 'package:medglobal_admin_portal/shared/register/domain/entities/register_shift.dart';
+// import 'package:medglobal_admin_portal/shared/register/domain/entities/register_shift_detail.dart';
 
 // part 'register.g.dart';
 
@@ -31,7 +31,7 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register_shift.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register_shift_detail.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 part 'register.freezed.dart';
@@ -43,7 +43,7 @@ class Register with _$Register {
     int? id,
     required String name,
     Branch? assignedBranch,
-    RegisterShift? shiftDetail,
+    RegisterShiftDetail? shiftDetail,
     String? serialNumber,
   }) = _Register;
 

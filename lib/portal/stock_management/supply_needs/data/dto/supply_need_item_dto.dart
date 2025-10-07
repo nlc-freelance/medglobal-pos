@@ -25,7 +25,7 @@ class SupplyNeedItemDto extends Equatable {
   SupplyNeedItem toEntity(BranchPartial? branch) => SupplyNeedItem(
         id: id,
         branch: branch,
-        variantName: '${variant?.product?.name} ${variant?.name}',
+        variantName: variant?.productVariantName,
         sku: variant?.sku,
         qty: qty,
         warningStock: variant?.warningStock ?? 0,

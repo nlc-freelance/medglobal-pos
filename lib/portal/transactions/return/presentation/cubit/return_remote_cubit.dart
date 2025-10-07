@@ -17,9 +17,9 @@ class ReturnRemoteCubit extends Cubit<ReturnRemoteState> {
 
     try {
       final result = await _UpdateReturnTransactionUseCase.call(UpdateReturnTransactionParams(value));
-      result.fold(
-        (error) => emit(ReturnError(message: error.message)),
-        (transaction) => emit(ReturnSuccess(transaction: transaction)),
+      result.when(
+        success: (transaction) => emit(ReturnSuccess(transaction: transaction)),
+        failure: (error) => emit(ReturnError(message: error.message)),
       );
     } catch (e) {
       emit(ReturnError(message: e.toString()));

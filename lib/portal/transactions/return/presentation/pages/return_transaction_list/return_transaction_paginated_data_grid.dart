@@ -42,7 +42,7 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
     return BlocConsumer<ReturnTransactionListCubit, ReturnTransactionListState>(
       listener: (context, state) {
         if (state is ReturnTransactionListLoaded) {
-          returns = state.data.items ?? [];
+          returns = state.data.items;
           _returnTransactionDataSource = ReturnTransactionDataSource(returns);
         }
         if (state is ReturnTransactionSearchNoResult) {

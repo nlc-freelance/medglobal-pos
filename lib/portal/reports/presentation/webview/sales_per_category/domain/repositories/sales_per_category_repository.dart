@@ -1,10 +1,9 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/entities/filter.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/entities/sales_per_category.dart';
 
 abstract class SalesPerCategoryRepository {
-  Future<Either<Failure, List<SalesPerCategory>>> getSalesPerCategory(SalesPerCategoryPayload payload);
+  Future<ApiResult<List<SalesPerCategory>>> getSalesPerCategory(SalesPerCategoryPayload payload);
 }
 
 class SalesPerCategoryPayload {

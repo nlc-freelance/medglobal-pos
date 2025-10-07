@@ -121,7 +121,14 @@ class AppTextFormField extends StatelessWidget {
                     ),
                   ),
                 ),
-              layout == FieldLabelPosition.left ? Expanded(child: textFormField) : textFormField,
+              layout == FieldLabelPosition.left
+                  ? Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: textFormField,
+                      ),
+                    )
+                  : textFormField,
             ],
           );
   }

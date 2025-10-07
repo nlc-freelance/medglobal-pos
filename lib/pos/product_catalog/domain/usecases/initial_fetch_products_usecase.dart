@@ -1,8 +1,9 @@
-import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/sync_metadata/sync_metadata_dao.dart';
 import 'package:medglobal_admin_portal/core/models/page_query.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
+import 'package:medglobal_admin_portal/pos/product_catalog/domain/entities/catalog_item.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/repositories/local_product_catalog_repository.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/repositories/remote_product_catalog_repository.dart';
 
@@ -34,16 +35,16 @@ class InitialFetchProductsUseCase {
   /// Returns:
   /// - [Right<void>] on success (all products saved locally).
   /// - [Left<Failure>] if any remote fetch fails.
-  Future<Either<Failure, void>> call() async {
+  Future<ApiResult<void>> call() async {
     /// Get branchId from AppSessionService
     final branchId = _session.branchId;
 
     try {
       if (branchId == null) {
-        return Left(UserNotFoundFailure('Current branch details not found.'));
+        return ApiResult.failure(UserNotFoundFailure('Current branch details not found.'));
       }
     } catch (e) {
-      return Left(UnexpectedFailure('Unexpected error occurred. Failed to get current branch details.'));
+      return ApiResult.failure(UnexpectedFailure('Unexpected error occurred. Failed to get current branch details.'));
     }
 
     int currentPage = 1;
@@ -56,35 +57,36 @@ class InitialFetchProductsUseCase {
         extra: {'branch': branchId},
       );
 
-      final response = await _remote.getProducts(query);
+      final productResult = await _remote.getProducts(query);
 
-      final failure = await response.fold<Future<Failure?>>(
-        // If API call fails, immediately return the failure wrapped in Future
-        (failure) async => failure,
+      productResult.when(
+        success: (data) async {
+          final failure = await _handleInitialSync(data.items);
 
-        // On success, upsert current page items and update pagination flags
-        (data) async {
-          final result = await _local.upsertProducts(data.items);
+          if (failure != null) return ApiResult.failure(failure);
 
-          final localFailure = result.fold<Future<Failure?>>(
-            (failure) async => failure,
-            (_) async {
-              await _syncMetaDataDao.updateLastSyncedAt('posCatalog');
-              hasMore = data.hasMore;
-              currentPage++;
-              return null;
-            },
-          );
+          try {
+            await _syncMetaDataDao.updateLastSyncedAt('posCatalog');
+          } catch (e) {
+            return ApiResult.failure(LocalDatabaseFailure('Write to local database failed.'));
+          }
 
-          return localFailure;
+          hasMore = data.hasMore;
+          currentPage++;
         },
+        failure: (failure) async => failure, // If API call fails,  return the failure
       );
-
-      // If a failure occurred during this page fetch, return early with the failure.
-      // Otherwise, continue fetching the next page
-      if (failure != null) return Left(failure);
     }
 
-    return const Right(null);
+    return const ApiResult.success(null);
+  }
+
+  Future<Failure?> _handleInitialSync(List<CatalogItem> products) async {
+    final result = await _local.upsertProducts(products);
+
+    return result.when(
+      success: (_) => null,
+      failure: (failure) => failure,
+    );
   }
 }

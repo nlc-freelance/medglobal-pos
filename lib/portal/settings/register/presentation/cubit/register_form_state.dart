@@ -24,7 +24,7 @@ extension RegisterFormStateExt on RegisterFormState {
     return Register(
       id: id,
       name: name!,
-      serialNumber: serialNo!,
+      serialNumber: serialNo,
       assignedBranch: assignedBranch!,
     );
   }

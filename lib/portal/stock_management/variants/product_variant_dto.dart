@@ -80,12 +80,6 @@ class ProductVariantDto extends Equatable {
         qtyAtSource: qtyOnHand,
       );
 
-  // POSProduct toPOSProductEntity() => POSProduct(
-  //       id: id,
-  //       displayName: displayName,
-  //       stock: qtyOnHand,
-  //       price: price,
-  //     );
   CatalogItem get toCatalogItem => CatalogItem(
         id: id!,
         displayName: displayName!,
@@ -93,4 +87,10 @@ class ProductVariantDto extends Equatable {
         price: price!,
         action: actionType,
       );
+
+  String get productVariantName {
+    final productName = product?.name;
+    final variantName = name == 'default' ? null : name;
+    return [productName, variantName].where((name) => name?.isNotEmpty == true).join(' ');
+  }
 }

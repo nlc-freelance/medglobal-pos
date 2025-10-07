@@ -3,135 +3,133 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
+import 'package:medglobal_admin_portal/core/network/new/api/api_result.dart';
+import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 
-class BaseApiService {
-  final DioServiceNew _dioService;
+class ApiService {
+  final HttpClient client;
 
-  BaseApiService(this._dioService);
+  ApiService(this.client);
 
   /// GET request for single object
-  Future<BaseApiResponse<T>> get<T>(
+  Future<T> get<T>(
     String path, {
     Map<String, dynamic>? queryParams,
-    required T Function(Map<String, dynamic>) fromJson,
+    required JsonParser<T> parser,
   }) async {
     try {
-      final response = await _dioService.dio.get(path, queryParameters: queryParams);
-
-      // Check for successful status code
-      if (response.statusCode == 200) {
-        return BaseApiResponse.fromJson(response.data, fromJson);
-      } else {
-        throw Exception('${response.statusCode} ${response.statusMessage}');
-      }
+      final response = await client.dio.get(path, queryParameters: queryParams);
+      return _parseResponse<T>(
+        response: response,
+        parser: parser,
+        format: ResponseFormat.single,
+      );
     } on DioException catch (e) {
       throw _mapDioError(e);
-    } catch (e) {
-      throw UnexpectedException(e.toString());
     }
   }
 
   /// GET request for list
-  Future<BaseApiResponse<List<T>>> getList<T>(
+  Future<List<T>> getList<T>(
     String path, {
     Map<String, dynamic>? queryParams,
-    required T Function(Map<String, dynamic>) fromJson,
+    required JsonParser<T> parser,
   }) async {
     try {
-      final response = await _dioService.dio.get(path, queryParameters: queryParams);
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return BaseApiResponse.fromJsonList(response.data, (list) => list.map((item) => fromJson(item)).toList());
-      } else {
-        throw Exception('${response.statusCode} ${response.statusMessage}');
-      }
+      final response = await client.dio.get(path, queryParameters: queryParams);
+      return _parseResponse<List<T>>(
+        response: response,
+        parser: (list) => list.map((item) => parser(item)).toList(),
+        format: ResponseFormat.list,
+      );
     } on DioException catch (e) {
       throw _mapDioError(e);
-    } catch (e) {
-      throw UnexpectedException(e.toString());
     }
   }
 
   /// GET request for paginated list
-  Future<BaseApiResponse<Paginated<T>>> getPaginated<T>(
+  Future<Paginated<T>> getPaginated<T>(
     String path, {
     Map<String, dynamic>? queryParams,
-    required T Function(Map<String, dynamic>) fromJson,
+    required JsonParser<T> parser,
   }) async {
     try {
-      final response = await _dioService.dio.get(path, queryParameters: queryParams);
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return BaseApiResponse.fromJson(response.data, (json) => Paginated<T>.fromJson(json, fromJson));
-      } else {
-        throw Exception('${response.statusCode} ${response.statusMessage}');
-      }
+      final response = await client.dio.get(path, queryParameters: queryParams);
+      return _parseResponse<Paginated<T>>(
+        response: response,
+        parser: (json) => Paginated<T>.fromJson(json, parser),
+        format: ResponseFormat.paginated,
+      );
     } on DioException catch (e) {
       throw _mapDioError(e);
-    } catch (e) {
-      throw UnexpectedException(e.toString());
     }
   }
 
   /// POST request
-  Future<BaseApiResponse<T>> post<T>(
+  Future<T> post<T>(
     String path, {
     required Map<String, dynamic> data,
-    required T Function(Map<String, dynamic>) fromJson,
+    required JsonParser<T> parser,
   }) async {
     try {
-      final response = await _dioService.dio.post(path, data: data);
-
-      if (response.data == null) {
-        throw UnexpectedException('No data returned.');
-      }
-
-      // Check for successful status code
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return BaseApiResponse.fromJson(response.data, fromJson);
-      } else {
-        throw Exception('${response.statusCode} ${response.statusMessage}');
-      }
+      final response = await client.dio.post(path, data: data);
+      return _parseResponse<T>(
+        response: response,
+        parser: parser,
+        format: ResponseFormat.single,
+      );
     } on DioException catch (e) {
       throw _mapDioError(e);
-    } catch (e) {
-      throw UnexpectedException(e.toString());
+    }
+  }
+
+  /// POST request
+  Future<List<T>> postData<T>(
+    String path, {
+    required Map<String, dynamic> data,
+    required JsonParser<T> parser,
+  }) async {
+    try {
+      final response = await client.dio.post(path, data: data);
+      return _parseResponse<List<T>>(
+        response: response,
+        parser: (list) => list.map((item) => parser(item)).toList(),
+        format: ResponseFormat.single,
+      );
+    } on DioException catch (e) {
+      throw _mapDioError(e);
     }
   }
 
   /// UPDATE request
-  Future<BaseApiResponse<T>> update<T>(
+  Future<T> update<T>(
     String path, {
     required Map<String, dynamic> data,
-    required T Function(Map<String, dynamic>) fromJson,
+    required JsonParser<T> parser,
   }) async {
     try {
-      final response = await _dioService.dio.put(path, data: data);
-
-      if (response.data == null) {
-        throw UnexpectedException('No data returned.');
-      }
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return BaseApiResponse.fromJson(response.data, fromJson);
-      } else {
-        throw Exception('${response.statusCode} ${response.statusMessage}');
-      }
+      final response = await client.dio.put(path, data: data);
+      return _parseResponse<T>(
+        response: response,
+        parser: parser,
+        format: ResponseFormat.single,
+      );
     } on DioException catch (e) {
       throw _mapDioError(e);
-    } catch (e) {
-      throw UnexpectedException(e.toString());
     }
   }
 
   /// DELETE request
   Future<void> delete<T>(String path) async {
     try {
-      await _dioService.dio.delete(path);
+      final response = await client.dio.delete(path);
+      _parseResponse<void>(
+        response: response,
+        parser: (_) {},
+        format: ResponseFormat.empty,
+      );
     } on DioException catch (e) {
       throw _mapDioError(e);
-    } catch (e) {
-      throw UnexpectedException(e.toString());
     }
   }
 
@@ -141,11 +139,14 @@ class BaseApiService {
     required Map<String, dynamic> data,
   }) async {
     try {
-      await _dioService.dio.put(path, data: data);
+      final response = await client.dio.put(path, data: data);
+      _parseResponse<void>(
+        response: response,
+        parser: (_) {},
+        format: ResponseFormat.empty,
+      );
     } on DioException catch (e) {
       throw _mapDioError(e);
-    } catch (e) {
-      throw UnexpectedException(e.toString());
     }
   }
 
@@ -155,23 +156,71 @@ class BaseApiService {
     required Map<String, dynamic> data,
   }) async {
     try {
-      await _dioService.dio.delete(path, data: data);
+      final response = await client.dio.delete(path, data: data);
+      return _parseResponse<void>(
+        response: response,
+        parser: (_) {},
+        format: ResponseFormat.empty,
+      );
     } on DioException catch (e) {
       throw _mapDioError(e);
-    } catch (e) {
-      throw UnexpectedException(e.toString());
     }
   }
 
-  AppException _mapDioError(DioException error) {
-    if (error.type == DioExceptionType.connectionTimeout) {
+  T _parseResponse<T>({
+    required Response response,
+    required JsonParser<T> parser,
+    required ResponseFormat format,
+  }) {
+    final statusCode = response.statusCode ?? 0;
+
+    if (statusCode >= 200 && statusCode < 300) {
+      final json = response.data;
+
+      switch (format) {
+        case ResponseFormat.single:
+          final data = (json is Map<String, dynamic>) ? json['data'] ?? json : json;
+          return parser(data);
+        case ResponseFormat.list:
+          final listJson = (json is Map<String, dynamic>) ? json['data'] ?? [] : json;
+          if (listJson is! List) throw UnexpectedException("Response Format: Expected list");
+          return parser(listJson);
+        case ResponseFormat.paginated:
+          return parser(json['data']);
+        case ResponseFormat.empty:
+          return Future.value() as T;
+      }
+    }
+    final message = response.data['message'] ?? response.data['error'] ?? 'Unknown error';
+
+    if (statusCode >= 400 && statusCode < 500) {
+      throw ClientException(message, code: statusCode);
+    } else if (statusCode >= 500) {
+      throw ServerException(message, code: statusCode);
+    } else {
+      throw UnexpectedException(message);
+    }
+  }
+
+  AppException _mapDioError(DioException e) {
+    final error = e.type;
+
+    if (error == DioExceptionType.connectionError || error == DioExceptionType.unknown) {
+      if (error is SocketException) {
+        return NetworkException();
+      } else {
+        return ServerException('Unexpected network error.');
+      }
+    }
+
+    if (error == DioExceptionType.connectionTimeout) {
       return ServerException('Connection timed out. Please try again.');
-    } else if (error.type == DioExceptionType.sendTimeout) {
+    } else if (error == DioExceptionType.sendTimeout) {
       return ServerException('Request timed out. Please try again.');
-    } else if (error.type == DioExceptionType.receiveTimeout) {
+    } else if (error == DioExceptionType.receiveTimeout) {
       return ServerException('Server took too long to respond. Please try again.');
-    } else if (error.type == DioExceptionType.badResponse) {
-      final response = error.response;
+    } else if (error == DioExceptionType.badResponse) {
+      final response = e.response;
       if (response != null && response.data != null) {
         if (response.data is Map<String, dynamic>) {
           final Map<String, dynamic> data = response.data;
@@ -182,15 +231,10 @@ class BaseApiService {
         return ServerException('Received invalid status code: ${response.statusCode}');
       }
       return ServerException('Something went wrong with the response.');
-    } else if (error.type == DioExceptionType.cancel) {
+    } else if (error == DioExceptionType.cancel) {
       return ServerException('Request was cancelled.');
-    } else if (error.type == DioExceptionType.unknown || error.type == DioExceptionType.connectionError) {
-      if (error.error is SocketException) {
-        return NetworkException('No internet connection. Please check your network and try again.');
-      }
-      return ServerException('Unexpected network error occurred.');
     } else {
-      return ServerException(error.message ?? 'An unexpected error occurred.');
+      return ServerException(e.message ?? 'Unexpected error.');
     }
   }
 }

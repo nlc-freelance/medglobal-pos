@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/repositories/stock_take_repository.dart';
 
 class UpdateStockTakeItemsByIdUseCase implements UseCase<void, UpdateStockTakeItemsByIdParams> {
@@ -8,7 +8,7 @@ class UpdateStockTakeItemsByIdUseCase implements UseCase<void, UpdateStockTakeIt
   UpdateStockTakeItemsByIdUseCase(this._repository);
 
   @override
-  Future<Either<Failure, void>> call(UpdateStockTakeItemsByIdParams params) =>
+  Future<ApiResult<void>> call(UpdateStockTakeItemsByIdParams params) =>
       _repository.updateStockItemsById(id: params.id, items: params.items);
 }
 

@@ -37,10 +37,11 @@ class _VariantBranchDataGridState extends State<BranchInventoryDataGrid> {
       listener: (context, state) {
         _branchInventories = state.variant.branchInventories ?? [];
 
-        _branchInventoryDataSource._branchInventories =
-            _branchInventories; // Double check if these are needed to update
-        _branchInventoryDataSource.buildDataGridRows(); //
-        _branchInventoryDataSource.updateDataGridSource(); //
+        _branchInventoryDataSource._branchInventories = _branchInventories;
+        _branchInventoryDataSource.buildDataGridRows();
+
+        // Since we are only using BlocListener here, call this to rebuild the datagrid
+        _branchInventoryDataSource.updateDataGridSource();
       },
       child: Container(
         decoration: DataGridUtil.verticalBorder,

@@ -1,19 +1,20 @@
 import 'package:medglobal_admin_portal/core/network/network.dart';
+import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction/transaction_dto.dart';
 
 class RemoteSaleDataSource {
-  final BaseApiService _api;
+  final ApiService _api;
 
-  RemoteSaleDataSource(this._api);
+  RemoteSaleDataSource({required ApiService api}) : _api = api;
 
   Future<TransactionDto> createSale(Map<String, dynamic> payload) async {
     // Future<TransactionDto> createSale(OrderPayload payload) async {
-    final response = await _api.post<TransactionDto>(
+    final data = await _api.post<TransactionDto>(
       ApiEndpoints.transactions,
       data: payload,
-      fromJson: TransactionDto.fromJson,
+      parser: (json) => parse(json, TransactionDto.fromJson),
     );
 
-    return response.data;
+    return data;
   }
 }

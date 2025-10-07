@@ -21,6 +21,11 @@ class UpdateReturnItemDto {
 
   Map<String, dynamic> toJson() => _$UpdateReturnItemDtoToJson(this);
 
+  @override
+  String toString() {
+    return 'UpdateReturnItemDto{id: $id, writeOffQuantity: $writeOffQuantity, restockQuantity: $restockQuantity, comment: $comment}';
+  }
+
   factory UpdateReturnItemDto.fromDomain(TransactionItem item) {
     return UpdateReturnItemDto(
       id: item.itemId!,

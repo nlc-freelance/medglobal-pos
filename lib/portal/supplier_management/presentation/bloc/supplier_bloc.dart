@@ -25,9 +25,9 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
     try {
       final result = await _repository.getSupplierById(event.id);
 
-      result.fold(
-        (failure) => emit(SupplierState.loadFailed(failure.message)),
-        (supplier) => emit(SupplierState.loaded(supplier)),
+      result.when(
+        success: (supplier) => emit(SupplierState.loaded(supplier)),
+        failure: (failure) => emit(SupplierState.loadFailed(failure.message)),
       );
     } catch (e) {
       emit(SupplierState.loadFailed(e.toString()));
@@ -41,9 +41,9 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
 
       final result = await _repository.createSupplier(payload);
 
-      result.fold(
-        (failure) => emit(SupplierState.failure(failure.message)),
-        (supplier) => emit(SupplierState.success('${supplier.name} successfully created.')),
+      result.when(
+        success: (supplier) => emit(SupplierState.success('${supplier.name} successfully created.')),
+        failure: (failure) => emit(SupplierState.failure(failure.message)),
       );
     } catch (e) {
       emit(SupplierState.failure(e.toString()));
@@ -58,9 +58,9 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
 
       final result = await _repository.updateSupplier(supplier.id!, payload);
 
-      result.fold(
-        (failure) => emit(SupplierState.failure(failure.message)),
-        (supplier) => emit(SupplierState.success('${supplier.name} successfully updated.')),
+      result.when(
+        success: (supplier) => emit(SupplierState.success('${supplier.name} successfully updated.')),
+        failure: (failure) => emit(SupplierState.failure(failure.message)),
       );
     } catch (e) {
       emit(SupplierState.failure(e.toString()));
@@ -72,9 +72,9 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
     try {
       final result = await _repository.deleteSupplier(event.supplierId);
 
-      result.fold(
-        (failure) => emit(SupplierState.failure(failure.message)),
-        (_) => emit(SupplierState.success('${event.supplierName} successfully deleted.')),
+      result.when(
+        success: (_) => emit(SupplierState.success('${event.supplierName} successfully deleted.')),
+        failure: (failure) => emit(SupplierState.failure(failure.message)),
       );
     } catch (e) {
       emit(SupplierState.failure(e.toString()));

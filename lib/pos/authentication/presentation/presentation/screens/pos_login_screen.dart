@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/mixins/dialog_mixin.dart';
-import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/widgets/login_form.dart';
-import 'package:medglobal_admin_portal/pos/auth_session/presentation/blocs/session/access_validation_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class PosLoginScreen extends StatelessWidget with DialogMixin {

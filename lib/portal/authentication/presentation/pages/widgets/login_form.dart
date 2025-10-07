@@ -4,7 +4,6 @@ import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/widgets/confirm_sign_in_dialog.dart';
-import 'package:medglobal_admin_portal/pos/auth_session/presentation/blocs/session/access_validation_bloc.dart';
 import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -69,11 +68,6 @@ class _LoginFormState extends State<LoginForm> {
         }
         if (state is AuthenticatedState) {
           PageLoader.close();
-          if (AppConfig.isPOSApp) {
-            // context.read<SessionBloc>().add(SessionEvent.start(state.user));
-            // print('aaa');
-            // context.read<DeviceSetupBloc>().add(const DeviceSetupEvent.checkup());
-          }
         }
         if (state is AuthErrorState ||
             state is ConfirmLoginErrorState ||

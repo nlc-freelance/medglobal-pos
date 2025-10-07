@@ -33,12 +33,16 @@ class Supplier with _$Supplier {
         cells: [
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(columnName: 'name', value: name),
-          DataGridCell<String>(columnName: 'email', value: email ?? Strings.empty),
-          DataGridCell<String>(columnName: 'phone', value: phone ?? Strings.empty),
+          DataGridCell<String>(columnName: 'email', value: email?.isNotEmpty == true ? email : Strings.noValue),
+          DataGridCell<String>(columnName: 'phone', value: phone?.isNotEmpty == true ? phone : Strings.noValue),
         ],
       );
 
-  String get address => [street1, street2, city, state, zipCode, country].where((e) => e?.isNotEmpty == true).join(' ');
+  String get address {
+    final text = [street1, street2, city, state, zipCode, country].where((e) => e?.isNotEmpty == true);
+    if (text.isEmpty) return Strings.noValue;
+    return text.join(' ');
+  }
 }
 
 // part 'supplier.g.dart';

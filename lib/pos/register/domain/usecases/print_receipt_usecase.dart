@@ -1,9 +1,9 @@
-import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/core/utils/print_util.dart';
-import 'package:medglobal_admin_portal/pos/device_setup/domain/repositories/remote_receipt_config_repository.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/repositories/receipt_config/remote_receipt_config_repository.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
-import 'package:medglobal_admin_portal/pos/syncing/services/connectivity_service.dart';
+import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_service.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 
 class PrintReceiptUseCase {
@@ -19,7 +19,7 @@ class PrintReceiptUseCase {
         _connection = connection,
         _remoteReceiptConfigRepository = remoteReceiptConfigRepository;
 
-  Future<Either<Failure, void>> call(Transaction transaction) async {
+  Future<ApiResult<void>> call(Transaction transaction) async {
     /// Get app session from AppSessionService
     final receiptConfig = _appSessionService.receiptConfig;
     final branchId = _appSessionService.branchId;
@@ -32,9 +32,8 @@ class PrintReceiptUseCase {
         if (isOnline && branchId != null) {
           final result = await _remoteReceiptConfigRepository.getReceiptConfigByBranch(branchId);
 
-          return result.fold(
-            (failure) => Left(failure),
-            (config) async {
+          return result.when(
+            success: (config) async {
               await PrintUtil.generateAndPrintReceipt(
                 transaction: transaction,
                 config: config,
@@ -43,11 +42,12 @@ class PrintReceiptUseCase {
               // update settings table
               _appSessionService.setReceiptConfig(config);
 
-              return const Right(null);
+              return const ApiResult.success(null);
             },
+            failure: (failure) => ApiResult.failure(failure),
           );
         } else {
-          return Left(UnexpectedFailure('Receipt configuration not found.'));
+          return ApiResult.failure(UnexpectedFailure('Receipt configuration not found.'));
         }
       }
 
@@ -56,9 +56,9 @@ class PrintReceiptUseCase {
         transaction: transaction,
         config: receiptConfig,
       );
-      return const Right(null);
+      return const ApiResult.success(null);
     } catch (e) {
-      return Left(UnexpectedFailure('Unexpected error occurred. ${e.toString()}'));
+      return ApiResult.failure(UnexpectedFailure('Unexpected error occurred. ${e.toString()}'));
     }
   }
 }

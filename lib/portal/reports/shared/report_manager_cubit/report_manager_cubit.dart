@@ -10,7 +10,7 @@ import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_tas
 import 'package:medglobal_admin_portal/portal/reports/domain/repositories/report_repository.dart';
 
 part 'report_manager_state.dart';
-part '../report_manager_cubit.freezed.dart';
+part 'report_manager_cubit.freezed.dart';
 
 /// A global Cubit that manages the lifecycle of report generation tasks,
 /// including creation, polling for status, and triggering downloads.
@@ -46,15 +46,8 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
     try {
       final result = await _repository.createReport(payload);
 
-      result.fold(
-        (failure) => _updateTaskInState(
-          tempTaskKey,
-          (task) => task.copyWith(
-            status: ReportTaskStatus.failure,
-            error: 'Failed to generate ${task.type.value}. ${failure.message}',
-          ),
-        ),
-        (report) {
+      result.when(
+        success: (report) {
           final newTaskKey = generateTaskKey(report.id, type);
           _updateTaskInState(
             tempTaskKey,
@@ -68,6 +61,13 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
 
           _startPolling(report.id, newTaskKey, autoDownload);
         },
+        failure: (failure) => _updateTaskInState(
+          tempTaskKey,
+          (task) => task.copyWith(
+            status: ReportTaskStatus.failure,
+            error: 'Failed to generate ${task.type.value}. ${failure.message}',
+          ),
+        ),
       );
     } catch (e) {
       _updateTaskInState(
@@ -91,19 +91,8 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
       try {
         final result = await _repository.getReport(reportId);
 
-        result.fold(
-          (failure) {
-            timer.cancel(); // Stop polling on failure
-            _updateTaskInState(
-              taskKey,
-              (task) => task.copyWith(
-                status: ReportTaskStatus.failure,
-                error: 'Failed to generate ${task.type.value}. ${failure.message}',
-                pollingTimer: null,
-              ),
-            );
-          },
-          (report) {
+        result.when(
+          success: (report) {
             if (report.status == ReportStatus.completed) {
               timer.cancel(); // Stop polling once ready
               _updateTaskInState(
@@ -118,6 +107,17 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
               // if (!report.type.isDownloadManual) downloadReport(taskKey);
               if (autoDownload) _downloadReport(taskKey);
             }
+          },
+          failure: (failure) {
+            timer.cancel(); // Stop polling on failure
+            _updateTaskInState(
+              taskKey,
+              (task) => task.copyWith(
+                status: ReportTaskStatus.failure,
+                error: 'Failed to generate ${task.type.value}. ${failure.message}',
+                pollingTimer: null,
+              ),
+            );
           },
         );
       } catch (e) {

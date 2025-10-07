@@ -1,7 +1,6 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/api/branch_api_service.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
@@ -17,7 +16,7 @@ class BranchRepositoryImpl extends BaseRepository implements BranchRepository {
   BranchRepositoryImpl({required BranchApiService api}) : _api = api;
 
   @override
-  Future<Either<Failure, PaginatedList<Branch>>> getBranches(PageQuery query) async {
+  Future<ApiResult<PaginatedList<Branch>>> getBranches(PageQuery query) async {
     return call(() async {
       final response = await _api.getBranches(query);
       return response.convert((dto) => BranchMapper.fromDto(dto));
@@ -25,7 +24,7 @@ class BranchRepositoryImpl extends BaseRepository implements BranchRepository {
   }
 
   @override
-  Future<Either<Failure, Branch>> getBranch(int id) async {
+  Future<ApiResult<Branch>> getBranch(int id) async {
     return call(() async {
       final response = await _api.getBranchById(id);
       return BranchMapper.fromDto(response);
@@ -33,7 +32,7 @@ class BranchRepositoryImpl extends BaseRepository implements BranchRepository {
   }
 
   @override
-  Future<Either<Failure, Branch>> createBranch(BranchPayload payload) async {
+  Future<ApiResult<Branch>> createBranch(BranchPayload payload) async {
     return call(() async {
       final response = await _api.createBranch(payload);
       return BranchMapper.fromDto(response);
@@ -41,7 +40,7 @@ class BranchRepositoryImpl extends BaseRepository implements BranchRepository {
   }
 
   @override
-  Future<Either<Failure, Branch>> updateBranch(int id, BranchPayload payload) async {
+  Future<ApiResult<Branch>> updateBranch(int id, BranchPayload payload) async {
     return call(() async {
       final response = await _api.updateBranch(id, payload);
       return BranchMapper.fromDto(response);
@@ -49,17 +48,17 @@ class BranchRepositoryImpl extends BaseRepository implements BranchRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteBranch(int id) async {
+  Future<ApiResult<void>> deleteBranch(int id) async {
     return call(() async => await _api.deleteBranch(id));
   }
 
   @override
-  Future<Either<Failure, ReceiptConfiguration>> getReceiptConfigurationByBranchId(int id) async {
+  Future<ApiResult<ReceiptConfiguration>> getReceiptConfigurationByBranchId(int id) async {
     return call(() async => await _api.getReceiptConfigurationByBranchId(id));
   }
 
   @override
-  Future<Either<Failure, PaginatedList<BranchPartial>>> getBranchesPartial(PageQuery query) {
+  Future<ApiResult<PaginatedList<BranchPartial>>> getBranchesPartial(PageQuery query) {
     return call(() async {
       final response = await _api.getBranchesPartial(query);
       return response.convert((dto) => BranchPartialMapper.fromDto(dto));

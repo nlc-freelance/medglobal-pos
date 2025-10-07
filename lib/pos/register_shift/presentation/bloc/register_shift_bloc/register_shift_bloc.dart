@@ -46,9 +46,8 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
     try {
       final result = await _checkForOpenRegisterShiftUseCase.call();
 
-      result.fold(
-        (failure) => emit(RegisterShiftState.failure(failure.message)),
-        (openShift) {
+      result.when(
+        success: (openShift) {
           // If an open shift is found, emit open state.
           if (openShift != null) {
             emit(RegisterShiftState.open(openShift));
@@ -60,6 +59,7 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
             add(const _GetLastClosedShift());
           }
         },
+        failure: (failure) => emit(RegisterShiftState.failure(failure.message)),
       );
     } catch (e) {
       emit(RegisterShiftState.failure(e.toString()));
@@ -72,12 +72,11 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
     try {
       final result = await _getLastClosedRegisterShiftUseCase.call();
 
-      result.fold(
-        // If last closed shift fetch fails, still emit closed state with null.
-        (_) => emit(const RegisterShiftState.closed(null)),
-
+      result.when(
         // Emit closed state with the last closed timestamp, if available.
-        (lastShift) => emit(RegisterShiftState.closed(lastShift?.closedAt)),
+        success: (lastShift) => emit(RegisterShiftState.closed(lastShift?.closedAt)),
+        // If last closed shift fetch fails, still emit closed state with null.
+        failure: (_) => emit(const RegisterShiftState.closed(null)),
       );
     } catch (e) {
       emit(RegisterShiftState.failure(e.toString()));
@@ -89,15 +88,15 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
 
     try {
       final result = await _openRegisterShiftUseCase.call(event.amount);
-      result.fold(
-        (failure) {
+      result.when(
+        success: (data) => emit(RegisterShiftState.open(data)),
+        failure: (failure) {
           if (failure is AlreadyExistsFailure<RegisterShift>) {
             emit(RegisterShiftState.open(failure.data, message: failure.message));
             return;
           }
           emit(RegisterShiftState.failure(failure.message));
         },
-        (data) => emit(RegisterShiftState.open(data)),
       );
     } catch (e) {
       emit(RegisterShiftState.failure(e.toString()));
@@ -109,9 +108,9 @@ class RegisterShiftBloc extends Bloc<RegisterShiftEvent, RegisterShiftState> {
 
     try {
       final result = await _closeRegisterShiftUseCase.call(event.shiftId, event.amount);
-      result.fold(
-        (failure) => emit(RegisterShiftState.failure(failure.message)),
-        (shift) => emit(RegisterShiftState.closed(shift.closedAt)),
+      result.when(
+        success: (shift) => emit(RegisterShiftState.closed(shift.closedAt)),
+        failure: (failure) => emit(RegisterShiftState.failure(failure.message)),
       );
     } catch (e) {
       emit(RegisterShiftState.failure(e.toString()));

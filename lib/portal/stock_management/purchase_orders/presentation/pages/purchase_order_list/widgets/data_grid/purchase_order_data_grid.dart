@@ -32,18 +32,6 @@ class _PurchaseOrderDataGridState extends State<PurchaseOrderDataGrid> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PaginatedListBloc<PurchaseOrder>, PaginatedListState<PurchaseOrder>>(
-      // listenWhen: (previous, current) {
-      //   if (previous is PurchaseOrderListLoading && current is PurchaseOrderListLoaded) {
-      //     return ((current.data.currentPage! <= current.data.totalPages!) == true);
-      //   }
-      //   return false;
-      // },
-      // listener: (context, state) {
-      //   if (state is PurchaseOrderListLoaded) {
-      //     purchaseOrders = state.data.purchaseOrders ?? [];
-      //     _purchaseOrderDataGridSource = PurchaseOrderDataGridSource(purchaseOrders);
-      //   }
-      // },
       builder: (context, state) {
         return state.maybeWhen(
           loaded: (data) {
@@ -59,7 +47,7 @@ class _PurchaseOrderDataGridState extends State<PurchaseOrderDataGrid> {
                       data: DataGridUtil.rowNavigationStyle,
                       child: SfDataGrid(
                         source: _purchaseOrderDataGridSource,
-                        columns: DataGridUtil.getColumns(DataGridColumn.purchaseOrders),
+                        columns: DataGridUtil.getColumns(DataGridColumn.purchaseOrders, showId: true),
                         controller: _dataGridController,
                         shrinkWrapRows: true,
                         navigationMode: GridNavigationMode.row,
@@ -94,203 +82,10 @@ class _PurchaseOrderDataGridState extends State<PurchaseOrderDataGrid> {
           },
           failure: (message) => FailureView(message),
           orElse: () => DataGridLoading(
-            columns: DataGridUtil.getColumns(DataGridColumn.purchaseOrders),
+            columns: DataGridUtil.getColumns(DataGridColumn.purchaseOrders, showId: true),
             source: _purchaseOrderDataGridSource = PurchaseOrderDataGridSource(context, purchaseOrders: []),
           ),
         );
-
-        // if (state is PurchaseOrderListError) {
-        //   return Text(state.message);
-        // }
-        // if (state is PurchaseOrderListLoaded) {
-        //   return Column(
-        //     children: [
-        //       Expanded(
-        //         child: Container(
-        //           decoration: UIStyleContainer.topBorder,
-        //           child: ClipRect(
-        //             clipper: HorizontalBorderClipper(),
-        //             child: SfDataGridTheme(
-        //               data: DataGridUtil.rowNavigationStyle,
-        //               child: SfDataGrid(
-        //                 source: _purchaseOrderDataGridSource,
-        //                 columns: DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS, showId: true),
-        //                 controller: _dataGridController,
-        //                 shrinkWrapRows: true,
-        //                 navigationMode: GridNavigationMode.row,
-        //                 columnWidthMode: ColumnWidthMode.fill,
-        //                 headerGridLinesVisibility: GridLinesVisibility.none,
-        //                 gridLinesVisibility: GridLinesVisibility.horizontal,
-        //                 headerRowHeight: 38,
-        //                 footerHeight: 100,
-        //                 footer: _purchaseOrderDataGridSource.rows.isEmpty
-        //                     ? Padding(
-        //                         padding: const EdgeInsets.all(8.0),
-        //                         child: Column(
-        //                           children: [
-        //                             Assets.icons.cube.svg(),
-        //                             const UIVerticalSpace(12),
-        //                             UIText.labelMedium('No data available'),
-        //                           ],
-        //                         ),
-        //                       )
-        //                     : null,
-        //                 onCellTap: (details) {},
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //       const UIVerticalSpace(16),
-        //       if (state.data.purchaseOrders?.isNotEmpty == true)
-
-        //         /// TODO: Extract pager to its own widget
-        //         Row(
-        //           children: [
-        //             BlocListener<PurchaseOrderListFilterCubit, PurchaseOrderListFilterState>(
-        //               listenWhen: (previous, current) => previous.size != current.size,
-        //               listener: (context, filter) {
-        //                 setState(() => _rowsPerPage = filter.size!);
-        //               },
-        //               child: UIPopupMenuButton.textIcon(
-        //                 title: '$_rowsPerPage rows',
-        //                 iconBuilder: (isHover) => Assets.icons.arrowDown.setColorOnHover(isHover),
-        //                 onSelect: (value) {
-        //                   setState(() => _rowsPerPage = value);
-        //                   context.read<PurchaseOrderListFilterCubit>().setSize(value);
-
-        //                   /// Go back to page 1 when:
-        //                   ///  - total count is greater than the requested rows per page
-        //                   ///  - requested rows per page will not have data anymore in the upcoming page to request
-        //                   /// Example:
-        //                   /// Previous list is 20 rows per page and have a total of 5 pages,
-        //                   ///  when user now requests to have 100 rows per page, and the total page becomes less than 5,
-        //                   ///  the next response will be an empty list.
-        //                   /// To avoid, use the [totalPage], [totalCount] and the [rowsPerPage] selected to check
-        //                   ///  if the page to pass in the request will be greater than the [totalPage] of our data.
-        //                   /// If it is greater than the actual total page, then reset it to 1.
-        //                   if (state.data.totalCount! <= value ||
-        //                       state.data.totalPages! + 1 >
-        //                           ((state.data.totalCount! + (_rowsPerPage - 1)) / _rowsPerPage)) {
-        //                     context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
-        //                           page: 1,
-        //                           size: _rowsPerPage,
-        //                           branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
-        //                           status: context.read<PurchaseOrderListFilterCubit>().state.status,
-        //                           startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
-        //                           endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
-        //                         );
-        //                   } else {
-        //                     context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
-        //                           page: state.data.currentPage!,
-        //                           size: _rowsPerPage,
-        //                           branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
-        //                           status: context.read<PurchaseOrderListFilterCubit>().state.status,
-        //                           startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
-        //                           endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
-        //                         );
-        //                   }
-        //                 },
-        //                 menu: const [20, 50, 100],
-        //                 menuAsString: (menu) => menu.toString(),
-        //               ),
-        //             ),
-        //             const UIHorizontalSpace(16),
-        //             UIText.labelMedium(
-        //               'Viewing ${(state.data.currentPage! - 1) * _rowsPerPage + 1} - ${state.data.currentPage! * _rowsPerPage > state.data.totalCount! ? state.data.totalCount! : state.data.currentPage! * _rowsPerPage} of ${state.data.totalCount} records',
-        //               color: UIColors.textLight,
-        //             ),
-        //             const Spacer(),
-        //             UIText.labelMedium(
-        //               'Page ${state.data.currentPage} of ${state.data.totalPages}',
-        //               color: UIColors.textLight,
-        //             ),
-        //             const UIHorizontalSpace(16),
-        //             IconButton(
-        //               onPressed: () {
-        //                 if (state.data.currentPage != 1) {
-        //                   context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
-        //                         page: 1,
-        //                         size: _rowsPerPage,
-        //                         branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
-        //                         status: context.read<PurchaseOrderListFilterCubit>().state.status,
-        //                         startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
-        //                         endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
-        //                       );
-        //                 }
-        //               },
-        //               icon: Assets.icons.firstPage.svg(
-        //                 colorFilter:
-        //                     (state.data.currentPage == 1 ? UIColors.textMuted : UIColors.textRegular).toColorFilter,
-        //               ),
-        //             ),
-        //             IconButton(
-        //               onPressed: () {
-        //                 if (state.data.currentPage != 1) {
-        //                   context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
-        //                         page: state.data.currentPage! - 1,
-        //                         size: _rowsPerPage,
-        //                         branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
-        //                         status: context.read<PurchaseOrderListFilterCubit>().state.status,
-        //                         startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
-        //                         endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
-        //                       );
-        //                 }
-        //               },
-        //               icon: Assets.icons.arrowLeft.svg(
-        //                 colorFilter:
-        //                     (state.data.currentPage == 1 ? UIColors.textMuted : UIColors.textRegular).toColorFilter,
-        //               ),
-        //             ),
-        //             IconButton(
-        //               onPressed: () {
-        //                 if (state.data.currentPage != state.data.totalPages) {
-        //                   context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
-        //                         page: state.data.currentPage! + 1,
-        //                         size: _rowsPerPage,
-        //                         branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
-        //                         status: context.read<PurchaseOrderListFilterCubit>().state.status,
-        //                         startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
-        //                         endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
-        //                       );
-        //                 }
-        //               },
-        //               icon: Assets.icons.arrowRight.svg(
-        //                 colorFilter: (state.data.currentPage == state.data.totalPages
-        //                         ? UIColors.textMuted
-        //                         : UIColors.textRegular)
-        //                     .toColorFilter,
-        //               ),
-        //             ),
-        //             IconButton(
-        //               onPressed: () {
-        //                 if (state.data.currentPage != state.data.totalPages) {
-        //                   context.read<PurchaseOrderListRemoteCubit>().getPurchaseOrders(
-        //                         page: state.data.totalPages!,
-        //                         size: _rowsPerPage,
-        //                         branchId: context.read<PurchaseOrderListFilterCubit>().state.branchId,
-        //                         status: context.read<PurchaseOrderListFilterCubit>().state.status,
-        //                         startDate: context.read<PurchaseOrderListFilterCubit>().state.startDate,
-        //                         endDate: context.read<PurchaseOrderListFilterCubit>().state.endDate,
-        //                       );
-        //                 }
-        //               },
-        //               icon: Assets.icons.lastPage.svg(
-        //                 colorFilter: (state.data.currentPage == state.data.totalPages
-        //                         ? UIColors.textMuted
-        //                         : UIColors.textRegular)
-        //                     .toColorFilter,
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //     ],
-        //   );
-        // }
-        // return DataGridLoading(
-        //   columns: DataGridUtil.getColumns(DataGridColumn.PURCHASE_ORDERS, showId: true),
-        //   source: _purchaseOrderDataGridSource = PurchaseOrderDataGridSource([]),
-        // );
       },
     );
   }
@@ -341,7 +136,7 @@ class PurchaseOrderDataGridSource extends DataGridSource {
     required int purchaseOrderId,
   }) =>
       switch (colName) {
-        'date' => HoverBuilder(
+        'id' => HoverBuilder(
             builder: (isHover) => InkWell(
               onTap: () => _onTapPurchaseOrder(purchaseOrderId),
               hoverColor: UIColors.transparent,

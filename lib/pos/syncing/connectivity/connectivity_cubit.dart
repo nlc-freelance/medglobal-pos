@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:medglobal_admin_portal/pos/syncing/services/connectivity_service.dart';
+import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_service.dart';
 
 class ConnectivityCubit extends Cubit<bool> {
   final ConnectivityService _service;

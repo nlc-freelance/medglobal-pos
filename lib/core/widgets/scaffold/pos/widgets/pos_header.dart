@@ -4,11 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/presentation/blocs/device_setup/device_setup_bloc.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/bloc/print_receipt/print_receipt_cubit.dart';
-import 'package:medglobal_admin_portal/pos/register/presentation/screens/register_screen.dart';
 import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_cubit.dart';
-import 'package:medglobal_admin_portal/pos/syncing/sync/operation_sync_bloc.dart';
-import 'package:medglobal_admin_portal/pos/syncing/sync/sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/syncing/sync/write_sync_bloc/write_sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -69,12 +66,6 @@ class PosHeader extends StatelessWidget {
             );
           },
         ),
-        // BlocBuilder<ConnectivityCubit, bool>(
-        //   builder: (context, isOnline) => Icon(
-        //     isOnline ? Icons.wifi : Icons.wifi_off,
-        //     size: 18,
-        //   ),
-        // ),
         const SizedBox(
           height: 26,
           child: VerticalDivider(
@@ -83,153 +74,144 @@ class PosHeader extends StatelessWidget {
             width: 30,
           ),
         ),
-        Container(
-          // padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-          // decoration: BoxDecoration(
-          //   border: Border.all(color: UIColors.borderRegular),
-          //   borderRadius: BorderRadius.circular(8),
-          // ),
-          child: Row(
-            children: [
-              BlocBuilder<OperationSyncBloc, OperationSyncState>(
-                builder: (context, state) {
-                  return state.maybeWhen(
-                    // initial: () => Row(
-                    //   children: [
-                    //     const CupertinoActivityIndicator(radius: 8),
-                    //     const UIHorizontalSpace(10),
-                    //     Text(
-                    //       'Sync Pending',
-                    //       style: UIStyleText.label.copyWith(
-                    //         fontSize: 14.2,
-                    //         color: UIColors.textLight,
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                    syncing: () => Row(
-                      children: [
-                        const CupertinoActivityIndicator(radius: 7.5, color: UIColors.textRegular),
-                        const UIHorizontalSpace(10),
-                        Text(
-                          'Uploading local data..',
-                          style: UIStyleText.hintRegular.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: UIColors.textRegular,
-                          ),
+        Row(
+          children: [
+            BlocBuilder<WriteSyncBloc, WriteSyncState>(
+              builder: (context, state) {
+                return state.maybeWhen(
+                  // initial: () => Row(
+                  //   children: [
+                  //     const CupertinoActivityIndicator(radius: 8),
+                  //     const UIHorizontalSpace(10),
+                  //     Text(
+                  //       'Sync Pending',
+                  //       style: UIStyleText.label.copyWith(
+                  //         fontSize: 14.2,
+                  //         color: UIColors.textLight,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  syncing: () => Row(
+                    children: [
+                      const CupertinoActivityIndicator(radius: 7.5, color: UIColors.textRegular),
+                      const UIHorizontalSpace(10),
+                      Text(
+                        'Uploading local data..',
+                        style: UIStyleText.hintRegular.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: UIColors.textRegular,
                         ),
-                      ],
-                    ),
-                    synced: (lastSyncedAt, _) => Tooltip(
-                      message: 'Sync now',
-                      child: GestureDetector(
-                        onTap: () =>
-                            context.read<OperationSyncBloc>().add(const OperationSyncEvent.syncNow(manual: true)),
-                        child: MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.cloud_done_rounded,
-                                size: 14,
-                                color: UIColors.success,
-                              ),
-                              const UIHorizontalSpace(8),
-                              lastSyncedAt == null
-                                  ? const Text('Not synced yet')
-                                  : Text.rich(
-                                      TextSpan(
-                                        text: 'Last upload ',
-                                        style: UIStyleText.hintRegular.copyWith(
-                                          fontWeight: FontWeight.w500,
-                                          color: UIColors.textRegular,
-                                          // color: UIColors.completed,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: timeago.format(lastSyncedAt),
-                                            style: UIStyleText.hintRegular.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              color: UIColors.textRegular,
-                                              // color: UIColors.completed,
-                                            ),
-                                          ),
-                                        ],
+                      ),
+                    ],
+                  ),
+                  synced: (lastSyncedAt, _) => Tooltip(
+                    message: 'Sync now',
+                    child: GestureDetector(
+                      onTap: () => context.read<WriteSyncBloc>().add(const WriteSyncEvent.syncNow(manual: true)),
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.cloud_done_rounded,
+                              size: 14,
+                              color: UIColors.success,
+                            ),
+                            const UIHorizontalSpace(8),
+                            lastSyncedAt == null
+                                ? const Text('Not synced yet')
+                                : Text.rich(
+                                    TextSpan(
+                                      text: 'Last upload ',
+                                      style: UIStyleText.hintRegular.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: UIColors.textRegular,
+                                        // color: UIColors.completed,
                                       ),
+                                      children: [
+                                        TextSpan(
+                                          text: timeago.format(lastSyncedAt),
+                                          style: UIStyleText.hintRegular.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            color: UIColors.textRegular,
+                                            // color: UIColors.completed,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    failure: (message, lastSyncedAt, _) => Tooltip(
-                      message: 'Retry sync',
-                      child: GestureDetector(
-                        onTap: () =>
-                            context.read<OperationSyncBloc>().add(const OperationSyncEvent.syncNow(manual: true)),
-                        child: MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.sync,
-                                size: 16,
-                                color: UIColors.cancelled,
-                              ),
-                              const UIHorizontalSpace(6),
-                              Text.rich(
-                                TextSpan(
-                                  text: 'Upload failed, ',
-                                  style: UIStyleText.hintRegular.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    color: UIColors.cancelled,
                                   ),
-                                  children: lastSyncedAt == null
-                                      ? [
-                                          TextSpan(
-                                            text: 'never synced',
-                                            style: UIStyleText.hintRegular.copyWith(
-                                              fontWeight: FontWeight.w500,
-                                              color: UIColors.cancelled,
-                                            ),
-                                          )
-                                        ]
-                                      : [
-                                          TextSpan(
-                                            text: 'last upload ',
-                                            style: UIStyleText.hintRegular.copyWith(
-                                              fontWeight: FontWeight.w500,
-                                              color: UIColors.cancelled,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: timeago.format(lastSyncedAt),
-                                            style: UIStyleText.hintRegular.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              color: UIColors.cancelled,
-                                            ),
-                                          ),
-                                        ],
-                                ),
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
                       ),
                     ),
-                    orElse: () => Text(
-                      'Nothing to sync yet',
-                      style: UIStyleText.hintRegular.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: UIColors.textRegular,
+                  ),
+                  failure: (message, lastSyncedAt, _) => Tooltip(
+                    message: 'Retry sync',
+                    child: GestureDetector(
+                      onTap: () => context.read<WriteSyncBloc>().add(const WriteSyncEvent.syncNow(manual: true)),
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.sync,
+                              size: 16,
+                              color: UIColors.cancelled,
+                            ),
+                            const UIHorizontalSpace(6),
+                            Text.rich(
+                              TextSpan(
+                                text: 'Upload failed, ',
+                                style: UIStyleText.hintRegular.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: UIColors.cancelled,
+                                ),
+                                children: lastSyncedAt == null
+                                    ? [
+                                        TextSpan(
+                                          text: 'never synced',
+                                          style: UIStyleText.hintRegular.copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            color: UIColors.cancelled,
+                                          ),
+                                        )
+                                      ]
+                                    : [
+                                        TextSpan(
+                                          text: 'last upload ',
+                                          style: UIStyleText.hintRegular.copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            color: UIColors.cancelled,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: timeago.format(lastSyncedAt),
+                                          style: UIStyleText.hintRegular.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            color: UIColors.cancelled,
+                                          ),
+                                        ),
+                                      ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    // orElse: () => const SizedBox.shrink(),
-                  );
-                },
-              ),
-            ],
-          ),
+                  ),
+                  orElse: () => Text(
+                    'Nothing to sync yet',
+                    style: UIStyleText.hintRegular.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: UIColors.textRegular,
+                    ),
+                  ),
+                  // orElse: () => const SizedBox.shrink(),
+                );
+              },
+            ),
+          ],
         ),
       ],
     );
@@ -259,8 +241,6 @@ class RegisterBranchStatus extends StatelessWidget {
                     '${settings.register.name}  /  ${settings.branch.name}',
                     style: UIStyleText.labelMedium.copyWith(fontSize: 14.2),
                   ),
-                  // const UIHorizontalSpace(16),
-                  // const RegisterStatus(),
                   const UIHorizontalSpace(18),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
@@ -299,56 +279,3 @@ class RegisterBranchStatus extends StatelessWidget {
     );
   }
 }
-
-// class RegisterStatus extends StatelessWidget {
-//   const RegisterStatus({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
-//       builder: (context, state) {
-//         final isLoading = state.maybeWhen(
-//           open: (_, __) => false,
-//           closed: (_) => false,
-//           orElse: () => true,
-//         );
-//
-//         final isOpen = state.maybeWhen(
-//           open: (_, __) => true,
-//           orElse: () => false,
-//         );
-//
-//         final status = isOpen ? RegisterShiftStatus.open : RegisterShiftStatus.closed;
-//
-//         return isLoading
-//             ? const CupertinoActivityIndicator(radius: 8)
-//             : Container(
-//                 padding: const EdgeInsets.fromLTRB(10, 4.5, 10, 5),
-//                 decoration: BoxDecoration(
-//                   // color: isOpen ? UIColors.completedBg : UIColors.awaitingActionBg,
-//                   borderRadius: BorderRadius.circular(8),
-//                   border: Border.all(color: isOpen ? UIColors.completedBg : UIColors.borderRegular),
-//                 ),
-//                 child: Row(
-//                   children: [
-//                     Icon(
-//                       Icons.circle_rounded,
-//                       size: 8,
-//                       color: isOpen ? UIColors.success : UIColors.textRegular,
-//                     ),
-//                     const UIHorizontalSpace(6),
-//                     Text(
-//                       status.label,
-//                       style: UIStyleText.label.copyWith(
-//                         color: isOpen ? UIColors.success : UIColors.textRegular,
-//                         fontWeight: FontWeight.w600,
-//                         fontSize: 12,
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               );
-//       },
-//     );
-//   }
-// }

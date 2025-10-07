@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register/register_payload.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
 
@@ -24,9 +24,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       final payload = RegisterPayload.fromRegister(event.register);
       final result = await _repository.createRegister(payload);
 
-      result.fold(
-        (failure) => emit(RegisterState.failure(failure.message)),
-        (register) => emit(RegisterState.success('${register.name} successfully created.')),
+      result.when(
+        success: (register) => emit(RegisterState.success('${register.name} successfully created.')),
+        failure: (failure) => emit(RegisterState.failure(failure.message)),
       );
     } catch (e) {
       emit(RegisterState.failure(e.toString()));
@@ -39,9 +39,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       final payload = RegisterPayload.fromRegister(event.register);
       final result = await _repository.updateRegister(event.id, payload);
 
-      result.fold(
-        (failure) => emit(RegisterState.failure(failure.message)),
-        (register) => emit(RegisterState.success('${register.name} successfully updated.')),
+      result.when(
+        success: (register) => emit(RegisterState.success('${register.name} successfully updated.')),
+        failure: (failure) => emit(RegisterState.failure(failure.message)),
       );
     } catch (e) {
       emit(RegisterState.failure(e.toString()));
@@ -53,9 +53,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     try {
       final result = await _repository.deleteRegister(event.register.id!);
 
-      result.fold(
-        (failure) => emit(RegisterState.failure(failure.message)),
-        (_) => emit(RegisterState.deleted('${event.register.name} successfully deleted.')),
+      result.when(
+        success: (_) => emit(RegisterState.deleted('${event.register.name} successfully deleted.')),
+        failure: (failure) => emit(RegisterState.failure(failure.message)),
       );
     } catch (e) {
       emit(RegisterState.failure(e.toString()));

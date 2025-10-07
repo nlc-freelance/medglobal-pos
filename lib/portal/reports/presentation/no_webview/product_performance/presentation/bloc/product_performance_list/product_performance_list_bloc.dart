@@ -26,9 +26,9 @@ class ProductPerformanceListBloc extends Bloc<ProductPerformanceListEvent, Produ
     try {
       final result = await _repository.getReports(event.query);
 
-      result.fold(
-        (failure) => emit(ProductPerformanceListState.failure(failure.message)),
-        (data) => emit(ProductPerformanceListState.loaded(data)),
+      result.when(
+        success: (data) => emit(ProductPerformanceListState.loaded(data)),
+        failure: (failure) => emit(ProductPerformanceListState.failure(failure.message)),
       );
     } catch (e) {
       emit(ProductPerformanceListState.failure(e.toString()));

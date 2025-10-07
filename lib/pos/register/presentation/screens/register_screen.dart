@@ -10,7 +10,7 @@ import 'package:medglobal_admin_portal/pos/product_catalog/presentation/cubit/pr
 import 'package:medglobal_admin_portal/pos/register/presentation/screens/cart/cart_closed/cart_closed.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/screens/cart/cart_open/cart_open.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/presentation/screens/product_catalog_data_grid.dart';
-import 'package:medglobal_admin_portal/pos/syncing/sync/sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/syncing/sync/read_sync_bloc/read_sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -177,7 +177,7 @@ class SyncStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        BlocBuilder<SyncBloc, SyncState>(
+        BlocBuilder<ReadSyncBloc, ReadSyncState>(
           builder: (context, state) {
             return state.maybeWhen(
               syncing: () => Row(
@@ -196,7 +196,7 @@ class SyncStatus extends StatelessWidget {
               synced: (lastSyncedAt, _) => Tooltip(
                 message: 'Sync now',
                 child: GestureDetector(
-                  onTap: () => context.read<SyncBloc>().add(const SyncEvent.syncNow(manual: true)),
+                  onTap: () => context.read<ReadSyncBloc>().add(const ReadSyncEvent.syncNow(manual: true)),
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: Row(
@@ -237,7 +237,7 @@ class SyncStatus extends StatelessWidget {
               failure: (message, lastSyncedAt, _) => Tooltip(
                 message: 'Retry sync',
                 child: GestureDetector(
-                  onTap: () => context.read<SyncBloc>().add(const SyncEvent.syncNow(manual: true)),
+                  onTap: () => context.read<ReadSyncBloc>().add(const ReadSyncEvent.syncNow(manual: true)),
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: Row(

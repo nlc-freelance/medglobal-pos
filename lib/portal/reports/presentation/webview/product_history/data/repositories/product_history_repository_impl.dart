@@ -1,34 +1,33 @@
-import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/data/api/product_history_api.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/domain/entities/product_history_paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/domain/repositories/product_history_repository.dart';
 
-class ProductHistoryRepositoryImpl implements ProductHistoryRepository {
-  final ProductHistoryApi _purchaseOrderApi;
+/// Concrete implementation of [ProductHistoryRepository] that uses [ProductHistoryApi] for API calls
+/// and [BaseRepository] to centralize error handling.
+class ProductHistoryRepositoryImpl extends BaseRepository implements ProductHistoryRepository {
+  final ProductHistoryApi _api;
 
-  ProductHistoryRepositoryImpl(this._purchaseOrderApi);
+  ProductHistoryRepositoryImpl(this._api);
 
   @override
-  Future<Either<Failure, ProductHistoryPaginatedList>> getProductHistory({
+  Future<ApiResult<ProductHistoryPaginatedList>> getProductHistory({
     required int variantId,
     required int branchId,
     required String startDate,
     required int page,
     required int size,
-  }) async {
-    try {
-      final response = await _purchaseOrderApi.getProductHistory(
+  }) {
+    return call(() async {
+      final response = await _api.getProductHistory(
         page: page,
         size: size,
         variantId: variantId,
         branchId: branchId,
         startDate: startDate,
       );
-      return Right(response);
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+      return response;
+    });
   }
 }

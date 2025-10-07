@@ -1,15 +1,14 @@
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 
 part 'lazy_list_event.dart';
 part 'lazy_list_state.dart';
 part 'lazy_list_bloc.freezed.dart';
 
 class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
-  final Future<Either<Failure, PaginatedList<T>>> Function(PageQuery query) _fetch;
+  final Future<ApiResult<PaginatedList<T>>> Function(PageQuery query) _fetch;
 
   LazyListBloc(this._fetch) : super(LazyListState<T>.initial()) {
     on<LazyListEvent<T>>(_onEvent);
@@ -39,13 +38,8 @@ class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
         try {
           final result = await _fetch(PageQuery(page: _currentPage, size: 10, extra: filters));
 
-          result.fold(
-            (error) => emit(state.copyWith(
-              isLoadingInitial: false,
-              isLoadingMore: false,
-              error: error.message,
-            )),
-            (data) {
+          result.when(
+            success: (data) {
               _cachedItems.addAll(data.items);
               _totalCount = data.totalCount;
 
@@ -62,6 +56,11 @@ class LazyListBloc<T> extends Bloc<LazyListEvent<T>, LazyListState<T>> {
 
               if (!hasReachedMax) _currentPage++;
             },
+            failure: (error) => emit(state.copyWith(
+              isLoadingInitial: false,
+              isLoadingMore: false,
+              error: error.message,
+            )),
           );
         } catch (e) {
           emit(state.copyWith(

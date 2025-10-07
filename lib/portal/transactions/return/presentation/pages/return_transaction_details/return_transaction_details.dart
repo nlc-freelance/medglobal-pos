@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
@@ -25,6 +26,7 @@ class ReturnTransactionDetails extends StatelessWidget {
           context.read<ReturnCubit>().setReturnItems(state.transaction.items ?? []);
           SnackbarUtil.success(context, 'Return has been successfully completed.');
 
+          // Reload list
           context.read<ReturnTransactionListCubit>().getTransactions();
         }
       },
@@ -38,46 +40,102 @@ class ReturnTransactionDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const PageSectionTitle(title: 'General Information'),
-                    GridView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 16,
-                        mainAxisExtent: 60,
-                      ),
-                      shrinkWrap: true,
+                    Row(
+                      spacing: 24,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        LabelValue.text(
-                          label: 'Receipt ID',
-                          value: (transaction.receiptId).toString(),
+                        Expanded(
+                          child: LabelValue.text(
+                            label: 'Receipt ID',
+                            value: (transaction.receiptId).toString(),
+                          ),
                         ),
-                        LabelValue.text(
-                          label: 'Refunded from',
-                          value: (transaction.saleTransactionReceiptId ?? Strings.empty).toString(),
+                        Expanded(
+                          child: LabelValue.text(
+                            label: 'Refunded from',
+                            value: (transaction.saleTransactionReceiptId ?? Strings.empty).toString(),
+                          ),
                         ),
-                        LabelValue.text(
-                          label: 'Date Processed',
-                          value: DateFormat('MM/dd/yyyy HH:mm').format(transaction.createdAt),
+                        Expanded(
+                          child: LabelValue.text(
+                            label: 'Date Processed',
+                            value: DateFormat('MM/dd/yyyy HH:mm').format(transaction.createdAt),
+                          ),
                         ),
-                        LabelValue.returnStatus(
-                          label: 'Status',
-                          status: transaction.status!,
-                        ),
-                        LabelValue.text(
-                          label: 'Employee',
-                          value: transaction.employee.name,
-                        ),
-                        LabelValue.text(
-                          label: 'Branch',
-                          value: transaction.branch.name,
-                        ),
-                        LabelValue.text(
-                          label: 'Reason for Return',
-                          value: transaction.reasonForRefund ?? '-',
+                        Expanded(
+                          child: LabelValue.returnStatus(
+                            label: 'Status',
+                            status: transaction.status!,
+                          ),
                         ),
                       ],
                     ),
+                    const UIVerticalSpace(40),
+                    Row(
+                      spacing: 24,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: LabelValue.text(
+                            label: 'Employee',
+                            value: transaction.employee.name,
+                          ),
+                        ),
+                        Expanded(
+                          child: LabelValue.text(
+                            label: 'Branch',
+                            value: transaction.branch.name,
+                          ),
+                        ),
+                        Expanded(
+                          child: LabelValue.text(
+                            label: 'Reason for Return',
+                            value: transaction.reasonForRefund ?? Strings.noValue,
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                    // GridView(
+                    //   physics: const NeverScrollableScrollPhysics(),
+                    //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    //     crossAxisCount: 4,
+                    //     crossAxisSpacing: 10,
+                    //     mainAxisSpacing: 16,
+                    //     mainAxisExtent: 60,
+                    //   ),
+                    //   shrinkWrap: true,
+                    //   children: [
+                    //     LabelValue.text(
+                    //       label: 'Receipt ID',
+                    //       value: (transaction.receiptId).toString(),
+                    //     ),
+                    //     LabelValue.text(
+                    //       label: 'Refunded from',
+                    //       value: (transaction.saleTransactionReceiptId ?? Strings.empty).toString(),
+                    //     ),
+                    //     LabelValue.text(
+                    //       label: 'Date Processed',
+                    //       value: DateFormat('MM/dd/yyyy HH:mm').format(transaction.createdAt),
+                    //     ),
+                    //     LabelValue.returnStatus(
+                    //       label: 'Status',
+                    //       status: transaction.status!,
+                    //     ),
+                    //     LabelValue.text(
+                    //       label: 'Employee',
+                    //       value: transaction.employee.name,
+                    //     ),
+                    //     LabelValue.text(
+                    //       label: 'Branch',
+                    //       value: transaction.branch.name,
+                    //     ),
+                    //     LabelValue.text(
+                    //       label: 'Reason for Return',
+                    //       value: transaction.reasonForRefund ?? '-',
+                    //     ),
+                    //   ],
+                    // ),
                     const UIVerticalSpace(40),
                     ReturnTransactionItemsDataGrid(transaction),
                     const UIVerticalSpace(40),
@@ -101,8 +159,7 @@ class ReturnTransactionDetails extends StatelessWidget {
                           ],
                           Expanded(
                             child: CancelActionButton(
-                              onCancel: () =>
-                                  AppRouter.router.pushReplacementNamed(SideMenuTreeItem.RETURN_TRANSACTIONS.name),
+                              onCancel: () => context.goNamed('returnTransactionList'),
                               onAction: () => context
                                   .read<ReturnRemoteCubit>()
                                   .processReturn(transaction.copyWith(items: returnedItems)),

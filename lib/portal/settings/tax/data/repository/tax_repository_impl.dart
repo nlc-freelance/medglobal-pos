@@ -1,7 +1,6 @@
-import 'package:dartz/dartz.dart';
-import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/api/tax_api_service.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/tax_payload.dart';
 import 'package:medglobal_admin_portal/portal/settings/tax/data/dto/tax_mapper.dart';
@@ -16,7 +15,7 @@ class TaxRepositoryImpl extends BaseRepository implements TaxRepository {
   TaxRepositoryImpl({required TaxApiService api}) : _api = api;
 
   @override
-  Future<Either<Failure, PaginatedList<Tax>>> getTaxCodes(PageQuery query) async {
+  Future<ApiResult<PaginatedList<Tax>>> getTaxCodes(PageQuery query) async {
     return call(() async {
       final response = await _api.getTaxCodes(query);
       final paginatedTax = response.convert((dto) => TaxMapper.fromDto(dto));
@@ -26,7 +25,7 @@ class TaxRepositoryImpl extends BaseRepository implements TaxRepository {
   }
 
   @override
-  Future<Either<Failure, Tax>> getTaxCode(int id) async {
+  Future<ApiResult<Tax>> getTaxCode(int id) async {
     return call(() async {
       final response = await _api.getTaxCodeById(id);
       return TaxMapper.fromDto(response);
@@ -34,7 +33,7 @@ class TaxRepositoryImpl extends BaseRepository implements TaxRepository {
   }
 
   @override
-  Future<Either<Failure, Tax>> createTaxCode(TaxPayload payload) async {
+  Future<ApiResult<Tax>> createTaxCode(TaxPayload payload) async {
     return call(() async {
       final response = await _api.createTaxCode(payload);
       return TaxMapper.fromDto(response);
@@ -42,7 +41,7 @@ class TaxRepositoryImpl extends BaseRepository implements TaxRepository {
   }
 
   @override
-  Future<Either<Failure, Tax>> updateTaxCode(int id, TaxPayload payload) async {
+  Future<ApiResult<Tax>> updateTaxCode(int id, TaxPayload payload) async {
     return call(() async {
       final response = await _api.updateTaxCode(id, payload);
       return TaxMapper.fromDto(response);
@@ -50,12 +49,12 @@ class TaxRepositoryImpl extends BaseRepository implements TaxRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteTaxCode(int id) async {
+  Future<ApiResult<void>> deleteTaxCode(int id) async {
     return call(() async => await _api.deleteTaxCode(id));
   }
 
   @override
-  Future<Either<Failure, Tax?>> getDefaultTaxCode() async {
+  Future<ApiResult<Tax?>> getDefaultTaxCode() async {
     return call(() async {
       final response = await _api.getDefaultTaxCode();
       if (response == null) return null;

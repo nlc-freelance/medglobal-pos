@@ -35,7 +35,7 @@ class StockTransferItemDto extends Equatable {
   StockTransferItem toEntity() => StockTransferItem(
         id: id,
         variantId: variant?.id,
-        name: '${variant?.product?.name} ${variant?.name}',
+        name: variant?.productVariantName,
         sku: variant?.sku,
         qtyAtSource: qtyAtSource,
         qtyAtDestination: qtyAtDestination,

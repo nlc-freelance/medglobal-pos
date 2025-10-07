@@ -25,9 +25,10 @@ class ProductBulkBloc extends Bloc<ProductBulkEvent, ProductBulkState> {
 
       final result = await _repository.bulkUpdateProducts(payload);
 
-      result.fold(
-        (failure) => emit(ProductBulkState.failure(failure.message)),
-        (_) => emit(ProductBulkState.success('Category for all ${ids.length} product(s) successfully updated.')),
+      result.when(
+        success: (_) =>
+            emit(ProductBulkState.success('Category for all ${ids.length} product(s) successfully updated.')),
+        failure: (failure) => emit(ProductBulkState.failure(failure.message)),
       );
     } catch (e) {
       emit(ProductBulkState.failure(e.toString()));
@@ -42,9 +43,9 @@ class ProductBulkBloc extends Bloc<ProductBulkEvent, ProductBulkState> {
 
       final result = await _repository.bulkDeleteProducts(payload);
 
-      result.fold(
-        (failure) => emit(ProductBulkState.failure(failure.message)),
-        (_) => emit(ProductBulkState.success('${ids.length} Product(s) successfully deleted.')),
+      result.when(
+        success: (_) => emit(ProductBulkState.success('${ids.length} Product(s) successfully deleted.')),
+        failure: (failure) => emit(ProductBulkState.failure(failure.message)),
       );
     } catch (e) {
       emit(ProductBulkState.failure(e.toString()));

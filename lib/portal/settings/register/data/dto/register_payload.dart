@@ -7,10 +7,12 @@ part 'register_payload.g.dart';
 class RegisterPayload {
   final String? name;
   final int? storeId;
+  final String? serialNumber;
 
   RegisterPayload({
     this.name,
     this.storeId,
+    this.serialNumber,
   });
 
   Map<String, dynamic> toJson() => _$RegisterPayloadToJson(this);
@@ -18,5 +20,6 @@ class RegisterPayload {
   factory RegisterPayload.fromRegister(Register register) => RegisterPayload(
         name: register.name,
         storeId: register.assignedBranch?.id,
+        serialNumber: register.serialNumber,
       );
 }

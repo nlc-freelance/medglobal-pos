@@ -1,8 +1,6 @@
-import 'package:dartz/dartz.dart';
-
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
 import 'package:medglobal_admin_portal/core/local_db/db_tables/db_tables.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/data/datasources/register_shift_local_datasource.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/entities/register_shift.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/domain/repositories/local_register_shift_repository.dart';
@@ -15,7 +13,7 @@ class LocalRegisterShiftRepositoryImpl extends BaseRepository implements LocalRe
   LocalRegisterShiftRepositoryImpl({required RegisterShiftLocalDataSource dataSource}) : _dataSource = dataSource;
 
   @override
-  Future<Either<Failure, RegisterShift?>> getOpenShift(int registerId) {
+  Future<ApiResult<RegisterShift?>> getOpenShift(int registerId) {
     return call(() async {
       final shift = await _dataSource.getOpenShift(registerId);
       if (shift == null) return null;
@@ -24,7 +22,7 @@ class LocalRegisterShiftRepositoryImpl extends BaseRepository implements LocalRe
   }
 
   @override
-  Future<Either<Failure, RegisterShift>> openShift(RegisterShift data) {
+  Future<ApiResult<RegisterShift>> openShift(RegisterShift data) {
     return call(() async {
       final shift = await _dataSource.openShift(data);
       return shift.toEntity();
@@ -32,7 +30,7 @@ class LocalRegisterShiftRepositoryImpl extends BaseRepository implements LocalRe
   }
 
   @override
-  Future<Either<Failure, RegisterShift>> closeShift(int shiftId, double amount) {
+  Future<ApiResult<RegisterShift>> closeShift(int shiftId, double amount) {
     return call(() async {
       final shift = await _dataSource.closeShift(shiftId, amount);
       return shift.toEntity();
@@ -40,7 +38,7 @@ class LocalRegisterShiftRepositoryImpl extends BaseRepository implements LocalRe
   }
 
   @override
-  Future<Either<Failure, RegisterShift?>> getLastClosedShift(int registerId) {
+  Future<ApiResult<RegisterShift?>> getLastClosedShift(int registerId) {
     return call(() async {
       final shift = await _dataSource.getLastClosedShift(registerId);
       return shift?.toEntity();
@@ -48,7 +46,7 @@ class LocalRegisterShiftRepositoryImpl extends BaseRepository implements LocalRe
   }
 
   @override
-  Future<Either<Failure, RegisterShift>> getShiftById(int id) {
+  Future<ApiResult<RegisterShift>> getShiftById(int id) {
     return call(() async {
       final shift = await _dataSource.getShiftById(id);
       return shift.toEntity();

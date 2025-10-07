@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
-import 'package:medglobal_admin_portal/pos/register_shift/data/dto/register_shift_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/data/dto/register_shift_detail_dto.dart';
 
 part 'register_dto.freezed.dart';
 part 'register_dto.g.dart';
@@ -12,7 +12,7 @@ class RegisterDto with _$RegisterDto {
     required int id,
     required String name,
     BranchDto? store,
-    RegisterShiftDto? shiftDetail,
+    RegisterShiftDetailDto? shiftDetail,
     String? serialNumber,
     @DateTimeConverter() DateTime? createdAt,
     @DateTimeConverter() DateTime? updatedAt,

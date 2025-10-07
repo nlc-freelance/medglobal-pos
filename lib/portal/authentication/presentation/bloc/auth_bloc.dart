@@ -1,16 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
 import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/entities/user.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/confirm_first_time_login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/get_auth_session.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/logout.dart';
-import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -49,9 +46,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onAppInit(event, emit) async {
     try {
       final result = await getAuthSession.call(NoParams());
-      result.fold(
-        (error) => emit(AuthErrorState(message: error.message)),
-        (data) {
+      result.when(
+        success: (data) {
           final isLoggedIn = data.isLoggedIn == true;
           final isAllowed = getIsAllowedByType(data.user?.type);
 
@@ -59,56 +55,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             isLoggedIn ? emit(AuthenticatedState(user: data.user!)) : emit(const UnauthenticatedState());
           }
         },
+        failure: (error) => emit(AuthErrorState(message: error.message)),
       );
     } catch (e) {
       emit(AuthErrorState(message: e.toString()));
     }
   }
-
-  // Future<void> _onPosInit(event, emit) async {
-  //   try {
-  //     final session = await GetIt.I<AppDatabase>().sessionDao.getActiveSession();
-  //
-  //     if (session == null) {
-  //       final isOnline = await GetIt.I<ConnectivityService>().isOnline;
-  //
-  //       if (isOnline) {}
-  //     } else {
-  //       // fetch session data from db which is the session above
-  //       // load it to the AppSessionService
-  //       final User user = User(
-  //         id: session.id,
-  //         firstName: session.employeeFirstName,
-  //         lastName: session.employeeLastName,
-  //       );
-  //
-  //       final Register register = Register(
-  //         id: session.registerId,
-  //         name: session.registerName,
-  //       );
-  //
-  //       final BranchPartial branch = BranchPartial(
-  //         id: session.branchId,
-  //         name: session.branchName,
-  //       );
-  //
-  //       GetIt.I<AppSessionService>().setUser(user);
-  //       GetIt.I<AppSessionService>().upsertSessionDetails(user, register, branch);
-  //     }
-  //
-  //     final result = await getAuthSession.call(NoParams());
-  //     result.fold((error) => emit(AuthErrorState(message: error.message)), (data) {
-  //       final isLoggedIn = data.isLoggedIn == true;
-  //       final isAllowed = getIsAllowed(data.user?.type);
-  //
-  //       if (isAllowed) {
-  //         isLoggedIn ? emit(AuthenticatedState(user: data.user!)) : emit(const UnauthenticatedState());
-  //       }
-  //     });
-  //   } catch (e) {
-  //     emit(AuthErrorState(message: e.toString()));
-  //   }
-  // }
 
   Future<void> _login(event, emit) async {
     emit(const AuthLoadingState());
@@ -116,9 +68,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final result = await login.call(LoginParams(event.email, event.password));
 
-      result.fold(
-        (error) => emit(AuthErrorState(message: error.message)),
-        (data) async {
+      result.when(
+        success: (data) async {
           final user = data.user;
 
           if (user == null) {
@@ -144,6 +95,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             await logout.call(NoParams());
           }
         },
+        failure: (error) => emit(AuthErrorState(message: error.message)),
       );
     } catch (e) {
       emit(AuthErrorState(message: e.toString()));
@@ -155,9 +107,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       final result = await confirmLoginWithNewPassword.call(ConfirmFirstTimeLoginParams(event.password));
-      result.fold(
-        (error) => emit(ConfirmLoginErrorState(message: error.message)),
-        (data) => emit(AuthenticatedState(user: data.user!)),
+      result.when(
+        success: (data) => emit(AuthenticatedState(user: data.user!)),
+        failure: (error) => emit(ConfirmLoginErrorState(message: error.message)),
       );
     } catch (e) {
       emit(ConfirmLoginErrorState(message: e.toString()));
@@ -169,12 +121,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       final result = await logout.call(NoParams());
-      result.fold(
-        (error) => emit(AuthErrorState(message: error.message)),
-        (_) {
+      result.when(
+        success: (_) {
           emit(const UnauthenticatedState());
           _clearSharedPreferencesOnLogout();
         },
+        failure: (error) => emit(AuthErrorState(message: error.message)),
       );
     } catch (e) {
       emit(AuthErrorState(message: e.toString()));

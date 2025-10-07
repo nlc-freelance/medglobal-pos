@@ -47,6 +47,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      hoverColor: UIColors.transparent,
       borderRadius: BorderRadius.circular(12),
       onTap: () => showDialog(
         context: context,
@@ -136,9 +137,9 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
                           UIStyleText.labelMedium.copyWith(color: highlight ? UIColors.primary : UIColors.textRegular),
                     )
                   : Text(
-                      widget.isInput ? 'Select date' : 'All Time',
+                      widget.isInput ? 'Select date' : 'All Date',
                       style: UIStyleText.hint.copyWith(
-                        color: widget.isInput ? UIColors.textMuted : UIColors.textRegular,
+                        color: UIColors.textMuted,
                         fontWeight: widget.isInput ? FontWeight.w400 : FontWeight.w500,
                       ),
                     ),

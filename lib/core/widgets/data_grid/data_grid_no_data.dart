@@ -16,6 +16,7 @@ class DataGridNoData extends StatefulWidget {
   final bool isCustom;
   final DataGridSource source;
   final String? message;
+  final bool showTopBorder;
 
   const DataGridNoData({
     super.key,
@@ -24,6 +25,7 @@ class DataGridNoData extends StatefulWidget {
     this.showCheckbox = false,
     this.isCustom = false,
     this.message,
+    this.showTopBorder = true,
   });
 
   factory DataGridNoData.custom({
@@ -31,6 +33,7 @@ class DataGridNoData extends StatefulWidget {
     bool showCheckbox = false,
     required DataGridSource source,
     String? message,
+    bool showTopBorder = true,
   }) =>
       DataGridNoData(
         columns: columns,
@@ -38,6 +41,7 @@ class DataGridNoData extends StatefulWidget {
         showCheckbox: showCheckbox,
         message: message,
         isCustom: true,
+        showTopBorder: showTopBorder,
       );
 
   @override
@@ -58,7 +62,7 @@ class _DataGridNoDataState extends State<DataGridNoData> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: UIStyleContainer.topBorder,
+      decoration: widget.showTopBorder ? UIStyleContainer.topBorder : null,
       child: ClipRect(
         clipper: HorizontalBorderClipper(),
         child: SfDataGridTheme(

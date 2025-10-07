@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_text_field.dart';
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_cubit.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
@@ -72,6 +73,7 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
                   shrinkWrapRows: true,
                   selectionMode: SelectionMode.single,
                   allowEditing: true,
+                  headerRowHeight: 38,
                   navigationMode: GridNavigationMode.cell,
                   editingGestureType: EditingGestureType.tap,
                   columnWidthMode: ColumnWidthMode.fill,
@@ -87,6 +89,19 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
 }
 
 class ReturnItemsDataSource extends DataGridSource {
+  /// Holds the new value of all editable widget in the [DataGridCell].
+  /// Based on the new value we will commit the new value into the corresponding
+  /// [DataGridCell] on [onSubmitCell] method.
+  dynamic newCellValue;
+
+  /// [DataGridCell] focus nodes
+  /// Help track when user taps outside, so we can submit the cell.
+  FocusNode focusNode = FocusNode();
+
+  /// [DataGridCell] text editing controllers
+  /// Help to control the editable text in the text field.
+  TextEditingController editingController = TextEditingController();
+
   ReturnItemsDataSource(List<TransactionItem> items, BuildContext context, bool isEditable) {
     _items = items;
     _context = context;
@@ -118,10 +133,10 @@ class ReturnItemsDataSource extends DataGridSource {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: _isEditable
               ? _buildCell(cell.columnName, cell, row.getCells().first.value)
-              : UIText.bodyRegular(
+              : UIText.dataGridText(
                   cell.runtimeType.toString().contains('double')
                       ? (cell.value as double).toPesoString()
-                      : cell.value.toString(),
+                      : (cell.value ?? Strings.noValue).toString(),
                 ),
         );
       }).toList(),
@@ -130,17 +145,31 @@ class ReturnItemsDataSource extends DataGridSource {
 
   Widget _buildCell(String column, DataGridCell cell, int id) {
     return switch (column) {
-      'write_off_qty' || 'restock_qty' || 'comment' => Container(
+      'write_off_qty' || 'restock_qty' => Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: UIColors.background,
             border: Border.all(color: UIColors.borderRegular),
             borderRadius: const BorderRadius.all(Radius.circular(10.0)),
           ),
-          child: UIText.bodyRegular(cell.value.toString()),
+          child: cell.value == null
+              ? UIText.dataGridText('0', color: UIColors.textMuted)
+              : UIText.dataGridText(cell.value.toString()),
         ),
-      _ => UIText.bodyRegular(
+      'comment' => Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: UIColors.background,
+            border: Border.all(color: UIColors.borderRegular),
+            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
+          ),
+          child: cell.value == null
+              ? UIText.dataGridText('Add comment', color: UIColors.textMuted)
+              : UIText.dataGridText(cell.value.toString()),
+        ),
+      _ => UIText.dataGridText(
           cell.runtimeType.toString().contains('double')
               ? (cell.value as double).toPesoString()
               : cell.value.toString(),
@@ -148,16 +177,12 @@ class ReturnItemsDataSource extends DataGridSource {
     };
   }
 
-  /// Helps to hold the new value of all editable widget.
-  /// Based on the new value we will commit the new value into the corresponding
-  /// [DataGridCell] on [onSubmitCell] method.
-  dynamic newCellValue;
-
-  /// Help to control the editable text in [TextField] widget.
-  TextEditingController editingController = TextEditingController();
-
   @override
-  bool onCellBeginEdit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) {
+  bool onCellBeginEdit(
+    DataGridRow dataGridRow,
+    RowColumnIndex rowColumnIndex,
+    GridColumn column,
+  ) {
     if (_isEditable &&
         (column.columnName == 'write_off_qty' ||
             column.columnName == 'restock_qty' ||
@@ -169,98 +194,182 @@ class ReturnItemsDataSource extends DataGridSource {
   }
 
   @override
-  Future<void> onCellSubmit(DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column) async {
-    final dynamic oldValue = dataGridRow
-            .getCells()
-            .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
-            .value ??
-        '';
+  Future<void> onCellSubmit(
+    DataGridRow dataGridRow,
+    RowColumnIndex rowColumnIndex,
+    GridColumn column,
+  ) async {
+    final dynamic oldValue =
+        dataGridRow.getCells().firstWhereOrNull((DataGridCell cell) => cell.columnName == column.columnName)?.value;
 
-    final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
+    final rowIndex = dataGridRows.indexOf(dataGridRow);
+    if (rowIndex == -1) return; // Prevents index range -1 when tapping outside the cell text field
 
-    if (newCellValue == null || oldValue == newCellValue) {
-      return;
-    }
+    final columnIndex = rowColumnIndex.columnIndex;
+    final itemId = _items[rowIndex].id!;
+
+    if (oldValue == newCellValue) return;
 
     if (column.columnName == 'write_off_qty') {
-      final writeOffQty = int.tryParse(newCellValue) ?? 0;
-
-      dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
-          DataGridCell<int>(columnName: 'write_off_qty', value: writeOffQty);
-
+      dataGridRows[rowIndex].getCells()[columnIndex] = DataGridCell<int>(
+        columnName: 'write_off_qty',
+        value: newCellValue,
+      );
       _context.read<ReturnCubit>().setReturnItemWriteOffQty(
-            id: _items[dataRowIndex].id!,
-            writeOffQty: writeOffQty,
+            id: itemId,
+            writeOffQty: newCellValue,
           );
     }
 
     if (column.columnName == 'restock_qty') {
-      final restockQty = int.tryParse(newCellValue) ?? 0;
-
-      dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
-          DataGridCell<int>(columnName: 'restock_qty', value: restockQty);
-
+      dataGridRows[rowIndex].getCells()[columnIndex] = DataGridCell<int>(
+        columnName: 'restock_qty',
+        value: newCellValue,
+      );
       _context.read<ReturnCubit>().setReturnItemRestockQty(
-            id: _items[dataRowIndex].id!,
-            restockQty: restockQty,
+            id: itemId,
+            restockQty: newCellValue,
           );
     }
 
     if (column.columnName == 'comment') {
-      final comment = (newCellValue ?? '').toString();
-
-      dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
-          DataGridCell<String>(columnName: 'comment', value: comment);
-
+      dataGridRows[rowIndex].getCells()[columnIndex] = DataGridCell<String>(
+        columnName: 'comment',
+        value: newCellValue,
+      );
       _context.read<ReturnCubit>().setReturnItemComment(
-            id: _items[dataRowIndex].id!,
-            comment: comment,
+            id: itemId,
+            comment: newCellValue,
           );
     }
+
+    // final dynamic oldValue = dataGridRow
+    //         .getCells()
+    //         .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
+    //         .value ??
+    //     '';
+    //
+    // final int dataRowIndex = dataGridRows.indexOf(dataGridRow);
+    //
+    // if (newCellValue == null || oldValue == newCellValue) {
+    //   return;
+    // }
+
+    // if (column.columnName == 'write_off_qty') {
+    //   final writeOffQty = int.tryParse(newCellValue) ?? 0;
+    //
+    //   dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
+    //       DataGridCell<int>(columnName: 'write_off_qty', value: writeOffQty);
+    //
+    //   _context.read<ReturnCubit>().setReturnItemWriteOffQty(
+    //         id: _items[dataRowIndex].id!,
+    //         writeOffQty: writeOffQty,
+    //       );
+    // }
+
+    // if (column.columnName == 'restock_qty') {
+    //   final restockQty = int.tryParse(newCellValue) ?? 0;
+    //
+    //   dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
+    //       DataGridCell<int>(columnName: 'restock_qty', value: restockQty);
+    //
+    //   _context.read<ReturnCubit>().setReturnItemRestockQty(
+    //         id: _items[dataRowIndex].id!,
+    //         restockQty: restockQty,
+    //       );
+    // }
+
+    // if (column.columnName == 'comment') {
+    //   final comment = (newCellValue ?? '').toString();
+    //
+    //   dataGridRows[dataRowIndex].getCells()[rowColumnIndex.columnIndex] =
+    //       DataGridCell<String>(columnName: 'comment', value: comment);
+    //
+    //   _context.read<ReturnCubit>().setReturnItemComment(
+    //         id: _items[dataRowIndex].id!,
+    //         comment: comment,
+    //       );
+    // }
   }
 
   @override
   Widget? buildEditWidget(
-      DataGridRow dataGridRow, RowColumnIndex rowColumnIndex, GridColumn column, CellSubmit submitCell) {
-    // Text going to display on editable widget
-    final String displayText = dataGridRow
-            .getCells()
-            .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
-            .value
-            ?.toString() ??
-        '';
+    DataGridRow dataGridRow,
+    RowColumnIndex rowColumnIndex,
+    GridColumn column,
+    CellSubmit submitCell,
+  ) {
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) submitCell();
+    });
 
-    // The new cell value must be reset.
-    // To avoid committing the [DataGridCell] value that was previously edited
-    // into the current non-modified [DataGridCell].
-    newCellValue = null;
+    final textDisplay = dataGridRow
+        .getCells()
+        .firstWhereOrNull((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
+        ?.value;
 
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: TextField(
-        controller: editingController..text = displayText,
-        autofocus: true,
-        cursorHeight: 15.0,
-        style: UIStyleText.bodyRegular,
-        inputFormatters: [
-          if (column.columnName != 'comment') FilteringTextInputFormatter.digitsOnly,
-        ],
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0)),
-            borderSide: BorderSide(color: UIColors.textGray),
-          ),
-        ),
-        onTapOutside: (event) => submitCell(),
-        onChanged: (String value) => newCellValue = value.isNotEmpty ? value : null,
-        onSubmitted: (String value) {
-          /// Call [CellSubmit] callback to fire the canSubmitCell and
-          /// onCellSubmit to commit the new value in single place.
-          submitCell();
-        },
-      ),
+    newCellValue = textDisplay;
+
+    return DataGridTextField(
+      controller: editingController,
+      textDisplay: textDisplay,
+      focusNode: focusNode,
+      inputFormatters: [
+        if (column.columnName != 'comment') FilteringTextInputFormatter.digitsOnly,
+      ],
+      onChanged: (String value) {
+        if (value.isNotEmpty) {
+          if (column.columnName != 'write_off_qty' || column.columnName != 'restock_qty') {
+            newCellValue = value.toInt();
+          } else if (column.columnName != 'comment') {
+            newCellValue = value.toString();
+          }
+        } else {
+          newCellValue = null;
+        }
+      },
+      submitCell: submitCell,
     );
+
+    // // Text going to display on editable widget
+    // final String displayText = dataGridRow
+    //         .getCells()
+    //         .firstWhere((DataGridCell dataGridCell) => dataGridCell.columnName == column.columnName)
+    //         .value
+    //         ?.toString() ??
+    //     '';
+    //
+    // // The new cell value must be reset.
+    // // To avoid committing the [DataGridCell] value that was previously edited
+    // // into the current non-modified [DataGridCell].
+    // newCellValue = null;
+    //
+    // return Container(
+    //   alignment: Alignment.centerLeft,
+    //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    //   child: TextField(
+    //     controller: editingController..text = displayText,
+    //     autofocus: true,
+    //     cursorHeight: 15.0,
+    //     style: UIStyleText.bodyRegular,
+    //     inputFormatters: [
+    //       if (column.columnName != 'comment') FilteringTextInputFormatter.digitsOnly,
+    //     ],
+    //     decoration: const InputDecoration(
+    //       contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+    //       focusedBorder: OutlineInputBorder(
+    //         borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    //         borderSide: BorderSide(color: UIColors.textGray),
+    //       ),
+    //     ),
+    //     onTapOutside: (event) => submitCell(),
+    //     onChanged: (String value) => newCellValue = value.isNotEmpty ? value : null,
+    //     onSubmitted: (String value) {
+    //       /// Call [CellSubmit] callback to fire the canSubmitCell and
+    //       /// onCellSubmit to commit the new value in single place.
+    //       submitCell();
+    //     },
+    //   ),
+    // );
   }
 }

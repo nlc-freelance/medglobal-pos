@@ -16,9 +16,9 @@ class SalesPerCategoryCubit extends Cubit<SalesPerCategoryState> {
 
     try {
       final result = await _getSalesPerCategoryUseCase.call(GetSalesPerCategoryParams(payload: payload));
-      result.fold(
-        (error) => emit(SalesPerCategoryError(message: error.message)),
-        (data) => emit(SalesPerCategoryLoaded(data: data)),
+      result.when(
+        success: (data) => emit(SalesPerCategoryLoaded(data: data)),
+        failure: (error) => emit(SalesPerCategoryError(message: error.message)),
       );
     } catch (e) {
       emit(SalesPerCategoryError(message: e.toString()));

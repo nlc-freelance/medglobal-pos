@@ -2,16 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/app_version.dart';
-import 'package:medglobal_admin_portal/pos/auth_session/presentation/blocs/session/session_bloc.dart';
+import 'package:medglobal_admin_portal/pos/authentication/blocs/session/session_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
-import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/presentation/cubit/unsynced_operations_cubit.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/presentation/screens/settings_screen.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/screens/register_shift_dialog.dart';
-import 'package:medglobal_admin_portal/pos/syncing/sync/operation_sync_bloc.dart';
+import 'package:medglobal_admin_portal/pos/syncing/sync/write_sync_bloc/write_sync_bloc.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:medglobal_admin_portal/pos/register_shift/presentation/bloc/register_shift_bloc/register_shift_bloc.dart';
 
@@ -167,13 +165,13 @@ class PosDrawer extends StatelessWidget with DialogMixin {
                                               UIButton.outlined(
                                                 'Sync Now',
                                                 onClick: () => context
-                                                    .read<OperationSyncBloc>()
-                                                    .add(const OperationSyncEvent.syncNow(manual: true)),
+                                                    .read<WriteSyncBloc>()
+                                                    .add(const WriteSyncEvent.syncNow(manual: true)),
                                               ),
                                             ],
                                           ),
                                           const UIVerticalSpace(12),
-                                          BlocConsumer<OperationSyncBloc, OperationSyncState>(
+                                          BlocConsumer<WriteSyncBloc, WriteSyncState>(
                                             listener: (context, state) {
                                               state.maybeWhen(
                                                 synced: (_, __) =>
@@ -209,7 +207,7 @@ class PosDrawer extends StatelessWidget with DialogMixin {
                       //     // context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.reset());
                       //     // context.read<ActiveRegisterCubit>().reset();
                       //
-                      //     // if (AppConfig.isPOSApp) context.read<SyncBloc>().add(const SyncEvent.stop());
+                      //     // if (AppConfig.isPOSApp) context.read<ReadSyncBloc>().add(const ReadSyncEvent.stop());
                       //     context.read<AuthBloc>().add(const LogoutEvent());
                       //   },
                       // );
@@ -227,7 +225,7 @@ class PosDrawer extends StatelessWidget with DialogMixin {
 
                       // Dialog to confirm logout
                       // Check if there is ongoing sync or pending items
-                      // if (AppConfig.isPOSApp) context.read<SyncBloc>().add(const SyncEvent.stop());
+                      // if (AppConfig.isPOSApp) context.read<ReadSyncBloc>().add(const ReadSyncEvent.stop());
 
                       // context.read<AuthBloc>().add(const LogoutEvent());
                     },

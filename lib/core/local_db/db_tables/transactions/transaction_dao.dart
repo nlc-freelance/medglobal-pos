@@ -137,6 +137,14 @@ class TransactionDao extends DatabaseAccessor<AppDatabase> with _$TransactionDao
   //   return (update(transactions)..where((tbl) => tbl.id.equals(id)))
   //       .write(const TransactionsCompanion(isSynced: Value(true)));
   // }
+
+  /// Clear all transactions
+  Future<void> clearAll() async {
+    return safeCall(() async {
+      await delete(transactionItems).go();
+      await delete(transactions).go();
+    });
+  }
 }
 
 /// Mappers

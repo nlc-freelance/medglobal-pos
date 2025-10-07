@@ -33,7 +33,7 @@ class IssueRefundView extends StatelessWidget {
 }
 
 class _IssueRefundView extends StatelessWidget {
-  const _IssueRefundView({super.key, required this.transaction});
+  const _IssueRefundView({required this.transaction});
 
   final Transaction transaction;
 

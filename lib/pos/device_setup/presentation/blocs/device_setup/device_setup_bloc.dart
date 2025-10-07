@@ -9,8 +9,7 @@ import 'package:medglobal_admin_portal/pos/device_setup/domain/contexts/device_u
 import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/device_settings.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/domain/usecases/bind_device_usecase.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/domain/usecases/check_device_setting_usecase.dart';
-import 'package:medglobal_admin_portal/pos/syncing/services/connectivity_service.dart';
-import 'package:medglobal_admin_portal/pos/syncing/sync_queue/sync_queue_repository.dart';
+import 'package:medglobal_admin_portal/pos/syncing/connectivity/connectivity_service.dart';
 
 part 'device_setup_event.dart';
 part 'device_setup_state.dart';
@@ -42,14 +41,11 @@ class DeviceSetupBloc extends Bloc<DeviceSetupEvent, DeviceSetupState> {
     try {
       final result = await _checkDeviceSettingUseCase.call();
 
-      result.fold(
-        (failure) => emit(DeviceSetupState.failure(failure.message)),
-        (settings) {
+      result.when(
+        success: (settings) {
           if (settings == null) {
             emit(const DeviceSetupState.unready());
           } else {
-            // GetIt.I<AppSessionService>().setDeviceSettings(settings.register, settings.receiptConfig);
-            // emit(DeviceSetupState.ready(settings.register, settings.branch));
             GetIt.I<AppSessionService>().setDeviceSettings(
               settings.register,
               settings.branch,
@@ -63,6 +59,7 @@ class DeviceSetupBloc extends Bloc<DeviceSetupEvent, DeviceSetupState> {
             });
           }
         },
+        failure: (failure) => emit(DeviceSetupState.failure(failure.message)),
       );
     } catch (e) {
       emit(DeviceSetupState.failure(e.toString()));
@@ -73,20 +70,20 @@ class DeviceSetupBloc extends Bloc<DeviceSetupEvent, DeviceSetupState> {
     try {
       final result = await GetIt.I<RegisterRepository>().getRegisterBySerialNo();
 
-      await result.fold(
-        (failure) async {
-          if (failure.message.toLowerCase().contains('not found')) {
-            emit(DeviceSetupState.deactivated(DateTime.now()));
-          } else {
-            emit(DeviceSetupState.failure(failure.message));
-          }
-        },
-        (register) {
+      await result.when(
+        success: (register) {
           final settings = event.settings;
           register.id == settings.register.id
               ? emit(DeviceSetupState.ready(settings))
               : emit(const DeviceSetupState.failure(
                   'There is a mismatch with the remote and local data of the register linked to this device.'));
+        },
+        failure: (failure) async {
+          if (failure.message.toLowerCase().contains('not found')) {
+            emit(DeviceSetupState.deactivated(DateTime.now()));
+          } else {
+            emit(DeviceSetupState.failure(failure.message));
+          }
         },
       );
     } catch (e) {
@@ -105,9 +102,8 @@ class DeviceSetupBloc extends Bloc<DeviceSetupEvent, DeviceSetupState> {
 
       final result = await _bindDeviceUseCase.call(register, event.printer);
 
-      result.fold(
-        (failure) => emit(DeviceSetupState.failure(failure.message)),
-        (settings) {
+      result.when(
+        success: (settings) {
           GetIt.I<AppSessionService>().setDeviceSettings(
             settings.register,
             settings.branch,
@@ -117,6 +113,7 @@ class DeviceSetupBloc extends Bloc<DeviceSetupEvent, DeviceSetupState> {
 
           emit(DeviceSetupState.ready(settings));
         },
+        failure: (failure) => emit(DeviceSetupState.failure(failure.message)),
       );
     } catch (e) {
       emit(DeviceSetupState.failure(e.toString()));
@@ -129,6 +126,8 @@ class DeviceSetupBloc extends Bloc<DeviceSetupEvent, DeviceSetupState> {
       await GetIt.I<AppDatabase>().settingsDao.clearAll();
       await GetIt.I<AppDatabase>().productCatalogDao.clearAll();
       await GetIt.I<AppDatabase>().syncMetadataDao.clearAll();
+      await GetIt.I<AppDatabase>().registerShiftDao.clearAll();
+      await GetIt.I<AppDatabase>().transactionDao.clearAll();
     }
 
     emit(const DeviceSetupState.unready());

@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:medglobal_admin_portal/core/utils/shared_preferences_service.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/entities/order.dart';
 import 'package:medglobal_admin_portal/pos/register/domain/usecases/create_sale_usecase.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/dto/transaction/transaction_dto.dart';
@@ -22,30 +21,14 @@ class SaleBloc extends HydratedBloc<SaleEvent, SaleState> {
   }
 
   Future<void> _onCreateSale(_CreateSale event, emit) async {
-    // final amountPaid = event.order.amountPaid;
-
-    // if (amountPaid == null || amountPaid == 0) {
-    //   emit(const SaleState.failure('Please enter the amount received to proceed with the transaction.'));
-    //   return;
-    // }
-    //
-    // if (amountPaid < event.order.total) {
-    //   emit(const SaleState.failure('Received amount is less than the total amount due.'));
-    //   return;
-    // }
-
     emit(const SaleState.processing());
 
     try {
       final result = await _createSaleUseCase.call(event.order, event.amountPaid);
 
-      // final registerId = await SharedPreferencesService.getRegisterId();
-      //
-      // final result = await _repository.createSale(registerId: registerId!, order: event.order);
-      //
-      result.fold(
-        (error) => emit(SaleState.failure(error.message)),
-        (transaction) => emit(SaleState.success(transaction)),
+      result.when(
+        success: (transaction) => emit(SaleState.success(transaction)),
+        failure: (error) => emit(SaleState.failure(error.message)),
       );
     } catch (e) {
       emit(SaleState.failure(e.toString()));

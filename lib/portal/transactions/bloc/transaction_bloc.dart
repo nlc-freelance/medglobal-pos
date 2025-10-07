@@ -19,9 +19,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
     try {
       final result = await _repository.getTransactionById(event.id);
-      result.fold(
-        (failure) => emit(TransactionState.failure(failure.message)),
-        (transaction) => emit(TransactionState.loaded(transaction)),
+      result.when(
+        success: (transaction) => emit(TransactionState.loaded(transaction)),
+        failure: (failure) => emit(TransactionState.failure(failure.message)),
       );
     } catch (e) {
       emit(TransactionState.failure(e.toString()));

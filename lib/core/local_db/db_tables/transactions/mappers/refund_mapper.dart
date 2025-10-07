@@ -1,12 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:medglobal_admin_portal/core/enums/transaction_enum.dart';
-import 'package:medglobal_admin_portal/core/helper/branch_code.dart';
 import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
-import 'package:medglobal_admin_portal/pos/app_session/domain/entities/app_session.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/refund_item.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
-import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
-import 'package:ulid/ulid.dart';
 
 extension RefundMapper on Transaction {
   TransactionsCompanion toRefundTransactionCompanion() {

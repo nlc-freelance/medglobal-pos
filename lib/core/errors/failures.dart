@@ -15,6 +15,10 @@ class ServerFailure extends Failure {
   ServerFailure(super.message);
 }
 
+class ClientFailure extends Failure {
+  ClientFailure(super.message);
+}
+
 class NetworkFailure extends Failure {
   NetworkFailure(super.message);
 }
