@@ -24,7 +24,7 @@ class AppSessionService {
   void setDeviceSettings(
     RegisterPartial register,
     BranchPartial branch,
-    ReceiptConfiguration receipt,
+    ReceiptConfiguration? receipt,
     String? printer,
   ) {
     _register = register;
