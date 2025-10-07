@@ -10,7 +10,7 @@ class DeviceSettings with _$DeviceSettings {
   const factory DeviceSettings({
     required RegisterPartial register,
     required BranchPartial branch,
-    required ReceiptConfiguration receiptConfig,
+    required ReceiptConfiguration? receiptConfig,
     String? printer,
   }) = _DeviceSettings;
 }

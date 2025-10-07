@@ -58,12 +58,12 @@ class BindDeviceUseCase {
 
   Future<ApiResult<DeviceSettings>> _handleDeviceSettings(
     Register register,
-    ReceiptConfiguration receiptConfig,
+    ReceiptConfiguration? receiptConfig,
     String? printer,
   ) async {
     try {
       // Save device settings (receipt and printer) to local DB
-      await _localSettingsRepository.saveReceiptConfig(receiptConfig);
+      if (receiptConfig != null) await _localSettingsRepository.saveReceiptConfig(receiptConfig);
       await GetIt.I<AppDatabase>().syncMetadataDao.updateLastSyncedAt('receiptConfig');
 
       if (printer != null) await _localSettingsRepository.savePrinter(printer);

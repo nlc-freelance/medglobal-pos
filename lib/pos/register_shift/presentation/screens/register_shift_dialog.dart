@@ -130,15 +130,19 @@ class _RegisterShiftDialogState extends State<RegisterShiftDialog> {
                         children: [
                           Assets.icons.money.svg(),
                           const UIVerticalSpace(16),
-                          UIText.heading5(shiftAction.title),
+                          UIText.heading5(shiftAction.title, align: TextAlign.center),
                           const UIVerticalSpace(16),
                           if (widget.dateTime != null) ...[
                             UIText.bodyRegular(
                               ' ${shiftAction.message} ${widget.dateTime!.toFormattedFullDateTime12Hr()}.',
+                              align: TextAlign.center,
                             ),
                             const UIVerticalSpace(2),
                           ],
-                          UIText.bodyRegular('To proceed, please input the ${shiftAction.inputLabel.toLowerCase()}.'),
+                          UIText.bodyRegular(
+                            'To proceed, please input the ${shiftAction.inputLabel.toLowerCase()}.',
+                            align: TextAlign.center,
+                          ),
                           const UIVerticalSpace(20),
                           SizedBox(
                             width: 230,

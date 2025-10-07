@@ -17,11 +17,11 @@ class PosHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = routeState.matchedLocation == '/pos/transactions'
+    final title = routeState.matchedLocation == '/transactions'
         ? 'Transactions'
-        : routeState.matchedLocation == '/pos/settings'
+        : routeState.matchedLocation == '/settings'
             ? 'Settings'
-            : (routeState.matchedLocation == '/pos/register' ? 'Register' : 'Payment');
+            : (routeState.matchedLocation == '/register' ? 'Register' : 'Payment');
 
     return AppBar(
       surfaceTintColor: UIColors.transparent,

@@ -84,6 +84,7 @@ class TransactionListBloc extends Bloc<TransactionListEvent, TransactionListStat
             isLoadingMore: false,
             transactions: _cachedTransactions.toList(),
             hasReachedEnd: hasReachedEnd,
+            error: null,
           ));
 
           if (!hasReachedEnd) _currentPage++;

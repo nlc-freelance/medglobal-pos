@@ -34,6 +34,10 @@ class PrintReceiptUseCase {
 
           return result.when(
             success: (config) async {
+              if (config == null) {
+                return ApiResult.failure(UnexpectedFailure('Receipt configuration not found.'));
+              }
+
               await PrintUtil.generateAndPrintReceipt(
                 transaction: transaction,
                 config: config,

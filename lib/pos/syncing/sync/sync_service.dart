@@ -64,8 +64,7 @@ class SyncService {
 
   Future<void> syncReadOnlyData() async {
     try {
-      final readData = ['products'];
-      // final readData = ['products', 'receiptConfig'];
+      final readData = ['products', 'receiptConfig'];
 
       final catalogLastSyncedAt = await GetIt.I<AppDatabase>().syncMetadataDao.getLastSyncTime('posCatalog');
 

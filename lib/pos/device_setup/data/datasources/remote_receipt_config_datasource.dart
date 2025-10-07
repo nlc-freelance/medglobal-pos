@@ -7,8 +7,8 @@ class RemoteReceiptConfigDataSource {
 
   RemoteReceiptConfigDataSource(this._api);
 
-  Future<ReceiptConfiguration> getReceiptConfigByBranch(int id, int? lastSynced) async {
-    final data = await _api.get<ReceiptConfiguration>(
+  Future<ReceiptConfiguration?> getReceiptConfigByBranch(int id, int? lastSynced) async {
+    final data = await _api.get<ReceiptConfiguration?>(
       ApiEndpoints.receiptConfigByBranchId(id),
       queryParams: lastSynced == null ? null : {'lastSynced': lastSynced},
       parser: (json) => parse(json, ReceiptConfiguration.fromJson),

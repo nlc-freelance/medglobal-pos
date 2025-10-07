@@ -12,7 +12,7 @@ class RemoteReceiptConfigRepositoryImpl extends BaseRepository implements Remote
   }) : _remoteDataSource = remoteDataSource;
 
   @override
-  Future<ApiResult<ReceiptConfiguration>> getReceiptConfigByBranch(int id, {int? lastSynced}) {
+  Future<ApiResult<ReceiptConfiguration?>> getReceiptConfigByBranch(int id, {int? lastSynced}) {
     return call(() async {
       return await _remoteDataSource.getReceiptConfigByBranch(id, lastSynced);
     });

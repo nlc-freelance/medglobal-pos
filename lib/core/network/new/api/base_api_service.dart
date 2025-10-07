@@ -179,8 +179,8 @@ class ApiService {
 
       switch (format) {
         case ResponseFormat.single:
-          final data = (json is Map<String, dynamic>) ? json['data'] ?? json : json;
-          return parser(data);
+          final data = json['data'];
+          return data == null ? null as T : parser(data);
         case ResponseFormat.list:
           final listJson = (json is Map<String, dynamic>) ? json['data'] ?? [] : json;
           if (listJson is! List) throw UnexpectedException("Response Format: Expected list");

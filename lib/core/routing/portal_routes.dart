@@ -449,87 +449,87 @@ final ShellRoute portalRoutes = ShellRoute(
 
     /// Settings
     ///
-    GoRoute(
-      path: '/settings',
-      builder: (context, state) => const SizedBox(),
-      routes: [
-        GoRoute(
-          path: 'tax-codes',
-          name: 'taxCodeList',
-          pageBuilder: (context, state) => const NoTransitionPage(child: TaxListPage()),
-        ),
-        GoRoute(
-          path: 'pos-registers',
-          name: 'posRegisterList',
-          pageBuilder: (context, state) => const NoTransitionPage(child: RegisterListPage()),
-        ),
-        ShellRoute(
-          pageBuilder: (context, state, child) => NoTransitionPage(
-            child: BlocProvider(
-              create: (context) => GetIt.I<PaginatedListBloc<Branch>>()
-                ..add(
-                  const PaginatedListEvent<Branch>.fetch(),
-                ),
-              child: child,
-            ),
-          ),
-          routes: [
-            GoRoute(
-              path: 'branches',
-              name: 'branchList',
-              pageBuilder: (context, state) => const NoTransitionPage(child: BranchListPage()),
-              routes: [
-                GoRoute(
-                  path: 'new',
-                  name: 'branchCreate',
-                  pageBuilder: (context, state) => const NoTransitionPage(child: BranchFormPage()),
-                ),
-                GoRoute(
-                  path: ':id',
-                  name: 'branchDetails',
-                  pageBuilder: (_, state) {
-                    final id = state.pathParameters['id'];
-                    return NoTransitionPage(child: BranchFormPage(id: id));
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        ShellRoute(
-          pageBuilder: (context, state, child) => NoTransitionPage(
-            child: BlocProvider(
-              create: (context) => GetIt.I<PaginatedListBloc<ReceiptTemplate>>()
-                ..add(
-                  const PaginatedListEvent<ReceiptTemplate>.fetch(),
-                ),
-              child: child,
-            ),
-          ),
-          routes: [
-            GoRoute(
-              path: 'receipt-templates',
-              name: 'receiptTemplateList',
-              pageBuilder: (context, state) => const NoTransitionPage(child: ReceiptTemplateListPage()),
-              routes: [
-                GoRoute(
-                  path: 'new',
-                  name: 'receiptTemplateCreate',
-                  pageBuilder: (context, state) => const NoTransitionPage(child: ReceiptTemplateFormPage()),
-                ),
-                GoRoute(
-                  path: ':id',
-                  name: 'receiptTemplateDetails',
-                  pageBuilder: (context, state) {
-                    final id = state.pathParameters['id'];
-                    return NoTransitionPage(child: ReceiptTemplateFormPage(id: id));
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    ),
+    // GoRoute(
+    //   path: '/settings',
+    //   builder: (context, state) => const SizedBox(),
+    //   routes: [
+    //     GoRoute(
+    //       path: 'tax-codes',
+    //       name: 'taxCodeList',
+    //       pageBuilder: (context, state) => const NoTransitionPage(child: TaxListPage()),
+    //     ),
+    //     GoRoute(
+    //       path: 'pos-registers',
+    //       name: 'posRegisterList',
+    //       pageBuilder: (context, state) => const NoTransitionPage(child: RegisterListPage()),
+    //     ),
+    //     ShellRoute(
+    //       pageBuilder: (context, state, child) => NoTransitionPage(
+    //         child: BlocProvider(
+    //           create: (context) => GetIt.I<PaginatedListBloc<Branch>>()
+    //             ..add(
+    //               const PaginatedListEvent<Branch>.fetch(),
+    //             ),
+    //           child: child,
+    //         ),
+    //       ),
+    //       routes: [
+    //         GoRoute(
+    //           path: 'branches',
+    //           name: 'branchList',
+    //           pageBuilder: (context, state) => const NoTransitionPage(child: BranchListPage()),
+    //           routes: [
+    //             GoRoute(
+    //               path: 'new',
+    //               name: 'branchCreate',
+    //               pageBuilder: (context, state) => const NoTransitionPage(child: BranchFormPage()),
+    //             ),
+    //             GoRoute(
+    //               path: ':id',
+    //               name: 'branchDetails',
+    //               pageBuilder: (_, state) {
+    //                 final id = state.pathParameters['id'];
+    //                 return NoTransitionPage(child: BranchFormPage(id: id));
+    //               },
+    //             ),
+    //           ],
+    //         ),
+    //       ],
+    //     ),
+    //     ShellRoute(
+    //       pageBuilder: (context, state, child) => NoTransitionPage(
+    //         child: BlocProvider(
+    //           create: (context) => GetIt.I<PaginatedListBloc<ReceiptTemplate>>()
+    //             ..add(
+    //               const PaginatedListEvent<ReceiptTemplate>.fetch(),
+    //             ),
+    //           child: child,
+    //         ),
+    //       ),
+    //       routes: [
+    //         GoRoute(
+    //           path: 'receipt-templates',
+    //           name: 'receiptTemplateList',
+    //           pageBuilder: (context, state) => const NoTransitionPage(child: ReceiptTemplateListPage()),
+    //           routes: [
+    //             GoRoute(
+    //               path: 'new',
+    //               name: 'receiptTemplateCreate',
+    //               pageBuilder: (context, state) => const NoTransitionPage(child: ReceiptTemplateFormPage()),
+    //             ),
+    //             GoRoute(
+    //               path: ':id',
+    //               name: 'receiptTemplateDetails',
+    //               pageBuilder: (context, state) {
+    //                 final id = state.pathParameters['id'];
+    //                 return NoTransitionPage(child: ReceiptTemplateFormPage(id: id));
+    //               },
+    //             ),
+    //           ],
+    //         ),
+    //       ],
+    //     ),
+    //   ],
+    // ),
   ],
 );

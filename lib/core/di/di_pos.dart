@@ -13,10 +13,14 @@ import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/get
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/logout.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/data/api/employee_api.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/data/repositories/employee_repository_impl.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/domain/repository/employee_repository.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/api/register_api_service.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/data/repository/register_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/repository/register_repository.dart';
 import 'package:medglobal_admin_portal/portal/transactions/repositories/transaction_repository.dart';
+import 'package:medglobal_admin_portal/portal/transactions/repositories/transaction_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/app_session/data/datasources/app_session_datasource.dart';
 import 'package:medglobal_admin_portal/pos/app_session/data/repositories/session_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/app_session/domain/app_session_service.dart';
@@ -71,12 +75,16 @@ import 'package:medglobal_admin_portal/pos/syncing/sync/read_sync_bloc/read_sync
 import 'package:medglobal_admin_portal/pos/syncing/sync_queue/sync_queue_repository.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/datasources/refund/local_refund_datasource.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/datasources/refund/remote_refund_datasource.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/datasources/transactions/transaction_api.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/repositories/refund/local_refund_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/transactions/data/repositories/refund/remote_refund_repository_impl.dart';
+import 'package:medglobal_admin_portal/pos/transactions/data/repositories/transactions/remote_transaction_repository_impl.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund/local_refund_repository.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/refund/remote_refund_repository.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/repositories/transactions/register_transaction_repository.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/usecases/issue_refund_usecase.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/refund_bloc/refund_bloc.dart';
+import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/register_transaction_bloc/register_transaction_bloc.dart';
 import 'package:medglobal_admin_portal/pos/transactions/presentation/bloc/transaction_list_bloc/transaction_list_bloc.dart';
 
 GetIt inject = GetIt.instance;
@@ -155,6 +163,12 @@ void sessionDependencies() {
 
 void deviceSetupDependencies() {
   inject
+    ..registerLazySingleton<EmployeeApi>(
+      () => EmployeeApi(inject<ApiService>()),
+    )
+    ..registerLazySingleton<EmployeeRepository>(
+      () => EmployeeRepositoryImpl(inject<EmployeeApi>()),
+    )
     ..registerLazySingleton<LocalSettingsRepository>(
       () => LocalSettingsRepositoryImpl(dao: inject<AppDatabase>().settingsDao),
     )
@@ -300,6 +314,12 @@ void receiptConfigDependencies() {
 
 void productCatalogDependencies() {
   inject
+    ..registerLazySingleton<LocalProductCatalogDataSource>(
+      () => LocalProductCatalogDataSource(dao: inject<AppDatabase>().productCatalogDao),
+    )
+    ..registerLazySingleton<RemoteProductCatalogDataSource>(
+      () => RemoteProductCatalogDataSource(api: inject<ApiService>()),
+    )
     ..registerLazySingleton<LocalProductCatalogRepository>(
       () => LocalProductCatalogRepositoryImpl(localDataSource: inject<LocalProductCatalogDataSource>()),
     )
@@ -362,9 +382,22 @@ void saleDependencies() {
 }
 
 void transactionDependencies() {
-  inject.registerFactory<TransactionListBloc>(
-    () => TransactionListBloc(inject<TransactionRepository>()),
-  );
+  inject
+    ..registerLazySingleton<TransactionApi>(
+      () => TransactionApi(api: inject<ApiService>()),
+    )
+    ..registerLazySingleton<TransactionRepository>(
+      () => TransactionRepositoryImpl(api: inject<TransactionApi>()),
+    )
+    ..registerLazySingleton<RegisterTransactionRepository>(
+      () => RemoteTransactionRepositoryImpl(api: inject<TransactionApi>()),
+    )
+    ..registerFactory<TransactionListBloc>(
+      () => TransactionListBloc(inject<TransactionRepository>()),
+    )
+    ..registerFactory<RegisterTransactionBloc>(
+      () => RegisterTransactionBloc(inject<RegisterTransactionRepository>()),
+    );
 }
 
 void refundDependencies() {
@@ -376,9 +409,11 @@ void refundDependencies() {
       () => RemoteRefundDataSource(api: inject<ApiService>()),
     )
     ..registerLazySingleton<RemoteRefundRepository>(
-        () => RemoteRefundRepositoryImpl(remoteDataSource: inject<RemoteRefundDataSource>()))
+      () => RemoteRefundRepositoryImpl(remoteDataSource: inject<RemoteRefundDataSource>()),
+    )
     ..registerLazySingleton<LocalRefundRepository>(
-        () => LocalRefundRepositoryImpl(localDataSource: inject<LocalRefundDataSource>()))
+      () => LocalRefundRepositoryImpl(localDataSource: inject<LocalRefundDataSource>()),
+    )
     ..registerLazySingleton<IssueRefundUseCase>(
       () => IssueRefundUseCase(
         localRegisterShiftRepository: inject<LocalRegisterShiftRepository>(),

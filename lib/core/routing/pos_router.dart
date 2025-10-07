@@ -68,11 +68,11 @@ abstract class PosAppRouter {
         },
         active: (_) {
           return device.maybeWhen(
-            unready: () => '/pos/setup',
+            unready: () => '/setup',
             loading: () => null,
             failure: (_) => null,
             orElse: () {
-              if (isSplash || isLogin || isSetup) return '/pos/register';
+              if (isSplash || isLogin || isSetup) return '/register';
               return null;
             },
           );

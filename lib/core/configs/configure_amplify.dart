@@ -1,6 +1,6 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/amplifyconfiguration.dart';
 
 Future<void> configureAmplify() async {
   try {
