@@ -61,208 +61,230 @@ class _PortalSideBar1State extends State<PortalSideBar1> {
                     return null;
                   },
                   builder: (context, userType) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// Product Management
-                        ///
-                        SidebarSection(
-                          leading: icon('/products'),
-                          title: 'Product Management',
-                          isExpanded: expandedKey == '/products',
-                          onToggle: () => toggleExpansion('/products'),
-                          hasSelection: context.isSubrouteOf('/products'),
-                          children: const [
-                            SidebarItem(
-                              title: 'Suppliers',
-                              route: '/products/suppliers',
-                              routeName: 'supplierList',
-                            ),
-                            SidebarItem(
-                              title: 'Products',
-                              route: '/products',
-                              routeName: 'productList',
-                              ignoreSubpaths: ['suppliers'],
-                            ),
-                          ],
-                        ),
+                    return userType == UserType.supervisor
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /// Stock Management
+                              ///
+                              SidebarSection(
+                                leading: icon('/stocks'),
+                                title: 'Stock Management',
+                                isExpanded: expandedKey == '/stocks',
+                                onToggle: () => toggleExpansion('/stocks'),
+                                hasSelection: context.isSubrouteOf('/stocks'),
+                                children: const [
+                                  SidebarItem(
+                                    title: 'Purchase Orders',
+                                    route: '/stocks/purchase-orders',
+                                    routeName: 'purchaseOrderList',
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /// Product Management
+                              ///
+                              SidebarSection(
+                                leading: icon('/products'),
+                                title: 'Product Management',
+                                isExpanded: expandedKey == '/products',
+                                onToggle: () => toggleExpansion('/products'),
+                                hasSelection: context.isSubrouteOf('/products'),
+                                children: const [
+                                  SidebarItem(
+                                    title: 'Suppliers',
+                                    route: '/products/suppliers',
+                                    routeName: 'supplierList',
+                                  ),
+                                  SidebarItem(
+                                    title: 'Products',
+                                    route: '/products',
+                                    routeName: 'productList',
+                                    ignoreSubpaths: ['suppliers'],
+                                  ),
+                                ],
+                              ),
 
-                        /// Stock Management
-                        ///
-                        SidebarSection(
-                          leading: icon('/stocks'),
-                          title: 'Stock Management',
-                          isExpanded: expandedKey == '/stocks',
-                          onToggle: () => toggleExpansion('/stocks'),
-                          hasSelection: context.isSubrouteOf('/stocks'),
-                          children: const [
-                            // SidebarItem(
-                            //   title: 'Supply Needs',
-                            //   route: '/stocks/supply-needs',
-                            //   routeName: 'supplyNeedList',
-                            // ),
-                            SidebarItem(
-                              title: 'Purchase Orders',
-                              route: '/stocks/purchase-orders',
-                              routeName: 'purchaseOrderList',
-                            ),
-                            SidebarItem(
-                              title: 'Stock Returns',
-                              route: '/stocks/stock-returns',
-                              routeName: 'stockReturnList',
-                            ),
-                            SidebarItem(
-                              title: 'Stock Takes',
-                              route: '/stocks/stock-takes',
-                              routeName: 'stockTakeList',
-                            ),
-                            // SidebarItem(
-                            //   title: 'Stock Transfers',
-                            //   route: '/stocks/stock-transfers',
-                            //   routeName: 'stockTransferList',
-                            // ),
-                          ],
-                        ),
+                              /// Stock Management
+                              ///
+                              SidebarSection(
+                                leading: icon('/stocks'),
+                                title: 'Stock Management',
+                                isExpanded: expandedKey == '/stocks',
+                                onToggle: () => toggleExpansion('/stocks'),
+                                hasSelection: context.isSubrouteOf('/stocks'),
+                                children: const [
+                                  // SidebarItem(
+                                  //   title: 'Supply Needs',
+                                  //   route: '/stocks/supply-needs',
+                                  //   routeName: 'supplyNeedList',
+                                  // ),
+                                  SidebarItem(
+                                    title: 'Purchase Orders',
+                                    route: '/stocks/purchase-orders',
+                                    routeName: 'purchaseOrderList',
+                                  ),
+                                  SidebarItem(
+                                    title: 'Stock Returns',
+                                    route: '/stocks/stock-returns',
+                                    routeName: 'stockReturnList',
+                                  ),
+                                  SidebarItem(
+                                    title: 'Stock Takes',
+                                    route: '/stocks/stock-takes',
+                                    routeName: 'stockTakeList',
+                                  ),
+                                  // SidebarItem(
+                                  //   title: 'Stock Transfers',
+                                  //   route: '/stocks/stock-transfers',
+                                  //   routeName: 'stockTransferList',
+                                  // ),
+                                ],
+                              ),
 
-                        /// Transactions
-                        ///
-                        SidebarSection(
-                          leading: icon('/transactions'),
-                          title: 'Transactions',
-                          isExpanded: expandedKey == '/transactions',
-                          onToggle: () => toggleExpansion('/transactions'),
-                          hasSelection: context.isSubrouteOf('/transactions'),
-                          children: const [
-                            SidebarItem(
-                              title: 'Sales',
-                              route: '/transactions/sales',
-                              routeName: 'saleTransactionList',
-                            ),
-                            SidebarItem(
-                              title: 'Returns',
-                              route: '/transactions/returns',
-                              routeName: 'returnTransactionList',
-                            ),
-                          ],
-                        ),
+                              /// Transactions
+                              ///
+                              SidebarSection(
+                                leading: icon('/transactions'),
+                                title: 'Transactions',
+                                isExpanded: expandedKey == '/transactions',
+                                onToggle: () => toggleExpansion('/transactions'),
+                                hasSelection: context.isSubrouteOf('/transactions'),
+                                children: const [
+                                  SidebarItem(
+                                    title: 'Sales',
+                                    route: '/transactions/sales',
+                                    routeName: 'saleTransactionList',
+                                  ),
+                                  SidebarItem(
+                                    title: 'Returns',
+                                    route: '/transactions/returns',
+                                    routeName: 'returnTransactionList',
+                                  ),
+                                ],
+                              ),
 
-                        /// Reports
-                        ///
-                        SidebarSection(
-                          leading: icon('/reports'),
-                          title: 'Reports',
-                          isExpanded: expandedKey == '/reports' ||
-                              expandedKey == '/reports/sales' ||
-                              expandedKey == '/reports/products',
-                          onToggle: () => toggleExpansion('/reports'),
-                          hasSelection: context.isSubrouteOf('/reports'),
-                          children: [
-                            SidebarSection(
-                              title: 'Products',
-                              isExpanded: expandedKey == '/reports/products',
-                              onToggle: () => setState(() {
-                                if (expandedKey == '/reports/products') {
-                                  expandedKey = '/reports';
-                                } else {
-                                  expandedKey = '/reports/products';
-                                }
-                              }),
-                              hasSelection: context.isSubrouteOf('/reports/products'),
-                              children: const [
-                                SidebarItem(
-                                  title: 'Product History',
-                                  route: '/reports/products/product-history',
-                                  routeName: 'productHistoryReport',
-                                ),
-                                SidebarItem(
-                                  title: 'Product Sales History',
-                                  route: '/reports/products/product-sales-history',
-                                  routeName: 'productSalesHistoryReport',
-                                ),
-                                SidebarItem(
-                                  title: 'Product Performance',
-                                  route: '/reports/products/product-performance',
-                                  routeName: 'productPerformanceReports',
-                                ),
-                              ],
-                            ),
-                            SidebarSection(
-                              title: 'Sales',
-                              isExpanded: expandedKey == '/reports/sales',
-                              onToggle: () => setState(() {
-                                if (expandedKey == '/reports/sales') {
-                                  expandedKey = '/reports';
-                                } else {
-                                  expandedKey = '/reports/sales';
-                                }
-                              }),
-                              hasSelection: context.isSubrouteOf('/reports/sales'),
-                              children: const [
-                                SidebarItem(
-                                  title: 'Sales per Category',
-                                  route: '/reports/sales/sales-per-category',
-                                  routeName: 'salesPerCategoryDetails',
-                                ),
-                                SidebarItem(
-                                  title: 'Sales per Shift',
-                                  route: '/reports/sales/sales-per-shift',
-                                  routeName: 'salesPerShiftList',
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
+                              /// Reports
+                              ///
+                              SidebarSection(
+                                leading: icon('/reports'),
+                                title: 'Reports',
+                                isExpanded: expandedKey == '/reports' ||
+                                    expandedKey == '/reports/sales' ||
+                                    expandedKey == '/reports/products',
+                                onToggle: () => toggleExpansion('/reports'),
+                                hasSelection: context.isSubrouteOf('/reports'),
+                                children: [
+                                  SidebarSection(
+                                    title: 'Products',
+                                    isExpanded: expandedKey == '/reports/products',
+                                    onToggle: () => setState(() {
+                                      if (expandedKey == '/reports/products') {
+                                        expandedKey = '/reports';
+                                      } else {
+                                        expandedKey = '/reports/products';
+                                      }
+                                    }),
+                                    hasSelection: context.isSubrouteOf('/reports/products'),
+                                    children: const [
+                                      SidebarItem(
+                                        title: 'Product History',
+                                        route: '/reports/products/product-history',
+                                        routeName: 'productHistoryReport',
+                                      ),
+                                      SidebarItem(
+                                        title: 'Product Sales History',
+                                        route: '/reports/products/product-sales-history',
+                                        routeName: 'productSalesHistoryReport',
+                                      ),
+                                      SidebarItem(
+                                        title: 'Product Performance',
+                                        route: '/reports/products/product-performance',
+                                        routeName: 'productPerformanceReports',
+                                      ),
+                                    ],
+                                  ),
+                                  SidebarSection(
+                                    title: 'Sales',
+                                    isExpanded: expandedKey == '/reports/sales',
+                                    onToggle: () => setState(() {
+                                      if (expandedKey == '/reports/sales') {
+                                        expandedKey = '/reports';
+                                      } else {
+                                        expandedKey = '/reports/sales';
+                                      }
+                                    }),
+                                    hasSelection: context.isSubrouteOf('/reports/sales'),
+                                    children: const [
+                                      SidebarItem(
+                                        title: 'Sales per Category',
+                                        route: '/reports/sales/sales-per-category',
+                                        routeName: 'salesPerCategoryDetails',
+                                      ),
+                                      SidebarItem(
+                                        title: 'Sales per Shift',
+                                        route: '/reports/sales/sales-per-shift',
+                                        routeName: 'salesPerShiftList',
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
 
-                        /// Employees
-                        ///
-                        // SidebarSection(
-                        //   leading: icon('/employees'),
-                        //   title: 'Employees',
-                        //   isExpanded: expandedKey == '/employees',
-                        //   onToggle: () => toggleExpansion('/employees'),
-                        //   hasSelection: context.isSubrouteOf('/employees'),
-                        //   children: const [
-                        //     SidebarItem(
-                        //       title: 'Manage Employees',
-                        //       route: '/employees',
-                        //       routeName: 'employeeList',
-                        //     ),
-                        //   ],
-                        // ),
+                              /// Employees
+                              ///
+                              // SidebarSection(
+                              //   leading: icon('/employees'),
+                              //   title: 'Employees',
+                              //   isExpanded: expandedKey == '/employees',
+                              //   onToggle: () => toggleExpansion('/employees'),
+                              //   hasSelection: context.isSubrouteOf('/employees'),
+                              //   children: const [
+                              //     SidebarItem(
+                              //       title: 'Manage Employees',
+                              //       route: '/employees',
+                              //       routeName: 'employeeList',
+                              //     ),
+                              //   ],
+                              // ),
 
-                        /// Settings
-                        ///
-                        SidebarSection(
-                          leading: icon('/settings'),
-                          title: 'Settings',
-                          isExpanded: expandedKey == '/settings',
-                          onToggle: () => toggleExpansion('/settings'),
-                          hasSelection: context.isSubrouteOf('/settings'),
-                          children: const [
-                            SidebarItem(
-                              title: 'Tax',
-                              route: '/settings/tax-codes',
-                              routeName: 'taxCodeList',
-                            ),
-                            SidebarItem(
-                              title: 'Branch',
-                              route: '/settings/branches',
-                              routeName: 'branchList',
-                            ),
-                            SidebarItem(
-                              title: 'POS Register',
-                              route: '/settings/pos-registers',
-                              routeName: 'posRegisterList',
-                            ),
-                            SidebarItem(
-                              title: 'Receipt Template',
-                              route: '/settings/receipt-templates',
-                              routeName: 'receiptTemplateList',
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
+                              /// Settings
+                              ///
+                              SidebarSection(
+                                leading: icon('/settings'),
+                                title: 'Settings',
+                                isExpanded: expandedKey == '/settings',
+                                onToggle: () => toggleExpansion('/settings'),
+                                hasSelection: context.isSubrouteOf('/settings'),
+                                children: const [
+                                  SidebarItem(
+                                    title: 'Tax',
+                                    route: '/settings/tax-codes',
+                                    routeName: 'taxCodeList',
+                                  ),
+                                  SidebarItem(
+                                    title: 'Branch',
+                                    route: '/settings/branches',
+                                    routeName: 'branchList',
+                                  ),
+                                  SidebarItem(
+                                    title: 'POS Register',
+                                    route: '/settings/pos-registers',
+                                    routeName: 'posRegisterList',
+                                  ),
+                                  SidebarItem(
+                                    title: 'Receipt Template',
+                                    route: '/settings/receipt-templates',
+                                    routeName: 'receiptTemplateList',
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
                   },
                 ),
               ],
