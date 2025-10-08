@@ -56,12 +56,12 @@ class PosDrawer extends StatelessWidget with DialogMixin {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    selected: routerState.matchedLocation == '/pos/register',
+                    selected: routerState.matchedLocation == '/register',
                     selectedTileColor: UIColors.primary,
                     title: UIText.bodyRegular(
                       'Register',
                       color:
-                          routerState.matchedLocation == '/pos/register' ? UIColors.background : UIColors.textRegular,
+                          routerState.matchedLocation == '/register' ? UIColors.background : UIColors.textRegular,
                     ),
                     onTap: () => context.goNamed('registerScreen'),
                   ),
@@ -73,11 +73,11 @@ class PosDrawer extends StatelessWidget with DialogMixin {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    selected: routerState.matchedLocation == '/pos/transactions',
+                    selected: routerState.matchedLocation == '/transactions',
                     selectedTileColor: UIColors.primary,
                     title: UIText.bodyRegular(
                       'Transactions',
-                      color: routerState.matchedLocation == '/pos/transactions'
+                      color: routerState.matchedLocation == '/transactions'
                           ? UIColors.background
                           : UIColors.textRegular,
                     ),
@@ -92,12 +92,12 @@ class PosDrawer extends StatelessWidget with DialogMixin {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    selected: routerState.matchedLocation == '/pos/settings',
+                    selected: routerState.matchedLocation == '/settings',
                     selectedTileColor: UIColors.primary,
                     title: UIText.bodyRegular(
                       'Settings',
                       color:
-                          routerState.matchedLocation == '/pos/settings' ? UIColors.background : UIColors.textRegular,
+                          routerState.matchedLocation == '/settings' ? UIColors.background : UIColors.textRegular,
                     ),
                     onTap: () => showCustomDialog(context, dialog: const SettingsDialog()),
                   ),
