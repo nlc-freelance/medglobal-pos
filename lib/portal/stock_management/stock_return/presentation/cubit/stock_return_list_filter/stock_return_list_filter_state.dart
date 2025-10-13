@@ -31,4 +31,11 @@ class StockReturnListFilterState extends Equatable {
       endDate: nullEndDate == true ? null : endDate ?? this.endDate,
     );
   }
+
+  Map<String, dynamic> get filters => {
+        'status': status?.label.toLowerCase(),
+        'branch': branchId,
+        'startDate': startDate,
+        'endDate': endDate,
+      };
 }

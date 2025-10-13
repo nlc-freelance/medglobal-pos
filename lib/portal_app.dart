@@ -82,7 +82,7 @@ class PortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<NewPurchaseOrderFormCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnListRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnListFilterCubit>()),
-        BlocProvider(create: (_) => GetIt.I<StockReturnRemoteCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<StockReturnRemoteCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockReturnCubit>()),
         BlocProvider(create: (_) => GetIt.I<StockTakeItemsCubit>()),
         BlocProvider(create: (_) => GetIt.I<NewStockReturnCubit>()),
@@ -108,7 +108,7 @@ class PortalApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.I<ReturnTransactionListCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnTransactionListFilterCubit>()),
         BlocProvider(create: (_) => GetIt.I<ReturnCubit>()),
-        BlocProvider(create: (_) => GetIt.I<ReturnRemoteCubit>()),
+        // BlocProvider(create: (_) => GetIt.I<ReturnRemoteCubit>()),
 
         // Portal > SupplierDropdown
         BlocProvider(create: (_) => GetIt.I<SupplierLazyListCubit>()),

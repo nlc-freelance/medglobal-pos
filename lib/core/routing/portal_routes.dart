@@ -20,6 +20,7 @@ import 'package:medglobal_admin_portal/portal/product_management/presentation/pa
 import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/bloc/product_performance_list/product_performance_list_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/pages/product_performance_list/product_performance_list_page.dart';
+import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/cubit/product_history_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
 import 'package:medglobal_admin_portal/portal/reports/shared/product_history_detail_bloc/product_history_detail_bloc.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/presentation/product_history_page.dart';
@@ -60,6 +61,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/pages/supply_needs_page.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list_filter/supplier_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/supplier_list_page.dart';
+import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/pages/return_transaction_details/return_transaction_details_page.dart';
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/pages/return_transaction_list/returns_page.dart';
 import 'package:medglobal_admin_portal/portal/transactions/sale/presentation/pages/sale_transaction_details/sale_transaction_details_page.dart';
@@ -168,6 +170,17 @@ final ShellRoute portalRoutes = ShellRoute(
             GoRoute(
               path: ':id',
               name: 'productDetails',
+              redirect: (context, state) {
+                final id = state.pathParameters['id'];
+
+                final intId = int.tryParse(id ?? Strings.empty);
+
+                if (intId == null) {
+                  return NotFoundPage.route;
+                } else {
+                  return null;
+                }
+              },
               pageBuilder: (context, state) {
                 final id = state.pathParameters['id'];
                 return NoTransitionPage(child: ProductFormPage(id: id));
@@ -328,7 +341,12 @@ final ShellRoute portalRoutes = ShellRoute(
               name: 'returnTransactionDetails',
               pageBuilder: (context, state) {
                 final id = state.pathParameters['id']!;
-                return NoTransitionPage(child: ReturnTransactionDetailsPage(id: id));
+                return NoTransitionPage(
+                  child: BlocProvider(
+                    create: (context) => GetIt.I<ReturnRemoteCubit>(),
+                    child: ReturnTransactionDetailsPage(id: id),
+                  ),
+                );
               },
             ),
           ],
@@ -357,7 +375,12 @@ final ShellRoute portalRoutes = ShellRoute(
                 GoRoute(
                   path: 'product-history',
                   name: 'productHistoryReport',
-                  pageBuilder: (context, state) => const NoTransitionPage(child: ProductHistoryPage()),
+                  pageBuilder: (context, state) => NoTransitionPage(
+                    child: BlocProvider(
+                      create: (context) => ProductHistoryListFilterCubit(),
+                      child: const ProductHistoryPage(),
+                    ),
+                  ),
                 ),
                 GoRoute(
                   path: 'product-sales-history',

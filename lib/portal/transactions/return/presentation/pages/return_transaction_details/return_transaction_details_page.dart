@@ -28,12 +28,9 @@ class _ReturnTransactionDetailsPageState extends State<ReturnTransactionDetailsP
   Widget build(BuildContext context) {
     return BlocConsumer<TransactionBloc, TransactionState>(
       listener: (context, state) => state.maybeWhen(
-        loaded: (transaction) => context.read<ReturnCubit>().setReturnItems(transaction.items ?? []),
+        loaded: (transaction) => context.read<ReturnCubit>().setReturnItems(transaction, transaction.items ?? []),
         orElse: () => {},
       ),
-      //  {
-      //   if (state is TransactionByIdSuccess) context.read<ReturnCubit>().setReturnItems(state.transaction.items);
-      // },
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

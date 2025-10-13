@@ -14,6 +14,7 @@ part of 'return_cubit.dart';
 @freezed
 class ReturnState with _$ReturnState {
   const factory ReturnState({
+    Transaction? transaction,
     @Default([]) List<TransactionItem> items,
   }) = _ReturnState;
 

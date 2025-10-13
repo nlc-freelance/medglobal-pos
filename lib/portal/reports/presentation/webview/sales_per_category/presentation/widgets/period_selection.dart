@@ -32,7 +32,7 @@ class _PeriodSelectionState extends State<PeriodSelection> {
   @override
   Widget build(BuildContext context) {
     return DatePickerPopup(
-      showEndIcon: false,
+      showClearButton: false,
       selectionMode: DateRangePickerSelectionMode.range,
       selectedDateRange: context.read<SalesCategoryPeriodCubit>().state.startDate == null &&
               context.read<SalesCategoryPeriodCubit>().state.endDate == null

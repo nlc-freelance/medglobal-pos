@@ -4,8 +4,8 @@ import 'package:medglobal_admin_portal/portal/product_management/presentation/cu
 import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/widgets/product_bulk_action_menu.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class ProductSelectionToolbar extends StatelessWidget {
-  const ProductSelectionToolbar({super.key});
+class ProductBulkSelectToolbar extends StatelessWidget {
+  const ProductBulkSelectToolbar({super.key});
 
   @override
   Widget build(BuildContext context) {

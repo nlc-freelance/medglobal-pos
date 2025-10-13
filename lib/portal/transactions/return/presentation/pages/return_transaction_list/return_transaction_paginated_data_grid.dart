@@ -81,6 +81,9 @@ class _ReturnTransactionPaginatedDataGridState extends State<ReturnTransactionPa
                         gridLinesVisibility: GridLinesVisibility.horizontal,
                         headerRowHeight: 38,
                         footerHeight: 100,
+                        isScrollbarAlwaysShown: true,
+                        showVerticalScrollbar: false,
+                        frozenColumnsCount: 2,
                         footer: _returnTransactionDataSource.rows.isEmpty
                             ? Padding(
                                 padding: const EdgeInsets.all(8.0),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/models/query_params.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/shared/dropdown_list.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/shared/dropdown_lazy_list.dart';
 import 'package:medglobal_admin_portal/core/widgets/overlay_builder.dart';
@@ -26,6 +27,8 @@ class AppDropdown<T> extends StatefulWidget {
     required this.type,
     this.isEnabled = true,
     this.value,
+    this.filters,
+    this.highlightOnSelect = true,
   });
 
   final DropdownListType type;
@@ -38,6 +41,13 @@ class AppDropdown<T> extends StatefulWidget {
   final String? inlineLabel;
   final bool isEnabled;
   final T? value;
+  final FilterQuery? filters;
+
+  /// Highlights the dropdown when an item is selected.
+  ///
+  /// Enabled by default for filter-style dropdowns. Set to `false`
+  /// for input-style dropdowns where highlighting is not needed.
+  final bool highlightOnSelect;
 
   factory AppDropdown.lazy({
     required String Function(T item) getName,
@@ -48,6 +58,8 @@ class AppDropdown<T> extends StatefulWidget {
     String? inlineLabel,
     bool isEnabled = true,
     T? value,
+    FilterQuery? filters,
+    bool highlightOnSelect = true,
     Key? key,
   }) =>
       AppDropdown._(
@@ -61,6 +73,8 @@ class AppDropdown<T> extends StatefulWidget {
         inlineLabel: inlineLabel,
         isEnabled: isEnabled,
         value: value,
+        filters: filters,
+        highlightOnSelect: highlightOnSelect,
       );
 
   factory AppDropdown.static({
@@ -72,6 +86,7 @@ class AppDropdown<T> extends StatefulWidget {
     bool hasInlineLabel = false,
     String? inlineLabel,
     bool isEnabled = true,
+    highlightOnSelect = true,
     T? value,
     Key? key,
   }) =>
@@ -87,6 +102,7 @@ class AppDropdown<T> extends StatefulWidget {
         inlineLabel: inlineLabel,
         isEnabled: isEnabled,
         value: value,
+        highlightOnSelect: highlightOnSelect,
       );
 
   @override
@@ -109,7 +125,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
     /// trigger a fetch event to load the initial data.
     if (widget.type == DropdownListType.lazy) {
       final lazyListBloc = context.read<LazyListBloc<T>>();
-      if (lazyListBloc.state.items.isEmpty) lazyListBloc.add(LazyListEvent<T>.fetch());
+      if (lazyListBloc.state.items.isEmpty) lazyListBloc.add(LazyListEvent<T>.fetch(filters: widget.filters));
     }
   }
 
@@ -136,6 +152,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         hasInlineLabel: widget.hasInlineLabel,
         inlineLabel: widget.inlineLabel,
         isEnabled: widget.isEnabled,
+        highlightOnSelect: widget.highlightOnSelect,
       ),
       follower: widget.type == DropdownListType.lazy
           ? DropdownLazyList<T>(
@@ -146,6 +163,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
                 _hideDropdownList();
               },
               getName: widget.getName,
+              filters: widget.filters,
             )
           : DropdownList<T>(
               items: widget.items!,
@@ -175,9 +193,10 @@ class _DropdownButton<T> extends StatelessWidget {
     required this.onTap,
     this.onRemoveSelectedItem,
     this.value,
-    this.hasInlineLabel = false,
+    required this.hasInlineLabel,
     this.inlineLabel,
-    this.isEnabled = true,
+    required this.isEnabled,
+    required this.highlightOnSelect,
   });
 
   final GlobalKey menuKey;
@@ -188,6 +207,7 @@ class _DropdownButton<T> extends StatelessWidget {
   final bool hasInlineLabel;
   final String? inlineLabel;
   final bool isEnabled;
+  final bool highlightOnSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +219,7 @@ class _DropdownButton<T> extends StatelessWidget {
       onTap: isEnabled ? onTap : null,
       child: HoverBuilder(
         builder: (isHover) {
-          final highlight = value?.isNotEmpty == true;
+          final highlight = value?.isNotEmpty == true && highlightOnSelect;
           return Container(
             constraints: const BoxConstraints(minWidth: 200),
             padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
@@ -228,17 +248,23 @@ class _DropdownButton<T> extends StatelessWidget {
                           style: UIStyleText.labelMedium.copyWith(color: UIColors.textMuted),
                           children: [
                             TextSpan(
-                              text: '   ${value ?? hint}',
-                              style: (value != null ? UIStyleText.labelSemiBold : UIStyleText.hint).copyWith(
-                                color: value != null ? UIColors.primary : UIColors.textMuted,
+                              text: '     ${value ?? hint}',
+                              style: (value != null ? UIStyleText.labelMedium : UIStyleText.hint).copyWith(
+                                color: value != null
+                                    ? highlightOnSelect
+                                        ? UIColors.primary
+                                        : UIColors.textRegular
+                                    : UIColors.textMuted,
                               ),
                             ),
                           ],
                         ),
                       )
-                    : UIText.labelMedium(
+                    : Text(
                         value ?? hint,
-                        color: value != null ? UIColors.primary : UIColors.textLight,
+                        style: UIStyleText.hint.copyWith(
+                          color: value != null ? UIColors.textDark : UIColors.textMuted,
+                        ),
                       ),
                 const UIHorizontalSpace(10),
                 value != null && onRemoveSelectedItem != null

@@ -190,7 +190,7 @@ class ProductSalesHistoryDataGridSource extends DataGridSource {
       };
 
   void _onTapProductSaleHistoryItem(int transactionId, TransactionType transactionType) {
-    final action = transactionType == TransactionType.sale ? ProductHistoryAction.SALE : ProductHistoryAction.RETURN;
-    _context.read<ProductHistoryDetailBloc>().add(ProductHistoryDetailEvent.getById(transactionId, action));
+    final action = transactionType == TransactionType.sale ? ProductHistoryAction.SALE : ProductHistoryAction.REFUND;
+    _context.read<ProductHistoryDetailBloc>().add(ProductHistoryDetailEvent.goToDetailsPage(transactionId, action));
   }
 }

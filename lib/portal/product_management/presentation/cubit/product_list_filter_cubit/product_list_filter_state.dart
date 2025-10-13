@@ -17,4 +17,8 @@ extension ProductListFilterStateExt on ProductListFilterState {
         size: size,
         search: search,
       );
+
+  Map<String, dynamic> get filters => {
+        'search': search,
+      };
 }

@@ -14,11 +14,11 @@ class DatePickerPopup extends StatefulWidget {
       this.onSelect,
       this.onSelectRange,
       this.onRemoveSelected,
-      this.showEndIcon = true,
+      this.showClearButton = true,
       this.maxDate});
 
   final bool isInput;
-  final bool showEndIcon;
+  final bool showClearButton;
   final DateTime? selectedDate;
   final List<DateTime?>? selectedDateRange;
   final void Function(DateTime)? onSelect;
@@ -144,7 +144,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
                       ),
                     ),
               const UIHorizontalSpace(10),
-              if (widget.showEndIcon)
+              if (widget.showClearButton)
                 (_selectedDate != null || _selectedDateRange.isNotEmpty) && widget.onRemoveSelected != null
                     ? SizedBox(
                         height: 18,

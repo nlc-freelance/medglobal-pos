@@ -285,7 +285,9 @@ class ProductHistoryDataSource extends DataGridSource {
               ? HoverBuilder(
                   builder: (isHover) => InkWell(
                         onTap: () {
-                          _context.read<ProductHistoryDetailBloc>().add(ProductHistoryDetailEvent.getById(id, action));
+                          _context
+                              .read<ProductHistoryDetailBloc>()
+                              .add(ProductHistoryDetailEvent.goToDetailsPage(id, action));
 
                           /// TODO: initState on the destination page is not being triggered for every goNamed call
                           /// that's why we are fetching the resource by id again here before navigating

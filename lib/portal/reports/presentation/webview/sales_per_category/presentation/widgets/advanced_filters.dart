@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/dropdowns/app_dropdown.dart';
+import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/entities/filter.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/repositories/sales_per_category_repository.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/cubit/sales_category_filter/sales_category_filter_cubit.dart';
@@ -47,7 +49,7 @@ class _SalesCategoryFilterState extends State<AdvancedFilters> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   height: 380,
-                  width: MediaQuery.sizeOf(context).width * 0.45,
+                  width: MediaQuery.sizeOf(context).width * 0.53,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

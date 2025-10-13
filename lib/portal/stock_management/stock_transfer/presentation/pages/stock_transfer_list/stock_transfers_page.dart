@@ -8,6 +8,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/pr
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_filter/stock_transfer_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_list_remote/stock_transfer_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfer_paginated_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfer_toolbar.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -162,147 +163,9 @@ class _StockTransfersPageState extends State<StockTransferListPage> with SingleT
             return UIColors.transparent;
           }),
         ),
-        const UIVerticalSpace(24),
-        BlocSelector<StockTransferListFilterCubit, StockTransferListFilterState, StockTransferListFilterState>(
-          selector: (state) => state,
-          builder: (context, filters) {
-            return DataGridToolbar(
-              reportType: ReportType.stockTransfer,
-              reportFilters: {
-                'status': filters.status?.label.toLowerCase(),
-                'fromBranch': filters.sourceBranch?.id,
-                'toBranch': filters.destinationBranch?.id,
-                'startDate': filters.startDate,
-                'endDate': filters.endDate,
-              },
-              filters: [
-                DatePickerPopup(
-                  onRemoveSelected: () {
-                    final size = context.read<StockTransferListFilterCubit>().state.size;
-                    final status = context.read<StockTransferListFilterCubit>().state.status;
-                    final sourceBranchId = context.read<StockTransferListFilterCubit>().state.sourceBranch?.id;
-                    final destinationBranchId =
-                        context.read<StockTransferListFilterCubit>().state.destinationBranch?.id;
-
-                    context.read<StockTransferListRemoteCubit>().getStockTransfers(
-                          size: size!,
-                          status: status,
-                          sourceBranchId: sourceBranchId,
-                          destinationBranchId: destinationBranchId,
-                        );
-
-                    context.read<StockTransferListFilterCubit>().setStartDate(null);
-                    context.read<StockTransferListFilterCubit>().setEndDate(null);
-                  },
-                  onSelectRange: (dates) {
-                    final size = context.read<StockTransferListFilterCubit>().state.size;
-                    final status = context.read<StockTransferListFilterCubit>().state.status;
-                    final sourceBranchId = context.read<StockTransferListFilterCubit>().state.sourceBranch?.id;
-                    final destinationBranchId =
-                        context.read<StockTransferListFilterCubit>().state.destinationBranch?.id;
-
-                    String? endDate;
-                    final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
-                    if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
-
-                    context.read<StockTransferListRemoteCubit>().getStockTransfers(
-                          size: size!,
-                          status: status,
-                          sourceBranchId: sourceBranchId,
-                          destinationBranchId: destinationBranchId,
-                          startDate: startDate,
-                          endDate: endDate,
-                        );
-
-                    context.read<StockTransferListFilterCubit>().setStartDate(startDate);
-                    context.read<StockTransferListFilterCubit>().setEndDate(endDate);
-                  },
-                  selectionMode: DateRangePickerSelectionMode.range,
-                ),
-                const UIHorizontalSpace(16),
-                BranchDropdown.select(
-                  hint: 'Source',
-                  isInlineHint: true,
-                  onRemoveSelectedItem: () {
-                    final size = context.read<StockTransferListFilterCubit>().state.size;
-                    final status = context.read<StockTransferListFilterCubit>().state.status;
-                    final destinationBranchId =
-                        context.read<StockTransferListFilterCubit>().state.destinationBranch?.id;
-                    final startDate = context.read<StockTransferListFilterCubit>().state.startDate;
-                    final endDate = context.read<StockTransferListFilterCubit>().state.endDate;
-
-                    context.read<StockTransferListRemoteCubit>().getStockTransfers(
-                          size: size!,
-                          status: status,
-                          sourceBranchId: null,
-                          destinationBranchId: destinationBranchId,
-                          startDate: startDate,
-                          endDate: endDate,
-                        );
-                    context.read<StockTransferListFilterCubit>().setSourceBranch(null);
-                  },
-                  onSelectItem: (branch) {
-                    final size = context.read<StockTransferListFilterCubit>().state.size;
-                    final status = context.read<StockTransferListFilterCubit>().state.status;
-                    final destinationBranchId =
-                        context.read<StockTransferListFilterCubit>().state.destinationBranch?.id;
-                    final startDate = context.read<StockTransferListFilterCubit>().state.startDate;
-                    final endDate = context.read<StockTransferListFilterCubit>().state.endDate;
-
-                    context.read<StockTransferListRemoteCubit>().getStockTransfers(
-                          size: size!,
-                          status: status,
-                          sourceBranchId: branch.id,
-                          destinationBranchId: destinationBranchId,
-                          startDate: startDate,
-                          endDate: endDate,
-                        );
-                    context.read<StockTransferListFilterCubit>().setSourceBranch(branch);
-                  },
-                ),
-                const UIHorizontalSpace(16),
-                BranchDropdown.select(
-                  hint: 'Destination',
-                  isInlineHint: true,
-                  onRemoveSelectedItem: () {
-                    final size = context.read<StockTransferListFilterCubit>().state.size;
-                    final status = context.read<StockTransferListFilterCubit>().state.status;
-                    final sourceBranchId = context.read<StockTransferListFilterCubit>().state.sourceBranch?.id;
-                    final startDate = context.read<StockTransferListFilterCubit>().state.startDate;
-                    final endDate = context.read<StockTransferListFilterCubit>().state.endDate;
-
-                    context.read<StockTransferListRemoteCubit>().getStockTransfers(
-                          size: size!,
-                          status: status,
-                          sourceBranchId: sourceBranchId,
-                          destinationBranchId: null,
-                          startDate: startDate,
-                          endDate: endDate,
-                        );
-                    context.read<StockTransferListFilterCubit>().setDestinationBranch(null);
-                  },
-                  onSelectItem: (branch) {
-                    final size = context.read<StockTransferListFilterCubit>().state.size;
-                    final status = context.read<StockTransferListFilterCubit>().state.status;
-                    final sourceBranchId = context.read<StockTransferListFilterCubit>().state.sourceBranch?.id;
-                    final startDate = context.read<StockTransferListFilterCubit>().state.startDate;
-                    final endDate = context.read<StockTransferListFilterCubit>().state.endDate;
-
-                    context.read<StockTransferListRemoteCubit>().getStockTransfers(
-                          size: size!,
-                          status: status,
-                          sourceBranchId: sourceBranchId,
-                          destinationBranchId: branch.id,
-                          startDate: startDate,
-                          endDate: endDate,
-                        );
-                    context.read<StockTransferListFilterCubit>().setDestinationBranch(branch);
-                  },
-                ),
-              ],
-            );
-          },
-        ),
+        const UIVerticalSpace(20),
+        const StockTransferToolbar(),
+        const UIVerticalSpace(20),
         const Expanded(child: StockTransferPaginatedDataGrid()),
       ],
     );

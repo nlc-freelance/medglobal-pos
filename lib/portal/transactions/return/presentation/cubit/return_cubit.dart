@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
 
 part 'return_state.dart';
@@ -8,7 +9,10 @@ part 'return_cubit.freezed.dart';
 class ReturnCubit extends Cubit<ReturnState> {
   ReturnCubit() : super(ReturnState.initial());
 
-  void setReturnItems(List<TransactionItem> items) => emit(ReturnState(items: items));
+  void setReturnItems(Transaction transaction, List<TransactionItem> items) => emit(ReturnState(
+        transaction: transaction,
+        items: items,
+      ));
   // void setReturn(Transaction transaction) => emit(ReturnState(transaction));
 
   void setReturnItemWriteOffQty({required int id, int? writeOffQty}) {

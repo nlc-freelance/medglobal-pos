@@ -50,6 +50,8 @@ class ProductHistoryItemDto {
         return ProductHistoryAction.TRANSFER;
       case 'sale':
         return ProductHistoryAction.SALE;
+      case 'refund':
+        return ProductHistoryAction.REFUND;
       case 'initial':
         return ProductHistoryAction.INITIAL;
       default:

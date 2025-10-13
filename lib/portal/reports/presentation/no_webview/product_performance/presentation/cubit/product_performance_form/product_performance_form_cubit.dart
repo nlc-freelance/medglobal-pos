@@ -8,7 +8,6 @@ import 'package:medglobal_admin_portal/portal/product_management/domain/entities
 import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/data/dto/create_product_abc_dto.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/data/dto/create_product_pnl_dto.dart';
-import 'package:medglobal_admin_portal/portal/reports/presentation/no_webview/product_performance/presentation/cubit/product_performance_form/params.dart';
 import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 
 part 'product_performance_form_state.dart';
@@ -17,61 +16,45 @@ part 'product_performance_form_cubit.freezed.dart';
 class ProductPerformanceFormCubit extends Cubit<ProductPerformanceFormState> {
   ProductPerformanceFormCubit() : super(ProductPerformanceFormState.initial());
 
-  void setType(ProductPerformanceType? type) => emit(state.copyWith(
-        type: type,
-        reportParams: type == ProductPerformanceType.pnl
-            ? const ProductPNLParams()
-            : type == ProductPerformanceType.abc
-                ? const ProductABCParams()
-                : null,
-      ));
+  void setType(ProductPerformanceType? type) => emit(state.copyWith(type: type));
 
-  // Product Profit & Loss Statement
   void toggleCategory(Category category) {
-    final params = state.reportParams;
-    if (params is! ProductPNLParams) return;
+    final categories = state.categories;
 
-    final exists = (params.categories ?? []).any((c) => c.id == category.id);
+    final exists = (categories ?? []).any((c) => c.id == category.id);
 
     if (exists) {
       removeCategory(category);
       return;
     }
 
-    final updatedCategories = [...?params.categories, category];
-    emit(state.copyWith(reportParams: params.copyWith(categories: updatedCategories)));
+    final updatedCategories = [...?categories, category];
+    emit(state.copyWith(categories: updatedCategories));
   }
 
   void removeCategory(Category category) {
-    final params = state.reportParams;
-    if (params is! ProductPNLParams) return;
+    final categories = state.categories;
 
-    final updatedCategories = (params.categories ?? []).where((c) => c.id != category.id).toList();
-    emit(state.copyWith(reportParams: params.copyWith(categories: updatedCategories)));
+    final updatedCategories = (categories ?? []).where((c) => c.id != category.id).toList();
+    emit(state.copyWith(categories: updatedCategories));
+  }
+
+  void removeAllCategory() {
+    emit(state.copyWith(categories: null));
   }
 
   bool isCategorySelected(Category category) {
-    final params = state.reportParams;
-    if (params is! ProductPNLParams) return false;
+    final categories = state.categories;
 
-    return (params.categories ?? []).where((c) => c.id == category.id).isNotEmpty;
+    return (categories ?? []).where((c) => c.id == category.id).isNotEmpty;
   }
 
   void setTopN(int? topN) {
-    final params = state.reportParams;
-    if (params is ProductPNLParams) {
-      emit(state.copyWith(reportParams: params.copyWith(topN: topN)));
-    }
+    emit(state.copyWith(topN: topN));
   }
 
   void setBranch(Branch? branch) {
-    final params = state.reportParams;
-    if (params is ProductABCParams) {
-      emit(state.copyWith(reportParams: params.copyWith(branch: branch)));
-    }
-    if (params is ProductPNLParams) {
-      emit(state.copyWith(reportParams: params.copyWith(branch: branch)));
-    }
+    emit(state.copyWith(branch: branch));
   }
 
   void setRankingCriteria(RankingCriteria? rankingCriteria) {

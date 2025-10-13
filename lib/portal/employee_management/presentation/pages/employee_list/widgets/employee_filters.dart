@@ -30,23 +30,23 @@ class _EmployeeFiltersState extends State<EmployeeFilters> {
 
   @override
   Widget build(BuildContext context) {
-    return DataGridToolbar(
-      search: UISearchField(
-        fieldWidth: 500.0,
-        hint: 'Search employee name',
-        icon: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Assets.icons.search.svg(),
+    return Row(
+      spacing: 8,
+      children: [
+        UISearchField(
+          fieldWidth: 450.0,
+          hint: 'Search employee name',
+          icon: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Assets.icons.search.svg(),
+          ),
+          onChanged: (value) => _debouncer.run(
+            (() {
+              _filterCubit.setSearch(value);
+              _fetchWithAppliedFilters();
+            }),
+          ),
         ),
-        onChanged: (value) => _debouncer.run(
-          (() {
-            _filterCubit.setSearch(value);
-            _fetchWithAppliedFilters();
-          }),
-        ),
-      ),
-      filters: [
-        const UIHorizontalSpace(8),
         AppDropdown<EmployeeRole>.static(
           items: EmployeeRole.values,
           hint: 'All Roles',
@@ -60,7 +60,6 @@ class _EmployeeFiltersState extends State<EmployeeFilters> {
             _fetchWithAppliedFilters();
           },
         ),
-        const UIHorizontalSpace(8),
         BranchDropdown.select(
           onRemoveSelectedItem: () {
             context.read<EmployeeListFilterCubit>().setBranch(null);

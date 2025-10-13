@@ -10,6 +10,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/d
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/bloc/purchase_order_bloc/purchase_order_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order_form/new_purchase_order_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_filter/purchase_order_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_form/purchase_order_form.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_form/purchase_order_stepper.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_form/widgets/purchase_order_form_header.dart';
@@ -114,7 +115,7 @@ class _PurchaseOrderDetailsPageState extends State<_PurchaseOrderDetailsPage> {
     // Since we are in the same page, initState does not get triggered again so we need to call the request again here
     context.read<PurchaseOrderBloc>().add(PurchaseOrderEvent.getPurchaseOrderById(poId));
 
-    // Reload list
+    // Reload list ..and reset filter
     context.read<PaginatedListBloc<PurchaseOrder>>().add(const PaginatedListEvent.fetch());
   }
 
@@ -129,7 +130,7 @@ class _PurchaseOrderDetailsPageState extends State<_PurchaseOrderDetailsPage> {
     _formCubit.loadPurchaseOrder(po);
     SnackbarUtil.success(context, 'Purchase Order updated successfully.');
 
-    // Reload list
+    // Reload list ..and reset filter
     context.read<PaginatedListBloc<PurchaseOrder>>().add(const PaginatedListEvent.fetch());
   }
 
@@ -138,7 +139,7 @@ class _PurchaseOrderDetailsPageState extends State<_PurchaseOrderDetailsPage> {
     context.goNamed('purchaseOrderList');
     SnackbarUtil.success(context, 'Purchase Order deleted successfully.');
 
-    // Reload list
+    // Reload list ..and reset filter
     context.read<PaginatedListBloc<PurchaseOrder>>().add(const PaginatedListEvent.fetch());
   }
 

@@ -51,23 +51,21 @@ class _StockItemsToReturnDataGridState extends State<StockItemsToReturnDataGrid>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageSectionTitle(title: 'Items to Return'),
-        DataGridToolbar(
-          search: SizedBox(
-            width: MediaQuery.sizeOf(context).width * 0.3,
-            child: TypeAheadSearch(
-              supplierId: context.read<StockReturnCubit>().state.stockReturn.supplier?.id,
-              branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
-              onSelected: (value) {
-                if (_stockItemsToReturnDataSource._itemsToReturn.any((item) => item.variantId == value.id) == true) {
-                  SnackbarUtil.duplicate(context, 'Item was already added.');
-                  return;
-                }
-                final purchaseOrderItem = value.toStockReturnItem();
+        SizedBox(
+          width: MediaQuery.sizeOf(context).width * 0.3,
+          child: TypeAheadSearch(
+            supplierId: context.read<StockReturnCubit>().state.stockReturn.supplier?.id,
+            branchId: context.read<StockReturnCubit>().state.stockReturn.branch?.id,
+            onSelected: (value) {
+              if (_stockItemsToReturnDataSource._itemsToReturn.any((item) => item.variantId == value.id) == true) {
+                SnackbarUtil.duplicate(context, 'Item was already added.');
+                return;
+              }
+              final purchaseOrderItem = value.toStockReturnItem();
 
-                /// Add newly added items to the current stock return in state
-                context.read<StockReturnCubit>().addItem(purchaseOrderItem);
-              },
-            ),
+              /// Add newly added items to the current stock return in state
+              context.read<StockReturnCubit>().addItem(purchaseOrderItem);
+            },
           ),
         ),
         BlocConsumer<StockReturnCubit, StockReturnState>(

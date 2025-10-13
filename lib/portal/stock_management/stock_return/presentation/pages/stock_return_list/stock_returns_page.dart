@@ -11,6 +11,7 @@ import 'package:medglobal_admin_portal/portal/stock_management/stock_return/pres
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_filter/stock_return_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_list/stock_return_paginated_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_list/stock_return_toolbar.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -136,84 +137,8 @@ class _StockReturnsPageState extends State<StockReturnListPage> with SingleTicke
           }),
         ),
         const UIVerticalSpace(20),
-        BlocSelector<StockReturnListFilterCubit, StockReturnListFilterState, StockReturnListFilterState>(
-          selector: (state) => state,
-          builder: (context, filters) {
-            return DataGridToolbar(
-              reportType: ReportType.stockReturn,
-              reportFilters: {
-                'status': filters.status?.label.toLowerCase(),
-                'branch': filters.branchId,
-                'startDate': filters.startDate,
-                'endDate': filters.endDate,
-              },
-              filters: [
-                DatePickerPopup(
-                  onRemoveSelected: () {
-                    final size = context.read<StockReturnListFilterCubit>().state.size;
-                    final status = context.read<StockReturnListFilterCubit>().state.status;
-                    final branchId = context.read<StockReturnListFilterCubit>().state.branchId;
-
-                    context
-                        .read<StockReturnListRemoteCubit>()
-                        .getStockReturns(size: size!, status: status, branchId: branchId);
-
-                    context.read<StockReturnListFilterCubit>().setStartDate(null);
-                    context.read<StockReturnListFilterCubit>().setEndDate(null);
-                  },
-                  onSelectRange: (dates) {
-                    final size = context.read<StockReturnListFilterCubit>().state.size;
-                    final status = context.read<StockReturnListFilterCubit>().state.status;
-                    final branch = context.read<StockReturnListFilterCubit>().state.branchId;
-
-                    String? endDate;
-                    final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
-                    if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
-
-                    context.read<StockReturnListRemoteCubit>().getStockReturns(
-                        size: size!, status: status, branchId: branch, startDate: startDate, endDate: endDate);
-
-                    context.read<StockReturnListFilterCubit>().setStartDate(startDate);
-                    context.read<StockReturnListFilterCubit>().setEndDate(endDate);
-                  },
-                  selectionMode: DateRangePickerSelectionMode.range,
-                ),
-                const UIHorizontalSpace(8),
-                BranchDropdown.select(
-                  onRemoveSelectedItem: () {
-                    final size = context.read<StockReturnListFilterCubit>().state.size;
-                    final status = context.read<StockReturnListFilterCubit>().state.status;
-                    final startDate = context.read<StockReturnListFilterCubit>().state.startDate;
-                    final endDate = context.read<StockReturnListFilterCubit>().state.endDate;
-
-                    context.read<StockReturnListRemoteCubit>().getStockReturns(
-                          size: size!,
-                          status: status,
-                          startDate: startDate,
-                          endDate: endDate,
-                        );
-                    context.read<StockReturnListFilterCubit>().setBranch(null);
-                  },
-                  onSelectItem: (branch) {
-                    final size = context.read<StockReturnListFilterCubit>().state.size;
-                    final status = context.read<StockReturnListFilterCubit>().state.status;
-                    final startDate = context.read<StockReturnListFilterCubit>().state.startDate;
-                    final endDate = context.read<StockReturnListFilterCubit>().state.endDate;
-
-                    context.read<StockReturnListRemoteCubit>().getStockReturns(
-                          size: size!,
-                          status: status,
-                          branchId: branch.id,
-                          startDate: startDate,
-                          endDate: endDate,
-                        );
-                    context.read<StockReturnListFilterCubit>().setBranch(branch.id);
-                  },
-                ),
-              ],
-            );
-          },
-        ),
+        const StockReturnToolbar(),
+        const UIVerticalSpace(20),
         const Expanded(child: StockReturnPaginatedDataGrid()),
       ],
     );

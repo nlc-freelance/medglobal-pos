@@ -51,7 +51,7 @@ class _ReturnTransactionItemsDataGridState extends State<ReturnTransactionItemsD
     return BlocConsumer<ReturnCubit, ReturnState>(
       listener: (context, state) {
         _returnItemsDataSource._items = state.items;
-        _returnItemsDataSource._isEditable = _isAwaitingAction;
+        _returnItemsDataSource._isEditable = state.transaction?.status == ReturnStatus.awaitingAction;
 
         _returnItemsDataSource.buildDataGridRows();
         _returnItemsDataSource.updateDataGridSource();

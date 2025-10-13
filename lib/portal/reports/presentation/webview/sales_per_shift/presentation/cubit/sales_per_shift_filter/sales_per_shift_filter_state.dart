@@ -27,4 +27,10 @@ class SalesPerShiftListFilterState extends Equatable {
       endDate: nullEndDate == true ? null : endDate ?? this.endDate,
     );
   }
+
+  Map<String, dynamic> get filters => {
+        'branch': branchId,
+        'startDate': startDate,
+        'endDate': endDate,
+      };
 }

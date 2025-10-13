@@ -1,5 +1,5 @@
 import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
-import 'package:medglobal_admin_portal/core/models/page_query.dart';
+import 'package:medglobal_admin_portal/core/models/query_params.dart';
 import 'package:medglobal_admin_portal/core/models/paginated_list.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/reports/data/api/report_api_service.dart';

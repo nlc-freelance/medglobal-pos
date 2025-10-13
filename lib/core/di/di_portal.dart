@@ -572,7 +572,7 @@ void oldDependencies() {
     ..registerFactory(() => ReturnTransactionListFilterCubit())
     ..registerFactory(() => SupplierLazyListCubit(inject()))
     ..registerFactory(() => ProductHistoryListCubit(inject()))
-    ..registerFactory(() => ProductHistoryListFilterCubit())
+    // ..registerFactory(() => ProductHistoryListFilterCubit())
     ..registerFactory(() => SalesCategoryFilterCubit())
     ..registerFactory(() => SalesCategoryGroupByCubit())
     ..registerFactory(() => SalesCategoryPeriodCubit())

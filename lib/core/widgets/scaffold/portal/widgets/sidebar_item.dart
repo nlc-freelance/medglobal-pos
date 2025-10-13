@@ -25,11 +25,11 @@ class SidebarItem extends StatelessWidget {
             : true);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 4, right: 20, left: 12),
+      margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(4.0),
-          bottomLeft: Radius.circular(4.0),
+          topLeft: Radius.circular(4.5),
+          bottomLeft: Radius.circular(4.5),
         ),
         border: isSelected
             ? const Border(
@@ -44,17 +44,23 @@ class SidebarItem extends StatelessWidget {
         color: UIColors.transparent,
         child: ListTile(
           onTap: () => context.goNamed(routeName),
-          title: Text(title),
+          title: UIText.labelMedium(title, color: isSelected ? UIColors.primary : UIColors.textRegular),
           titleTextStyle: UIStyleText.inter.copyWith(fontWeight: FontWeight.w500),
           selected: isSelected,
           selectedColor: UIColors.primary,
           selectedTileColor: UIColors.whiteBg,
           hoverColor: UIColors.whiteBg,
           dense: true,
-          visualDensity: VisualDensity.compact,
-          shape: RoundedRectangleBorder(
+          visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
+          contentPadding: const EdgeInsets.only(left: 12),
+          shape: const RoundedRectangleBorder(
             side: BorderSide.none,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(4),
+              bottomLeft: Radius.circular(4),
+              topRight: Radius.circular(10),
+              bottomRight: Radius.circular(10),
+            ),
           ),
         ),
       ),

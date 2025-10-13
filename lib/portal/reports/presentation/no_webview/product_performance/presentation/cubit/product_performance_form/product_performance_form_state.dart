@@ -4,7 +4,9 @@ part of 'product_performance_form_cubit.dart';
 class ProductPerformanceFormState with _$ProductPerformanceFormState {
   const factory ProductPerformanceFormState({
     ProductPerformanceType? type,
-    ProductPerformanceParams? reportParams,
+    Branch? branch,
+    List<Category>? categories,
+    int? topN, // For PNL
     RankingCriteria? rankingCriteria,
     Period? period,
     int? year,
@@ -20,10 +22,6 @@ class ProductPerformanceFormState with _$ProductPerformanceFormState {
   const ProductPerformanceFormState._();
 
   factory ProductPerformanceFormState.initial() => const ProductPerformanceFormState();
-
-  ProductPNLParams? get productPNLParams => reportParams is ProductPNLParams ? reportParams as ProductPNLParams : null;
-
-  ProductABCParams? get productABCParams => reportParams is ProductABCParams ? reportParams as ProductABCParams : null;
 
   bool get _hasPeriod {
     return switch (period) {
@@ -41,21 +39,16 @@ class ProductPerformanceFormState with _$ProductPerformanceFormState {
 
     switch (type!) {
       case ProductPerformanceType.abc:
-        final params = reportParams as ProductABCParams;
-        final hasBranch = params.branch != null;
+        final hasBranch = branch != null;
         final hasRankingCriteria = rankingCriteria != null;
 
         return hasBranch && hasRankingCriteria && _hasPeriod;
       case ProductPerformanceType.pnl:
-        final params = reportParams as ProductPNLParams;
-        final topN = params.topN;
-
-        final hasBranch = params.branch != null;
-        final hasCategory = params.categories?.isNotEmpty == true;
-        final hasTopN = topN != null && topN > 0;
+        final hasBranch = branch != null;
+        final hasTopN = topN != null && topN! > 0;
         final hasRankingCriteria = rankingCriteria != null;
 
-        return hasBranch && hasCategory && hasTopN && hasRankingCriteria && _hasPeriod;
+        return hasBranch && hasTopN && hasRankingCriteria && _hasPeriod;
     }
   }
 
@@ -134,15 +127,16 @@ class ProductPerformanceFormState with _$ProductPerformanceFormState {
 
     final payload = switch (type!) {
       ProductPerformanceType.abc => CreateProductABCDto(
-          branchId: productABCParams!.branch!.id!,
+          branchId: branch!.id!,
+          productCategoryIds: categories?.map((category) => category.id!).toList(),
           rankingCriteria: rankingCriteria!.name,
           startDate: _startDateByPeriod!,
           endDate: _endDateByPeriod!,
         ).toJson(),
       ProductPerformanceType.pnl => CreateProductPNLDto(
-          branchId: productPNLParams!.branch!.id!,
-          productCategoryIds: productPNLParams!.categories!.map((category) => category.id!).toList(),
-          topSize: productPNLParams!.topN!,
+          branchId: branch!.id!,
+          productCategoryIds: categories?.map((category) => category.id!).toList(),
+          topSize: topN!,
           rankingCriteria: rankingCriteria!.name,
           startDate: _startDateByPeriod!,
           endDate: _endDateByPeriod!,

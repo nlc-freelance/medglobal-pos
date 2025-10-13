@@ -31,10 +31,10 @@ class _PurchaseOrdersPageState extends State<PurchaseOrderListPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PurchaseOrderHeader(),
-        const AppGap.v(20),
         PurchaseOrderTabFilter(onFetch: _scheduleFetch),
         const AppGap.v(20),
         PurchaseOrderToolbar(onFetch: _scheduleFetch),
+        const AppGap.v(20),
         const Expanded(child: PurchaseOrderDataGrid()),
       ],
     );
@@ -51,7 +51,7 @@ class _PurchaseOrdersPageState extends State<PurchaseOrderListPage> {
     context.read<PurchaseOrderListFilterCubit>().resetPageAndSize();
 
     Future.microtask(() {
-      final updatedQuery = filterCubit.state.toPageQuery;
+      final updatedQuery = filterCubit.state.toPageQuery();
       listBloc.add(PaginatedListEvent<PurchaseOrder>.fetch(query: updatedQuery));
     });
   }

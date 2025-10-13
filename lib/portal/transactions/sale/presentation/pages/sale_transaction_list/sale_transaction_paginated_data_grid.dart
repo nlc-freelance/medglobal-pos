@@ -79,9 +79,11 @@ class _SaleTransactionPaginatedDataGridState extends State<SaleTransactionPagina
                         columnWidthMode: ColumnWidthMode.fill,
                         headerGridLinesVisibility: GridLinesVisibility.none,
                         gridLinesVisibility: GridLinesVisibility.horizontal,
+                        isScrollbarAlwaysShown: true,
+                        showVerticalScrollbar: false,
+                        frozenColumnsCount: 2,
                         headerRowHeight: 38,
                         footerHeight: 100,
-                        frozenColumnsCount: 2,
                         footer: _saleTransactionDataSource.rows.isEmpty
                             ? Padding(
                                 padding: const EdgeInsets.all(8.0),

@@ -210,13 +210,13 @@ class DataGridColumn {
 
   static List<ColumnData> RETURN_TRANSACTIONS = [
     ColumnData('id', 'ID'),
-    ColumnData('receipt_id', 'Receipt ID', minWidth: 330),
+    ColumnData('receipt_id', 'Receipt ID', minWidth: 230),
     ColumnData('date', 'Date', minWidth: 150),
     ColumnData('branch', 'Branch', minWidth: 180),
     ColumnData('employee', 'Employee', minWidth: 180),
     ColumnData('total', 'Total (PHP)', minWidth: 100),
-    ColumnData('reason_for_return', 'Reason for Return', minWidth: 200),
-    ColumnData('status', 'Status', minWidth: 120),
+    ColumnData('reason_for_return', 'Reason for Return', minWidth: 180),
+    ColumnData('status', 'Status', minWidth: 180),
   ];
 
   static List<ColumnData> RETURN_TRANSACTIONS_ITEMS = [

@@ -27,4 +27,6 @@ class ProductHistoryListFilterState extends Equatable {
       size: size ?? this.size,
     );
   }
+
+  bool get isValid => variantId != null && branchId != null && startDate != null;
 }

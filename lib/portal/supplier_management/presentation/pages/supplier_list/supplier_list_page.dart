@@ -5,12 +5,14 @@ import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/debouncer.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
+import 'package:medglobal_admin_portal/core/widgets/app_gap.dart';
 import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/bloc/supplier_bloc.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier_list_filter/supplier_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_details/supplier_details_dialog.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/widgets/supplier_data_grid.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/widgets/supplier_list_toolbar.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class SupplierListPage extends StatelessWidget {
@@ -40,22 +42,6 @@ class SupplierList extends StatefulWidget {
 }
 
 class _SupplierListState extends State<SupplierList> {
-  // late SupplierListCubit _supplierListCubit;
-
-  final _debouncer = Debouncer(milliseconds: 500);
-
-  @override
-  void initState() {
-    super.initState();
-    // _supplierListCubit = BlocProvider.of<SupplierListCubit>(context)..getSuppliers();
-  }
-
-  @override
-  void dispose() {
-    _debouncer.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<SupplierBloc, SupplierState>(
@@ -66,11 +52,6 @@ class _SupplierListState extends State<SupplierList> {
             failure: (message) => _onFailure(context, message),
             orElse: () => {},
           );
-          // if (state is SupplierSuccess) {
-          //   _supplierListCubit.getSuppliers();
-          //   SnackbarUtil.success(context, state.message);
-          // }
-          // if (state is SupplierError) SnackbarUtil.error(context, state.message);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,26 +83,9 @@ class _SupplierListState extends State<SupplierList> {
                 ),
               ],
             ),
-            const UIVerticalSpace(20),
-            DataGridToolbar(
-              search: UISearchField(
-                fieldWidth: 500.0,
-                hint: 'Search supplier name',
-                icon: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Assets.icons.search.svg(),
-                ),
-                onChanged: (value) => _debouncer.run(
-                  (() {
-                    final filterCubit = context.read<SupplierListFilterCubit>();
-                    filterCubit.setSearch(value);
-
-                    final query = filterCubit.state.toPageQuery;
-                    context.read<PaginatedListBloc<Supplier>>().add(PaginatedListEvent.fetch(query: query));
-                  }),
-                ),
-              ),
-            ),
+            const AppGap.v(16),
+            const SupplierListToolbar(),
+            const AppGap.v(16),
             const Expanded(child: SupplierDataGrid())
           ],
         ));

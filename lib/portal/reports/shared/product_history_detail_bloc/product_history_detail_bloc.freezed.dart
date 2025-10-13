@@ -15,61 +15,61 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$ProductHistoryDetailEvent<T> {
+mixin _$ProductHistoryDetailEvent {
   int get id => throw _privateConstructorUsedError;
   ProductHistoryAction get action => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int id, ProductHistoryAction action) getById,
+    required TResult Function(int id, ProductHistoryAction action)
+        goToDetailsPage,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int id, ProductHistoryAction action)? getById,
+    TResult? Function(int id, ProductHistoryAction action)? goToDetailsPage,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int id, ProductHistoryAction action)? getById,
+    TResult Function(int id, ProductHistoryAction action)? goToDetailsPage,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetDetailsById<T> value) getById,
+    required TResult Function(_GoToDetailsPage value) goToDetailsPage,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetDetailsById<T> value)? getById,
+    TResult? Function(_GoToDetailsPage value)? goToDetailsPage,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetDetailsById<T> value)? getById,
+    TResult Function(_GoToDetailsPage value)? goToDetailsPage,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $ProductHistoryDetailEventCopyWith<T, ProductHistoryDetailEvent<T>>
-      get copyWith => throw _privateConstructorUsedError;
+  $ProductHistoryDetailEventCopyWith<ProductHistoryDetailEvent> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ProductHistoryDetailEventCopyWith<T, $Res> {
-  factory $ProductHistoryDetailEventCopyWith(ProductHistoryDetailEvent<T> value,
-          $Res Function(ProductHistoryDetailEvent<T>) then) =
-      _$ProductHistoryDetailEventCopyWithImpl<T, $Res,
-          ProductHistoryDetailEvent<T>>;
+abstract class $ProductHistoryDetailEventCopyWith<$Res> {
+  factory $ProductHistoryDetailEventCopyWith(ProductHistoryDetailEvent value,
+          $Res Function(ProductHistoryDetailEvent) then) =
+      _$ProductHistoryDetailEventCopyWithImpl<$Res, ProductHistoryDetailEvent>;
   @useResult
   $Res call({int id, ProductHistoryAction action});
 }
 
 /// @nodoc
-class _$ProductHistoryDetailEventCopyWithImpl<T, $Res,
-        $Val extends ProductHistoryDetailEvent<T>>
-    implements $ProductHistoryDetailEventCopyWith<T, $Res> {
+class _$ProductHistoryDetailEventCopyWithImpl<$Res,
+        $Val extends ProductHistoryDetailEvent>
+    implements $ProductHistoryDetailEventCopyWith<$Res> {
   _$ProductHistoryDetailEventCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -97,23 +97,22 @@ class _$ProductHistoryDetailEventCopyWithImpl<T, $Res,
 }
 
 /// @nodoc
-abstract class _$$GetDetailsByIdImplCopyWith<T, $Res>
-    implements $ProductHistoryDetailEventCopyWith<T, $Res> {
-  factory _$$GetDetailsByIdImplCopyWith(_$GetDetailsByIdImpl<T> value,
-          $Res Function(_$GetDetailsByIdImpl<T>) then) =
-      __$$GetDetailsByIdImplCopyWithImpl<T, $Res>;
+abstract class _$$GoToDetailsPageImplCopyWith<$Res>
+    implements $ProductHistoryDetailEventCopyWith<$Res> {
+  factory _$$GoToDetailsPageImplCopyWith(_$GoToDetailsPageImpl value,
+          $Res Function(_$GoToDetailsPageImpl) then) =
+      __$$GoToDetailsPageImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int id, ProductHistoryAction action});
 }
 
 /// @nodoc
-class __$$GetDetailsByIdImplCopyWithImpl<T, $Res>
-    extends _$ProductHistoryDetailEventCopyWithImpl<T, $Res,
-        _$GetDetailsByIdImpl<T>>
-    implements _$$GetDetailsByIdImplCopyWith<T, $Res> {
-  __$$GetDetailsByIdImplCopyWithImpl(_$GetDetailsByIdImpl<T> _value,
-      $Res Function(_$GetDetailsByIdImpl<T>) _then)
+class __$$GoToDetailsPageImplCopyWithImpl<$Res>
+    extends _$ProductHistoryDetailEventCopyWithImpl<$Res, _$GoToDetailsPageImpl>
+    implements _$$GoToDetailsPageImplCopyWith<$Res> {
+  __$$GoToDetailsPageImplCopyWithImpl(
+      _$GoToDetailsPageImpl _value, $Res Function(_$GoToDetailsPageImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -122,7 +121,7 @@ class __$$GetDetailsByIdImplCopyWithImpl<T, $Res>
     Object? id = null,
     Object? action = null,
   }) {
-    return _then(_$GetDetailsByIdImpl<T>(
+    return _then(_$GoToDetailsPageImpl(
       null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -137,8 +136,8 @@ class __$$GetDetailsByIdImplCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _$GetDetailsByIdImpl<T> implements _GetDetailsById<T> {
-  const _$GetDetailsByIdImpl(this.id, this.action);
+class _$GoToDetailsPageImpl implements _GoToDetailsPage {
+  const _$GoToDetailsPageImpl(this.id, this.action);
 
   @override
   final int id;
@@ -147,14 +146,14 @@ class _$GetDetailsByIdImpl<T> implements _GetDetailsById<T> {
 
   @override
   String toString() {
-    return 'ProductHistoryDetailEvent<$T>.getById(id: $id, action: $action)';
+    return 'ProductHistoryDetailEvent.goToDetailsPage(id: $id, action: $action)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$GetDetailsByIdImpl<T> &&
+            other is _$GoToDetailsPageImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.action, action) || other.action == action));
   }
@@ -165,34 +164,35 @@ class _$GetDetailsByIdImpl<T> implements _GetDetailsById<T> {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$GetDetailsByIdImplCopyWith<T, _$GetDetailsByIdImpl<T>> get copyWith =>
-      __$$GetDetailsByIdImplCopyWithImpl<T, _$GetDetailsByIdImpl<T>>(
+  _$$GoToDetailsPageImplCopyWith<_$GoToDetailsPageImpl> get copyWith =>
+      __$$GoToDetailsPageImplCopyWithImpl<_$GoToDetailsPageImpl>(
           this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(int id, ProductHistoryAction action) getById,
+    required TResult Function(int id, ProductHistoryAction action)
+        goToDetailsPage,
   }) {
-    return getById(id, action);
+    return goToDetailsPage(id, action);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int id, ProductHistoryAction action)? getById,
+    TResult? Function(int id, ProductHistoryAction action)? goToDetailsPage,
   }) {
-    return getById?.call(id, action);
+    return goToDetailsPage?.call(id, action);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int id, ProductHistoryAction action)? getById,
+    TResult Function(int id, ProductHistoryAction action)? goToDetailsPage,
     required TResult orElse(),
   }) {
-    if (getById != null) {
-      return getById(id, action);
+    if (goToDetailsPage != null) {
+      return goToDetailsPage(id, action);
     }
     return orElse();
   }
@@ -200,36 +200,35 @@ class _$GetDetailsByIdImpl<T> implements _GetDetailsById<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_GetDetailsById<T> value) getById,
+    required TResult Function(_GoToDetailsPage value) goToDetailsPage,
   }) {
-    return getById(this);
+    return goToDetailsPage(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_GetDetailsById<T> value)? getById,
+    TResult? Function(_GoToDetailsPage value)? goToDetailsPage,
   }) {
-    return getById?.call(this);
+    return goToDetailsPage?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_GetDetailsById<T> value)? getById,
+    TResult Function(_GoToDetailsPage value)? goToDetailsPage,
     required TResult orElse(),
   }) {
-    if (getById != null) {
-      return getById(this);
+    if (goToDetailsPage != null) {
+      return goToDetailsPage(this);
     }
     return orElse();
   }
 }
 
-abstract class _GetDetailsById<T> implements ProductHistoryDetailEvent<T> {
-  const factory _GetDetailsById(
-          final int id, final ProductHistoryAction action) =
-      _$GetDetailsByIdImpl<T>;
+abstract class _GoToDetailsPage implements ProductHistoryDetailEvent {
+  const factory _GoToDetailsPage(
+      final int id, final ProductHistoryAction action) = _$GoToDetailsPageImpl;
 
   @override
   int get id;
@@ -237,17 +236,17 @@ abstract class _GetDetailsById<T> implements ProductHistoryDetailEvent<T> {
   ProductHistoryAction get action;
   @override
   @JsonKey(ignore: true)
-  _$$GetDetailsByIdImplCopyWith<T, _$GetDetailsByIdImpl<T>> get copyWith =>
+  _$$GoToDetailsPageImplCopyWith<_$GoToDetailsPageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-mixin _$ProductHistoryDetailState<T> {
+mixin _$ProductHistoryDetailState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(T data, ProductHistoryAction action) loaded,
+    required TResult Function(String routeName, int id) success,
     required TResult Function(String message) failure,
   }) =>
       throw _privateConstructorUsedError;
@@ -255,7 +254,7 @@ mixin _$ProductHistoryDetailState<T> {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(T data, ProductHistoryAction action)? loaded,
+    TResult? Function(String routeName, int id)? success,
     TResult? Function(String message)? failure,
   }) =>
       throw _privateConstructorUsedError;
@@ -263,50 +262,49 @@ mixin _$ProductHistoryDetailState<T> {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(T data, ProductHistoryAction action)? loaded,
+    TResult Function(String routeName, int id)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Initial<T> value) initial,
-    required TResult Function(_Loading<T> value) loading,
-    required TResult Function(_Loaded<T> value) loaded,
-    required TResult Function(_Failure<T> value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial<T> value)? initial,
-    TResult? Function(_Loading<T> value)? loading,
-    TResult? Function(_Loaded<T> value)? loaded,
-    TResult? Function(_Failure<T> value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial<T> value)? initial,
-    TResult Function(_Loading<T> value)? loading,
-    TResult Function(_Loaded<T> value)? loaded,
-    TResult Function(_Failure<T> value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ProductHistoryDetailStateCopyWith<T, $Res> {
-  factory $ProductHistoryDetailStateCopyWith(ProductHistoryDetailState<T> value,
-          $Res Function(ProductHistoryDetailState<T>) then) =
-      _$ProductHistoryDetailStateCopyWithImpl<T, $Res,
-          ProductHistoryDetailState<T>>;
+abstract class $ProductHistoryDetailStateCopyWith<$Res> {
+  factory $ProductHistoryDetailStateCopyWith(ProductHistoryDetailState value,
+          $Res Function(ProductHistoryDetailState) then) =
+      _$ProductHistoryDetailStateCopyWithImpl<$Res, ProductHistoryDetailState>;
 }
 
 /// @nodoc
-class _$ProductHistoryDetailStateCopyWithImpl<T, $Res,
-        $Val extends ProductHistoryDetailState<T>>
-    implements $ProductHistoryDetailStateCopyWith<T, $Res> {
+class _$ProductHistoryDetailStateCopyWithImpl<$Res,
+        $Val extends ProductHistoryDetailState>
+    implements $ProductHistoryDetailStateCopyWith<$Res> {
   _$ProductHistoryDetailStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -316,35 +314,35 @@ class _$ProductHistoryDetailStateCopyWithImpl<T, $Res,
 }
 
 /// @nodoc
-abstract class _$$InitialImplCopyWith<T, $Res> {
+abstract class _$$InitialImplCopyWith<$Res> {
   factory _$$InitialImplCopyWith(
-          _$InitialImpl<T> value, $Res Function(_$InitialImpl<T>) then) =
-      __$$InitialImplCopyWithImpl<T, $Res>;
+          _$InitialImpl value, $Res Function(_$InitialImpl) then) =
+      __$$InitialImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$InitialImplCopyWithImpl<T, $Res>
-    extends _$ProductHistoryDetailStateCopyWithImpl<T, $Res, _$InitialImpl<T>>
-    implements _$$InitialImplCopyWith<T, $Res> {
+class __$$InitialImplCopyWithImpl<$Res>
+    extends _$ProductHistoryDetailStateCopyWithImpl<$Res, _$InitialImpl>
+    implements _$$InitialImplCopyWith<$Res> {
   __$$InitialImplCopyWithImpl(
-      _$InitialImpl<T> _value, $Res Function(_$InitialImpl<T>) _then)
+      _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$InitialImpl<T> implements _Initial<T> {
+class _$InitialImpl implements _Initial {
   const _$InitialImpl();
 
   @override
   String toString() {
-    return 'ProductHistoryDetailState<$T>.initial()';
+    return 'ProductHistoryDetailState.initial()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$InitialImpl<T>);
+        (other.runtimeType == runtimeType && other is _$InitialImpl);
   }
 
   @override
@@ -355,7 +353,7 @@ class _$InitialImpl<T> implements _Initial<T> {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(T data, ProductHistoryAction action) loaded,
+    required TResult Function(String routeName, int id) success,
     required TResult Function(String message) failure,
   }) {
     return initial();
@@ -366,7 +364,7 @@ class _$InitialImpl<T> implements _Initial<T> {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(T data, ProductHistoryAction action)? loaded,
+    TResult? Function(String routeName, int id)? success,
     TResult? Function(String message)? failure,
   }) {
     return initial?.call();
@@ -377,7 +375,7 @@ class _$InitialImpl<T> implements _Initial<T> {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(T data, ProductHistoryAction action)? loaded,
+    TResult Function(String routeName, int id)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -390,10 +388,10 @@ class _$InitialImpl<T> implements _Initial<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Initial<T> value) initial,
-    required TResult Function(_Loading<T> value) loading,
-    required TResult Function(_Loaded<T> value) loaded,
-    required TResult Function(_Failure<T> value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
     return initial(this);
   }
@@ -401,10 +399,10 @@ class _$InitialImpl<T> implements _Initial<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial<T> value)? initial,
-    TResult? Function(_Loading<T> value)? loading,
-    TResult? Function(_Loaded<T> value)? loaded,
-    TResult? Function(_Failure<T> value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
     return initial?.call(this);
   }
@@ -412,10 +410,10 @@ class _$InitialImpl<T> implements _Initial<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial<T> value)? initial,
-    TResult Function(_Loading<T> value)? loading,
-    TResult Function(_Loaded<T> value)? loaded,
-    TResult Function(_Failure<T> value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -425,40 +423,40 @@ class _$InitialImpl<T> implements _Initial<T> {
   }
 }
 
-abstract class _Initial<T> implements ProductHistoryDetailState<T> {
-  const factory _Initial() = _$InitialImpl<T>;
+abstract class _Initial implements ProductHistoryDetailState {
+  const factory _Initial() = _$InitialImpl;
 }
 
 /// @nodoc
-abstract class _$$LoadingImplCopyWith<T, $Res> {
+abstract class _$$LoadingImplCopyWith<$Res> {
   factory _$$LoadingImplCopyWith(
-          _$LoadingImpl<T> value, $Res Function(_$LoadingImpl<T>) then) =
-      __$$LoadingImplCopyWithImpl<T, $Res>;
+          _$LoadingImpl value, $Res Function(_$LoadingImpl) then) =
+      __$$LoadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$LoadingImplCopyWithImpl<T, $Res>
-    extends _$ProductHistoryDetailStateCopyWithImpl<T, $Res, _$LoadingImpl<T>>
-    implements _$$LoadingImplCopyWith<T, $Res> {
+class __$$LoadingImplCopyWithImpl<$Res>
+    extends _$ProductHistoryDetailStateCopyWithImpl<$Res, _$LoadingImpl>
+    implements _$$LoadingImplCopyWith<$Res> {
   __$$LoadingImplCopyWithImpl(
-      _$LoadingImpl<T> _value, $Res Function(_$LoadingImpl<T>) _then)
+      _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$LoadingImpl<T> implements _Loading<T> {
+class _$LoadingImpl implements _Loading {
   const _$LoadingImpl();
 
   @override
   String toString() {
-    return 'ProductHistoryDetailState<$T>.loading()';
+    return 'ProductHistoryDetailState.loading()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoadingImpl<T>);
+        (other.runtimeType == runtimeType && other is _$LoadingImpl);
   }
 
   @override
@@ -469,7 +467,7 @@ class _$LoadingImpl<T> implements _Loading<T> {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(T data, ProductHistoryAction action) loaded,
+    required TResult Function(String routeName, int id) success,
     required TResult Function(String message) failure,
   }) {
     return loading();
@@ -480,7 +478,7 @@ class _$LoadingImpl<T> implements _Loading<T> {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(T data, ProductHistoryAction action)? loaded,
+    TResult? Function(String routeName, int id)? success,
     TResult? Function(String message)? failure,
   }) {
     return loading?.call();
@@ -491,7 +489,7 @@ class _$LoadingImpl<T> implements _Loading<T> {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(T data, ProductHistoryAction action)? loaded,
+    TResult Function(String routeName, int id)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -504,10 +502,10 @@ class _$LoadingImpl<T> implements _Loading<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Initial<T> value) initial,
-    required TResult Function(_Loading<T> value) loading,
-    required TResult Function(_Loaded<T> value) loaded,
-    required TResult Function(_Failure<T> value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
     return loading(this);
   }
@@ -515,10 +513,10 @@ class _$LoadingImpl<T> implements _Loading<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial<T> value)? initial,
-    TResult? Function(_Loading<T> value)? loading,
-    TResult? Function(_Loaded<T> value)? loaded,
-    TResult? Function(_Failure<T> value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
     return loading?.call(this);
   }
@@ -526,10 +524,10 @@ class _$LoadingImpl<T> implements _Loading<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial<T> value)? initial,
-    TResult Function(_Loading<T> value)? loading,
-    TResult Function(_Loaded<T> value)? loaded,
-    TResult Function(_Failure<T> value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -539,89 +537,89 @@ class _$LoadingImpl<T> implements _Loading<T> {
   }
 }
 
-abstract class _Loading<T> implements ProductHistoryDetailState<T> {
-  const factory _Loading() = _$LoadingImpl<T>;
+abstract class _Loading implements ProductHistoryDetailState {
+  const factory _Loading() = _$LoadingImpl;
 }
 
 /// @nodoc
-abstract class _$$LoadedImplCopyWith<T, $Res> {
-  factory _$$LoadedImplCopyWith(
-          _$LoadedImpl<T> value, $Res Function(_$LoadedImpl<T>) then) =
-      __$$LoadedImplCopyWithImpl<T, $Res>;
+abstract class _$$SuccessImplCopyWith<$Res> {
+  factory _$$SuccessImplCopyWith(
+          _$SuccessImpl value, $Res Function(_$SuccessImpl) then) =
+      __$$SuccessImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({T data, ProductHistoryAction action});
+  $Res call({String routeName, int id});
 }
 
 /// @nodoc
-class __$$LoadedImplCopyWithImpl<T, $Res>
-    extends _$ProductHistoryDetailStateCopyWithImpl<T, $Res, _$LoadedImpl<T>>
-    implements _$$LoadedImplCopyWith<T, $Res> {
-  __$$LoadedImplCopyWithImpl(
-      _$LoadedImpl<T> _value, $Res Function(_$LoadedImpl<T>) _then)
+class __$$SuccessImplCopyWithImpl<$Res>
+    extends _$ProductHistoryDetailStateCopyWithImpl<$Res, _$SuccessImpl>
+    implements _$$SuccessImplCopyWith<$Res> {
+  __$$SuccessImplCopyWithImpl(
+      _$SuccessImpl _value, $Res Function(_$SuccessImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? data = freezed,
-    Object? action = null,
+    Object? routeName = null,
+    Object? id = null,
   }) {
-    return _then(_$LoadedImpl<T>(
-      freezed == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as T,
-      null == action
-          ? _value.action
-          : action // ignore: cast_nullable_to_non_nullable
-              as ProductHistoryAction,
+    return _then(_$SuccessImpl(
+      routeName: null == routeName
+          ? _value.routeName
+          : routeName // ignore: cast_nullable_to_non_nullable
+              as String,
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
 
 /// @nodoc
 
-class _$LoadedImpl<T> implements _Loaded<T> {
-  const _$LoadedImpl(this.data, this.action);
+class _$SuccessImpl implements _Success {
+  const _$SuccessImpl({required this.routeName, required this.id});
 
   @override
-  final T data;
+  final String routeName;
   @override
-  final ProductHistoryAction action;
+  final int id;
 
   @override
   String toString() {
-    return 'ProductHistoryDetailState<$T>.loaded(data: $data, action: $action)';
+    return 'ProductHistoryDetailState.success(routeName: $routeName, id: $id)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LoadedImpl<T> &&
-            const DeepCollectionEquality().equals(other.data, data) &&
-            (identical(other.action, action) || other.action == action));
+            other is _$SuccessImpl &&
+            (identical(other.routeName, routeName) ||
+                other.routeName == routeName) &&
+            (identical(other.id, id) || other.id == id));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(data), action);
+  int get hashCode => Object.hash(runtimeType, routeName, id);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$LoadedImplCopyWith<T, _$LoadedImpl<T>> get copyWith =>
-      __$$LoadedImplCopyWithImpl<T, _$LoadedImpl<T>>(this, _$identity);
+  _$$SuccessImplCopyWith<_$SuccessImpl> get copyWith =>
+      __$$SuccessImplCopyWithImpl<_$SuccessImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(T data, ProductHistoryAction action) loaded,
+    required TResult Function(String routeName, int id) success,
     required TResult Function(String message) failure,
   }) {
-    return loaded(data, action);
+    return success(routeName, id);
   }
 
   @override
@@ -629,10 +627,10 @@ class _$LoadedImpl<T> implements _Loaded<T> {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(T data, ProductHistoryAction action)? loaded,
+    TResult? Function(String routeName, int id)? success,
     TResult? Function(String message)? failure,
   }) {
-    return loaded?.call(data, action);
+    return success?.call(routeName, id);
   }
 
   @override
@@ -640,12 +638,12 @@ class _$LoadedImpl<T> implements _Loaded<T> {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(T data, ProductHistoryAction action)? loaded,
+    TResult Function(String routeName, int id)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
-    if (loaded != null) {
-      return loaded(data, action);
+    if (success != null) {
+      return success(routeName, id);
     }
     return orElse();
   }
@@ -653,67 +651,67 @@ class _$LoadedImpl<T> implements _Loaded<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Initial<T> value) initial,
-    required TResult Function(_Loading<T> value) loading,
-    required TResult Function(_Loaded<T> value) loaded,
-    required TResult Function(_Failure<T> value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
-    return loaded(this);
+    return success(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial<T> value)? initial,
-    TResult? Function(_Loading<T> value)? loading,
-    TResult? Function(_Loaded<T> value)? loaded,
-    TResult? Function(_Failure<T> value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
-    return loaded?.call(this);
+    return success?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial<T> value)? initial,
-    TResult Function(_Loading<T> value)? loading,
-    TResult Function(_Loaded<T> value)? loaded,
-    TResult Function(_Failure<T> value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
-    if (loaded != null) {
-      return loaded(this);
+    if (success != null) {
+      return success(this);
     }
     return orElse();
   }
 }
 
-abstract class _Loaded<T> implements ProductHistoryDetailState<T> {
-  const factory _Loaded(final T data, final ProductHistoryAction action) =
-      _$LoadedImpl<T>;
+abstract class _Success implements ProductHistoryDetailState {
+  const factory _Success(
+      {required final String routeName, required final int id}) = _$SuccessImpl;
 
-  T get data;
-  ProductHistoryAction get action;
+  String get routeName;
+  int get id;
   @JsonKey(ignore: true)
-  _$$LoadedImplCopyWith<T, _$LoadedImpl<T>> get copyWith =>
+  _$$SuccessImplCopyWith<_$SuccessImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$FailureImplCopyWith<T, $Res> {
+abstract class _$$FailureImplCopyWith<$Res> {
   factory _$$FailureImplCopyWith(
-          _$FailureImpl<T> value, $Res Function(_$FailureImpl<T>) then) =
-      __$$FailureImplCopyWithImpl<T, $Res>;
+          _$FailureImpl value, $Res Function(_$FailureImpl) then) =
+      __$$FailureImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String message});
 }
 
 /// @nodoc
-class __$$FailureImplCopyWithImpl<T, $Res>
-    extends _$ProductHistoryDetailStateCopyWithImpl<T, $Res, _$FailureImpl<T>>
-    implements _$$FailureImplCopyWith<T, $Res> {
+class __$$FailureImplCopyWithImpl<$Res>
+    extends _$ProductHistoryDetailStateCopyWithImpl<$Res, _$FailureImpl>
+    implements _$$FailureImplCopyWith<$Res> {
   __$$FailureImplCopyWithImpl(
-      _$FailureImpl<T> _value, $Res Function(_$FailureImpl<T>) _then)
+      _$FailureImpl _value, $Res Function(_$FailureImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -721,7 +719,7 @@ class __$$FailureImplCopyWithImpl<T, $Res>
   $Res call({
     Object? message = null,
   }) {
-    return _then(_$FailureImpl<T>(
+    return _then(_$FailureImpl(
       null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -732,7 +730,7 @@ class __$$FailureImplCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _$FailureImpl<T> implements _Failure<T> {
+class _$FailureImpl implements _Failure {
   const _$FailureImpl(this.message);
 
   @override
@@ -740,14 +738,14 @@ class _$FailureImpl<T> implements _Failure<T> {
 
   @override
   String toString() {
-    return 'ProductHistoryDetailState<$T>.failure(message: $message)';
+    return 'ProductHistoryDetailState.failure(message: $message)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FailureImpl<T> &&
+            other is _$FailureImpl &&
             (identical(other.message, message) || other.message == message));
   }
 
@@ -757,15 +755,15 @@ class _$FailureImpl<T> implements _Failure<T> {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$FailureImplCopyWith<T, _$FailureImpl<T>> get copyWith =>
-      __$$FailureImplCopyWithImpl<T, _$FailureImpl<T>>(this, _$identity);
+  _$$FailureImplCopyWith<_$FailureImpl> get copyWith =>
+      __$$FailureImplCopyWithImpl<_$FailureImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(T data, ProductHistoryAction action) loaded,
+    required TResult Function(String routeName, int id) success,
     required TResult Function(String message) failure,
   }) {
     return failure(message);
@@ -776,7 +774,7 @@ class _$FailureImpl<T> implements _Failure<T> {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(T data, ProductHistoryAction action)? loaded,
+    TResult? Function(String routeName, int id)? success,
     TResult? Function(String message)? failure,
   }) {
     return failure?.call(message);
@@ -787,7 +785,7 @@ class _$FailureImpl<T> implements _Failure<T> {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(T data, ProductHistoryAction action)? loaded,
+    TResult Function(String routeName, int id)? success,
     TResult Function(String message)? failure,
     required TResult orElse(),
   }) {
@@ -800,10 +798,10 @@ class _$FailureImpl<T> implements _Failure<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Initial<T> value) initial,
-    required TResult Function(_Loading<T> value) loading,
-    required TResult Function(_Loaded<T> value) loaded,
-    required TResult Function(_Failure<T> value) failure,
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Success value) success,
+    required TResult Function(_Failure value) failure,
   }) {
     return failure(this);
   }
@@ -811,10 +809,10 @@ class _$FailureImpl<T> implements _Failure<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Initial<T> value)? initial,
-    TResult? Function(_Loading<T> value)? loading,
-    TResult? Function(_Loaded<T> value)? loaded,
-    TResult? Function(_Failure<T> value)? failure,
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Success value)? success,
+    TResult? Function(_Failure value)? failure,
   }) {
     return failure?.call(this);
   }
@@ -822,10 +820,10 @@ class _$FailureImpl<T> implements _Failure<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Initial<T> value)? initial,
-    TResult Function(_Loading<T> value)? loading,
-    TResult Function(_Loaded<T> value)? loaded,
-    TResult Function(_Failure<T> value)? failure,
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Success value)? success,
+    TResult Function(_Failure value)? failure,
     required TResult orElse(),
   }) {
     if (failure != null) {
@@ -835,11 +833,11 @@ class _$FailureImpl<T> implements _Failure<T> {
   }
 }
 
-abstract class _Failure<T> implements ProductHistoryDetailState<T> {
-  const factory _Failure(final String message) = _$FailureImpl<T>;
+abstract class _Failure implements ProductHistoryDetailState {
+  const factory _Failure(final String message) = _$FailureImpl;
 
   String get message;
   @JsonKey(ignore: true)
-  _$$FailureImplCopyWith<T, _$FailureImpl<T>> get copyWith =>
+  _$$FailureImplCopyWith<_$FailureImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

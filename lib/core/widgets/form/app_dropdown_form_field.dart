@@ -26,6 +26,7 @@ class AppDropdownFormField<T> extends StatefulWidget {
     required this.label,
     required this.labelPosition,
     required this.hint,
+    this.showProminentHint = false,
     this.isRequired = false,
     this.isReadOnly = false,
     this.value,
@@ -37,6 +38,7 @@ class AppDropdownFormField<T> extends StatefulWidget {
     this.showSelectedItems = true,
     this.selectedItems,
     this.onRemoveFromMultiSelect,
+    this.onRemoveAllFromMultiSelect,
     this.isSelectedInMultiSelect,
   });
 
@@ -45,6 +47,7 @@ class AppDropdownFormField<T> extends StatefulWidget {
   final String label;
   final LabelPosition labelPosition;
   final String hint;
+  final bool showProminentHint;
   final bool isRequired;
   final bool isReadOnly;
   final T? value;
@@ -60,12 +63,14 @@ class AppDropdownFormField<T> extends StatefulWidget {
   final bool showSelectedItems;
   final List<T>? selectedItems;
   final void Function(T item)? onRemoveFromMultiSelect;
+  final VoidCallback? onRemoveAllFromMultiSelect;
   final bool Function(T item)? isSelectedInMultiSelect;
 
   factory AppDropdownFormField.lazy({
     LabelPosition labelPosition = LabelPosition.top,
     required String label,
     required String hint,
+    bool showProminentHint = false,
     bool isRequired = false,
     bool isReadOnly = false,
     T? value,
@@ -77,6 +82,7 @@ class AppDropdownFormField<T> extends StatefulWidget {
     bool showSelectedItems = true,
     List<T>? selectedItems,
     void Function(T item)? onRemoveFromMultiSelect,
+    VoidCallback? onRemoveAllFromMultiSelect,
     bool Function(T item)? isSelectedInMultiSelect,
   }) {
     return AppDropdownFormField<T>._(
@@ -84,6 +90,7 @@ class AppDropdownFormField<T> extends StatefulWidget {
       label: label,
       labelPosition: labelPosition,
       hint: hint,
+      showProminentHint: showProminentHint,
       isRequired: isRequired,
       isReadOnly: isReadOnly,
       value: value,
@@ -95,6 +102,7 @@ class AppDropdownFormField<T> extends StatefulWidget {
       showSelectedItems: showSelectedItems,
       selectedItems: selectedItems,
       onRemoveFromMultiSelect: onRemoveFromMultiSelect,
+      onRemoveAllFromMultiSelect: onRemoveAllFromMultiSelect,
       isSelectedInMultiSelect: isSelectedInMultiSelect,
     );
   }
@@ -215,12 +223,14 @@ class _DropdownFormFieldState<T> extends State<AppDropdownFormField<T>> {
     return _FormField(
       onTap: _onShowDropdownList,
       target: widget.isMultiSelect
-          ? _MutliSelectDropdownContainer<T>(
+          ? _MultiSelectDropdownContainer<T>(
               menuKey: menuKey,
               hint: widget.hint,
+              showProminentHint: widget.showProminentHint,
               values: widget.selectedItems,
               getName: (item) => widget.getName(item),
               onRemove: widget.onRemoveFromMultiSelect,
+              onRemoveAll: widget.onRemoveAllFromMultiSelect,
               showSelectedItems: widget.showSelectedItems,
             )
           : _SingleSelectDropdownContainer(
@@ -362,22 +372,26 @@ class _SingleSelectDropdownContainer extends StatelessWidget {
   }
 }
 
-class _MutliSelectDropdownContainer<T> extends StatelessWidget {
-  const _MutliSelectDropdownContainer({
+class _MultiSelectDropdownContainer<T> extends StatelessWidget {
+  const _MultiSelectDropdownContainer({
     super.key,
     required this.menuKey,
     required this.hint,
+    this.showProminentHint = false,
     required this.values,
     required this.getName,
     required this.onRemove,
+    this.onRemoveAll,
     required this.showSelectedItems,
   });
 
   final GlobalKey menuKey;
   final String hint;
+  final bool showProminentHint;
   final List<T>? values;
   final String Function(T item) getName;
   final void Function(T item)? onRemove;
+  final VoidCallback? onRemoveAll;
   final bool showSelectedItems;
 
   @override
@@ -389,7 +403,7 @@ class _MutliSelectDropdownContainer<T> extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: 42.5),
         width: double.infinity,
         padding: values?.isNotEmpty == true && showSelectedItems
-            ? const EdgeInsets.fromLTRB(4, 4, 16, 4)
+            ? const EdgeInsets.fromLTRB(4, 4, 12, 4)
             : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: UIColors.borderMuted.withValues(alpha: 0.15),
@@ -424,9 +438,17 @@ class _MutliSelectDropdownContainer<T> extends StatelessWidget {
                   )
                 : Text(
                     hint,
-                    style: UIStyleText.chip.copyWith(color: UIColors.textMuted),
+                    style: UIStyleText.hint.copyWith(
+                      color: showProminentHint ? UIColors.textRegular : UIColors.textMuted,
+                    ),
                   ),
-            Assets.icons.arrowDown.svg(),
+            values?.isNotEmpty == true && onRemoveAll != null
+                ? InkWell(
+                    onTap: onRemoveAll,
+                    borderRadius: BorderRadius.circular(16),
+                    child: Assets.icons.close.svg(),
+                  )
+                : Assets.icons.arrowDown.svg(),
           ],
         ),
       ),

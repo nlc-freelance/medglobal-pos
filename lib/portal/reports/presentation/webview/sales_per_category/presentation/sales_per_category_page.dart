@@ -43,7 +43,7 @@ class SalesPerCategoryPage extends StatelessWidget {
                       selector: (state) => state,
                       builder: (context, filters) {
                         return ExportButton(
-                          ReportType.salesPerCategory,
+                          type: ReportType.salesPerCategory,
                           filters: SalesPerCategoryPayload(
                             startDate: period.startDate,
                             endDate: period.endDate,

@@ -28,7 +28,7 @@ class UpdateReturnItemDto {
 
   factory UpdateReturnItemDto.fromDomain(TransactionItem item) {
     return UpdateReturnItemDto(
-      id: item.itemId!,
+      id: item.id!,
       writeOffQuantity: item.writeOffQty,
       restockQuantity: item.restockQty,
       comment: item.comment,

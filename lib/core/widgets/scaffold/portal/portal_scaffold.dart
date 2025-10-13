@@ -25,7 +25,7 @@ class PortalScaffold extends StatelessWidget {
             BlocBuilder<SidebarCubit, bool>(
               builder: (context, state) => Visibility(
                 visible: state,
-                child: PortalSideBar1(),
+                child: const PortalSideBar1(),
                 // child: PortalSidebar(currentMenu: route.topRoute!.name!),
               ),
             ),

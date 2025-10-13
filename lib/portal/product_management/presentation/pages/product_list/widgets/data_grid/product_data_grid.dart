@@ -93,6 +93,7 @@ class ProductDataGridState extends State<ProductDataGrid> {
           orElse: () => DataGridLoading(
             columns: DataGridUtil.getColumns(DataGridColumn.products),
             source: _productDataGridSource = ProductDataGridSource(context, products: []),
+            showCheckbox: true,
           ),
         );
       },

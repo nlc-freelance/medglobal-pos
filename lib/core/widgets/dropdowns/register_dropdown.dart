@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -25,7 +26,9 @@ class RegisterDropdownState extends State<RegisterDropdown> {
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_scrollListener);
-    context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(filters: {'assigned': false}));
+    context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(
+          filters: FilterQuery(extra: {'assigned': false}),
+        ));
     // context.read<RegisterLazyListCubit>().getRegisters();
   }
 
@@ -35,7 +38,9 @@ class RegisterDropdownState extends State<RegisterDropdown> {
         !context.read<LazyListBloc<Register>>().state.hasReachedMax) {
       // !context.read<RegisterLazyListCubit>().state.isLoadingMore &&
       // !context.read<RegisterLazyListCubit>().state.hasReachedMax) {
-      context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(filters: {'assigned': false}));
+      context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(
+            filters: FilterQuery(extra: {'assigned': false}),
+          ));
       // context.read<RegisterLazyListCubit>().getRegisters();
     }
   }
@@ -101,8 +106,11 @@ class RegisterDropdownState extends State<RegisterDropdown> {
                       children: [
                         UIText.labelMedium(state.error!, align: TextAlign.center),
                         UIButton.text('Reload',
-                            onClick: () => context.read<LazyListBloc<Register>>().add(
-                                const LazyListEvent<Register>.fetch(forceRefresh: true, filters: {'assigned': false})))
+                            onClick: () =>
+                                context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(
+                                      forceRefresh: true,
+                                      filters: FilterQuery(extra: {'assigned': false}),
+                                    )))
                         // UIButton.text('Reload', onClick: () => context.read<RegisterLazyListCubit>().getRegisters())
                       ],
                     ),

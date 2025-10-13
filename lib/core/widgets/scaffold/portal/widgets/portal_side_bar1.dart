@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/app_gap.dart';
 import 'package:medglobal_admin_portal/core/widgets/app_version.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/portal/widgets/sidebar_item.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/portal/widgets/sidebar_section.dart';
@@ -21,40 +22,33 @@ class _PortalSideBar1State extends State<PortalSideBar1> {
   @override
   void initState() {
     super.initState();
-    // toggleExpansion('/products');
     WidgetsBinding.instance.addPostFrameCallback((_) => toggleExpansion(context.baseRoute()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: 260,
+      width: 230,
       backgroundColor: UIColors.background,
       shape: const Border(right: BorderSide(color: UIColors.borderMuted)),
       child: Column(
         children: [
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 22),
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 18),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Assets.images.logoDrawer.image(),
-                      InkWell(
-                        onTap: () => context.read<SidebarCubit>().closeSideBar(),
-                        borderRadius: BorderRadius.circular(16),
-                        child: Padding(
-                          padding: const EdgeInsets.all(6),
-                          child: Assets.icons.arrowLeft.svg(colorFilter: UIColors.textLight.toColorFilter),
-                        ),
-                      ),
-                    ],
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Assets.images.logoDrawer.image(),
+                    InkWell(
+                      onTap: () => context.read<SidebarCubit>().closeSideBar(),
+                      borderRadius: BorderRadius.circular(16),
+                      child: Assets.icons.arrowLeft.svg(colorFilter: UIColors.textLight.toColorFilter),
+                    ),
+                  ],
                 ),
-                const UIVerticalSpace(24),
+                const UIVerticalSpace(20),
                 BlocSelector<AuthBloc, AuthState, UserType?>(
                   selector: (state) {
                     if (state is AuthenticatedState) return state.user.type;
@@ -180,6 +174,7 @@ class _PortalSideBar1State extends State<PortalSideBar1> {
                                 hasSelection: context.isSubrouteOf('/reports'),
                                 children: [
                                   SidebarSection(
+                                    isSubLevel1: true,
                                     title: 'Products',
                                     isExpanded: expandedKey == '/reports/products',
                                     onToggle: () => setState(() {
@@ -209,6 +204,7 @@ class _PortalSideBar1State extends State<PortalSideBar1> {
                                     ],
                                   ),
                                   SidebarSection(
+                                    isSubLevel1: true,
                                     title: 'Sales',
                                     isExpanded: expandedKey == '/reports/sales',
                                     onToggle: () => setState(() {
@@ -309,6 +305,7 @@ class _PortalSideBar1State extends State<PortalSideBar1> {
         _ => null,
       }
           ?.svg(
+        height: 12,
         colorFilter: (context.isSubrouteOf(route) ? UIColors.primary : UIColors.textRegular).toColorFilter,
       );
 }

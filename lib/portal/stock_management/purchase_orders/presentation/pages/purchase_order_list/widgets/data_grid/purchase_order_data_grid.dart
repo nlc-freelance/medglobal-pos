@@ -72,7 +72,7 @@ class _PurchaseOrderDataGridState extends State<PurchaseOrderDataGrid> {
 
                       context.read<PaginatedListBloc<PurchaseOrder>>().add(
                             PaginatedListEvent<PurchaseOrder>.fetch(
-                              query: filterCubit.state.toPageQuery,
+                              query: filterCubit.state.toPageQuery(),
                             ),
                           );
                     },

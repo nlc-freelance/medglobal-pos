@@ -34,7 +34,7 @@ class DataGridToolbar extends StatelessWidget {
           if (search == null) const Spacer(),
           if (reportType != null) ...[
             const UIHorizontalSpace(8),
-            ExportButton(reportType!, filters: reportFilters),
+            ExportButton(type: reportType!, filters: reportFilters),
           ],
         ],
       ),

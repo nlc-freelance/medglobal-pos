@@ -215,18 +215,23 @@ class PurchaseOrder with _$PurchaseOrder {
           DataGridCell<int>(columnName: 'id', value: id),
           DataGridCell<String>(
             columnName: 'date',
-            value: createdAt != null ? DateFormat.yMd().format(createdAt!) : '-',
+            value: createdAt != null ? DateFormat.yMd().format(createdAt!) : Strings.noValue,
           ),
           DataGridCell<String>(
             columnName: 'est_date_of_arrival',
-            value: estimatedDateOfArrival != null ? DateFormat.yMd().format(estimatedDateOfArrival!) : '-',
+            value: estimatedDateOfArrival != null ? DateFormat.yMd().format(estimatedDateOfArrival!) : Strings.noValue,
           ),
-          DataGridCell<String>(columnName: 'target_branch', value: branch?.name ?? '-'),
-          DataGridCell<String>(columnName: 'supplier', value: supplier?.name ?? '-'),
-          DataGridCell<double>(columnName: 'total_amount', value: totalAmount ?? 0),
+          DataGridCell<String>(columnName: 'target_branch', value: branch?.name ?? Strings.noValue),
+          DataGridCell<String>(columnName: 'supplier', value: supplier?.name ?? Strings.noValue),
+          DataGridCell<String>(columnName: 'total_amount', value: totalDataGridDisplay),
           DataGridCell<StockOrderStatus>(columnName: 'status', value: status),
         ],
       );
 
   double get itemSubtotal => items?.fold(0.0, (sub, item) => (sub ?? 0) + (item.total ?? 0)) ?? 0;
+
+  String get totalDataGridDisplay {
+    if (status == StockOrderStatus.CANCELLED) return Strings.noValue;
+    return totalAmount.toPesoString();
+  }
 }

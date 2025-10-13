@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
+import 'package:medglobal_admin_portal/core/models/query_params.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class DropdownLazyList<T> extends StatefulWidget {
@@ -11,6 +12,7 @@ class DropdownLazyList<T> extends StatefulWidget {
     required this.getName,
     this.isMultiSelect = false,
     this.isSelected,
+    this.filters,
   }) : assert(
           !isMultiSelect || isSelected != null,
           'The isSelected callback must be provided when isMultiSelect is true.',
@@ -21,6 +23,7 @@ class DropdownLazyList<T> extends StatefulWidget {
   final String Function(T item) getName;
   final bool isMultiSelect;
   final bool Function(T item)? isSelected;
+  final FilterQuery? filters;
 
   @override
   State<DropdownLazyList<T>> createState() => _DropdownLazyListState<T>();
@@ -39,7 +42,7 @@ class _DropdownLazyListState<T> extends State<DropdownLazyList<T>> {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
         !context.read<LazyListBloc<T>>().state.isLoadingMore &&
         !context.read<LazyListBloc<T>>().state.hasReachedMax) {
-      context.read<LazyListBloc<T>>().add(LazyListEvent<T>.fetch());
+      context.read<LazyListBloc<T>>().add(LazyListEvent<T>.fetch(filters: widget.filters));
     }
   }
 
@@ -74,7 +77,10 @@ class _DropdownLazyListState<T> extends State<DropdownLazyList<T>> {
                       UIText.labelMedium(state.error!, align: TextAlign.center),
                       UIButton.text(
                         'Reload',
-                        onClick: () => context.read<LazyListBloc<T>>().add(LazyListEvent<T>.fetch(forceRefresh: true)),
+                        onClick: () => context.read<LazyListBloc<T>>().add(LazyListEvent<T>.fetch(
+                              forceRefresh: true,
+                              filters: widget.filters,
+                            )),
                       ),
                     ],
                   ),

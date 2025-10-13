@@ -101,7 +101,8 @@ class _ProductTypeAheadSearchState extends State<ProductTypeAheadSearch> {
         hideOnUnfocus: true,
         loadingBuilder: (context) =>
             const Center(child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)),
-        errorBuilder: (context, error) => const Center(child: Text('Something went wrong.')),
+        errorBuilder: (context, error) => Center(child: Text(error.toString())),
+        // errorBuilder: (context, error) => const Center(child: Text('Something went wrong.')),
         emptyBuilder: (context) => const Center(child: Text('No items found.')),
         onSelected: (value) {
           _controller.text = value.name;

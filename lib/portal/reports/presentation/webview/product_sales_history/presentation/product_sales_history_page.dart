@@ -28,23 +28,11 @@ class ProductSalesHistoryPage extends StatelessWidget {
           listener: (context, state) {
             state.maybeWhen(
               loading: () => PageLoader.show(context),
-              loaded: (data, action) {
-                switch (action) {
-                  case ProductHistoryAction.SALE:
-                    context.pushNamed(
-                      'saleTransactionDetails',
-                      pathParameters: {'id': (data as Transaction).id.toString()},
-                    );
-                    break;
-                  case ProductHistoryAction.RETURN:
-                    context.pushNamed(
-                      'returnTransactionDetails',
-                      pathParameters: {'id': (data as Transaction).id.toString()},
-                    );
-                    break;
-                  default:
-                    return;
-                }
+              success: (routeName, id) {
+                context.pushNamed(
+                  routeName,
+                  pathParameters: {'id': id.toString()},
+                );
                 PageLoader.close();
               },
               failure: (message) {
@@ -101,15 +89,24 @@ class ProductSalesHistoryPage extends StatelessWidget {
               ),
               BlocBuilder<ProductSalesHistoryFilterCubit, ProductSalesHistoryFilterState>(
                 builder: (context, state) {
-                  return AppDropdown<BranchPartial>.lazy(
-                    hasInlineLabel: true,
-                    inlineLabel: 'Branch',
-                    hint: 'Select branch',
-                    getName: (branch) => branch.name,
-                    onSelectItem: (branch) => context.read<ProductSalesHistoryFilterCubit>().setBranch(branch),
-                    onRemoveSelectedItem: () => context.read<ProductSalesHistoryFilterCubit>().setBranch(null),
-                    isEnabled: state.variantId != null,
-                    value: state.branch,
+                  return Tooltip(
+                    message:
+                        state.variantId == null ? 'Choose a product first to show available branches.' : Strings.empty,
+                    decoration: BoxDecoration(
+                      color: UIColors.textDark,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: AppDropdown<BranchPartial>.lazy(
+                      hasInlineLabel: true,
+                      inlineLabel: 'Branch',
+                      hint: 'Select branch',
+                      getName: (branch) => branch.name,
+                      onSelectItem: (branch) => context.read<ProductSalesHistoryFilterCubit>().setBranch(branch),
+                      onRemoveSelectedItem: () => context.read<ProductSalesHistoryFilterCubit>().setBranch(null),
+                      highlightOnSelect: false,
+                      isEnabled: state.variantId != null,
+                      value: state.branch,
+                    ),
                   );
                 },
               ),
@@ -193,7 +190,7 @@ class ProductSalesHistoryPage extends StatelessWidget {
                             style: UIStyleText.labelSemiBold.copyWith(fontSize: 12.5),
                           ),
                           ExportButton(
-                            ReportType.productSalesHistory,
+                            type: ReportType.productSalesHistory,
                             payload: context.read<ProductSalesHistoryFilterCubit>().state.toReportFilter,
                           ),
                         ],

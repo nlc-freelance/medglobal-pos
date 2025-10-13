@@ -14,10 +14,17 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 abstract class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: LoginPage.route,
+    errorPageBuilder: (_, __) => const NoTransitionPage(
+      child: NotFoundPage(),
+    ),
     routes: [
       GoRoute(
         path: LoginPage.route,
         pageBuilder: (_, __) => const NoTransitionPage(child: LoginPage()),
+      ),
+      GoRoute(
+        path: NotFoundPage.route,
+        pageBuilder: (_, __) => const NoTransitionPage(child: NotFoundPage()),
       ),
       GoRoute(
         path: AccessDeniedPage.route,
@@ -100,6 +107,50 @@ class AccessDeniedPage extends StatelessWidget {
           'Your account is not authorized to use this application. \n Contact your administrator if you believe this is an error.',
         ),
       ],
+    );
+  }
+}
+
+class NotFoundPage extends StatelessWidget {
+  static String route = '/404-page-not-found';
+
+  const NotFoundPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Assets.images.designLines.svg(fit: BoxFit.fill, colorFilter: UIColors.borderMuted.toColorFilter),
+          ),
+          Positioned.fill(
+            left: MediaQuery.of(context).size.width * 0.12,
+            right: MediaQuery.of(context).size.width * 0.12,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Assets.icons.cube.setSize(48),
+                const UIVerticalSpace(20),
+                UIText.heading1('404 — Page Not Found'),
+                const UIVerticalSpace(12),
+                UIText.bodyRegular(
+                  'The page you’re looking for doesn’t exist or the URL was entered incorrectly.',
+                ),
+                const UIVerticalSpace(4),
+                UIText.bodyRegular('Please check the address bar or go back to the homepage.'),
+                const UIVerticalSpace(36),
+                UIButton.outlined(
+                  'Go back home',
+                  iconBuilder: (isHover) => Assets.icons.arrowRight1.setColorOnHover(isHover),
+                  onClick: () => context.goNamed('productList'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

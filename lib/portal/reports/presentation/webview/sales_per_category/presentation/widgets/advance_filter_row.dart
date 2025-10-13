@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/app_dropdown.dart';
-import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
-import 'package:medglobal_admin_portal/core/widgets/dropdowns/supplier_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/typeahead_search/product_typeahead_search.dart';
 import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/domain/entities/filter.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/sales_per_category/presentation/cubit/sales_category_filter/sales_category_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
+import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class AdvanceFilterRow extends StatefulWidget {
@@ -39,12 +39,13 @@ class _AdvanceFilterRowState extends State<AdvanceFilterRow> {
             else if (widget.index == 1)
               SizedBox(
                 width: 100,
-                child: UIDropdownButton<LogicalOperator>.noLabel(
-                  suffixIcon: Assets.icons.arrowDown.svg(),
+                child: AppDropdown<LogicalOperator>.static(
+                  hint: LogicalOperator.AND.label,
+                  highlightOnSelect: false,
                   items: LogicalOperator.values,
-                  itemBuilder: (operator) => operator.label.toUpperCase(),
+                  getName: (operator) => operator.label.toUpperCase(),
                   value: operator,
-                  onSelect: (operator) => context.read<SalesCategoryFilterCubit>().updateLogicalOperation(operator),
+                  onSelectItem: (operator) => context.read<SalesCategoryFilterCubit>().updateLogicalOperation(operator),
                 ),
               )
             else
@@ -58,13 +59,13 @@ class _AdvanceFilterRowState extends State<AdvanceFilterRow> {
             const UIHorizontalSpace(8),
             SizedBox(
               width: 200,
-              child: UIDropdownButton<FilterType>.noLabel(
+              child: AppDropdown<FilterType>.static(
                 hint: 'Field name',
-                suffixIcon: Assets.icons.arrowDown.svg(),
+                highlightOnSelect: false,
                 items: FilterType.values,
-                itemBuilder: (type) => type.label,
+                getName: (type) => type.label,
                 value: widget.filter.type,
-                onSelect: (type) {
+                onSelectItem: (type) {
                   context.read<SalesCategoryFilterCubit>().updateFilterValue(widget.filter.id, null);
                   context.read<SalesCategoryFilterCubit>().updateFilterType(widget.filter.id, type);
                 },
@@ -73,12 +74,14 @@ class _AdvanceFilterRowState extends State<AdvanceFilterRow> {
             const UIHorizontalSpace(8),
             SizedBox(
               width: 100,
-              child: UIDropdownButton<FilterRule>.noLabel(
-                suffixIcon: Assets.icons.arrowDown.svg(),
+              child: AppDropdown<FilterRule>.static(
+                hint: FilterRule.IS.label,
+                highlightOnSelect: false,
                 items: FilterRule.values,
-                itemBuilder: (rule) => rule.label,
+                getName: (rule) => rule.label,
                 value: widget.filter.rule,
-                onSelect: (rule) => context.read<SalesCategoryFilterCubit>().updateFilterRule(widget.filter.id, rule),
+                onSelectItem: (rule) =>
+                    context.read<SalesCategoryFilterCubit>().updateFilterRule(widget.filter.id, rule),
               ),
             ),
             const UIHorizontalSpace(8),
@@ -106,15 +109,12 @@ Widget getFilterValueField(BuildContext context, Filter filter) {
     case FilterType.PRODUCT_CATEGORY:
       return AppDropdown<Category>.lazy(
         hint: 'Select category',
+        highlightOnSelect: false,
         getName: (category) => category.name,
+        value: filter.value,
         onSelectItem: (category) => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, category),
         onRemoveSelectedItem: () => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, null),
       );
-    // return CategoryDropdown(
-    //   isSelectType: true,
-    //   selectedItem: filter.value,
-    //   onChanged: (value) => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, value),
-    // );
     case FilterType.PRODUCT_NAME:
       return SizedBox(
         width: 250,
@@ -124,16 +124,22 @@ Widget getFilterValueField(BuildContext context, Filter filter) {
         ),
       );
     case FilterType.SUPPLIER:
-      return SupplierDropdown.select(
-        isSelectInputType: true,
-        selectedItem: filter.value,
-        onSelectItem: (value) => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, value),
+      return AppDropdown<Supplier>.lazy(
+        hint: 'Select supplier',
+        highlightOnSelect: false,
+        getName: (supplier) => supplier.name,
+        value: filter.value,
+        onSelectItem: (supplier) => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, supplier),
+        onRemoveSelectedItem: () => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, null),
       );
     case FilterType.BRANCH:
-      return BranchDropdown.select(
-        isSelectInputType: true,
-        selectedItem: filter.value,
-        onSelectItem: (value) => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, value),
+      return AppDropdown<Branch>.lazy(
+        hint: 'Select branch',
+        highlightOnSelect: false,
+        getName: (branch) => branch.name,
+        value: filter.value,
+        onSelectItem: (branch) => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, branch),
+        onRemoveSelectedItem: () => context.read<SalesCategoryFilterCubit>().updateFilterValue(id, null),
       );
     default:
       return SizedBox(

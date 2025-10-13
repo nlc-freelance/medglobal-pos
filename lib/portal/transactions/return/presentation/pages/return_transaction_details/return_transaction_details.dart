@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
+import 'package:medglobal_admin_portal/core/widgets/page/page_error_banner.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/transactions/return/presentation/cubit/return_remote_cubit.dart';
@@ -13,17 +14,32 @@ import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transact
 import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class ReturnTransactionDetails extends StatelessWidget {
+class ReturnTransactionDetails extends StatefulWidget {
   const ReturnTransactionDetails({super.key, required this.transaction});
 
   final Transaction transaction;
+
+  @override
+  State<ReturnTransactionDetails> createState() => _ReturnTransactionDetailsState();
+}
+
+class _ReturnTransactionDetailsState extends State<ReturnTransactionDetails> {
+  late Transaction _transaction;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() => _transaction = widget.transaction);
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ReturnRemoteCubit, ReturnRemoteState>(
       listener: (context, state) {
         if (state is ReturnSuccess) {
-          context.read<ReturnCubit>().setReturnItems(state.transaction.items ?? []);
+          setState(() => _transaction = state.transaction);
+
+          context.read<ReturnCubit>().setReturnItems(state.transaction, state.transaction.items ?? []);
           SnackbarUtil.success(context, 'Return has been successfully completed.');
 
           // Reload list
@@ -47,25 +63,25 @@ class ReturnTransactionDetails extends StatelessWidget {
                         Expanded(
                           child: LabelValue.text(
                             label: 'Receipt ID',
-                            value: (transaction.receiptId).toString(),
+                            value: (_transaction.receiptId).toString(),
                           ),
                         ),
                         Expanded(
                           child: LabelValue.text(
                             label: 'Refunded from',
-                            value: (transaction.saleTransactionReceiptId ?? Strings.empty).toString(),
+                            value: (_transaction.saleTransactionReceiptId ?? Strings.empty).toString(),
                           ),
                         ),
                         Expanded(
                           child: LabelValue.text(
                             label: 'Date Processed',
-                            value: DateFormat('MM/dd/yyyy HH:mm').format(transaction.createdAt),
+                            value: DateFormat('MM/dd/yyyy HH:mm').format(_transaction.createdAt),
                           ),
                         ),
                         Expanded(
                           child: LabelValue.returnStatus(
                             label: 'Status',
-                            status: transaction.status!,
+                            status: _transaction.status!,
                           ),
                         ),
                       ],
@@ -78,19 +94,19 @@ class ReturnTransactionDetails extends StatelessWidget {
                         Expanded(
                           child: LabelValue.text(
                             label: 'Employee',
-                            value: transaction.employee.name,
+                            value: _transaction.employee.name,
                           ),
                         ),
                         Expanded(
                           child: LabelValue.text(
                             label: 'Branch',
-                            value: transaction.branch.name,
+                            value: _transaction.branch.name,
                           ),
                         ),
                         Expanded(
                           child: LabelValue.text(
                             label: 'Reason for Return',
-                            value: transaction.reasonForRefund ?? Strings.noValue,
+                            value: _transaction.reasonForRefund ?? Strings.noValue,
                           ),
                         ),
                         const Spacer(),
@@ -137,32 +153,21 @@ class ReturnTransactionDetails extends StatelessWidget {
                     //   ],
                     // ),
                     const UIVerticalSpace(40),
-                    ReturnTransactionItemsDataGrid(transaction),
+                    ReturnTransactionItemsDataGrid(_transaction),
                     const UIVerticalSpace(40),
-                    if (transaction.status == ReturnStatus.awaitingAction)
+                    if (_transaction.status == ReturnStatus.awaitingAction)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           if (state is ReturnError) ...[
-                            Expanded(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Assets.icons.infoCircle.svg(),
-                                  const UIHorizontalSpace(8),
-                                  Expanded(
-                                    child: UIText.labelSemiBold(state.message, color: UIColors.buttonDanger),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            Expanded(child: PageErrorBanner(message: state.message)),
                           ],
                           Expanded(
                             child: CancelActionButton(
                               onCancel: () => context.goNamed('returnTransactionList'),
                               onAction: () => context
                                   .read<ReturnRemoteCubit>()
-                                  .processReturn(transaction.copyWith(items: returnedItems)),
+                                  .processReturn(_transaction.copyWith(items: returnedItems)),
                               actionLabel: 'Complete',
                               isLoading: state is ReturnLoading,
                             ),

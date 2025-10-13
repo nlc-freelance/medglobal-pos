@@ -13,7 +13,7 @@ class SalesPerCategoryApi {
     final data = await _api.postData<SalesPerCategoryDto>(
       '/reports/sales-per-category',
       data: payload.toJson(),
-      parser: (json) => parse(json, SalesPerCategoryDto.fromJson),
+      parser: (json) => SalesPerCategoryDto.fromJson(json),
     );
 
     return data;

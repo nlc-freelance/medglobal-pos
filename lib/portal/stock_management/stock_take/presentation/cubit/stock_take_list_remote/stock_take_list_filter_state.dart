@@ -27,4 +27,10 @@ class StockTakeListFilterState extends Equatable {
       endDate: nullEndDate == true ? null : endDate ?? this.endDate,
     );
   }
+
+  Map<String, dynamic> get filters => {
+        'status': status?.label.toLowerCase(),
+        'startDate': startDate,
+        'endDate': endDate,
+      };
 }

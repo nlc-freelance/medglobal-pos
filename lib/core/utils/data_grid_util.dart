@@ -46,6 +46,7 @@ class DataGridUtil {
 
         /// Frozen row/columns
         frozenPaneLineColor: UIColors.transparent,
+        frozenPaneElevation: 5,
       );
 
   static SfDataGridThemeData get rowNavigationStyle => baseStyle.copyWith(

@@ -74,13 +74,13 @@ class ProductApi {
   }
 
   Future<List<ProductDto>> getProductsBy({String? search}) async {
-    final data = await _api.getList(
+    final data = await _api.getPaginated<ProductDto>(
       ApiEndpoint.products(),
       queryParams: {'size': 10, 'search': search},
       parser: (json) => parse(json, ProductDto.fromJson),
     );
 
-    return data;
+    return data.items;
   }
 }
 

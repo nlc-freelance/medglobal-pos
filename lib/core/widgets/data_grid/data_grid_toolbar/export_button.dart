@@ -11,7 +11,7 @@ class ExportButton extends StatelessWidget {
   final Map<String, dynamic>? filters;
   final Map<String, dynamic>? payload;
 
-  const ExportButton(this.type, {super.key, this.filters, this.payload});
+  const ExportButton({super.key, required this.type, this.filters, this.payload});
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +20,15 @@ class ExportButton extends StatelessWidget {
         return UIButton.outlined(
           'Export CSV',
           iconBuilder: (isHover) => Assets.icons.download.setColorOnHover(isHover),
-          onClick: () => context.read<ReportManagerCubit>().generateReport(
-                ReportPayload(
-                  type: type.value,
-                  filters: filters,
-                  payload: payload,
-                ),
-              ),
+          onClick: () {
+            context.read<ReportManagerCubit>().generateReport(
+                  ReportPayload(
+                    type: type.value,
+                    filters: filters,
+                    payload: payload,
+                  ),
+                );
+          },
           isLoading: state.tasks.any(
             (task) =>
                 task.type == type &&

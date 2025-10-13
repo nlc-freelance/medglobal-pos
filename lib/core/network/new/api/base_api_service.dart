@@ -29,7 +29,7 @@ class ApiService {
     }
   }
 
-  /// GET request for list
+  /// GET request for list data
   Future<List<T>> getList<T>(
     String path, {
     Map<String, dynamic>? queryParams,
@@ -39,7 +39,7 @@ class ApiService {
       final response = await client.dio.get(path, queryParameters: queryParams);
       return _parseResponse<List<T>>(
         response: response,
-        parser: (list) => list.map((item) => parser(item)).toList(),
+        parser: (list) => list.map<T>((item) => parser(item)).toList(),
         format: ResponseFormat.list,
       );
     } on DioException catch (e) {
@@ -83,7 +83,7 @@ class ApiService {
     }
   }
 
-  /// POST request
+  /// POST request with list as data in the response
   Future<List<T>> postData<T>(
     String path, {
     required Map<String, dynamic> data,
@@ -93,8 +93,8 @@ class ApiService {
       final response = await client.dio.post(path, data: data);
       return _parseResponse<List<T>>(
         response: response,
-        parser: (list) => list.map((item) => parser(item)).toList(),
-        format: ResponseFormat.single,
+        parser: (list) => list.map<T>((item) => parser(item)).toList(),
+        format: ResponseFormat.list,
       );
     } on DioException catch (e) {
       throw _mapDioError(e);
@@ -182,9 +182,12 @@ class ApiService {
           final data = json['data'];
           return data == null ? null as T : parser(data);
         case ResponseFormat.list:
-          final listJson = (json is Map<String, dynamic>) ? json['data'] ?? [] : json;
-          if (listJson is! List) throw UnexpectedException("Response Format: Expected list");
-          return parser(listJson);
+          final listData = json['data'] ?? [];
+          if (listData is! List) {
+            throw UnexpectedException(
+                "Response Format Error: Expected list in 'data', but received ${listData.runtimeType}");
+          }
+          return parser(listData);
         case ResponseFormat.paginated:
           return parser(json['data']);
         case ResponseFormat.empty:

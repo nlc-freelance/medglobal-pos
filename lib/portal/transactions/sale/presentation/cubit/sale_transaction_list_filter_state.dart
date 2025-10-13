@@ -30,4 +30,13 @@ class SaleTransactionListFilterState extends Equatable {
       endDate: nullEndDate == true ? null : endDate ?? this.endDate,
     );
   }
+
+  Map<String, dynamic> get filters => {
+        'transactionType': TransactionType.sale.name.toLowerCase(),
+        'isAllBranches': branchId == null,
+        'search': search,
+        'branch': branchId,
+        'startDate': startDate,
+        'endDate': endDate,
+      };
 }

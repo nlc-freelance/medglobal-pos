@@ -49,23 +49,20 @@ class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataG
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageSectionTitle(title: 'Items to Transfer'),
-        DataGridToolbar(
-          search: SizedBox(
-            width: MediaQuery.sizeOf(context).width * 0.3,
-            child: TypeAheadSearch(
-              branchId: context.read<StockTransferCubit>().state.stockTransfer.destinationBranch?.id,
-              onSelected: (value) {
-                if (_stockItemsToTransferDataSource._itemsToTransfer.any((item) => item.variantId == value.id) ==
-                    true) {
-                  SnackbarUtil.duplicate(context, 'Item was already added.');
-                  return;
-                }
-                final stockTransferItem = value.toStockTransferItem();
+        SizedBox(
+          width: MediaQuery.sizeOf(context).width * 0.3,
+          child: TypeAheadSearch(
+            branchId: context.read<StockTransferCubit>().state.stockTransfer.destinationBranch?.id,
+            onSelected: (value) {
+              if (_stockItemsToTransferDataSource._itemsToTransfer.any((item) => item.variantId == value.id) == true) {
+                SnackbarUtil.duplicate(context, 'Item was already added.');
+                return;
+              }
+              final stockTransferItem = value.toStockTransferItem();
 
-                /// Add newly added items to the current stock transfer in state
-                context.read<StockTransferCubit>().addItem(stockTransferItem);
-              },
-            ),
+              /// Add newly added items to the current stock transfer in state
+              context.read<StockTransferCubit>().addItem(stockTransferItem);
+            },
           ),
         ),
         BlocConsumer<StockTransferCubit, StockTransferState>(

@@ -55,7 +55,7 @@ class PurchaseOrderRepositoryImpl extends BaseRepository implements PurchaseOrde
             status: StockOrderStatus.NEW.label.toLowerCase(),
             purchaseOrderDetails: po.items
                 ?.map((item) => UpdatePurchaseOrderItemDto.save(
-                      variantId: item.id!,
+                      variantId: item.variantId!,
                       orderedQuantity: item.quantityOrdered,
                       supplierPrice: item.supplierPrice!,
                     ))

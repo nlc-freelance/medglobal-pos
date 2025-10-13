@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/models/page_query.dart';
+import 'package:medglobal_admin_portal/core/models/query_params.dart';
 
 part 'product_performance_list_filter_state.dart';
 part 'product_performance_list_filter_cubit.freezed.dart';

@@ -36,7 +36,13 @@ class _PurchaseOrderReceivedItemsDataGridState extends State<PurchaseOrderReceiv
     setState(() => _isCancelled = purchaseOrder.status == StockOrderStatus.CANCELLED);
 
     _itemsReceived = purchaseOrder.items ?? [];
-    _purchaseItemsReceivedDataSource = PurchaseItemsReceivedDataSource(_itemsReceived, context, tax, discount);
+    _purchaseItemsReceivedDataSource = PurchaseItemsReceivedDataSource(
+      _itemsReceived,
+      context,
+      tax,
+      discount,
+      _isCancelled,
+    );
   }
 
   @override
@@ -161,11 +167,17 @@ class _PurchaseOrderReceivedItemsDataGridState extends State<PurchaseOrderReceiv
 
 class PurchaseItemsReceivedDataSource extends DataGridSource {
   PurchaseItemsReceivedDataSource(
-      List<PurchaseOrderItem> itemsReceived, BuildContext context, double tax, double discount) {
+    List<PurchaseOrderItem> itemsReceived,
+    BuildContext context,
+    double tax,
+    double discount,
+    bool isCancelled,
+  ) {
     _itemsReceived = itemsReceived;
     _context = context;
     _tax = tax;
     _discount = discount;
+    _isCancelled = isCancelled;
     buildDataGridRows();
   }
 
@@ -175,6 +187,8 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
 
   late double _tax;
   late double _discount;
+
+  late bool _isCancelled;
 
   late BuildContext _context;
 
@@ -233,8 +247,8 @@ class PurchaseItemsReceivedDataSource extends DataGridSource {
       return _discount.toPesoString();
     }
     if (summaryRowTitle == 'Subtotal') {
-      return summaryValue.toPesoString();
+      return _isCancelled ? Strings.noValue : summaryValue.toPesoString();
     }
-    return (((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toPesoString();
+    return _isCancelled ? Strings.noValue : (((double.tryParse(summaryValue) ?? 0) + _tax) - _discount).toPesoString();
   }
 }

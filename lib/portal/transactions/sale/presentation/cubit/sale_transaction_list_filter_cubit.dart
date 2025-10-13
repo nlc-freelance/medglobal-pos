@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:medglobal_admin_portal/core/enums/transaction_enum.dart';
 
 part 'sale_transaction_list_filter_state.dart';
 

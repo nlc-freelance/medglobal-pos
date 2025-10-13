@@ -31,45 +31,38 @@ class ProductHistoryDetailBloc extends Bloc<ProductHistoryDetailEvent, ProductHi
         _stockTransferRepository = stockTransferRepository,
         _transactionRepository = transactionRepository,
         super(const ProductHistoryDetailState.initial()) {
-    on<_GetDetailsById>(_onGetDetails);
+    on<_GoToDetailsPage>(_onGetDetails);
   }
 
-  Future<ApiResult<dynamic>> _castResult(ApiResult<dynamic> result) async => result;
+  // Future<ApiResult<dynamic>> _castResult(ApiResult<dynamic> result) async => result;
 
-  Future<void> _onGetDetails(_GetDetailsById event, Emitter<ProductHistoryDetailState> emit) async {
+  Future<void> _onGetDetails(_GoToDetailsPage event, Emitter<ProductHistoryDetailState> emit) async {
     emit(const ProductHistoryDetailState.loading());
 
     try {
-      final Map<ProductHistoryAction, Future<ApiResult<dynamic>> Function(int)> getterMap = {
-        ProductHistoryAction.PURCHASE: (id) async {
-          return _purchaseOrderRepository.getPurchaseOrderById(id).then(_castResult);
-        },
-        ProductHistoryAction.RETURN: (id) async {
-          return _stockReturnRepository.getStockReturnById(id).then(_castResult);
-        },
-        ProductHistoryAction.TAKE: (id) async {
-          return _stockTakeRepository.getStockTakeById(id).then(_castResult);
-        },
-        ProductHistoryAction.TRANSFER: (id) async {
-          return _stockTransferRepository.getStockTransferById(id).then(_castResult);
-        },
-        ProductHistoryAction.SALE: (id) async {
-          return _transactionRepository.getTransactionById(id).then(_castResult);
-        },
+      final Map<ProductHistoryAction, String> routeMap = {
+        ProductHistoryAction.PURCHASE: 'purchaseOrderDetails',
+        ProductHistoryAction.RETURN: 'stockReturnDetails',
+        ProductHistoryAction.TAKE: 'stockTakeDetails',
+        ProductHistoryAction.TRANSFER: 'stockTransferDetails',
+        ProductHistoryAction.SALE: 'saleTransactionDetails',
+        ProductHistoryAction.REFUND: 'returnTransactionDetails',
       };
 
-      final getByIdFn = getterMap[event.action];
+      final route = routeMap[event.action];
 
-      if (getByIdFn == null) {
+      if (route == null) {
         emit(const ProductHistoryDetailState.failure('Unsupported product action.'));
         return;
       }
 
-      final result = await getByIdFn(event.id);
-      result.map(
-        success: (data) => emit(ProductHistoryDetailState.loaded(data, event.action)),
-        failure: (failure) => emit(ProductHistoryDetailState.failure(failure.failure.message)),
-      );
+      return emit(ProductHistoryDetailState.success(routeName: route, id: event.id));
+
+      // final result =  route(event.id);
+      // result.map(
+      //   success: (data) => emit(ProductHistoryDetailState.loaded(data, event.action)),
+      //   failure: (failure) => emit(ProductHistoryDetailState.failure(failure.failure.message)),
+      // );
     } catch (e) {
       emit(ProductHistoryDetailState.failure(e.toString()));
     }

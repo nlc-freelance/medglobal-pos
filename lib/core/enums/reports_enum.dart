@@ -26,10 +26,12 @@ enum ReportType {
   /// Report types with filter queries
   /// Report types with filter queries
   static List<ReportType> get filterable => [
+        ReportType.products,
         ReportType.purchaseOrder,
         ReportType.stockReturn,
         ReportType.stockTake,
         ReportType.stockTransfer,
+        ReportType.sales,
         ReportType.productHistory,
         ReportType.salesPerCategory,
         ReportType.salesPerShift,
@@ -75,6 +77,7 @@ enum ProductHistoryAction {
   TAKE('TAKE'),
   TRANSFER('Transfer'),
   SALE('Sale'),
+  REFUND('Refund'),
   INITIAL('Initial');
 
   final String label;

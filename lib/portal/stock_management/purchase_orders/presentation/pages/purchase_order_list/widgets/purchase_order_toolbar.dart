@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/enums/enums.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/app_dropdown.dart';
@@ -20,15 +21,9 @@ class PurchaseOrderToolbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final filterCubit = context.read<PurchaseOrderListFilterCubit>();
 
-    return DataGridToolbar(
-      reportType: ReportType.purchaseOrder,
-      reportFilters: {
-        'status': filterCubit.state.status?.label.toLowerCase(),
-        'branch': filterCubit.state.branchId,
-        'startDate': filterCubit.state.startDate,
-        'endDate': filterCubit.state.endDate,
-      },
-      filters: [
+    return Row(
+      spacing: 8,
+      children: [
         DatePickerPopup(
           onRemoveSelected: () {
             filterCubit.setStartDate(null);
@@ -46,59 +41,28 @@ class PurchaseOrderToolbar extends StatelessWidget {
           },
           selectionMode: DateRangePickerSelectionMode.range,
         ),
-        const UIHorizontalSpace(8),
-        // TODO: If supervisor, filter by branch should only show branches the supervisor is assigned to
-        // BlocBuilder<AuthBloc, AuthState>(
-        //   builder: (context, state) {
-        //     if (state is AuthenticatedState) {
-        //       final userType = state.user.type;
-        //       return userType == UserType.admin
-        //           ? AppDropdown<Branch>.lazy(
-        //               hasInlineLabel: true,
-        //               inlineLabel: 'Branch',
-        //               hint: 'All Branches',
-        //               getName: (branch) => branch.name,
-        //               onSelectItem: (branch) {
-        //                 filterCubit.setBranch(branch.id);
-        //                 onFetch();
-        //               },
-        //               onRemoveSelectedItem: () {
-        //                 filterCubit.setBranch(null);
-        //                 onFetch();
-        //               },
-        //             )
-        //           : AppDropdown<Branch>.lazy(
-        //               hasInlineLabel: true,
-        //               inlineLabel: 'Branch',
-        //               hint: 'All Branches',
-        //               getName: (branch) => branch.name,
-        //               onSelectItem: (branch) {
-        //                 filterCubit.setBranch(branch.id);
-        //                 onFetch();
-        //               },
-        //               onRemoveSelectedItem: () {
-        //                 filterCubit.setBranch(null);
-        //                 onFetch();
-        //               },
-        //             );
-        //     }
-        //     return const SizedBox();
-        //   },
-        // ),
-        // AppDropdown<Branch>.lazy(
-        //   hasInlineLabel: true,
-        //   inlineLabel: 'Branch',
-        //   hint: 'All Branches',
-        //   getName: (branch) => branch.name,
-        //   onSelectItem: (branch) {
-        //     filterCubit.setBranch(branch.id);
-        //     onFetch();
-        //   },
-        //   onRemoveSelectedItem: () {
-        //     filterCubit.setBranch(null);
-        //     onFetch();
-        //   },
-        // ),
+        AppDropdown<Branch>.lazy(
+          hasInlineLabel: true,
+          inlineLabel: 'Branch',
+          hint: 'All Branches',
+          getName: (branch) => branch.name,
+          onSelectItem: (branch) {
+            filterCubit.setBranch(branch.id);
+            onFetch();
+          },
+          onRemoveSelectedItem: () {
+            filterCubit.setBranch(null);
+            onFetch();
+          },
+        ),
+        const Spacer(),
+        BlocSelector<PurchaseOrderListFilterCubit, PurchaseOrderListFilterState, Map<String, dynamic>>(
+          selector: (state) => state.filters,
+          builder: (context, filters) => ExportButton(
+            type: ReportType.purchaseOrder,
+            filters: filters,
+          ),
+        ),
       ],
     );
   }

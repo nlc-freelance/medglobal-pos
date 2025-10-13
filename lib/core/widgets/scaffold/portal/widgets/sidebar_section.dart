@@ -11,6 +11,7 @@ class SidebarSection extends StatefulWidget {
     required this.hasSelection,
     required this.onToggle,
     required this.children,
+    this.isSubLevel1 = false,
   });
 
   final Widget? leading;
@@ -19,6 +20,7 @@ class SidebarSection extends StatefulWidget {
   final bool hasSelection;
   final VoidCallback onToggle;
   final List<Widget> children;
+  final bool isSubLevel1;
 
   @override
   State<SidebarSection> createState() => _SidebarSectionState();
@@ -62,27 +64,30 @@ class _SidebarSectionState extends State<SidebarSection> with SingleTickerProvid
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
-            listTileTheme: const ListTileThemeData(
-              minLeadingWidth: 0,
-            ),
+            listTileTheme: const ListTileThemeData(minLeadingWidth: 0),
           ),
           child: ListTile(
             onTap: _onToggle,
             leading: widget.leading ?? const SizedBox.shrink(),
-            title: Text(widget.title),
+            title: UIText.labelMedium(
+              widget.title,
+              color: widget.hasSelection ? UIColors.primary : UIColors.textRegular,
+            ),
             titleTextStyle: UIStyleText.inter.copyWith(fontWeight: FontWeight.w500),
             trailing: RotationTransition(
               turns: Tween<double>(begin: 0, end: 0.5).animate(_animation),
               child: Assets.icons.arrowDown.svg(
+                height: 10,
                 colorFilter: (widget.hasSelection ? UIColors.primary : UIColors.textLight).toColorFilter,
               ),
             ),
             selected: widget.hasSelection,
             selectedColor: UIColors.primary,
-            horizontalTitleGap: widget.leading == null ? 10 : 16,
+            horizontalTitleGap: widget.leading == null ? 8 : null,
             dense: true,
             visualDensity: VisualDensity.compact,
-            contentPadding: const EdgeInsets.only(left: 22, right: 24),
+            contentPadding: EdgeInsets.zero,
+            // contentPadding: const EdgeInsets.only(left: 22, right: 24),
             shape: RoundedRectangleBorder(
               side: BorderSide.none,
               borderRadius: BorderRadius.circular(10),
@@ -96,7 +101,7 @@ class _SidebarSectionState extends State<SidebarSection> with SingleTickerProvid
             child: FadeTransition(
               opacity: _animation,
               child: Padding(
-                padding: const EdgeInsets.only(left: 20),
+                padding: EdgeInsets.only(left: widget.isSubLevel1 ? 8 : 20),
                 child: Column(children: widget.children),
               ),
             ),

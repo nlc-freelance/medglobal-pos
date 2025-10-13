@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:medglobal_admin_portal/core/models/page_query.dart';
+import 'package:medglobal_admin_portal/core/models/query_params.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/usecases/get_product_catalog_usecase.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/domain/entities/catalog_item.dart';
 
