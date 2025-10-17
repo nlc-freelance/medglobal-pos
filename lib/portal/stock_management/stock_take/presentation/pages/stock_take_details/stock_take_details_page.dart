@@ -78,6 +78,15 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
           // Reload list
           context.read<StockTakeListRemoteCubit>().getStockTakes();
         }
+        if (state is StockTakeCancelSuccess) {
+          context.read<StockTakeCubit>().setStockTake(state.stockTake);
+          SnackbarUtil.success(context, 'Stock Take updated successfully.');
+
+          context.read<CountedItemsListCubit>().getItems(id: state.stockTake.id!);
+
+          // Reload list
+          context.read<StockTakeListRemoteCubit>().getStockTakes();
+        }
         if (state is StockTakeMarkAsCompletedSuccess) {
           context.read<StockTakeCubit>().setStockTake(state.stockTake);
 
@@ -305,45 +314,48 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
                         ),
                         const UIVerticalSpace(20),
                       ],
-                      // if (stockTake.status == StockOrderStatus.IN_PROGRESS)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          UIButton.filled(
-                            'Cancel Stock Take',
-                            style: UIStyleButton.danger,
-                            isLoading: state is StockTakeCancelLoading,
-                            onClick: () => context.read<StockTakeBloc>().add(
-                                  UpdateStockTakeEvent(
-                                    StockOrderUpdate.CANCEL,
-                                    id: stockTake.id!,
-                                    stockTake: stockTake,
+                      if (stockTake.status == StockOrderStatus.IN_PROGRESS)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            UIButton.filled(
+                              'Cancel Stock Take',
+                              style: UIStyleButton.danger,
+                              isLoading: state is StockTakeCancelLoading,
+                              onClick: () => context.read<StockTakeBloc>().add(
+                                    UpdateStockTakeEvent(
+                                      StockOrderUpdate.CANCEL,
+                                      id: stockTake.id!,
+                                      stockTake: stockTake,
+                                    ),
                                   ),
-                                ),
-                          ),
-                          const Spacer(),
-                          UIButton.filled(
-                            'Save',
-                            isLoading: state is StockTakeSaveLoading,
-                            onClick: () => context.read<StockTakeBloc>().add(
-                                  UpdateStockTakeEvent(
-                                    StockOrderUpdate.SAVE,
-                                    id: stockTake.id!,
-                                    stockTake: stockTake,
-                                  ),
-                                ),
-                          ),
-                          const UIHorizontalSpace(8),
-                          UIButton.filled(
-                            'Mark as Completed',
-                            onClick: () => showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) => StockTakeMarkAsCompletedDialog(stockTake),
                             ),
-                          ),
-                        ],
-                      ),
+                            const Spacer(),
+                            UIButton.filled(
+                              'Save',
+                              isLoading: state is StockTakeSaveLoading,
+                              onClick: () => context.read<StockTakeBloc>().add(
+                                    UpdateStockTakeEvent(
+                                      StockOrderUpdate.SAVE,
+                                      id: stockTake.id!,
+                                      stockTake: stockTake,
+                                    ),
+                                  ),
+                            ),
+                            const UIHorizontalSpace(8),
+                            UIButton.filled(
+                              'Mark as Completed',
+                              onClick: () => showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<StockTakeBloc>(),
+                                  child: StockTakeMarkAsCompletedDialog(stockTake),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                     ],
                   );
           },

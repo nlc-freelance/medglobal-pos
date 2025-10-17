@@ -1,5 +1,4 @@
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/network/api_service.dart';
 import 'package:medglobal_admin_portal/core/network/new/api/base_api_service.dart';
 import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/data/dto/stock_take_dto.dart';
@@ -97,7 +96,7 @@ class StockTakeApi {
   }
 
   Future<void> updateStockTakeItemsById({required int id, required Map<int, int?> items}) async {
-    await _api.update<StockTakeItemDto>(
+    await _api.update<void>(
       '/stock-takes/$id/items',
       data: {
         'items': [

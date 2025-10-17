@@ -58,6 +58,15 @@ final class StockTakeSuccess extends StockTakeBlocRemoteState {
   List<Object?> get props => [stockTake];
 }
 
+/// Cancel
+final class StockTakeCancelSuccess extends StockTakeBlocRemoteState {
+  final StockTake stockTake;
+  const StockTakeCancelSuccess({required this.stockTake});
+
+  @override
+  List<Object?> get props => [stockTake];
+}
+
 final class StockTakeMarkAsCompletedSuccess extends StockTakeBlocRemoteState {
   final StockTake stockTake;
   const StockTakeMarkAsCompletedSuccess({required this.stockTake});

@@ -1,7 +1,6 @@
 export './../gen/assets.gen.dart';
 export 'blocs/bloc_observer.dart';
 export 'blocs/sidebar_cubit.dart';
-export 'configs/amplifyconfiguration.dart';
 export 'configs/configure_amplify.dart';
 export 'constants/data_grid_column.dart';
 export 'constants/sizes.dart';

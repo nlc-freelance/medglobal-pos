@@ -109,7 +109,9 @@ class StockTakeBloc extends Bloc<StockTakeEvent, StockTakeBlocRemoteState> {
       result.when(
         success: (data) => event.type == StockOrderUpdate.MARK_AS_COMPLETE
             ? emit(StockTakeMarkAsCompletedSuccess(stockTake: data))
-            : emit(StockTakeSuccess(stockTake: data)),
+            : event.type == StockOrderUpdate.CANCEL
+                ? emit(StockTakeCancelSuccess(stockTake: data))
+                : emit(StockTakeSuccess(stockTake: data)),
         failure: (error) => emit(StockTakeMarkAsCompletedError(message: error.message)),
       );
     } catch (e) {
