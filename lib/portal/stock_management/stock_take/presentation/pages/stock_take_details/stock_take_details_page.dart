@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
+import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take/stock_take_cubit.dart';
@@ -69,7 +70,11 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
             }
             context.read<CountedItemsListCubit>().getItems(id: state.stockTake.id!);
           }
+
           _descriptionController.text = state.stockTake.description ?? '';
+
+          // Reload list
+          context.read<StockTakeListRemoteCubit>().getStockTakes();
         }
         if (state is StockTakeSuccess) {
           context.read<StockTakeCubit>().setStockTake(state.stockTake);
@@ -87,8 +92,45 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
           // Reload list
           context.read<StockTakeListRemoteCubit>().getStockTakes();
         }
+
+        /// Displays a prompt if there are uncounted items, allowing the user to choose an action:
+        /// Do nothing/Set quantity to 0.
+        /// If no uncounted items remain, completes the stock take immediately.
+        if (state is StockTakeCheckingItemsForCompletion) PageLoader.show(context);
+
+        if (state is StockTakeReadyForCompletion) {
+          PageLoader.close();
+          context.read<StockTakeBloc>().add(CompleteStockTakeEvent(
+                id: state.stockTake.id!,
+                stockTake: state.stockTake,
+              ));
+        }
+        if (state is StockTakeConfirmUncountedItemAction) {
+          PageLoader.close();
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => BlocProvider.value(
+              value: context.read<StockTakeBloc>(),
+              child: StockTakeMarkAsCompletedDialog(state.stockTake),
+            ),
+          );
+        }
         if (state is StockTakeMarkAsCompletedSuccess) {
           context.read<StockTakeCubit>().setStockTake(state.stockTake);
+
+          /// Poll since completion might take some time for some stock takes.
+          /// Fetch counted items to display in Completed page.
+          if (state.stockTake.status == StockOrderStatus.PENDING) {
+            context.read<StockTakeBloc>().add(
+                  StartStockTakePollingEvent(
+                    state.stockTake.id!,
+                    targetStatus: StockOrderStatus.COMPLETED,
+                  ),
+                );
+          } else {
+            context.read<CountedItemsListCubit>().getItems(id: state.stockTake.id!);
+          }
 
           // Reload list
           context.read<StockTakeListRemoteCubit>().getStockTakes();
@@ -323,8 +365,7 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
                               style: UIStyleButton.danger,
                               isLoading: state is StockTakeCancelLoading,
                               onClick: () => context.read<StockTakeBloc>().add(
-                                    UpdateStockTakeEvent(
-                                      StockOrderUpdate.CANCEL,
+                                    CancelStockTakeEvent(
                                       id: stockTake.id!,
                                       stockTake: stockTake,
                                     ),
@@ -335,8 +376,7 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
                               'Save',
                               isLoading: state is StockTakeSaveLoading,
                               onClick: () => context.read<StockTakeBloc>().add(
-                                    UpdateStockTakeEvent(
-                                      StockOrderUpdate.SAVE,
+                                    SaveStockTakeEvent(
                                       id: stockTake.id!,
                                       stockTake: stockTake,
                                     ),
@@ -345,14 +385,9 @@ class _StockTakeDetailsPageState extends State<StockTakeDetailsPage> with Single
                             const UIHorizontalSpace(8),
                             UIButton.filled(
                               'Mark as Completed',
-                              onClick: () => showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (_) => BlocProvider.value(
-                                  value: context.read<StockTakeBloc>(),
-                                  child: StockTakeMarkAsCompletedDialog(stockTake),
-                                ),
-                              ),
+                              onClick: () => context
+                                  .read<StockTakeBloc>()
+                                  .add(CheckUncountedItemForCompletionEvent(stockTake: stockTake)),
                             ),
                           ],
                         ),

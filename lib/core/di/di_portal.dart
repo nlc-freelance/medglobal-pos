@@ -2,8 +2,6 @@ import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/sidebar_cubit.dart';
-import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/core/network/dio_service.dart';
 import 'package:medglobal_admin_portal/core/network/new/api/base_api_service.dart';
 import 'package:medglobal_admin_portal/core/network/new/http_client/http_client.dart';
 import 'package:medglobal_admin_portal/portal/authentication/data/api/auth_api.dart';
@@ -321,6 +319,7 @@ void stockDependencies() {
         inject<CreateStockTakeUseCase>(),
         inject<GetStockTakeByIdUseCase>(),
         inject<UpdateStockTakeUseCase>(),
+        inject<GetStockTakeItemsByIdUseCase>(),
       ),
     )
 
