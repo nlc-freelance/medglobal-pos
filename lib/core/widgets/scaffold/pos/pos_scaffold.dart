@@ -54,52 +54,97 @@ class _PosScaffoldState extends State<PosScaffold> with DialogMixin {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Assets.icons.infoCircle.svg(width: 24, colorFilter: UIColors.textGray.toColorFilter),
-                      const UIVerticalSpace(14),
+                      const UIVerticalSpace(10),
                       UIText.heading5('Register Deactivated'),
-                      const UIVerticalSpace(4),
                       UIText.bodyRegular(
-                        'This device is no longer linked to a register.',
+                        'This device is no longer linked to a register',
                         align: TextAlign.center,
                       ),
                       const UIVerticalSpace(16),
                       BlocBuilder<UnsyncedOperationsCubit, int>(
-                        builder: (context, state) {
+                        builder: (context, unsyncedOperations) {
                           return Column(
                             children: [
-                              if (state == 0) ...[
-                                UIText.bodyRegular(
-                                  'Please set up again or contact your admin for assistance.',
-                                  align: TextAlign.center,
-                                ),
-                                const UIVerticalSpace(16),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    UIButton.text(
-                                      'Log Out',
-                                      onClick: () => context.read<AuthBloc>().add(const LogoutEvent()),
+                              if (unsyncedOperations == 0)
+                                BlocBuilder<RegisterShiftBloc, RegisterShiftState>(
+                                  builder: (context, state) => state.maybeWhen(
+                                    open: (shift, __) => Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        RichText(
+                                          textAlign: TextAlign.center,
+                                          text: TextSpan(
+                                            text: 'All offline data is now synced. ',
+                                            style: UIStyleText.label.copyWith(height: 1.4),
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    'However, the shift is still open. Please close it to proceed with logout or setup.',
+                                                style: UIStyleText.bodyRegular,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const UIVerticalSpace(24),
+                                        UIButton.outlined(
+                                          'Close Shift',
+                                          onClick: () => showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (context) => RegisterShiftDialog(
+                                              action: RegisterShiftAction.close,
+                                              dateTime: shift.openedAt,
+                                              onConfirm: (amount) => context
+                                                  .read<RegisterShiftBloc>()
+                                                  .add(RegisterShiftEvent.close(shift.id!, amount)),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const UIHorizontalSpace(24),
-                                    UIButton.outlined(
-                                      'Set Up Again',
-                                      onClick: () {
-                                        context.read<DeviceSetupBloc>().add(const DeviceSetupEvent.rebind(reset: true));
-                                        Navigator.pop(context);
-                                      },
+                                    orElse: () => Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        UIText.bodyRegular(
+                                          'Please set up again or contact your admin for assistance.',
+                                          align: TextAlign.center,
+                                        ),
+                                        const UIVerticalSpace(16),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            UIButton.text(
+                                              'Log Out',
+                                              onClick: () => context.read<AuthBloc>().add(const LogoutEvent()),
+                                            ),
+                                            const UIHorizontalSpace(24),
+                                            UIButton.outlined(
+                                              'Set Up Again',
+                                              onClick: () {
+                                                context
+                                                    .read<DeviceSetupBloc>()
+                                                    .add(const DeviceSetupEvent.rebind(reset: true));
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 )
-                              ] else ...[
+                              else ...[
                                 UIText.bodyRegular(
-                                  'However, there are ${context.read<UnsyncedOperationsCubit>().state} unsynced operation(s).',
+                                  'To prevent data loss, you must sync offline data before\nyou can log out or set up the device again.',
                                   align: TextAlign.center,
                                 ),
-                                UIText.bodyRegular(
-                                  'To prevent data loss, please sync all operations before logging out or setting up the device again.',
+                                const UIVerticalSpace(8),
+                                UIText.labelSemiBold(
+                                  'Unsynced operations: $unsyncedOperations',
                                   align: TextAlign.center,
                                 ),
-                                const UIVerticalSpace(16),
+                                const UIVerticalSpace(24),
                                 UIButton.outlined(
                                   'Sync Now',
                                   onClick: () =>
@@ -154,7 +199,7 @@ class _PosScaffoldState extends State<PosScaffold> with DialogMixin {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Icon(Icons.search, color: UIColors.textMuted, size: 24),
-                            const UIVerticalSpace(14),
+                            const UIVerticalSpace(12),
                             UIText.heading5('Open Shift Found', align: TextAlign.center),
                             const UIVerticalSpace(4),
                             UIText.bodyRegular(
