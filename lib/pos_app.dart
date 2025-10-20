@@ -11,7 +11,6 @@ import 'package:medglobal_admin_portal/pos/device_setup/presentation/blocs/devic
 import 'package:medglobal_admin_portal/pos/device_setup/presentation/blocs/printer/printer_cubit.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/presentation/blocs/unassigned_registers/unassigned_register_list_cubit.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/presentation/cubit/unsynced_operations_cubit.dart';
-import 'package:medglobal_admin_portal/pos/product_catalog/presentation/bloc/product_catalog_remote/product_catalog_bloc.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/presentation/cubit/product_catalog_filter/product_catalog_filter_cubit.dart';
 import 'package:medglobal_admin_portal/pos/product_catalog/presentation/cubit/product_catalog_local/product_catalog_cubit.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/bloc/cart/cart_bloc.dart';
@@ -56,24 +55,23 @@ class PosApp extends StatelessWidget {
           BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
               if (state is AuthenticatedState) {
-                context.read<SessionBloc>().add(SessionEvent.start(state.user));
-                // context.read<AccessValidationBloc>().add(AccessValidationEvent.started(state.user.id!));
+                context.read<AccessValidationBloc>().add(AccessValidationEvent.started(state.user.id!));
               }
               if (state is UnauthenticatedState) {
                 context.read<SessionBloc>().add(const SessionEvent.end());
               }
             },
           ),
-          // BlocListener<AccessValidationBloc, AccessValidationState>(
-          //   listener: (context, state) {
-          //     state.maybeWhen(
-          //       granted: (user) => context.read<SessionBloc>().add(SessionEvent.start(user)),
-          //       denied: (_) => context.read<AuthBloc>().add(const LogoutEvent()),
-          //       failure: (_) => context.read<AuthBloc>().add(const LogoutEvent()),
-          //       orElse: () {},
-          //     );
-          //   },
-          // ),
+          BlocListener<AccessValidationBloc, AccessValidationState>(
+            listener: (context, state) {
+              state.maybeWhen(
+                granted: (user) => context.read<SessionBloc>().add(SessionEvent.start(user)),
+                denied: (_) => context.read<AuthBloc>().add(const LogoutEvent()),
+                failure: (_) => context.read<AuthBloc>().add(const LogoutEvent()),
+                orElse: () {},
+              );
+            },
+          ),
           BlocListener<SessionBloc, SessionState>(
             listener: (context, state) {
               PosAppRouter.router.refresh();

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/pos_scaffold.dart';
 import 'package:medglobal_admin_portal/core/widgets/scaffold/pos/widgets/pos_splash.dart';
 import 'package:medglobal_admin_portal/pos/authentication/blocs/session/session_bloc.dart';
-import 'package:medglobal_admin_portal/pos/authentication/screens/pos_login_screen.dart';
+import 'package:medglobal_admin_portal/pos/authentication/presentation/screens/pos_login_screen.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/presentation/blocs/device_setup/device_setup_bloc.dart';
 import 'package:medglobal_admin_portal/pos/device_setup/presentation/screens/device_setup_screen.dart';
 import 'package:medglobal_admin_portal/pos/register/presentation/screens/payment/payment_screen.dart';
