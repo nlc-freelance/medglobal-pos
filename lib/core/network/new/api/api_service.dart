@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:medglobal_admin_portal/core/errors/errors.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
-import 'package:medglobal_admin_portal/core/network/new/api/api_result.dart';
 import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 
 class ApiService {
@@ -48,16 +47,16 @@ class ApiService {
   }
 
   /// GET request for paginated list
-  Future<Paginated<T>> getPaginated<T>(
+  Future<ApiPaginatedList<T>> getPaginated<T>(
     String path, {
     Map<String, dynamic>? queryParams,
     required JsonParser<T> parser,
   }) async {
     try {
       final response = await client.dio.get(path, queryParameters: queryParams);
-      return _parseResponse<Paginated<T>>(
+      return _parseResponse<ApiPaginatedList<T>>(
         response: response,
-        parser: (json) => Paginated<T>.fromJson(json, parser),
+        parser: (json) => ApiPaginatedList<T>.fromJson(json, parser),
         format: ResponseFormat.paginated,
       );
     } on DioException catch (e) {

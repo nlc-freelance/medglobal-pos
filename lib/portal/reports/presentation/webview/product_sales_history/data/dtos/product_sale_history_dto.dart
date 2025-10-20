@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/models/models.dart';
-import 'package:medglobal_admin_portal/core/network/new/api/response/paginated.dart';
+import 'package:medglobal_admin_portal/core/network/new/api/api_paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/data/dtos/product_sale_history_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/domain/entities/product_sale_history.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_sales_history/domain/entities/product_sale_history_item.dart';
@@ -13,7 +13,7 @@ class ProductSaleHistoryDto with _$ProductSaleHistoryDto {
     required String displayName,
     required String sku,
     required String category,
-    required Paginated<ProductSaleHistoryItemDto> transactions,
+    required ApiPaginatedList<ProductSaleHistoryItemDto> transactions,
   }) = _ProductSaleHistoryDto;
 
   factory ProductSaleHistoryDto.fromJson(Map<String, dynamic> json) {
@@ -21,7 +21,7 @@ class ProductSaleHistoryDto with _$ProductSaleHistoryDto {
       displayName: json['displayName'],
       sku: json['sku'],
       category: json['category'],
-      transactions: Paginated.fromJson(json['transactions'], ProductSaleHistoryItemDto.fromJson),
+      transactions: ApiPaginatedList.fromJson(json['transactions'], ProductSaleHistoryItemDto.fromJson),
     );
   }
 }

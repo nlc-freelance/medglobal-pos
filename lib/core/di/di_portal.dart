@@ -2,7 +2,8 @@ import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/blocs/sidebar_cubit.dart';
-import 'package:medglobal_admin_portal/core/network/new/api/base_api_service.dart';
+import 'package:medglobal_admin_portal/core/di/branch_fetcher.dart';
+import 'package:medglobal_admin_portal/core/network/new/api/api_service.dart';
 import 'package:medglobal_admin_portal/core/network/new/http_client/http_client.dart';
 import 'package:medglobal_admin_portal/portal/authentication/data/api/auth_api.dart';
 import 'package:medglobal_admin_portal/portal/authentication/data/api/auth_service.dart';
@@ -13,6 +14,8 @@ import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/get
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/login.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/usecases/logout.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/data/api/employee_api.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/data/repositories/employee_repository_impl.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/domain/repository/employee_repository.dart';
 import 'package:medglobal_admin_portal/portal/employee_management/presentation/bloc/employee_bloc/employee_bloc.dart';
@@ -380,8 +383,15 @@ void branchDependencies() {
     ..registerFactory<PaginatedListBloc<Branch>>(
       () => PaginatedListBloc<Branch>(inject<BranchRepository>().getBranches),
     )
+    ..registerLazySingleton<LazyListFetcher<Branch>>(
+      () => BranchListFetcher(
+        inject<BranchRepository>(),
+        inject<EmployeeRepository>(),
+        inject<AuthRepository>(),
+      ),
+    )
     ..registerFactory<LazyListBloc<Branch>>(
-      () => LazyListBloc<Branch>(inject<BranchRepository>().getBranches),
+      () => LazyListBloc<Branch>(inject<LazyListFetcher<Branch>>().call),
     )
     ..registerFactory<LazyListBloc<BranchPartial>>(
       () => LazyListBloc<BranchPartial>(inject<BranchRepository>().getBranchesPartial),
@@ -431,6 +441,12 @@ void receiptTemplateDependencies() {
 
 void employeeDependencies() {
   inject
+    ..registerLazySingleton<EmployeeApi>(
+      () => EmployeeApi(api: inject<ApiService>()),
+    )
+    ..registerLazySingleton<EmployeeRepository>(
+      () => EmployeeRepositoryImpl(api: inject<EmployeeApi>()),
+    )
     ..registerFactory<PaginatedListBloc<Employee>>(
       () => PaginatedListBloc<Employee>(inject<EmployeeRepository>().getEmployees),
     )

@@ -1,6 +1,6 @@
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/core/network/new/api/base_api_service.dart';
+import 'package:medglobal_admin_portal/core/network/old_api_service.dart';
+import 'package:medglobal_admin_portal/core/network/new/api/api_service.dart';
 import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/data/dto/stock_transfer_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/new_stock_transfer.dart';

@@ -1,5 +1,5 @@
-import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/core/network/new/api/base_api_service.dart';
+import 'package:medglobal_admin_portal/core/network/old_api_service.dart';
+import 'package:medglobal_admin_portal/core/network/new/api/api_service.dart';
 import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/data/dto/product_history_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/reports/presentation/webview/product_history/domain/entities/product_history_paginated_list.dart';

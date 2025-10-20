@@ -2,7 +2,7 @@
 //
 // import '../core.dart';
 // import '../utils/typedefs.dart';
-// import 'dio_service.dart';
+// import 'old_dio_service.dart';
 // import 'models/api_response.dart';
 //
 // class ApiService {

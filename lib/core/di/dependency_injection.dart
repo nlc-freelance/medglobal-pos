@@ -2,8 +2,8 @@
 // import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 // import 'package:medglobal_admin_portal/core/blocs/sidebar_cubit.dart';
 // import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
-// import 'package:medglobal_admin_portal/core/network/api_service.dart';
-// import 'package:medglobal_admin_portal/core/network/dio_service.dart';
+// import 'package:medglobal_admin_portal/core/network/old_api_service.dart';
+// import 'package:medglobal_admin_portal/core/network/old_dio_service.dart';
 // import 'package:medglobal_admin_portal/core/network/network.dart';
 // import 'package:medglobal_admin_portal/portal/authentication/data/api/auth_api.dart';
 // import 'package:medglobal_admin_portal/portal/authentication/data/api/auth_service.dart';

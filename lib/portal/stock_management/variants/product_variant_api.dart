@@ -1,4 +1,4 @@
-import 'package:medglobal_admin_portal/core/network/api_service.dart';
+import 'package:medglobal_admin_portal/core/network/old_api_service.dart';
 import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';

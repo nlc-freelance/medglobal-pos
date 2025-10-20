@@ -105,4 +105,5 @@ class ApiEndpoints {
   // Employee
   static const String employees = '/users';
   static String employeeById(int id) => '$employees/$id';
+  static String employeeAssignedBranches(int id) => '$employees/$id/stores';
 }

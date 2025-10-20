@@ -1,5 +1,5 @@
-import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/core/network/new/api/base_api_service.dart';
+import 'package:medglobal_admin_portal/core/network/old_api_service.dart';
+import 'package:medglobal_admin_portal/core/network/new/api/api_service.dart';
 import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/data/dto/supply_need_dto.dart';
 
