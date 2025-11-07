@@ -545,7 +545,7 @@ jobs:
     name: ${{ matrix.tenant }} (Portal)
     runs-on: ubuntu-latest  # Linux for web deployment
     needs: [discover-tenants, onboard-phases-1-3]
-    if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0 && needs.onboard-phases-1-3.result != 'cancelled'
+    if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0 && needs.onboard-phases-1-3.result != 'cancelled'
     strategy:
       fail-fast: false
       matrix:
@@ -707,7 +707,7 @@ jobs:
     name: ${{ matrix.tenant }} (POS Desktop)
     runs-on: windows-latest  # Windows required for desktop build
     needs: [discover-tenants, onboard-phase-4]
-    if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0 && needs.onboard-phase-4.result != 'cancelled'
+    if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0 && needs.onboard-phase-4.result != 'cancelled'
     strategy:
       fail-fast: false
       matrix:
