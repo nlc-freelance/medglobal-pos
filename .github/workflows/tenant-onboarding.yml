@@ -573,12 +573,6 @@ jobs:
           name: status-phases-1-3-${{ matrix.tenant }}
           path: status-reports/
 
-      - name: "[Phase 4 Setup] Download build artifacts"
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts-${{ matrix.tenant }}
-          path: ./
-
       - name: "[Phase 4 Setup] Check if Phase 4 should run"
         id: check_phase4_prerequisites
         shell: bash
@@ -602,6 +596,13 @@ jobs:
             echo "reason=ok" >> $GITHUB_OUTPUT
             echo "✅ Proceeding with Phase 4"
           fi
+
+      - name: "[Phase 4 Setup] Download build artifacts"
+        if: steps.check_phase4_prerequisites.outputs.continue == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-${{ matrix.tenant }}
+          path: ./
 
       # ═══════════════════════════════════════════════════════════
       # PHASE 4: PORTAL WEB DEPLOYMENT
@@ -742,12 +743,6 @@ jobs:
           name: status-phase-4-${{ matrix.tenant }}
           path: status-reports/
 
-      - name: "[Phase 5 Setup] Download build artifacts"
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts-${{ matrix.tenant }}
-          path: ./
-
       - name: "[Phase 5 Setup] Check if Phase 5 should run"
         id: check_phase5_prerequisites
         shell: bash
@@ -771,6 +766,13 @@ jobs:
             echo "reason=ok" >> $GITHUB_OUTPUT
             echo "✅ Proceeding with Phase 5"
           fi
+
+      - name: "[Phase 5 Setup] Download build artifacts"
+        if: steps.check_phase5_prerequisites.outputs.continue == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-${{ matrix.tenant }}
+          path: ./
 
       # ═══════════════════════════════════════════════════════════
       # PHASE 5: DESKTOP DEPLOYMENT
