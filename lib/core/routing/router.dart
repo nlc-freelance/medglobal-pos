@@ -1,0 +1,156 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/routing/portal_routes.dart';
+import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/product_list_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_list_page.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/screens/register_screen.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
+
+abstract class AppRouter {
+  static final GoRouter router = GoRouter(
+    initialLocation: LoginPage.route,
+    errorPageBuilder: (_, __) => const NoTransitionPage(
+      child: NotFoundPage(),
+    ),
+    routes: [
+      GoRoute(
+        path: LoginPage.route,
+        pageBuilder: (_, __) => const NoTransitionPage(child: LoginPage()),
+      ),
+      GoRoute(
+        path: NotFoundPage.route,
+        pageBuilder: (_, __) => const NoTransitionPage(child: NotFoundPage()),
+      ),
+      GoRoute(
+        path: AccessDeniedPage.route,
+        pageBuilder: (_, __) => const NoTransitionPage(child: AccessDeniedPage()),
+      ),
+      if (AppConfig.isPortalApp) portalRoutes,
+      // if (AppConfig.isPOSApp) posRoutes,
+    ],
+    redirect: (context, state) {
+      final authState = context.read<AuthBloc>().state;
+      final isLoginRoute = state.matchedLocation == LoginPage.route;
+
+      // Not logged in and not on login page → redirect to login
+      if (authState is UnauthenticatedState && !isLoginRoute) {
+        return LoginPage.route;
+      }
+
+      // Logged in but on login page → redirect to role-appropriate page
+      if (authState is AuthenticatedState && isLoginRoute) {
+        final userRole = authState.user.type;
+
+        if (AppConfig.isPortalApp) {
+          switch (userRole) {
+            case UserType.admin:
+              return ProductListPage.route;
+            case UserType.supervisor:
+              return PurchaseOrderListPage.route;
+            default:
+              return AccessDeniedPage.route;
+          }
+        }
+
+        if (AppConfig.isPOSApp) {
+          if (userRole == UserType.cashier || userRole == UserType.supervisor) {
+            return RegisterScreen.route;
+          } else {
+            return AccessDeniedPage.route;
+          }
+        }
+
+        // Unknown platform fallback
+        return AccessDeniedPage.route;
+      }
+
+      return null;
+    },
+  );
+}
+
+enum PlatformType { web, desktop }
+
+class AppConfig {
+  static const platform = kIsWeb ? PlatformType.web : PlatformType.desktop;
+
+  static bool get isPortalApp => platform == PlatformType.web;
+  static bool get isPOSApp => platform == PlatformType.desktop;
+}
+
+// const accessMatrix = {
+//   PlatformType.web: [UserType.admin, UserType.supervisor],
+//   PlatformType.desktop: [UserType.cashier, UserType.supervisor],
+// };
+
+// bool canAccess(UserType type) {
+//   return accessMatrix[AppConfig.platform]?.contains(type) ?? false;
+// }
+
+class AccessDeniedPage extends StatelessWidget {
+  static String route = '/access-denied';
+
+  const AccessDeniedPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Assets.icons.cube.setSize(24),
+        UIText.heading5('Unauthorized Access'),
+        UIText.labelMedium(
+          'Your account is not authorized to use this application. \n Contact your administrator if you believe this is an error.',
+        ),
+      ],
+    );
+  }
+}
+
+class NotFoundPage extends StatelessWidget {
+  static String route = '/404-page-not-found';
+
+  const NotFoundPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Assets.images.designLines.svg(fit: BoxFit.fill, colorFilter: UIColors.borderMuted.toColorFilter),
+          ),
+          Positioned.fill(
+            left: MediaQuery.of(context).size.width * 0.12,
+            right: MediaQuery.of(context).size.width * 0.12,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Assets.icons.cube.setSize(48),
+                const UIVerticalSpace(20),
+                UIText.heading1('404 — Page Not Found'),
+                const UIVerticalSpace(12),
+                UIText.bodyRegular(
+                  'The page you’re looking for doesn’t exist or the URL was entered incorrectly.',
+                ),
+                const UIVerticalSpace(4),
+                UIText.bodyRegular('Please check the address bar or go back to the homepage.'),
+                const UIVerticalSpace(36),
+                UIButton.outlined(
+                  'Go back home',
+                  iconBuilder: (isHover) => Assets.icons.arrowRight1.setColorOnHover(isHover),
+                  onClick: () => context.goNamed('productList'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

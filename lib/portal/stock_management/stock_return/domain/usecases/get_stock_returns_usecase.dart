@@ -1,0 +1,32 @@
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return_paginated_list.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/repositories/stock_return_repository.dart';
+
+class GetStockReturnsUseCase implements UseCase<StockReturnPaginatedList, GetStockReturnsParams> {
+  final StockReturnRepository _repository;
+
+  GetStockReturnsUseCase(this._repository);
+
+  @override
+  Future<ApiResult<StockReturnPaginatedList>> call(GetStockReturnsParams params) => _repository.getStockReturns(
+        page: params.page,
+        size: params.size,
+        status: params.status,
+        branchId: params.branchId,
+        startDate: params.startDate,
+        endDate: params.endDate,
+      );
+}
+
+class GetStockReturnsParams {
+  final int page;
+  final int size;
+  final StockOrderStatus? status;
+  final int? branchId;
+  final String? startDate;
+  final String? endDate;
+
+  GetStockReturnsParams(
+      {required this.page, required this.size, this.status, this.branchId, this.startDate, this.endDate});
+}

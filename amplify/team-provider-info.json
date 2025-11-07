@@ -1,0 +1,25 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-medglobalportal-dev-bd94d-authRole",
+      "UnauthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-bd94d-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-bd94d-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-medglobalportal-dev-bd94d-deployment",
+      "UnauthRoleName": "amplify-medglobalportal-dev-bd94d-unauthRole",
+      "StackName": "amplify-medglobalportal-dev-bd94d",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:280954863577:stack/amplify-medglobalportal-dev-bd94d/a2dbf1d0-b7f1-11f0-8765-024095b3a911",
+      "AmplifyAppId": "d3o9zsjtt1p6v6"
+    },
+    "categories": {
+      "auth": {
+        "medglobalportaladeafc54": {
+          "userPoolId": "ap-southeast-1_u2ldk8PVd",
+          "userPoolName": "employees",
+          "webClientId": "6309eiplj9jqf6jpb0tqbe84aj",
+          "nativeClientId": "6309eiplj9jqf6jpb0tqbe84aj"
+        }
+      }
+    }
+  }
+}

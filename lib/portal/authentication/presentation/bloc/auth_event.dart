@@ -1,0 +1,49 @@
+part of 'auth_bloc.dart';
+
+@immutable
+abstract class AuthEvent extends Equatable {
+  const AuthEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class AppInitEvent extends AuthEvent {
+  const AppInitEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class LoginEvent extends AuthEvent {
+  final String email;
+  final String password;
+  const LoginEvent(this.email, this.password);
+
+  @override
+  List<Object> get props => [email, password];
+}
+
+class ConfirmFirstTimeLoginEvent extends AuthEvent {
+  final String password;
+  const ConfirmFirstTimeLoginEvent(this.password);
+
+  @override
+  List<Object> get props => [password];
+}
+
+class AcceptAccessDeniedEvent extends AuthEvent {
+  const AcceptAccessDeniedEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+
+
+class LogoutEvent extends AuthEvent {
+  const LogoutEvent();
+
+  @override
+  List<Object> get props => [];
+}

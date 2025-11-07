@@ -1,0 +1,55 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-medglobalportal-dev-bd94d-authRole",
+      "UnauthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-bd94d-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-bd94d-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-medglobalportal-dev-bd94d-deployment",
+      "UnauthRoleName": "amplify-medglobalportal-dev-bd94d-unauthRole",
+      "StackName": "amplify-medglobalportal-dev-bd94d",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:280954863577:stack/amplify-medglobalportal-dev-bd94d/a2dbf1d0-b7f1-11f0-8765-024095b3a911",
+      "AmplifyAppId": "d3o9zsjtt1p6v6"
+    }
+  },
+  "auth": {
+    "medglobalportaladeafc54": {
+      "service": "Cognito",
+      "serviceType": "imported",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "output": {
+        "UserPoolId": "ap-southeast-1_u2ldk8PVd",
+        "UserPoolName": "employees",
+        "AppClientID": "6309eiplj9jqf6jpb0tqbe84aj",
+        "AppClientIDWeb": "6309eiplj9jqf6jpb0tqbe84aj"
+      },
+      "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "signupAttributes": [
+          "GIVEN_NAME",
+          "FAMILY_NAME",
+          "EMAIL",
+          "UPDATED_AT"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": [
+            "REQUIRES_LOWERCASE",
+            "REQUIRES_UPPERCASE",
+            "REQUIRES_NUMBERS",
+            "REQUIRES_SYMBOLS"
+          ]
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [],
+        "verificationMechanisms": []
+      },
+      "lastPushTimeStamp": "2025-11-02T13:47:04.439Z"
+    }
+  }
+}

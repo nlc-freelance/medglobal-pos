@@ -1,0 +1,131 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
+part 'supplier.freezed.dart';
+part 'supplier.g.dart';
+
+@freezed
+class Supplier with _$Supplier {
+  const factory Supplier({
+    int? id,
+    required String name,
+    String? mainContactName,
+    String? email,
+    String? phone,
+    String? fax,
+    String? website,
+    String? street1,
+    String? street2,
+    String? city,
+    String? state,
+    String? zipCode,
+    String? country,
+    String? createdAt,
+    String? updatedAt,
+  }) = _Supplier;
+
+  const Supplier._();
+
+  factory Supplier.fromJson(Map<String, dynamic> json) => _$SupplierFromJson(json);
+
+  DataGridRow toDataGridRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'name', value: name),
+          DataGridCell<String>(columnName: 'email', value: email?.isNotEmpty == true ? email : Strings.noValue),
+          DataGridCell<String>(columnName: 'phone', value: phone?.isNotEmpty == true ? phone : Strings.noValue),
+        ],
+      );
+
+  String get address {
+    final text = [street1, street2, city, state, zipCode, country].where((e) => e?.isNotEmpty == true);
+    if (text.isEmpty) return Strings.noValue;
+    return text.join(' ');
+  }
+}
+
+// part 'supplier.g.dart';
+
+// @JsonSerializable()
+// class Supplier extends Equatable {
+//   final int? id;
+//   final String name;
+//   final String? mainContactName;
+//   final String? email;
+//   final String? phone;
+//   final String? fax;
+//   final String? website;
+//   final String? street1;
+//   final String? street2;
+//   final String? city;
+//   final String? state;
+//   final String? zipCode;
+//   final String? country;
+
+//   const Supplier({
+//     this.id,
+//     required this.name,
+//     this.mainContactName,
+//     this.email,
+//     this.phone,
+//     this.fax,
+//     this.website,
+//     this.street1,
+//     this.street2,
+//     this.city,
+//     this.state,
+//     this.zipCode,
+//     this.country,
+//   });
+
+//   @override
+//   List<Object?> get props =>
+//       [id, name, mainContactName, email, phone, fax, website, street1, street2, city, state, zipCode, country];
+
+//   factory Supplier.fromJson(Map<String, dynamic> json) => _$SupplierFromJson(json);
+
+//   Map<String, dynamic> toJson() => _$SupplierToJson(this);
+
+//   DataGridRow toDataGridRow() => DataGridRow(
+//         cells: [
+//           DataGridCell<int>(columnName: 'id', value: id),
+//           DataGridCell<String>(columnName: 'name', value: name),
+//           DataGridCell<String>(columnName: 'email', value: email),
+//           DataGridCell<String>(columnName: 'phone', value: phone),
+//         ],
+//       );
+
+//   Supplier copyWith({
+//     int? id,
+//     String? name,
+//     String? mainContactName,
+//     String? email,
+//     String? phone,
+//     String? fax,
+//     String? website,
+//     String? street1,
+//     String? street2,
+//     String? city,
+//     String? state,
+//     String? zipCode,
+//     String? country,
+//   }) =>
+//       Supplier(
+//         id: id ?? this.id,
+//         name: name ?? this.name,
+//         mainContactName: mainContactName ?? this.mainContactName,
+//         email: email ?? this.email,
+//         phone: phone ?? this.phone,
+//         fax: fax ?? this.fax,
+//         website: website ?? this.website,
+//         street1: street1 ?? this.street1,
+//         street2: street2 ?? this.street2,
+//         city: city ?? this.city,
+//         state: state ?? this.state,
+//         zipCode: zipCode ?? this.zipCode,
+//         country: country ?? this.country,
+//       );
+
+//   String get address => [street1, street2, city, state, zipCode, country].where((e) => e?.isNotEmpty == true).join(' ');
+// }

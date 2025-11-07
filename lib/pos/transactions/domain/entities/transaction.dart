@@ -1,0 +1,387 @@
+// import 'package:equatable/equatable.dart';
+// import 'package:intl/intl.dart';
+// import 'package:json_annotation/json_annotation.dart';
+// import 'package:medglobal_admin_portal/core/core.dart';
+// import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
+// import 'package:medglobal_admin_portal/shared/employee/entities/employee.dart';
+// import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
+// import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction_item.dart';
+// import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
+// // part 'transaction.g.dart';
+
+// @JsonSerializable()
+// class Transaction extends Equatable {
+//    int? id;
+//   @JsonKey(name: 'transactionId')
+//   final String? receiptId;
+//   final int? saleTransactionId;
+//   final String? saleTransactionReceiptId;
+//   final TransactionType? type;
+//   final ReturnStatus? status;
+//   final Register? register;
+//   final Branch? branch;
+//   final Employee? employee;
+//   final List<TransactionItem>? items;
+//   final double? subtotal;
+//   final double? tax;
+//   final double? total;
+//   final String? reasonForRefund;
+//   @DateTimeConverter()
+//   final DateTime? createdAt;
+
+//   /// These are for full bill discount, but full bill discounts has been requested to be removed
+//   final double? discount;
+//   final DiscountType? discountType;
+//   final double? discountInPeso;
+
+//   /// This will be the total discount from all items (sum of all discounts per item)
+//   final double? totalDiscountInPeso;
+
+//   /// This is the cash the customer gave as payment
+//   final double? amountPaid;
+
+//   const Transaction({
+//     this.id,
+//     this.receiptId,
+//     this.saleTransactionId,
+//     this.saleTransactionReceiptId,
+//     this.status,
+//     this.type,
+//     this.register,
+//     this.branch,
+//     this.employee,
+//     this.items,
+//     this.subtotal,
+//     this.discount,
+//     this.discountType,
+//     this.discountInPeso,
+//     this.tax,
+//     this.total,
+//     this.totalDiscountInPeso,
+//     this.amountPaid,
+//     this.reasonForRefund,
+//     this.createdAt,
+//   });
+
+//   @override
+//   List<Object?> get props => [
+//         id,
+//         receiptId,
+//         saleTransactionId,
+//         saleTransactionReceiptId,
+//         status,
+//         type,
+//         register,
+//         branch,
+//         employee,
+//         items,
+//         subtotal,
+//         discount,
+//         discountType,
+//         discountInPeso,
+//         tax,
+//         total,
+//         totalDiscountInPeso,
+//         amountPaid,
+//         reasonForRefund,
+//         createdAt,
+//       ];
+
+//   // factory Transaction.fromJson(Map<String, dynamic> json) => _$TransactionFromJson(json);
+
+//   // Map<String, dynamic> toJson() => _$TransactionToJson(this);
+
+//   /// Sale Transaction List DataGrid
+//   DataGridRow toSaleTransactionRow() => DataGridRow(
+//         cells: [
+//           DataGridCell<int>(columnName: 'id', value: id),
+//           DataGridCell<String>(columnName: 'receipt_id', value: (receiptId ?? Strings.empty).toString()),
+//           DataGridCell<String>(
+//             columnName: 'date',
+//             value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!) : Strings.empty,
+//           ),
+//           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
+//           DataGridCell<String>(columnName: 'register_id', value: (register?.id ?? Strings.empty).toString()),
+//           DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
+//           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+//           DataGridCell<double>(columnName: 'total_discount', value: totalDiscountInPeso ?? 0),
+//           DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
+//           DataGridCell<double>(columnName: 'total', value: total ?? 0),
+//         ],
+//       );
+
+//   /// Return Transaction List DataGrid
+//   DataGridRow toReturnTransactionRow() => DataGridRow(
+//         cells: [
+//           DataGridCell<int>(columnName: 'id', value: id),
+//           DataGridCell<String>(columnName: 'receipt_id', value: (receiptId ?? Strings.empty).toString()),
+//           DataGridCell<String>(
+//             columnName: 'date',
+//             value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!) : Strings.empty,
+//           ),
+//           DataGridCell<String>(columnName: 'branch', value: branch?.name ?? Strings.empty),
+//           DataGridCell<String>(columnName: 'employee', value: '${employee?.firstName} ${employee?.lastName}'),
+//           DataGridCell<double>(columnName: 'total', value: total ?? 0),
+//           DataGridCell<String>(columnName: 'reason_for_return', value: reasonForRefund ?? '-'),
+//           DataGridCell<ReturnStatus>(columnName: 'status', value: status),
+//         ],
+//       );
+
+//   /// Shift Transaction List DataGrid
+//   DataGridRow toShiftTransactionRow() => DataGridRow(
+//         cells: [
+//           DataGridCell<int>(columnName: 'id', value: id),
+//           DataGridCell<String>(columnName: 'receipt_id', value: (receiptId ?? Strings.empty).toString()),
+//           DataGridCell<String>(
+//             columnName: 'date',
+//             value: createdAt != null ? DateFormat('MM/dd/yyyy HH:mm').format(createdAt!) : Strings.empty,
+//           ),
+//           DataGridCell<String>(columnName: 'employee', value: branch?.name ?? Strings.empty),
+//           DataGridCell<String>(columnName: 'type', value: type?.label ?? Strings.empty),
+//           DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+//           DataGridCell<double>(columnName: 'total_discount', value: totalDiscountInPeso ?? 0),
+//           DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
+//           DataGridCell<double>(columnName: 'total', value: total ?? 0),
+//         ],
+//       );
+
+//   /// Issue Refund Payload
+//   JSON toRefundPayload() {
+//     return {
+//       'registerId': register?.id,
+//       'saleTransactionId': saleTransactionId,
+//       'notes': reasonForRefund,
+//       'items': items
+//           ?.where((item) => item.isSelected)
+//           .map((item) => {'variantId': item.itemId, 'quantity': item.qtyRefund})
+//           .toList(),
+//     };
+//   }
+
+//   /// Process Return Payload
+//   JSON toReturnPayload() {
+//     return {
+//       'items': items?.map((item) {
+//         return {
+//           'id': item.id,
+//           'writeOffQuantity': item.writeOffQty ?? 0,
+//           'restockQuantity': item.restockQty ?? 0,
+//           'comment': item.comment,
+//         };
+//       }).toList(),
+//     };
+//   }
+
+//   /// Create sale payload
+//   JSON toPayload(int registerId) => {
+//         'registerId': registerId,
+//         'discount': discount,
+//         'discountType': discountType == DiscountType.PERCENT ? 'percentage' : 'fixed',
+//         'tax': tax,
+//         'total': total,
+//         'amountPaid': amountPaid,
+//         'items': items
+//                 ?.map((item) => {
+//                       'variantId': item.itemId,
+//                       'quantity': item.qty,
+//                       'discount': item.discount,
+//                       'discountType': item.discountType == DiscountType.PERCENT ? 'percentage' : 'fixed',
+//                     })
+//                 .toList() ??
+//             [],
+//       };
+
+//   Transaction copyWith({
+//     int? id,
+//     String? receiptId,
+//     int? saleTransactionId,
+//     String? saleTransactionReceiptId,
+//     TransactionType? type,
+//     ReturnStatus? status,
+//     Register? register,
+//     Branch? branch,
+//     Employee? employee,
+//     List<TransactionItem>? items,
+//     double? subtotal,
+//     double? discount,
+//     DiscountType? discountType,
+//     double? discountInPeso,
+//     double? totalDiscountInPeso,
+//     double? tax,
+//     double? total,
+//     double? amountPaid,
+//     String? reasonForRefund,
+//     DateTime? createdAt,
+//   }) {
+//     return Transaction(
+//       id: id ?? this.id,
+//       receiptId: receiptId ?? this.receiptId,
+//       saleTransactionId: saleTransactionId ?? this.saleTransactionId,
+//       saleTransactionReceiptId: saleTransactionReceiptId ?? this.saleTransactionReceiptId,
+//       type: type ?? this.type,
+//       status: status ?? this.status,
+//       register: register ?? this.register,
+//       branch: branch ?? this.branch,
+//       employee: employee ?? this.employee,
+//       items: items ?? this.items,
+//       subtotal: subtotal ?? this.subtotal,
+//       discount: discount ?? this.discount,
+//       discountType: discountType ?? this.discountType,
+//       discountInPeso: discountInPeso ?? this.discountInPeso,
+//       totalDiscountInPeso: totalDiscountInPeso ?? this.totalDiscountInPeso,
+//       tax: tax ?? this.tax,
+//       total: total ?? this.total,
+//       amountPaid: amountPaid ?? this.amountPaid,
+//       reasonForRefund: reasonForRefund ?? this.reasonForRefund,
+//       createdAt: createdAt ?? this.createdAt,
+//     );
+//   }
+
+//   /// Bill
+//   bool hasChangedAnyItem(Transaction other) {
+//     return items != other.items;
+
+//     /// These applies when there is a full bill discount
+//     // discount != other.discount ||
+//     // discountInPeso != other.discountInPeso ||
+//     // discountType != other.discountType;
+//   }
+
+//   /// Receipt extensions
+//   String get registerNo =>
+//       register?.name.isNotEmpty == true ? register!.name.substring(register!.name.length - 1) : Strings.noValue;
+// }
+
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:intl/intl.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction_item.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
+part 'transaction.freezed.dart';
+
+@freezed
+class Transaction with _$Transaction {
+  const factory Transaction({
+    required int id,
+    required String receiptId,
+    int? saleTransactionId,
+    String? saleTransactionReceiptId,
+    required TransactionType type,
+    ReturnStatus? status,
+    required RegisterPartial register,
+    required BranchPartial branch,
+    required EmployeePartial employee,
+    // required Register register,
+    // required Branch branch,
+    // required Employee employee,
+    List<TransactionItem>? items,
+    double? subtotal,
+    double? tax,
+    double? total,
+    String? reasonForRefund,
+    @DateTimeConverter() required DateTime createdAt,
+
+    /// Total discount from all items (sum of all discounts per item)
+    double? totalDiscountAmount,
+
+    /// Amount customer gave as payment
+    double? amountPaid,
+
+    /// These are for full bill discount, but full bill discounts has been requested to be removed
+    // double? discount,
+    // DiscountType? discountType,
+    // double? discountInPeso,
+  }) = _Transaction;
+
+  const Transaction._();
+
+  // TODO: Ask BE if the structure of the transaction it will received
+  // now that the receipt id is already generated in FE and considered as an existing transaction already
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'receiptId': receiptId,
+      'saleTransactionId': saleTransactionId,
+      'saleTransactionReceiptId': saleTransactionReceiptId,
+      'type': type.name.toString(),
+      'status': status?.toString(),
+      'register': {
+        'id': register.id,
+        'name': register.name,
+      },
+      'branch': branch.toJson(),
+      'employee': {
+        'id': employee.id,
+        'firstName': employee.firstName,
+        'lastName': employee.lastName,
+      },
+      'items': (items ?? []).map((e) => e.toJson()).toList(),
+      'subtotal': subtotal,
+      'tax': tax,
+      'total': total,
+      'reasonForRefund': reasonForRefund,
+      'totalDiscountAmount': totalDiscountAmount,
+      'amountPaid': amountPaid,
+      'createdTimestamp': createdAt.millisecondsSinceEpoch,
+    };
+  }
+
+  /// Sale Transaction List DataGrid
+  DataGridRow toSaleTransactionRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'receipt_id', value: (receiptId).toString()),
+          DataGridCell<String>(
+            columnName: 'date',
+            value: DateFormat('MM/dd/yyyy HH:mm').format(createdAt),
+          ),
+          DataGridCell<String>(columnName: 'branch', value: branch.name),
+          DataGridCell<String>(columnName: 'register', value: register.name),
+          DataGridCell<String>(columnName: 'employee', value: '${employee.firstName} ${employee.lastName}'),
+          DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          DataGridCell<double>(columnName: 'total_discount', value: totalDiscountAmount ?? 0),
+          DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
+        ],
+      );
+
+  /// Return Transaction List DataGrid
+  DataGridRow toReturnTransactionRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'receipt_id', value: (receiptId).toString()),
+          DataGridCell<String>(
+            columnName: 'date',
+            value: DateFormat('MM/dd/yyyy HH:mm').format(createdAt),
+          ),
+          DataGridCell<String>(columnName: 'branch', value: branch.name),
+          DataGridCell<String>(columnName: 'employee', value: '${employee.firstName} ${employee.lastName}'),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
+          DataGridCell<String>(columnName: 'reason_for_return', value: reasonForRefund ?? '-'),
+          DataGridCell<ReturnStatus>(columnName: 'status', value: status),
+        ],
+      );
+
+  /// Shift Transaction List DataGrid
+  DataGridRow toShiftTransactionRow() => DataGridRow(
+        cells: [
+          DataGridCell<int>(columnName: 'id', value: id),
+          DataGridCell<String>(columnName: 'receipt_id', value: receiptId),
+          DataGridCell<String>(
+            columnName: 'date',
+            value: DateFormat('MM/dd/yyyy HH:mm').format(createdAt),
+          ),
+          DataGridCell<String>(columnName: 'employee', value: branch.name),
+          DataGridCell<String>(columnName: 'type', value: type.label),
+          DataGridCell<double>(columnName: 'subtotal', value: subtotal ?? 0),
+          DataGridCell<double>(columnName: 'total_discount', value: totalDiscountAmount ?? 0),
+          DataGridCell<double>(columnName: 'tax', value: tax ?? 0),
+          DataGridCell<double>(columnName: 'total', value: total ?? 0),
+        ],
+      );
+}

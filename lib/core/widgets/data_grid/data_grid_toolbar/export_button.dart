@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
+import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
+
+class ExportButton extends StatelessWidget {
+  final ReportType type;
+  final Map<String, dynamic>? filters;
+  final Map<String, dynamic>? payload;
+
+  const ExportButton({super.key, required this.type, this.filters, this.payload});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ReportManagerCubit, ReportManagerState>(
+      builder: (context, state) {
+        return UIButton.outlined(
+          'Export CSV',
+          iconBuilder: (isHover) => Assets.icons.download.setColorOnHover(isHover),
+          onClick: () {
+            context.read<ReportManagerCubit>().generateReport(
+                  ReportPayload(
+                    type: type.value,
+                    filters: filters,
+                    payload: payload,
+                  ),
+                );
+          },
+          isLoading: state.tasks.any(
+            (task) =>
+                task.type == type &&
+                (task.status == ReportTaskStatus.creating ||
+                    task.status == ReportTaskStatus.polling ||
+                    task.status == ReportTaskStatus.downloading),
+          ),
+        );
+      },
+    );
+  }
+}

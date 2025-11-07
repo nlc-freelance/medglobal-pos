@@ -1,0 +1,194 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/new_stock_transfer/new_stock_transfer_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_remote/stock_transfer_remote_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stepper/details/stock_transfer_details.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stepper/new/new_stock_transfer_form.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
+
+/// Pass currentStep as 1 when calling this widget on DetailsPage to display correct title
+class StockTransferStepper extends StatefulWidget {
+  const StockTransferStepper({super.key, this.currentStep});
+
+  final int? currentStep;
+
+  @override
+  State<StockTransferStepper> createState() => _StockTransferStepperState();
+}
+
+class _StockTransferStepperState extends State<StockTransferStepper> {
+  int _currentStep = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.currentStep != null) _currentStep = widget.currentStep!;
+    context.read<StockTransferRemoteCubit>().reset();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          canvasColor: UIColors.background,
+          hoverColor: UIColors.transparent,
+          highlightColor: UIColors.transparent,
+        ),
+        child: Stepper(
+          type: StepperType.horizontal,
+          currentStep: _currentStep,
+          elevation: 0,
+          stepIconBuilder: (index, state) {
+            if (state == StepState.complete) {
+              return Assets.icons.check.svg();
+            } else {
+              return UIText.labelMedium((index + 1).toString(), color: UIColors.background);
+            }
+          },
+          connectorColor: WidgetStateColor.resolveWith((state) {
+            if (state.contains(WidgetState.selected)) return UIColors.primary;
+            return UIColors.borderMuted;
+          }),
+          controlsBuilder: (context, details) {
+            final payload = context.select((NewStockTransferCubit cubit) => cubit.state.payload);
+
+            return BlocConsumer<StockTransferRemoteCubit, StockTransferRemoteState>(
+              listener: (context, state) {
+                if (state is StockTransferCreateSuccess) {
+                  final id = state.stockTransfer.id;
+                  // AppRouter.router.goNamed(
+                  //   SideMenuTreeItem.STOCK_TRANSFER_DETAILS.name,
+                  //   pathParameters: {'id': id.toString()},
+                  // );
+                  context.goNamed(
+                    'stockTransferDetails',
+                    pathParameters: {'id': id.toString()},
+                  );
+                }
+                if (state is StockTransferSuccess) {
+                  context.read<StockTransferCubit>().setStockTransfer(state.stockTransfer);
+                }
+              },
+              builder: (context, state) {
+                return BlocBuilder<StockTransferCubit, StockTransferState>(
+                  builder: (context, localState) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (state is StockTransferError) ...[
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Assets.icons.infoCircle.svg(),
+                              const UIHorizontalSpace(8),
+                              UIText.labelSemiBold('Something went wrong. ${state.message}',
+                                  color: UIColors.buttonDanger),
+                            ],
+                          ),
+                          const Spacer(),
+                        ],
+                        if (_currentStep != 3)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: UIButton.outlined(
+                              'Cancel',
+                              onClick: () => context.goNamed('stockTransferList'),
+                              // onClick: () =>
+                              //     AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TRANSFERS.name),
+                            ),
+                          ),
+                        if (_currentStep == 0)
+                          UIButton.filled(
+                            'Create',
+                            icon: Assets.icons.arrowRight1.setSize(12),
+                            iconAlign: IconAlignment.end,
+                            isLoading: state is StockTransferCreateLoading,
+                            onClick: () => context.read<StockTransferRemoteCubit>().create(payload),
+                          ),
+                        if (localState.stockTransfer.status == StockOrderStatus.NEW) ...[
+                          UIButton.filled(
+                            'Save',
+                            isLoading: state is StockTransferSaveLoading,
+                            onClick: () => context.read<StockTransferRemoteCubit>().update(
+                                  StockOrderUpdate.SAVE,
+                                  id: localState.stockTransfer.id!,
+                                  stockTransfer: localState.stockTransfer,
+                                ),
+                          ),
+                          const UIHorizontalSpace(8),
+                          UIButton.filled(
+                            'Save and Mark as Shipped',
+                            icon: Assets.icons.arrowRight1.setSize(12),
+                            iconAlign: IconAlignment.end,
+                            isLoading: state is StockTransferSaveAndMarkAsShippedLoading,
+                            onClick: () {
+                              context.read<StockTransferRemoteCubit>().update(
+                                    /// If stockTransferItems has negative id (added locally)
+                                    /// Pass SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS else SAVE_AND_MARK_AS_SHIPPED
+                                    localState.stockTransfer.items?.any((item) => item.id! < 0) == true
+                                        ? StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED_WITH_NEW_ITEMS
+                                        : StockOrderUpdate.SAVE_AND_MARK_AS_SHIPPED,
+                                    id: localState.stockTransfer.id!,
+                                    stockTransfer: localState.stockTransfer,
+                                  );
+                            },
+                          ),
+                        ] else if (localState.stockTransfer.status == StockOrderStatus.SHIPPED)
+                          UIButton.filled(
+                            'Mark Received',
+                            icon: Assets.icons.arrowRight1.setSize(12),
+                            iconAlign: IconAlignment.end,
+                            isLoading: state is StockTransferSaveAndReceivedLoading,
+                            onClick: () {
+                              context.read<StockTransferRemoteCubit>().update(
+                                    StockOrderUpdate.SAVE_AND_RECEIVED,
+                                    id: localState.stockTransfer.id!,
+                                    stockTransfer: localState.stockTransfer,
+                                  );
+                            },
+                          ),
+                      ],
+                    );
+                  },
+                );
+              },
+            );
+          },
+          steps: [
+            Step(
+              isActive: _currentStep >= 0,
+              state: _currentStep > 0 ? StepState.complete : StepState.indexed,
+              title: const Text('Create'),
+              content: _currentStep == 0
+                  ? Theme(data: Theme.of(context), child: const NewStockTransferForm())
+                  : const SizedBox(),
+            ),
+            Step(
+              isActive: _currentStep >= 1,
+              state: _currentStep > 1 ? StepState.complete : StepState.indexed,
+              title: const Text('Edit'),
+              content: const StockTransferDetails(),
+            ),
+            Step(
+              isActive: _currentStep >= 2,
+              state: _currentStep > 2 ? StepState.complete : StepState.indexed,
+              title: const Text('Shipped'),
+              content: const StockTransferDetails(),
+            ),
+            Step(
+              isActive: _currentStep >= 3,
+              state: _currentStep >= 3 ? StepState.complete : StepState.indexed,
+              title: const Text('Complete'),
+              content: const SizedBox(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

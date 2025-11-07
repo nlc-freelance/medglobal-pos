@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+import 'package:medglobal_admin_portal/core/utils/data_grid_util.dart';
+import 'package:medglobal_admin_portal/gen/assets.gen.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
+/// A full blown DataGrid widget with columns for empty state
+///
+/// Used outside the actual DataGrid, might be deprecated and use DataGridEmpty instead which is inside the footer
+/// Being used for MVP, for refactor based on observation with DataGridEmpty
+
+class DataGridNoData extends StatefulWidget {
+  final List<GridColumn> columns;
+  final bool showCheckbox;
+  final bool isCustom;
+  final DataGridSource source;
+  final String? message;
+  final bool showTopBorder;
+
+  const DataGridNoData({
+    super.key,
+    required this.columns,
+    required this.source,
+    this.showCheckbox = false,
+    this.isCustom = false,
+    this.message,
+    this.showTopBorder = true,
+  });
+
+  factory DataGridNoData.custom({
+    required List<GridColumn> columns,
+    bool showCheckbox = false,
+    required DataGridSource source,
+    String? message,
+    bool showTopBorder = true,
+  }) =>
+      DataGridNoData(
+        columns: columns,
+        source: source,
+        showCheckbox: showCheckbox,
+        message: message,
+        isCustom: true,
+        showTopBorder: showTopBorder,
+      );
+
+  @override
+  State<DataGridNoData> createState() => _DataGridNoDataState();
+}
+
+class _DataGridNoDataState extends State<DataGridNoData> {
+  late List<GridColumn> _columns;
+  late DataGridSource _source;
+
+  @override
+  void initState() {
+    super.initState();
+    _columns = widget.columns;
+    _source = widget.source;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: widget.showTopBorder ? UIStyleContainer.topBorder : null,
+      child: ClipRect(
+        clipper: HorizontalBorderClipper(),
+        child: SfDataGridTheme(
+          data: DataGridUtil.baseStyle,
+          child: SfDataGrid(
+            source: _source,
+            columns: _columns,
+            headerRowHeight: 38,
+            footerHeight: 100,
+            footer: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Assets.icons.cube.svg(),
+                  const UIVerticalSpace(12),
+                  Text(
+                    widget.isCustom
+                        ? widget.message!
+                        : 'No data available, ${widget.message ?? 'please add items to your order'}.',
+                    style: UIStyleText.hint.copyWith(fontSize: 12.8),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+
+            /// Data Grid Dynamic Config
+            showCheckboxColumn: widget.showCheckbox,
+
+            /// Data Grid Constant Style
+            shrinkWrapRows: true,
+            columnWidthMode: ColumnWidthMode.fill,
+            headerGridLinesVisibility: GridLinesVisibility.none,
+          ),
+        ),
+      ),
+    );
+  }
+}
