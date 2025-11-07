@@ -160,13 +160,26 @@ jobs:
         id: create_secret
         uses: ./.github/actions/run-with-capture
         with:
-          command: '|
-          echo "🔐 Creating AMPLIFY_APP_ID secret in ${{ matrix.tenant }} environment..."
-          gh secret set AMPLIFY_APP_ID \
-          --body "${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}" \
-          --env "${{ matrix.tenant }}" \
-          --repo "${{ github.repository }}"
-          echo "✅ AMPLIFY_APP_ID secret created successfully"'
+          command: |
+            echo "🔐 Creating/updating AMPLIFY_APP_ID secret in ${{ matrix.tenant }} environment..."
+
+            # Try to set the secret (overwrites if exists)
+            if gh secret set AMPLIFY_APP_ID \
+              --body "${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}" \
+              --env "${{ matrix.tenant }}" \
+              --repo "${{ github.repository }}"; then
+              echo "✅ AMPLIFY_APP_ID secret created/updated successfully"
+            else
+              # Check if secret already exists
+              echo "⚠️ Could not create secret, checking if it exists..."
+              if gh secret list --env "${{ matrix.tenant }}" --repo "${{ github.repository }}" 2>/dev/null | grep -q "AMPLIFY_APP_ID"; then
+                echo "✅ AMPLIFY_APP_ID secret already exists"
+                exit 0
+              else
+                echo "❌ Failed to create AMPLIFY_APP_ID secret and it doesn't exist"
+                exit 1
+              fi
+            fi
           step_name: 'Auto-create AMPLIFY_APP_ID secret'
 
       - name: "[Amplify Initialization] Import Cognito Auth"
