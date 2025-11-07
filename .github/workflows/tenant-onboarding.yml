@@ -128,7 +128,6 @@ jobs:
       - name: "[Amplify Initialization] Configure AWS Credentials (OIDC)"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.install_amplify_cli.outputs.outcome == 'success'
         id: configure_aws
-        continue-on-error: true
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
@@ -243,7 +242,6 @@ jobs:
       - name: "[Setup Dependencies] Setup Flutter"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success'
         id: setup_flutter
-        continue-on-error: true
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.32.8'
@@ -541,11 +539,53 @@ jobs:
             echo "- **Remarks:** ❌ Failed" >> $GITHUB_STEP_SUMMARY
           fi
 
+      - name: "[Status Tracking] Fail job if prerequisites failed"
+        if: always()
+        shell: bash
+        run: |
+          # This step ensures the job fails if any critical phase failed
+          VALIDATE_STATUS="${{ steps.preflight.outputs.outcome }}"
+          INIT_STATUS="${{ steps.init_amplify_status.outputs.status }}"
+          DEPENDENCIES_STATUS="${{ steps.setup_dependencies_status.outputs.status }}"
+          DRY_RUN="${{ github.event.inputs.dry_run }}"
+
+          echo "Checking prerequisites status..."
+          echo "  Validation: $VALIDATE_STATUS"
+          echo "  Initialization: $INIT_STATUS"
+          echo "  Dependencies: $DEPENDENCIES_STATUS"
+          echo "  Dry Run: $DRY_RUN"
+
+          # Skip failure check for dry run
+          if [ "$DRY_RUN" == "true" ]; then
+            echo "✅ Dry run completed - validation only"
+            exit 0
+          fi
+
+          # Check critical phases
+          if [ "$VALIDATE_STATUS" == "failure" ]; then
+            echo "❌ Job failed: Pre-flight validation failed"
+            exit 1
+          fi
+
+          if [ "$INIT_STATUS" == "failed" ]; then
+            echo "❌ Job failed: Amplify initialization failed"
+            echo "Error: ${{ steps.init_amplify_status.outputs.error }}"
+            exit 1
+          fi
+
+          if [ "$DEPENDENCIES_STATUS" == "failed" ]; then
+            echo "❌ Job failed: Dependencies setup failed"
+            echo "Error: ${{ steps.setup_dependencies_status.outputs.error }}"
+            exit 1
+          fi
+
+          echo "✅ All prerequisites completed successfully for ${{ matrix.tenant }}"
+
   onboard-phase-4:
     name: ${{ matrix.tenant }} (Portal)
     runs-on: ubuntu-latest  # Linux for web deployment
     needs: [discover-tenants, onboard-phases-1-3]
-    if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0 && needs.onboard-phases-1-3.result != 'cancelled'
+    if: github.event.inputs.dry_run != 'true' && needs.onboard-phases-1-3.result == 'success'
     strategy:
       fail-fast: false
       matrix:
@@ -706,8 +746,8 @@ jobs:
   onboard-phase-5:
     name: ${{ matrix.tenant }} (POS Desktop)
     runs-on: windows-latest  # Windows required for desktop build
-    needs: [discover-tenants, onboard-phase-4]
-    if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0 && needs.onboard-phase-4.result != 'cancelled'
+    needs: [discover-tenants, onboard-phases-1-3, onboard-phase-4]
+    if: github.event.inputs.dry_run != 'true' && needs.onboard-phases-1-3.result == 'success' && needs.onboard-phase-4.result != 'cancelled'
     strategy:
       fail-fast: false
       matrix:
