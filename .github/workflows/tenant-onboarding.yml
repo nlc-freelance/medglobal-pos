@@ -33,7 +33,7 @@ jobs:
 
       - name: Discover tenant environments
         id: discover
-        run: bash .github/optimized/scripts/tenants/discover_tenants.sh "${{ github.repository }}" "${{ github.event.inputs.tenants }}"
+        run: bash .github/scripts/tenants/discover_tenants.sh "${{ github.repository }}" "${{ github.event.inputs.tenants }}"
 
       - name: Calculate tenant count
         id: count
@@ -86,9 +86,9 @@ jobs:
 
       - name: "[Pre-Flight Check] Validate tenant configuration"
         id: preflight
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/tenants/validate_tenant_config.sh "${{ matrix.tenant }}" "onboarding"'
+          command: 'bash .github/scripts/tenants/validate_tenant_config.sh "${{ matrix.tenant }}" "onboarding"'
           step_name: 'Configuration Validation'
 
       #  Stop here if dry run or validation failed
@@ -120,9 +120,9 @@ jobs:
       - name: "[Amplify Initialization] Install Amplify CLI"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true'
         id: install_amplify_cli
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/shared/install_amplify_cli.sh'
+          command: 'bash .github/scripts/shared/install_amplify_cli.sh'
           step_name: 'Install Amplify CLI'
 
       - name: "[Amplify Initialization] Configure AWS Credentials (OIDC)"
@@ -151,15 +151,15 @@ jobs:
       - name: "[Amplify Initialization] Initialize Amplify app and backend"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.configure_aws.outcome == 'success'
         id: init_amplify
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/tenants/init_amplify_app.sh'
+          command: 'bash .github/scripts/tenants/init_amplify_app.sh'
           step_name: 'Initialize Amplify'
 
       - name: "[Amplify Initialization] Auto-create AMPLIFY_APP_ID secret"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify.outputs.outcome == 'success' && steps.init_amplify.outputs.AMPLIFY_APP_ID != ''
         id: create_secret
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
           command: '|
           echo "🔐 Creating AMPLIFY_APP_ID secret in ${{ matrix.tenant }} environment..."
@@ -173,30 +173,30 @@ jobs:
       - name: "[Amplify Initialization] Import Cognito Auth"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify.outcome == 'success'
         id: import_auth
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/tenants/import_cognito_auth.sh'
+          command: 'bash .github/scripts/tenants/import_cognito_auth.sh'
           step_name: 'Import Cognito Auth'
 
       - name: "[Amplify Initialization] Create Amplify Branch"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.import_auth.outcome == 'success'
         id: create_amplify_branch
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         env:
           AMPLIFY_APP_ID: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
           BRANCH_NAME: dev
         with:
-          command: 'bash .github/optimized/scripts/tenants/create_amplify_branch.sh'
+          command: 'bash .github/scripts/tenants/create_amplify_branch.sh'
           step_name: 'Create Amplify Branch'
 
       - name: "[Amplify Initialization] Configure Rewrites & Redirects"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.create_amplify_branch.outcome == 'success'
         id: configure_rewrites
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         env:
           AMPLIFY_APP_ID: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
         with:
-          command: 'bash .github/optimized/scripts/portal_web/configure_amplify_rewrites.sh'
+          command: 'bash .github/scripts/portal_web/configure_amplify_rewrites.sh'
           step_name: 'Configure Rewrites & Redirects'
 
       - name: "[Amplify Initialization] Set Status"
@@ -254,15 +254,15 @@ jobs:
       - name: "[Setup Dependencies] Configure Git for private dependencies"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.setup_flutter.outcome == 'success'
         id: setup_git
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/shared/config_git.sh'
+          command: 'bash .github/scripts/shared/config_git.sh'
           step_name: 'Git Configuration'
 
       - name: "[Setup Dependencies] Install dependencies"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.setup_git.outputs.outcome == 'success'
         id: install_dependencies
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
           command: 'flutter pub get'
           step_name: 'Install Dependencies'
@@ -270,9 +270,9 @@ jobs:
       - name: "[Setup Dependencies] Bump build number"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.install_dependencies.outputs.outcome == 'success'
         id: bump_build
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/shared/bump_build_number.sh'
+          command: 'bash .github/scripts/shared/bump_build_number.sh'
           step_name: 'Bump Build Number'
         env:
           GITHUB_RUN_NUMBER: ${{ github.run_number }}
@@ -281,7 +281,7 @@ jobs:
       - name: "[Setup Dependencies] Run build_runner"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.bump_build.outputs.outcome == 'success'
         id: run_build_runner
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
           command: 'dart run build_runner build --delete-conflicting-outputs'
           step_name: 'Build Runner Code Generation'
@@ -289,17 +289,17 @@ jobs:
       - name: "[Setup Dependencies] Setup environment file"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.run_build_runner.outputs.outcome == 'success'
         id: setup_env
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/shared/setup_env.sh'
+          command: 'bash .github/scripts/shared/setup_env.sh'
           step_name: 'Setup Environment File'
 
       - name: "[Setup Dependencies] Pull Amplify Config"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.setup_env.outputs.outcome == 'success'
         id: pull_amplify_config
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/shared/setup_amplify.sh'
+          command: 'bash .github/scripts/shared/setup_amplify.sh'
           step_name: 'Pull Amplify Config'
         env:
           PROJECT_NAME: medglobalportal${{ vars.TENANT_NAME }}
@@ -617,17 +617,17 @@ jobs:
       - name: "[Portal Deployment] Build Flutter web"
         if: steps.check_phase4_prerequisites.outputs.continue == 'true'
         id: build_web
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/shared/build_web.sh'
+          command: 'bash .github/scripts/shared/build_web.sh'
           step_name: 'Build Flutter Web'
 
       - name: "[Portal Deployment] Deploy to Amplify"
         if: steps.build_web.outputs.outcome == 'success'
         id: deploy_web
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/portal_web/deploy_amplify_web.sh'
+          command: 'bash .github/scripts/portal_web/deploy_amplify_web.sh'
           step_name: 'Deploy to Amplify Hosting'
 
       # ═══════════════════════════════════════════════════════════
@@ -786,23 +786,23 @@ jobs:
       - name: "[POS Deployment] Build Flutter desktop"
         if: steps.check_phase5_prerequisites.outputs.continue == 'true'
         id: build_desktop
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/shared/build_desktop.sh'
+          command: 'bash .github/scripts/shared/build_desktop.sh'
           step_name: 'Build Flutter Windows Desktop'
 
       - name: "[POS Deployment] Bundle Windows runtime"
         if: steps.build_desktop.outputs.outcome == 'success'
         id: bundle_runtime
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/pos_desktop/bundle_windows_runtime.sh'
+          command: 'bash .github/scripts/pos_desktop/bundle_windows_runtime.sh'
           step_name: 'Bundle Windows Runtime Dependencies'
 
       - name: "[POS Deployment] Install InnoSetup"
         if: steps.bundle_runtime.outputs.outcome == 'success'
         id: install_innosetup
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
           command: 'choco install innosetup -y'
           step_name: 'Install InnoSetup'
@@ -810,17 +810,17 @@ jobs:
       - name: "[POS Deployment] Create Windows installer"
         if: steps.install_innosetup.outputs.outcome == 'success'
         id: create_installer
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/pos_desktop/create_installer.sh'
+          command: 'bash .github/scripts/pos_desktop/create_installer.sh'
           step_name: 'Create Windows Installer'
 
       - name: "[POS Deployment] Create GitHub release"
         if: steps.create_installer.outputs.outcome == 'success'
         id: deploy_desktop
-        uses: ./.github/optimized/actions/run-with-capture
+        uses: ./.github/actions/run-with-capture
         with:
-          command: 'bash .github/optimized/scripts/pos_desktop/create_github_release_desktop.sh'
+          command: 'bash .github/scripts/pos_desktop/create_github_release_desktop.sh'
           step_name: 'POS Desktop Deployment'
 
       # ═══════════════════════════════════════════════════════════
