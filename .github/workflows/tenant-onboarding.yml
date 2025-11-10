@@ -161,19 +161,18 @@ jobs:
         uses: ./.github/actions/run-with-capture
         with:
           command: |
-            AMPLIFY_APP_ID="${{ steps.phase2.outputs.amplify_app_id }}"
-  
-            if [[ -n "$AMPLIFY_APP_ID" ]]; then
-            echo "Saving AMPLIFY_APP_ID to GitHub environment secret..."
-            
+            AMPLIFY_APP_ID="${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}"
+
+            echo "🔐 Saving AMPLIFY_APP_ID secret to ${{ matrix.tenant }} environment..."
+            echo "App ID: $AMPLIFY_APP_ID"
+
+            # Always overwrite the secret with new value
             gh secret set AMPLIFY_APP_ID \
-            --env "tenant-${{ matrix.tenant }}" \
-            --body "$AMPLIFY_APP_ID"
-            
-            echo "✓ AMPLIFY_APP_ID saved successfully"
-            else
-            echo "⚠️  Warning: AMPLIFY_APP_ID not found"
-            fi
+              --body "$AMPLIFY_APP_ID" \
+              --env "${{ matrix.tenant }}" \
+              --repo "${{ github.repository }}"
+
+            echo "✅ AMPLIFY_APP_ID secret saved successfully"
           step_name: 'Auto-create AMPLIFY_APP_ID secret'
 
       - name: "[Amplify Initialization] Import Cognito Auth"
