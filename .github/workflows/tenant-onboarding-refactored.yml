@@ -120,18 +120,18 @@ jobs:
           path: status-reports/
           retention-days: 1
 
-      - name: Job Summary
-        if: always()
-        shell: bash
-        run: |
-          echo "## Tenant: ${{ matrix.tenant }} - Configuration Validation" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ "${{ steps.validate.outcome }}" == "success" ]; then
-            echo "✅ **Status:** Configuration valid" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **Status:** Configuration invalid" >> $GITHUB_STEP_SUMMARY
-          fi
+#      - name: Job Summary
+#        if: always()
+#        shell: bash
+#        run: |
+#          echo "## Tenant: ${{ matrix.tenant }} - Configuration Validation" >> $GITHUB_STEP_SUMMARY
+#          echo "" >> $GITHUB_STEP_SUMMARY
+#
+#          if [ "${{ steps.validate.outcome }}" == "success" ]; then
+#            echo "✅ **Status:** Configuration valid" >> $GITHUB_STEP_SUMMARY
+#          else
+#            echo "❌ **Status:** Configuration invalid" >> $GITHUB_STEP_SUMMARY
+#          fi
 
   # ═══════════════════════════════════════════════════════════
   # JOB 3: SETUP FLUTTER (LINUX) - SDK Cache Only
