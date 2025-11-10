@@ -150,13 +150,11 @@ jobs:
       - name: "[Amplify Initialization] Initialize Amplify app and backend"
         if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.configure_aws.outcome == 'success'
         id: init_amplify
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/tenants/init_amplify_app.sh'
-          step_name: 'Initialize Amplify'
+        shell: bash
+        run: bash .github/scripts/tenants/init_amplify_app.sh
 
       - name: "[Amplify Initialization] Auto-create AMPLIFY_APP_ID secret"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify.outputs.outcome == 'success' && steps.init_amplify.outputs.AMPLIFY_APP_ID != ''
+        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify.outcome == 'success' && steps.init_amplify.outputs.AMPLIFY_APP_ID != ''
         id: create_secret
         uses: ./.github/actions/run-with-capture
         with:
