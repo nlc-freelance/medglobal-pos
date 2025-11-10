@@ -60,7 +60,7 @@ jobs:
   # JOB 2: VALIDATE TENANT CONFIGURATIONS (PER TENANT)
   # ═══════════════════════════════════════════════════════════
   validate-tenant-configs:
-    name: Validate Tenant Config (${{ matrix.tenant }})
+    name: Validate (${{ matrix.tenant }})
     runs-on: ubuntu-latest
     needs: discover-tenants
     if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0
