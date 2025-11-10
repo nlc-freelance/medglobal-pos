@@ -210,10 +210,10 @@ jobs:
           INSTALL_AMPLIFY_OUTCOME: ${{ steps.install_amplify_cli.outputs.outcome }}
           CONFIGURE_AWS_OUTCOME: ${{ steps.configure_aws.outcome }}
           INIT_AMPLIFY_OUTCOME: ${{ steps.init_amplify.outcome }}
-          CREATE_SECRET_OUTCOME: ${{ steps.create_secret.outcome }}
-          IMPORT_AUTH_OUTCOME: ${{ steps.import_auth.outcome }}
-          CREATE_BRANCH_OUTCOME: ${{ steps.create_amplify_branch.outcome }}
-          CONFIGURE_REWRITES_OUTCOME: ${{ steps.configure_rewrites.outcome }}
+          CREATE_SECRET_OUTCOME: ${{ steps.create_secret.outputs.outcome }}
+          IMPORT_AUTH_OUTCOME: ${{ steps.import_auth.outputs.outcome }}
+          CREATE_BRANCH_OUTCOME: ${{ steps.create_amplify_branch.outputs.outcome }}
+          CONFIGURE_REWRITES_OUTCOME: ${{ steps.configure_rewrites.outputs.outcome }}
         run: |
             if [ "$INSTALL_AMPLIFY_OUTCOME" != "success" ]; then
               echo "status=failed" >> $GITHUB_OUTPUT
