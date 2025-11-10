@@ -41,6 +41,7 @@ fi
 # TENANT-SPECIFIC VARIABLES (per environment)
 # ─────────────────────────────────────────────────────────────
 TENANT_VARS=(
+  "AWS_IAM_ROLE_ARN"
   "AWS_REGION"
   "BASE_URL"
   "TENANT_NAME"
@@ -101,15 +102,15 @@ if [ "$VALIDATION_FAILED" = true ]; then
   echo "❌ Configuration validation failed for $TENANT_ENV"
   echo ""
   echo "📝 Configuration checklist:"
-  echo "   Repository-level (shared): GH_TOKEN, AWS_IAM_ROLE_ARN"
+  echo "   Repository-level (shared): GH_TOKEN"
   echo "   Repository-level (shared): INSTALLER_PUBLISHER, INSTALLER_APP_NAME, INSTALLER_SUPPORT_URL"
   if [ "$VALIDATION_MODE" = "onboarding" ]; then
     echo "   Tenant-specific: COGNITO_POOL_ID, COGNITO_CLIENT_ID"
-    echo "   Tenant-specific: AWS_REGION, BASE_URL, TENANT_NAME"
+    echo "   Tenant-specific: AWS_IAM_ROLE_ARN, AWS_REGION, BASE_URL, TENANT_NAME"
     echo "   (AMPLIFY_APP_ID will be auto-created during onboarding)"
   else
     echo "   Tenant-specific: COGNITO_POOL_ID, COGNITO_CLIENT_ID, AMPLIFY_APP_ID"
-    echo "   Tenant-specific: AWS_REGION, BASE_URL, TENANT_NAME"
+    echo "   Tenant-specific: AWS_IAM_ROLE_ARN, AWS_REGION, BASE_URL, TENANT_NAME"
   fi
   echo ""
   echo "ℹ️  Note: AWS credentials are obtained via OIDC (no secrets needed)"

@@ -60,7 +60,7 @@ jobs:
   # JOB 2: VALIDATE TENANT CONFIGURATIONS (PER TENANT)
   # ═══════════════════════════════════════════════════════════
   validate-tenant-configs:
-    name: "Validate / ${{ matrix.tenant }}"
+    name: "${{ matrix.tenant }} (Validate)"
     runs-on: ubuntu-latest
     needs: discover-tenants
     if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0
@@ -76,6 +76,7 @@ jobs:
       INSTALLER_PUBLISHER: ${{ vars.INSTALLER_PUBLISHER }}
       INSTALLER_APP_NAME: ${{ vars.INSTALLER_APP_NAME }}
       INSTALLER_SUPPORT_URL: ${{ vars.INSTALLER_SUPPORT_URL }}
+      AWS_IAM_ROLE_ARN: ${{ vars.AWS_IAM_ROLE_ARN }}
       AWS_REGION: ${{ vars.AWS_REGION }}
       BASE_URL: ${{ vars.BASE_URL }}
       TENANT_NAME: ${{ vars.TENANT_NAME }}
@@ -120,19 +121,6 @@ jobs:
           path: status-reports/
           retention-days: 1
 
-#      - name: Job Summary
-#        if: always()
-#        shell: bash
-#        run: |
-#          echo "## Tenant: ${{ matrix.tenant }} - Configuration Validation" >> $GITHUB_STEP_SUMMARY
-#          echo "" >> $GITHUB_STEP_SUMMARY
-#
-#          if [ "${{ steps.validate.outcome }}" == "success" ]; then
-#            echo "✅ **Status:** Configuration valid" >> $GITHUB_STEP_SUMMARY
-#          else
-#            echo "❌ **Status:** Configuration invalid" >> $GITHUB_STEP_SUMMARY
-#          fi
-
   # ═══════════════════════════════════════════════════════════
   # JOB 3: SETUP FLUTTER (LINUX) - SDK Cache Only
   # ═══════════════════════════════════════════════════════════
@@ -154,12 +142,6 @@ jobs:
           channel: 'stable'
           cache: true
           cache-key: flutter-linux-${{ hashFiles('**/pubspec.lock') }}
-
-      - name: Summary
-        run: |
-          echo "## Linux Flutter SDK Setup" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Flutter SDK installed and cached" >> $GITHUB_STEP_SUMMARY
 
   # ═══════════════════════════════════════════════════════════
   # JOB 4: SETUP FLUTTER (WINDOWS) - SDK Cache Only
@@ -183,18 +165,11 @@ jobs:
           cache: true
           cache-key: flutter-windows-${{ hashFiles('**/pubspec.lock') }}
 
-      - name: Summary
-        shell: bash
-        run: |
-          echo "## Windows Flutter SDK Setup" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Flutter SDK installed and cached" >> $GITHUB_STEP_SUMMARY
-
   # ═══════════════════════════════════════════════════════════
   # JOB 5: AMPLIFY INITIALIZATION (PER TENANT)
   # ═══════════════════════════════════════════════════════════
   amplify-init:
-    name: "Amplify Init / ${{ matrix.tenant }}"
+    name: "${{ matrix.tenant || 'Initialization' }} (Amplify)"
     runs-on: ubuntu-latest
     needs: [discover-tenants, validate-tenant-configs]
     if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0
@@ -232,7 +207,7 @@ jobs:
         id: configure_aws
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ROLE_NAME }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
           role-session-name: GitHubActions-${{ github.run_id }}
 
@@ -376,7 +351,7 @@ jobs:
   # JOB 6: PORTAL DEPLOYMENT (WEB) - Self-Contained
   # ═══════════════════════════════════════════════════════════
   portal-deploy:
-    name: "Portal Web / ${{ matrix.tenant }}"
+    name: "${{ matrix.tenant || 'Deploy' }} (Portal Web)"
     runs-on: ubuntu-latest
     needs: [discover-tenants, amplify-init, setup-flutter-linux]
     if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0
@@ -602,7 +577,7 @@ jobs:
   # JOB 7: POS DEPLOYMENT (DESKTOP) - Self-Contained
   # ═══════════════════════════════════════════════════════════
   pos-deploy:
-    name: "POS Desktop / ${{ matrix.tenant }}"
+    name: "${{ matrix.tenant || 'Deploy' }} (POS Desktop)"
     runs-on: windows-latest
     needs: [discover-tenants, amplify-init, setup-flutter-windows]
     if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0
