@@ -212,7 +212,7 @@ jobs:
           INIT_AMPLIFY_OUTCOME: ${{ steps.init_amplify.outcome }}
           CREATE_SECRET_OUTCOME: ${{ steps.create_secret.outcome }}
           IMPORT_AUTH_OUTCOME: ${{ steps.import_auth.outcome }}
-          CREATE_BRANCH_OUTCOME: ${{ steps.create_branch.outcome }}
+          CREATE_BRANCH_OUTCOME: ${{ steps.create_amplify_branch.outcome }}
           CONFIGURE_REWRITES_OUTCOME: ${{ steps.configure_rewrites.outcome }}
         run: |
             if [ "$INSTALL_AMPLIFY_OUTCOME" != "success" ]; then
