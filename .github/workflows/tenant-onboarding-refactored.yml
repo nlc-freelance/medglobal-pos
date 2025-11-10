@@ -60,7 +60,7 @@ jobs:
   # JOB 2: VALIDATE TENANT CONFIGURATIONS (PER TENANT)
   # ═══════════════════════════════════════════════════════════
   validate-tenant-configs:
-    name: "${{ matrix.tenant }} (Validate)"
+    name: Validate Tenant Config (${{ matrix.tenant }})
     runs-on: ubuntu-latest
     needs: discover-tenants
     if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0
@@ -169,7 +169,7 @@ jobs:
   # JOB 5: AMPLIFY INITIALIZATION (PER TENANT)
   # ═══════════════════════════════════════════════════════════
   amplify-init:
-    name: "${{ matrix.tenant || 'Initialization' }} (Amplify)"
+    name: Amplify (${{ matrix.tenant }})
     runs-on: ubuntu-latest
     needs: [discover-tenants, validate-tenant-configs]
     if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0
@@ -351,7 +351,7 @@ jobs:
   # JOB 6: PORTAL DEPLOYMENT (WEB) - Self-Contained
   # ═══════════════════════════════════════════════════════════
   portal-deploy:
-    name: "${{ matrix.tenant || 'Deploy' }} (Portal Web)"
+    name: Portal Deploy (${{ matrix.tenant }})
     runs-on: ubuntu-latest
     needs: [discover-tenants, amplify-init, setup-flutter-linux]
     if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0
@@ -577,7 +577,7 @@ jobs:
   # JOB 7: POS DEPLOYMENT (DESKTOP) - Self-Contained
   # ═══════════════════════════════════════════════════════════
   pos-deploy:
-    name: "${{ matrix.tenant || 'Deploy' }} (POS Desktop)"
+    name: POS Deploy (${{ matrix.tenant }})
     runs-on: windows-latest
     needs: [discover-tenants, amplify-init, setup-flutter-windows]
     if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0
