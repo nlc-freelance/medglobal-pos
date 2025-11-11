@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
+# Remove any existing amplify/ folder to prevent path conflicts
+echo "🗑️ Removing internal amplify/ folder to create tenant-specific Amplify app"
+if [ -d "amplify" ]; then
+  rm -rf amplify
+  echo "   ✅ Removed internal amplify/ config"
+else
+  echo "   ℹ️  No amplify/ folder found (already clean)"
+fi
+
 # Validate required environment variables
 if [ -z "$TENANT_NAME" ] || [ -z "$AWS_REGION" ]; then
   echo "❌ Error: TENANT_NAME and AWS_REGION environment variables are required"

@@ -237,7 +237,7 @@ jobs:
         if: steps.configure_aws.outcome == 'success'
         id: init_amplify
         shell: bash
-        run: bash .github/scripts/tenants/init_amplify_app.sh
+        run: bash .github/scripts/tenants/init_amplify_stack.sh
 
       - name: "[Amplify Initialization] Auto-create AMPLIFY_APP_ID secret"
         if: steps.init_amplify.outcome == 'success' && steps.init_amplify.outputs.AMPLIFY_APP_ID != ''

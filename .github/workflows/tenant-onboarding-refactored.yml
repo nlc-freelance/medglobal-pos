@@ -211,13 +211,13 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-session-name: GitHubActions-${{ github.run_id }}
 
-      - name: "[Amplify Initialization] Initialize Amplify app and backend"
+      - name: "[Amplify Initialization] Initialize Amplify Stack"
         if: steps.configure_aws.outcome == 'success'
         id: init_amplify
         shell: bash
-        run: bash .github/scripts/tenants/init_amplify_app.sh
+        run: bash .github/scripts/tenants/init_amplify_stack.sh
 
-      - name: "[Amplify Initialization] Auto-create AMPLIFY_APP_ID secret"
+      - name: "[Amplify Initialization] Create AMPLIFY_APP_ID Secret"
         if: steps.init_amplify.outcome == 'success' && steps.init_amplify.outputs.AMPLIFY_APP_ID != ''
         id: create_secret
         uses: ./.github/actions/run-with-capture
@@ -236,7 +236,7 @@ jobs:
             echo "✅ AMPLIFY_APP_ID secret saved successfully"
           step_name: 'Auto-create AMPLIFY_APP_ID secret'
 
-      - name: "[Amplify Initialization] Import Cognito authentication"
+      - name: "[Amplify Initialization] Import Cognito Authentication"
         if: steps.init_amplify.outcome == 'success'
         id: import_auth
         uses: ./.github/actions/run-with-capture
@@ -244,7 +244,7 @@ jobs:
           command: 'bash .github/scripts/tenants/import_cognito_auth.sh'
           step_name: 'Import Cognito Authentication'
 
-      - name: "[Amplify Initialization] Create Amplify branch"
+      - name: "[Amplify Initialization] Create Amplify Branch"
         if: steps.import_auth.outputs.outcome == 'success'
         id: create_amplify_branch
         uses: ./.github/actions/run-with-capture
@@ -252,7 +252,7 @@ jobs:
           command: 'bash .github/scripts/tenants/create_amplify_branch.sh'
           step_name: 'Create Amplify Branch'
 
-      - name: "[Amplify Initialization] Configure SPA rewrites"
+      - name: "[Amplify Initialization] Configure Rewrites & Redirects"
         if: steps.create_amplify_branch.outputs.outcome == 'success'
         id: configure_rewrites
         uses: ./.github/actions/run-with-capture
@@ -260,7 +260,7 @@ jobs:
           command: 'bash .github/scripts/portal_web/configure_amplify_rewrites.sh'
           step_name: 'Configure SPA Rewrites'
 
-      - name: "[Amplify Initialization] Set Status"
+      - name: "[Amplify Initialization] Set status"
         if: always()
         id: init_amplify_status
         shell: bash
@@ -326,7 +326,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          echo "## Tenant: ${{ matrix.tenant }} - Amplify Initialization" >> $GITHUB_STEP_SUMMARY
+          echo "## Tenant: ${{ matrix.tenant }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ steps.init_amplify_status.outputs.status }}" == "success" ]; then
@@ -481,7 +481,7 @@ jobs:
           command: 'bash .github/scripts/portal_web/deploy_amplify_web.sh'
           step_name: 'Deploy to Amplify'
 
-      - name: "[Portal Deployment] Set Status"
+      - name: "[Portal Deployment] Set status"
         if: always()
         id: portal_status
         shell: bash
@@ -558,7 +558,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          echo "## Tenant: ${{ matrix.tenant }} - Portal Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "## Tenant: ${{ matrix.tenant }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ steps.portal_status.outputs.status }}" == "success" ]; then
@@ -710,7 +710,7 @@ jobs:
           command: 'bash .github/scripts/pos_desktop/create_installer.sh'
           step_name: 'Create Installer'
 
-      - name: "[POS Deployment] Create GitHub release"
+      - name: "[POS Deployment] Create GitHub Release"
         if: steps.check_prerequisites.outputs.continue == 'true' && steps.create_installer.outputs.outcome == 'success'
         id: create_release
         uses: ./.github/actions/run-with-capture
@@ -718,7 +718,7 @@ jobs:
           command: 'bash .github/scripts/pos_desktop/create_github_release_desktop.sh'
           step_name: 'Create GitHub Release'
 
-      - name: "[POS Deployment] Set Status"
+      - name: "[POS Deployment] Set status"
         if: always()
         id: pos_status
         shell: bash
@@ -799,7 +799,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          echo "## Tenant: ${{ matrix.tenant }} - POS Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "## Tenant: ${{ matrix.tenant }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ steps.pos_status.outputs.status }}" == "success" ]; then
