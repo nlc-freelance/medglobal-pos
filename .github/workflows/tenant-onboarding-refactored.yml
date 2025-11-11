@@ -368,6 +368,15 @@ jobs:
             echo "✅ Proceeding with Portal deployment"
           fi
 
+      - name: "[Portal Deployment] Configure AWS Credentials (OIDC)"
+        if: steps.check_prerequisites.outputs.continue == 'true'
+        id: configure_aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: ${{ matrix.tenant }}-portal-deploy-${{ github.run_id }}
+
       - name: "[Portal Deployment] Setup Flutter & Git"
         if: steps.check_prerequisites.outputs.continue == 'true'
         id: setup_flutter_env

@@ -41,7 +41,7 @@ PrivilegesRequiredOverridesAllowed=dialog
 ; Output Configuration
 ; ──────────────────────────────────────────────────────────────
 OutputDir=Output
-OutputBaseFilename=MedGlobal-POS-v{#MyAppVersion}-{{ENV_NAME}}+{#MyAppBuildNumber}
+OutputBaseFilename={#MyAppName}-v{#MyAppVersion}-{{ENV_NAME}}+{#MyAppBuildNumber}
 SetupIconFile=..\runner\resources\app_icon.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 
