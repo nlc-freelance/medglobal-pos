@@ -35,6 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: ${{ inputs.tenant }}
+    if: inputs.dry_run != true
     outputs:
       status: ${{ steps.final_status.outputs.status }}
       amplify_app_id: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
@@ -232,7 +233,7 @@ jobs:
     name: Portal (${{ inputs.tenant }})
     runs-on: ubuntu-latest
     needs: amplify-init
-    if: needs.amplify-init.outputs.status == 'success'
+    if: inputs.dry_run != true && needs.amplify-init.outputs.status == 'success'
     timeout-minutes: 15
     environment: ${{ inputs.tenant }}
     outputs:
@@ -389,7 +390,7 @@ jobs:
     name: POS (${{ inputs.tenant }})
     runs-on: windows-latest
     needs: amplify-init
-    if: needs.amplify-init.outputs.status == 'success'
+    if: inputs.dry_run != true && needs.amplify-init.outputs.status == 'success'
     timeout-minutes: 25
     environment: ${{ inputs.tenant }}
     outputs:
@@ -550,7 +551,7 @@ jobs:
     name: Report (${{ inputs.tenant }})
     runs-on: ubuntu-latest
     needs: [amplify-init, portal-deploy, pos-deploy]
-    if: always()
+    if: always() && inputs.dry_run != true
     timeout-minutes: 5
 
     steps:

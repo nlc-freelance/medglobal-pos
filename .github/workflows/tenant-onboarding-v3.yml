@@ -124,9 +124,9 @@ jobs:
   # JOB 3: DEPLOY TENANTS (CALLS REUSABLE WORKFLOW)
   # ═══════════════════════════════════════════════════════════
   deploy-tenants:
-    name: Deploy (${{ matrix.tenant }})
+    name: ${{ github.event.inputs.dry_run != 'true' && format('Deploy ({0})', matrix.tenant) || 'Deploy Tenants' }}
     needs: [discover-tenants, validate-configs]
-    if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0
+    if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0
     strategy:
       fail-fast: false
       matrix:
