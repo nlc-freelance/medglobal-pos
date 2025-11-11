@@ -248,6 +248,9 @@ jobs:
         if: steps.import_auth.outputs.outcome == 'success'
         id: create_amplify_branch
         uses: ./.github/actions/run-with-capture
+        env:
+          AMPLIFY_APP_ID: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
+          BRANCH_NAME: dev
         with:
           command: 'bash .github/scripts/tenants/create_amplify_branch.sh'
           step_name: 'Create Amplify Branch'
@@ -256,6 +259,8 @@ jobs:
         if: steps.create_amplify_branch.outputs.outcome == 'success'
         id: configure_rewrites
         uses: ./.github/actions/run-with-capture
+        env:
+          AMPLIFY_APP_ID: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
         with:
           command: 'bash .github/scripts/portal_web/configure_amplify_rewrites.sh'
           step_name: 'Configure SPA Rewrites'
