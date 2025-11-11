@@ -11,10 +11,6 @@ on:
         description: 'Dry run (validate config only, no deployment)'
         type: boolean
         default: false
-      retry_failed:
-        description: 'Retry only previously failed tenants from last run'
-        type: boolean
-        default: false
 
 concurrency:
   group: tenant-onboarding-v3-${{ github.ref }}
@@ -23,7 +19,6 @@ concurrency:
 permissions:
   contents: write  # For creating GitHub releases (desktop)
   id-token: write  # For AWS OIDC
-  actions: read     # For downloading artifacts from previous runs
 
 jobs:
   # ═══════════════════════════════════════════════════════════
@@ -34,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      tenants: ${{ steps.set_tenants.outputs.tenants }}
+      tenants: ${{ steps.discover.outputs.tenants }}
       tenant_count: ${{ steps.count.outputs.tenant_count }}
 
     env:
@@ -47,65 +42,13 @@ jobs:
           fetch-depth: 1
 
       - name: Discover tenant environments
-        if: ${{ github.event.inputs.retry_failed != 'true' }}
         id: discover
         run: bash .github/scripts/tenants/discover_tenants.sh "${{ github.repository }}" "${{ github.event.inputs.tenants }}"
-
-      - name: Get failed tenants from previous run
-        if: ${{ github.event.inputs.retry_failed == 'true' }}
-        id: get_failed
-        shell: bash
-        run: |
-          echo "🔍 Looking for failed tenants from previous workflow runs..."
-
-          # Get the most recent completed workflow run (excluding current)
-          PREVIOUS_RUN_ID=$(gh run list \
-            --workflow "tenant-onboarding-v3.yml" \
-            --status completed \
-            --limit 5 \
-            --json databaseId,conclusion \
-            --jq '[.[] | select(.databaseId != ${{ github.run_id }})][0].databaseId')
-
-          if [ -z "$PREVIOUS_RUN_ID" ]; then
-            echo "❌ No previous workflow runs found"
-            echo "tenants=[]" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          echo "📦 Downloading artifacts from run #$PREVIOUS_RUN_ID..."
-
-          # Try to download final report artifact
-          if gh run download "$PREVIOUS_RUN_ID" --name "final-report" --dir previous-run 2>/dev/null; then
-            echo "✅ Found final-report artifact"
-
-            # Extract failed tenant names
-            FAILED_TENANTS=$(jq -r '[.tenants[] | select(.overall_status == "failed") | .name] | @json' previous-run/summary.json 2>/dev/null || echo "[]")
-
-            if [ "$FAILED_TENANTS" == "[]" ]; then
-              echo "✅ No failed tenants found in previous run"
-            else
-              echo "📋 Found failed tenants: $FAILED_TENANTS"
-            fi
-
-            echo "tenants=$FAILED_TENANTS" >> $GITHUB_OUTPUT
-          else
-            echo "⚠️ Could not find final-report artifact from previous run"
-            echo "tenants=[]" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Set final tenant list
-        id: set_tenants
-        run: |
-          if [ "${{ github.event.inputs.retry_failed }}" == "true" ]; then
-            echo "tenants=${{ steps.get_failed.outputs.tenants }}" >> $GITHUB_OUTPUT
-          else
-            echo "tenants=${{ steps.discover.outputs.tenants }}" >> $GITHUB_OUTPUT
-          fi
 
       - name: Calculate tenant count
         id: count
         run: |
-          TENANT_COUNT=$(echo '${{ steps.set_tenants.outputs.tenants }}' | jq 'length')
+          TENANT_COUNT=$(echo '${{ steps.discover.outputs.tenants }}' | jq 'length')
           echo "tenant_count=$TENANT_COUNT" >> $GITHUB_OUTPUT
           echo "Found $TENANT_COUNT tenant(s) to process"
 
@@ -114,11 +57,10 @@ jobs:
           echo "## 🔍 Tenant Discovery" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Mode:** ${{ github.event.inputs.dry_run == 'true' && '🧪 Dry Run' || '🚀 Live Deployment' }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Retry Failed:** ${{ github.event.inputs.retry_failed == 'true' && '✅ Yes' || '❌ No' }}" >> $GITHUB_STEP_SUMMARY
           echo "**Tenants found:** ${{ steps.count.outputs.tenant_count }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Tenants to process:**" >> $GITHUB_STEP_SUMMARY
-          echo '${{ steps.set_tenants.outputs.tenants }}' | jq -r '.[] | "- " + .' >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.discover.outputs.tenants }}' | jq -r '.[] | "- " + .' >> $GITHUB_STEP_SUMMARY
 
       - name: Exit if no tenants to process
         if: fromJson(steps.count.outputs.tenant_count) == 0
@@ -221,7 +163,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Workflow Run:** [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
           echo "**Mode:** ${{ github.event.inputs.dry_run == 'true' && '🧪 Dry Run' || '🚀 Live Deployment' }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Retry Failed:** ${{ github.event.inputs.retry_failed == 'true' && '✅ Yes' || '❌ No' }}" >> $GITHUB_STEP_SUMMARY
           echo "**Triggered by:** @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
