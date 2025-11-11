@@ -1,0 +1,158 @@
+name: "_Deploy Portal (Web)"
+
+on:
+  workflow_call:
+    inputs:
+      context:
+        description: 'Deployment context (tenant name or internal environment)'
+        required: true
+        type: string
+      amplify_config_artifact:
+        description: 'Name of Amplify config artifact to download (optional for internal)'
+        required: false
+        type: string
+        default: ''
+      save_status:
+        description: 'Whether to save deployment status as artifact (for tenant deployments)'
+        required: false
+        type: boolean
+        default: true
+    outputs:
+      status:
+        description: 'Deployment status: success, failed, or skipped'
+        value: ${{ jobs.deploy.outputs.status }}
+      portal_url:
+        description: 'Deployed portal URL'
+        value: ${{ jobs.deploy.outputs.portal_url }}
+
+permissions:
+  id-token: write  # For AWS OIDC
+
+jobs:
+  deploy:
+    name: Portal (${{ inputs.context }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ inputs.context }}
+    outputs:
+      status: ${{ steps.final_status.outputs.status }}
+      portal_url: ${{ env.BASE_URL }}
+
+    env:
+      ENV_NAME: dev
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      BASE_URL: ${{ vars.BASE_URL }}
+      TENANT_NAME: ${{ vars.TENANT_NAME }}
+      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download Amplify configuration
+        if: inputs.amplify_config_artifact != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.amplify_config_artifact }}
+
+      - name: Extract Amplify configuration
+        if: inputs.amplify_config_artifact != ''
+        run: tar -xzf amplify-config.tar.gz
+
+      - name: Configure AWS Credentials (OIDC)
+        id: configure_aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: ${{ inputs.context }}-portal-deploy-${{ github.run_id }}
+
+      - name: Setup Flutter & Git
+        id: setup_flutter_env
+        uses: ./.github/actions/setup-flutter-env
+        with:
+          cache-key: flutter-linux-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: Prepare build
+        if: steps.setup_flutter_env.outputs.outcome == 'success'
+        id: prepare_build
+        uses: ./.github/actions/prepare-flutter-build
+        with:
+          tenant: ${{ inputs.context }}
+          github-run-number: ${{ github.run_number }}
+
+      - name: Build Flutter web
+        if: steps.prepare_build.outputs.outcome == 'success'
+        id: build_web
+        shell: bash
+        run: bash .github/scripts/shared/build_web.sh
+
+      - name: Post-build processing
+        if: steps.build_web.outcome == 'success'
+        id: post_build_web
+        shell: bash
+        run: bash .github/scripts/shared/post_build_web.sh
+
+      - name: Deploy to Amplify
+        if: steps.post_build_web.outcome == 'success'
+        id: deploy_amplify
+        shell: bash
+        run: bash .github/scripts/portal_web/deploy_amplify_web.sh
+
+      - name: Determine status and error
+        if: always()
+        id: determine_status
+        shell: bash
+        env:
+          CONFIGURE_AWS_OUTCOME: ${{ steps.configure_aws.outcome }}
+          SETUP_FLUTTER_OUTCOME: ${{ steps.setup_flutter_env.outputs.outcome }}
+          PREPARE_BUILD_OUTCOME: ${{ steps.prepare_build.outputs.outcome }}
+          BUILD_WEB_OUTCOME: ${{ steps.build_web.outcome }}
+          POST_BUILD_OUTCOME: ${{ steps.post_build_web.outcome }}
+          DEPLOY_OUTCOME: ${{ steps.deploy_amplify.outcome }}
+        run: |
+          if [ "$CONFIGURE_AWS_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to configure AWS credentials" >> $GITHUB_OUTPUT
+          elif [ "$SETUP_FLUTTER_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to setup Flutter environment" >> $GITHUB_OUTPUT
+          elif [ "$PREPARE_BUILD_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to prepare build" >> $GITHUB_OUTPUT
+          elif [ "$BUILD_WEB_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to build web app" >> $GITHUB_OUTPUT
+          elif [ "$POST_BUILD_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed post-build processing" >> $GITHUB_OUTPUT
+          elif [ "$DEPLOY_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to deploy to Amplify" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "error=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Save status with composite action
+        if: always() && inputs.save_status
+        uses: ./.github/actions/save-tenant-status
+        with:
+          tenant: ${{ inputs.context }}
+          phase: 'portal-deploy'
+          status: ${{ steps.determine_status.outputs.status }}
+          error: ${{ steps.determine_status.outputs.error }}
+          resource_urls: |
+            {
+              "portal_url": "${{ env.BASE_URL }}"
+            }
+
+      - name: Set final status for job output
+        if: always()
+        id: final_status
+        run: echo "status=${{ steps.determine_status.outputs.status }}" >> $GITHUB_OUTPUT

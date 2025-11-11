@@ -1,0 +1,287 @@
+name: "_Tenant Deploy Pipeline"
+
+on:
+  workflow_call:
+    inputs:
+      tenant:
+        description: 'Tenant name'
+        required: true
+        type: string
+    outputs:
+      validation_status:
+        description: 'Configuration validation status'
+        value: ${{ jobs.validate-config.outputs.status }}
+      amplify_status:
+        description: 'Amplify pull status'
+        value: ${{ jobs.amplify-pull.outputs.status }}
+      portal_status:
+        description: 'Portal deployment status'
+        value: ${{ jobs.deploy-portal.outputs.status }}
+      pos_status:
+        description: 'POS deployment status'
+        value: ${{ jobs.deploy-pos.outputs.status }}
+
+permissions:
+  contents: write  # For creating GitHub releases (desktop)
+  id-token: write  # For AWS OIDC
+
+jobs:
+  # ═══════════════════════════════════════════════════════════
+  # JOB 1: VALIDATE CONFIGURATION
+  # ═══════════════════════════════════════════════════════════
+  validate-config:
+    name: Validate (${{ inputs.tenant }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: ${{ inputs.tenant }}
+    outputs:
+      status: ${{ steps.final_status.outputs.status }}
+
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      INSTALLER_PUBLISHER: ${{ vars.INSTALLER_PUBLISHER }}
+      INSTALLER_APP_NAME: ${{ vars.INSTALLER_APP_NAME }}
+      INSTALLER_SUPPORT_URL: ${{ vars.INSTALLER_SUPPORT_URL }}
+      AWS_IAM_ROLE_ARN: ${{ vars.AWS_IAM_ROLE_ARN }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      BASE_URL: ${{ vars.BASE_URL }}
+      TENANT_NAME: ${{ vars.TENANT_NAME }}
+      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Validate tenant configuration
+        id: validate
+        run: bash .github/scripts/tenants/validate_tenant_config.sh "${{ inputs.tenant }}" "full"
+
+      - name: Save validation status
+        if: always()
+        uses: ./.github/actions/save-tenant-status
+        with:
+          tenant: ${{ inputs.tenant }}
+          phase: 'validation'
+          status: ${{ steps.validate.outcome == 'success' && 'success' || 'failed' }}
+          error: ${{ steps.validate.outcome != 'success' && 'Configuration validation failed' || '' }}
+          config_snapshot: |
+            {
+              "AWS_REGION": "${{ env.AWS_REGION }}",
+              "BASE_URL": "${{ env.BASE_URL }}",
+              "TENANT_NAME": "${{ env.TENANT_NAME }}",
+              "AMPLIFY_APP_ID": "${{ env.AMPLIFY_APP_ID }}"
+            }
+
+      - name: Set final status for job output
+        if: always()
+        id: final_status
+        run: echo "status=${{ steps.validate.outcome == 'success' && 'success' || 'failed' }}" >> $GITHUB_OUTPUT
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 2: AMPLIFY PULL (DOWNLOAD EXISTING CONFIG)
+  # ═══════════════════════════════════════════════════════════
+  amplify-pull:
+    name: Amplify Pull (${{ inputs.tenant }})
+    runs-on: ubuntu-latest
+    needs: validate-config
+    if: needs.validate-config.outputs.status == 'success'
+    timeout-minutes: 15
+    environment: ${{ inputs.tenant }}
+    outputs:
+      status: ${{ steps.final_status.outputs.status }}
+
+    env:
+      ENV_NAME: dev
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      BASE_URL: ${{ vars.BASE_URL }}
+      TENANT_NAME: ${{ vars.TENANT_NAME }}
+      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install Amplify CLI
+        id: install_amplify_cli
+        shell: bash
+        run: bash .github/scripts/shared/install_amplify_cli.sh
+
+      - name: Configure AWS Credentials (OIDC)
+        if: steps.install_amplify_cli.outcome == 'success'
+        id: configure_aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: GitHubActions-${{ github.run_id }}
+
+      - name: Pull Amplify Configuration
+        if: steps.configure_aws.outcome == 'success'
+        id: pull_amplify
+        shell: bash
+        run: bash .github/scripts/tenants/pull_amplify_config.sh
+
+      - name: Compress Amplify configuration
+        if: steps.pull_amplify.outcome == 'success'
+        shell: bash
+        run: |
+          tar -czf amplify-config.tar.gz amplify/ lib/amplifyconfiguration.dart
+          echo "✅ Compressed Amplify configuration (amplify/ + lib/amplifyconfiguration.dart)"
+
+      - name: Upload Amplify configuration
+        if: steps.pull_amplify.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: amplify-config-${{ inputs.tenant }}
+          path: amplify-config.tar.gz
+          retention-days: 7
+
+      - name: Determine status and error
+        if: always()
+        id: determine_status
+        shell: bash
+        env:
+          INSTALL_AMPLIFY_OUTCOME: ${{ steps.install_amplify_cli.outcome }}
+          CONFIGURE_AWS_OUTCOME: ${{ steps.configure_aws.outcome }}
+          PULL_AMPLIFY_OUTCOME: ${{ steps.pull_amplify.outcome }}
+        run: |
+          if [ "$INSTALL_AMPLIFY_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to install Amplify CLI" >> $GITHUB_OUTPUT
+          elif [ "$CONFIGURE_AWS_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to configure AWS credentials" >> $GITHUB_OUTPUT
+          elif [ "$PULL_AMPLIFY_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to pull Amplify configuration" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "error=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Save status with composite action
+        if: always()
+        uses: ./.github/actions/save-tenant-status
+        with:
+          tenant: ${{ inputs.tenant }}
+          phase: 'amplify-pull'
+          status: ${{ steps.determine_status.outputs.status }}
+          error: ${{ steps.determine_status.outputs.error }}
+
+      - name: Set final status for job output
+        if: always()
+        id: final_status
+        run: echo "status=${{ steps.determine_status.outputs.status }}" >> $GITHUB_OUTPUT
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 3: DEPLOY PORTAL (CALLS REUSABLE WORKFLOW)
+  # ═══════════════════════════════════════════════════════════
+  deploy-portal:
+    name: Deploy Portal
+    needs: [validate-config, amplify-pull]
+    if: needs.validate-config.outputs.status == 'success' && needs.amplify-pull.outputs.status == 'success'
+    uses: ./.github/workflows/_deploy-portal.yml
+    with:
+      context: ${{ inputs.tenant }}
+      amplify_config_artifact: amplify-config-${{ inputs.tenant }}
+      save_status: true
+    secrets: inherit
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 4: DEPLOY POS (CALLS REUSABLE WORKFLOW)
+  # ═══════════════════════════════════════════════════════════
+  deploy-pos:
+    name: Deploy POS
+    needs: [validate-config, amplify-pull]
+    if: needs.validate-config.outputs.status == 'success' && needs.amplify-pull.outputs.status == 'success'
+    uses: ./.github/workflows/_deploy-pos.yml
+    with:
+      context: ${{ inputs.tenant }}
+      amplify_config_artifact: amplify-config-${{ inputs.tenant }}
+      save_status: true
+    secrets: inherit
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 5: TENANT REPORT
+  # ═══════════════════════════════════════════════════════════
+  tenant-report:
+    name: Report (${{ inputs.tenant }})
+    runs-on: ubuntu-latest
+    needs: [validate-config, amplify-pull, deploy-portal, deploy-pos]
+    if: always()
+    timeout-minutes: 5
+
+    steps:
+      - name: Download all status artifacts for this tenant
+        uses: actions/download-artifact@v4
+        with:
+          pattern: status-*-${{ inputs.tenant }}
+          path: status-reports
+          merge-multiple: true
+
+      - name: Generate tenant summary
+        shell: bash
+        run: |
+          echo "## 🔄 Tenant: ${{ inputs.tenant }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Phase results table
+          echo "### Phase Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Phase | Status | Error/Remarks |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|---------------|" >> $GITHUB_STEP_SUMMARY
+
+          # Process each phase
+          for phase in validation amplify-pull portal-deploy pos-deploy; do
+            FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
+            if [ -f "$FILE" ]; then
+              STATUS=$(jq -r '.status' "$FILE")
+              ERROR=$(jq -r '.error // ""' "$FILE")
+
+              # Status icon
+              if [ "$STATUS" == "success" ]; then
+                ICON="✅"
+              elif [ "$STATUS" == "skipped" ]; then
+                ICON="⏭️"
+              else
+                ICON="❌"
+              fi
+
+              # Format error - show full message
+              if [ -n "$ERROR" ]; then
+                ERROR_DISPLAY="$ERROR"
+              else
+                ERROR_DISPLAY="-"
+              fi
+
+              echo "| $phase | $ICON $STATUS | $ERROR_DISPLAY |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| $phase | ⚠️ Missing | No status file |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Resource links section
+          echo "### 🔗 Resource Links" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Extract resource URLs from status files
+          for phase in validation amplify-pull portal-deploy pos-deploy; do
+            FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
+            if [ -f "$FILE" ]; then
+              RESOURCES=$(jq -r '.resources // {}' "$FILE")
+              if [ "$RESOURCES" != "{}" ]; then
+                echo "$RESOURCES" | jq -r 'to_entries[] | "- **\(.key)**: \(.value)"' >> $GITHUB_STEP_SUMMARY
+              fi
+            fi
+          done

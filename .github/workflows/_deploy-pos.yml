@@ -1,0 +1,159 @@
+name: "_Deploy POS (Desktop)"
+
+on:
+  workflow_call:
+    inputs:
+      context:
+        description: 'Deployment context (tenant name or internal environment)'
+        required: true
+        type: string
+      amplify_config_artifact:
+        description: 'Name of Amplify config artifact to download (optional for internal)'
+        required: false
+        type: string
+        default: ''
+      save_status:
+        description: 'Whether to save deployment status as artifact (for tenant deployments)'
+        required: false
+        type: boolean
+        default: true
+    outputs:
+      status:
+        description: 'Deployment status: success, failed, or skipped'
+        value: ${{ jobs.deploy.outputs.status }}
+      release_url:
+        description: 'GitHub release URL'
+        value: ${{ jobs.deploy.outputs.release_url }}
+
+permissions:
+  contents: write  # For creating GitHub releases
+
+jobs:
+  deploy:
+    name: POS (${{ inputs.context }})
+    runs-on: windows-latest
+    timeout-minutes: 25
+    environment: ${{ inputs.context }}
+    outputs:
+      status: ${{ steps.final_status.outputs.status }}
+      release_url: ${{ steps.create_release.outputs.release_url }}
+
+    env:
+      ENV_NAME: dev
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      BASE_URL: ${{ vars.BASE_URL }}
+      TENANT_NAME: ${{ vars.TENANT_NAME }}
+      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      INSTALLER_PUBLISHER: ${{ vars.INSTALLER_PUBLISHER }}
+      INSTALLER_APP_NAME: ${{ vars.INSTALLER_APP_NAME }}
+      INSTALLER_SUPPORT_URL: ${{ vars.INSTALLER_SUPPORT_URL }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download Amplify configuration
+        if: inputs.amplify_config_artifact != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.amplify_config_artifact }}
+
+      - name: Extract Amplify configuration
+        if: inputs.amplify_config_artifact != ''
+        run: tar -xzf amplify-config.tar.gz
+
+      - name: Setup Flutter & Git
+        id: setup_flutter_env
+        uses: ./.github/actions/setup-flutter-env
+        with:
+          cache-key: flutter-windows-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: Prepare build
+        if: steps.setup_flutter_env.outputs.outcome == 'success'
+        id: prepare_build
+        uses: ./.github/actions/prepare-flutter-build
+        with:
+          tenant: ${{ inputs.context }}
+          github-run-number: ${{ github.run_number }}
+
+      - name: Build Flutter desktop
+        if: steps.prepare_build.outputs.outcome == 'success'
+        id: build_desktop
+        shell: bash
+        run: bash .github/scripts/shared/build_desktop.sh
+
+      - name: Bundle Windows runtime
+        if: steps.build_desktop.outcome == 'success'
+        id: bundle_runtime
+        shell: bash
+        run: bash .github/scripts/pos_desktop/bundle_windows_runtime.sh
+
+      - name: Create installer
+        if: steps.bundle_runtime.outcome == 'success'
+        id: create_installer
+        shell: bash
+        run: bash .github/scripts/pos_desktop/create_installer.sh
+
+      - name: Create GitHub Release
+        if: steps.create_installer.outcome == 'success'
+        id: create_release
+        shell: bash
+        run: bash .github/scripts/pos_desktop/create_github_release_desktop.sh
+
+      - name: Determine status and error
+        if: always()
+        id: determine_status
+        shell: bash
+        env:
+          SETUP_FLUTTER_OUTCOME: ${{ steps.setup_flutter_env.outputs.outcome }}
+          PREPARE_BUILD_OUTCOME: ${{ steps.prepare_build.outputs.outcome }}
+          BUILD_DESKTOP_OUTCOME: ${{ steps.build_desktop.outcome }}
+          BUNDLE_RUNTIME_OUTCOME: ${{ steps.bundle_runtime.outcome }}
+          CREATE_INSTALLER_OUTCOME: ${{ steps.create_installer.outcome }}
+          CREATE_RELEASE_OUTCOME: ${{ steps.create_release.outcome }}
+        run: |
+          if [ "$SETUP_FLUTTER_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to setup Flutter environment" >> $GITHUB_OUTPUT
+          elif [ "$PREPARE_BUILD_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to prepare build" >> $GITHUB_OUTPUT
+          elif [ "$BUILD_DESKTOP_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to build desktop app" >> $GITHUB_OUTPUT
+          elif [ "$BUNDLE_RUNTIME_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to bundle Windows runtime" >> $GITHUB_OUTPUT
+          elif [ "$CREATE_INSTALLER_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to create installer" >> $GITHUB_OUTPUT
+          elif [ "$CREATE_RELEASE_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to create GitHub release" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "error=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Save status with composite action
+        if: always() && inputs.save_status
+        uses: ./.github/actions/save-tenant-status
+        with:
+          tenant: ${{ inputs.context }}
+          phase: 'pos-deploy'
+          status: ${{ steps.determine_status.outputs.status }}
+          error: ${{ steps.determine_status.outputs.error }}
+          resource_urls: |
+            {
+              "release_url": "${{ steps.create_release.outputs.release_url || format('https://github.com/{0}/releases', github.repository) }}"
+            }
+
+      - name: Set final status for job output
+        if: always()
+        id: final_status
+        run: echo "status=${{ steps.determine_status.outputs.status }}" >> $GITHUB_OUTPUT

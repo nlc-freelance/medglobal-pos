@@ -69,82 +69,30 @@ jobs:
           exit 0
 
   # ═══════════════════════════════════════════════════════════
-  # JOB 2: VALIDATE TENANT CONFIGURATIONS (BATCH)
+  # JOB 2: ONBOARD TENANTS (CALLS REUSABLE WORKFLOW)
   # ═══════════════════════════════════════════════════════════
-  validate-configs:
-    name: Validate (${{ matrix.tenant }})
-    runs-on: ubuntu-latest
+  onboard-tenants:
+    name: Onboard Tenant
     needs: discover-tenants
-    if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0
-    timeout-minutes: 5
-    strategy:
-      fail-fast: false
-      matrix:
-        tenant: ${{ fromJson(needs.discover-tenants.outputs.tenants) }}
-    environment: ${{ matrix.tenant }}
-
-    env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      INSTALLER_PUBLISHER: ${{ vars.INSTALLER_PUBLISHER }}
-      INSTALLER_APP_NAME: ${{ vars.INSTALLER_APP_NAME }}
-      INSTALLER_SUPPORT_URL: ${{ vars.INSTALLER_SUPPORT_URL }}
-      AWS_IAM_ROLE_ARN: ${{ vars.AWS_IAM_ROLE_ARN }}
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      BASE_URL: ${{ vars.BASE_URL }}
-      TENANT_NAME: ${{ vars.TENANT_NAME }}
-      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
-      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Validate tenant configuration
-        id: validate
-        run: bash .github/scripts/tenants/validate_tenant_config.sh "${{ matrix.tenant }}" "onboarding"
-
-      - name: Save validation status
-        if: always()
-        uses: ./.github/actions/save-tenant-status
-        with:
-          tenant: ${{ matrix.tenant }}
-          phase: 'validation'
-          status: ${{ steps.validate.outcome == 'success' && 'success' || 'failed' }}
-          error: ${{ steps.validate.outcome != 'success' && 'Configuration validation failed' || '' }}
-          config_snapshot: |
-            {
-              "AWS_REGION": "${{ env.AWS_REGION }}",
-              "BASE_URL": "${{ env.BASE_URL }}",
-              "TENANT_NAME": "${{ env.TENANT_NAME }}"
-            }
-
-  # ═══════════════════════════════════════════════════════════
-  # JOB 3: DEPLOY TENANTS (CALLS REUSABLE WORKFLOW)
-  # ═══════════════════════════════════════════════════════════
-  deploy-tenants:
-    name: Deploy Tenant
-    needs: [discover-tenants, validate-configs]
     if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0 && github.event.inputs.dry_run != 'true'
     strategy:
       fail-fast: false
       matrix:
         tenant: ${{ fromJson(needs.discover-tenants.outputs.tenants) }}
       max-parallel: 3
-    uses: ./.github/workflows/_tenant-deploy-pipeline.yml
+    uses: ./.github/workflows/_tenant-onboarding.yml
     with:
       tenant: ${{ matrix.tenant }}
       dry_run: false
     secrets: inherit
 
   # ═══════════════════════════════════════════════════════════
-  # JOB 4: GENERATE FINAL REPORT
+  # JOB 3: GENERATE FINAL REPORT
   # ═══════════════════════════════════════════════════════════
   final-report:
     name: Final Report
     runs-on: ubuntu-latest
-    needs: [discover-tenants, validate-configs, deploy-tenants]
+    needs: [discover-tenants, onboard-tenants]
     if: always()
     timeout-minutes: 5
 
