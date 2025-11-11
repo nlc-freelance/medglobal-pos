@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-# Remove any existing amplify/ folder to prevent path conflicts
-echo "🗑️ Removing internal amplify/ folder to create tenant-specific Amplify app"
+# Remove any existing amplify/ folder and tenant-specific config to prevent path conflicts
+echo "🗑️ Removing internal amplify/ folder and tenant-specific config to create fresh Amplify app"
 if [ -d "amplify" ]; then
   rm -rf amplify
   echo "   ✅ Removed internal amplify/ config"
 else
   echo "   ℹ️  No amplify/ folder found (already clean)"
+fi
+
+if [ -f "lib/amplifyconfiguration.dart" ]; then
+  rm -f lib/amplifyconfiguration.dart
+  echo "   ✅ Removed previous tenant's amplifyconfiguration.dart"
+else
+  echo "   ℹ️  No amplifyconfiguration.dart found (already clean)"
 fi
 
 # Validate required environment variables

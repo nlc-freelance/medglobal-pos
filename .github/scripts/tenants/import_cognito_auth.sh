@@ -36,5 +36,21 @@ echo "☁️  Pushing auth configuration to AWS..."
 amplify push --yes
 
 echo ""
+echo "📥 Pulling configuration to generate amplifyconfiguration.dart..."
+
+# Get project name from amplify config (remove hyphens for Amplify project name)
+PROJECT_NAME=$(cat amplify/.config/project-config.json | jq -r '.projectName // "medglobalportal"')
+AMPLIFY_APP_ID=$(cat amplify/backend/amplify-meta.json | jq -r '.providers.awscloudformation.AmplifyAppId')
+
+amplify pull \
+  --appId "$AMPLIFY_APP_ID" \
+  --envName dev \
+  --yes \
+  --amplify "{\"projectName\":\"${PROJECT_NAME}\",\"envName\":\"dev\",\"defaultEditor\":\"code\"}" \
+  --frontend "{\"frontend\":\"flutter\",\"config\":{\"ResDir\":\"lib/\"}}" \
+  --providers "{\"awscloudformation\":{\"configLevel\":\"project\",\"useProfile\":false,\"region\":\"${AWS_REGION}\"}}"
+
+echo ""
 echo "✅ Cognito User Pool imported successfully"
 echo "   Authentication configured for both web and native clients"
+echo "   Tenant-specific configuration generated at lib/amplifyconfiguration.dart"

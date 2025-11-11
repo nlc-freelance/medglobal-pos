@@ -235,8 +235,8 @@ jobs:
         if: steps.configure_rewrites.outputs.outcome == 'success'
         shell: bash
         run: |
-          tar -czf amplify-config.tar.gz amplify/ amplifyconfiguration.json amplify_outputs.json
-          echo "✅ Compressed Amplify configuration"
+          tar -czf amplify-config.tar.gz amplify/ lib/amplifyconfiguration.dart
+          echo "✅ Compressed Amplify configuration (amplify/ + lib/amplifyconfiguration.dart)"
 
       - name: "[Amplify Initialization] Upload Amplify configuration"
         if: steps.configure_rewrites.outputs.outcome == 'success'
