@@ -74,7 +74,7 @@ jobs:
   onboard-tenants:
     name: Onboard Tenant
     needs: discover-tenants
-    if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0 && github.event.inputs.dry_run != 'true'
+    if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0
     strategy:
       fail-fast: false
       matrix:
@@ -83,7 +83,7 @@ jobs:
     uses: ./.github/workflows/_tenant-onboarding.yml
     with:
       tenant: ${{ matrix.tenant }}
-      dry_run: false
+      dry_run: ${{ github.event.inputs.dry_run == 'true' }}
     secrets: inherit
 
   # ═══════════════════════════════════════════════════════════

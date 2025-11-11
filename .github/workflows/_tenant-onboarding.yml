@@ -276,7 +276,7 @@ jobs:
     name: Report (${{ inputs.tenant }})
     runs-on: ubuntu-latest
     needs: [validate-config, amplify-init, deploy-portal, deploy-pos]
-    if: always() && inputs.dry_run != true
+    if: always()
     timeout-minutes: 5
 
     steps:
