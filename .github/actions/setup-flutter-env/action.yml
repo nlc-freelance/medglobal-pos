@@ -1,0 +1,34 @@
+name: 'Setup Flutter Environment'
+description: 'Sets up Flutter SDK with caching and configures Git'
+
+inputs:
+  flutter-version:
+    description: 'Flutter version to install'
+    required: false
+    default: '3.32.8'
+  cache-key:
+    description: 'Cache key for Flutter SDK'
+    required: true
+
+outputs:
+  outcome:
+    description: 'Success or failure outcome'
+    value: ${{ steps.config_git.outputs.outcome }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ inputs.flutter-version }}
+        channel: 'stable'
+        cache: true
+        cache-key: ${{ inputs.cache-key }}
+
+    - name: Configure Git
+      id: config_git
+      uses: ./.github/actions/run-with-capture
+      with:
+        command: 'bash .github/scripts/shared/config_git.sh'
+        step_name: 'Configure Git'

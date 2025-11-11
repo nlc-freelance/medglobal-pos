@@ -1,0 +1,98 @@
+name: 'Prepare Flutter Build'
+description: 'Common Flutter build preparation steps: install deps, bump build, run build_runner, setup env, download Amplify config'
+
+inputs:
+  tenant:
+    description: 'Tenant name for Amplify config artifact'
+    required: true
+  github-run-number:
+    description: 'GitHub run number for version bump'
+    required: true
+
+outputs:
+  outcome:
+    description: 'Success or failure outcome'
+    value: ${{ steps.check.outputs.outcome }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache pub dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.pub-cache
+        key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pub-
+
+    - name: Install dependencies
+      id: install_dependencies
+      uses: ./.github/actions/run-with-capture
+      with:
+        command: 'flutter pub get'
+        step_name: 'Install Dependencies'
+
+    - name: Bump build number
+      if: steps.install_dependencies.outputs.outcome == 'success'
+      id: bump_build
+      uses: ./.github/actions/run-with-capture
+      with:
+        command: 'bash .github/scripts/shared/bump_build_number.sh'
+        step_name: 'Bump Build Number'
+      env:
+        GITHUB_RUN_NUMBER: ${{ inputs.github-run-number }}
+
+    - name: Run build_runner
+      if: steps.bump_build.outputs.outcome == 'success'
+      id: run_build_runner
+      uses: ./.github/actions/run-with-capture
+      with:
+        command: 'dart run build_runner build --delete-conflicting-outputs'
+        step_name: 'Run build_runner'
+
+    - name: Setup environment
+      if: steps.run_build_runner.outputs.outcome == 'success'
+      id: setup_env
+      uses: ./.github/actions/run-with-capture
+      with:
+        command: 'bash .github/scripts/shared/setup_env.sh'
+        step_name: 'Setup Environment'
+
+    - name: Download Amplify configuration
+      if: steps.setup_env.outputs.outcome == 'success'
+      id: download_amplify
+      uses: actions/download-artifact@v4
+      with:
+        name: amplify-config-${{ inputs.tenant }}
+        path: ./
+
+    - name: Extract Amplify configuration
+      if: steps.download_amplify.outcome == 'success'
+      id: setup_amplify
+      shell: bash
+      run: |
+        tar -xzf amplify-config.tar.gz
+        rm amplify-config.tar.gz
+        echo "✅ Extracted Amplify configuration"
+
+    - name: Check overall outcome
+      if: always()
+      id: check
+      shell: bash
+      run: |
+        if [ "${{ steps.install_dependencies.outputs.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.bump_build.outputs.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.run_build_runner.outputs.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.setup_env.outputs.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.download_amplify.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.setup_amplify.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        else
+          echo "outcome=success" >> $GITHUB_OUTPUT
+        fi

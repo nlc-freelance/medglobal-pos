@@ -12,6 +12,10 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: tenant-onboarding-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write  # For creating GitHub releases (desktop)
   id-token: write  # For AWS OIDC if configured
@@ -34,6 +38,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Discover tenant environments
         id: discover
@@ -86,6 +92,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Validate tenant configuration
         id: validate
@@ -119,54 +127,10 @@ jobs:
         with:
           name: validation-${{ matrix.tenant }}
           path: status-reports/
-          retention-days: 1
+          retention-days: 7
 
   # ═══════════════════════════════════════════════════════════
-  # JOB 3: SETUP FLUTTER (LINUX) - SDK Cache Only
-  # ═══════════════════════════════════════════════════════════
-  setup-flutter-linux:
-    name: Setup Flutter (Linux)
-    runs-on: ubuntu-latest
-    needs: validate-tenant-configs
-    if: github.event.inputs.dry_run != 'true' && needs.validate-tenant-configs.result == 'success'
-    timeout-minutes: 5
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.32.8'
-          channel: 'stable'
-          cache: true
-          cache-key: flutter-linux-${{ hashFiles('**/pubspec.lock') }}
-
-  # ═══════════════════════════════════════════════════════════
-  # JOB 4: SETUP FLUTTER (WINDOWS) - SDK Cache Only
-  # ═══════════════════════════════════════════════════════════
-  setup-flutter-windows:
-    name: Setup Flutter (Windows)
-    runs-on: windows-latest
-    needs: validate-tenant-configs
-    if: github.event.inputs.dry_run != 'true' && needs.validate-tenant-configs.result == 'success'
-    timeout-minutes: 10
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.32.8'
-          channel: 'stable'
-          cache: true
-          cache-key: flutter-windows-${{ hashFiles('**/pubspec.lock') }}
-
-  # ═══════════════════════════════════════════════════════════
-  # JOB 5: AMPLIFY INITIALIZATION (PER TENANT)
+  # JOB 3: AMPLIFY INITIALIZATION (PER TENANT)
   # ═══════════════════════════════════════════════════════════
   amplify-init:
     name: Amplify (${{ matrix.tenant }})
@@ -194,6 +158,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: "[Amplify Initialization] Install Amplify CLI"
         id: install_amplify_cli
@@ -265,16 +231,20 @@ jobs:
           command: 'bash .github/scripts/portal_web/configure_amplify_rewrites.sh'
           step_name: 'Configure SPA Rewrites'
 
+      - name: "[Amplify Initialization] Compress Amplify configuration"
+        if: steps.configure_rewrites.outputs.outcome == 'success'
+        shell: bash
+        run: |
+          tar -czf amplify-config.tar.gz amplify/ amplifyconfiguration.json amplify_outputs.json
+          echo "✅ Compressed Amplify configuration"
+
       - name: "[Amplify Initialization] Upload Amplify configuration"
         if: steps.configure_rewrites.outputs.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: amplify-config-${{ matrix.tenant }}
-          path: |
-            amplify/
-            amplifyconfiguration.json
-            amplify_outputs.json
-          retention-days: 1
+          path: amplify-config.tar.gz
+          retention-days: 7
 
       - name: "[Amplify Initialization] Set status"
         if: always()
@@ -336,7 +306,7 @@ jobs:
         with:
           name: status-amplify-init-${{ matrix.tenant }}
           path: status-reports/
-          retention-days: 1
+          retention-days: 7
 
       - name: "[Status Tracking] Fail job if initialization failed"
         if: always() && steps.init_amplify_status.outputs.status == 'failed'
@@ -347,12 +317,12 @@ jobs:
           exit 1
 
   # ═══════════════════════════════════════════════════════════
-  # JOB 6: PORTAL DEPLOYMENT (WEB) - Self-Contained
+  # JOB 4: PORTAL DEPLOYMENT (WEB) - Self-Contained
   # ═══════════════════════════════════════════════════════════
   portal-deploy:
     name: Portal Deploy (${{ matrix.tenant }})
     runs-on: ubuntu-latest
-    needs: [discover-tenants, amplify-init, setup-flutter-linux]
+    needs: [discover-tenants, amplify-init]
     if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0
     timeout-minutes: 15
     strategy:
@@ -375,6 +345,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: "[Portal Deployment] Download amplify-init status"
         uses: actions/download-artifact@v4
@@ -396,67 +368,23 @@ jobs:
             echo "✅ Proceeding with Portal deployment"
           fi
 
-      - name: "[Portal Deployment] Setup Flutter"
+      - name: "[Portal Deployment] Setup Flutter & Git"
         if: steps.check_prerequisites.outputs.continue == 'true'
-        uses: subosito/flutter-action@v2
+        id: setup_flutter_env
+        uses: ./.github/actions/setup-flutter-env
         with:
-          flutter-version: '3.32.8'
-          channel: 'stable'
-          cache: true
           cache-key: flutter-linux-${{ hashFiles('**/pubspec.lock') }}
 
-      - name: "[Portal Deployment] Configure Git"
-        if: steps.check_prerequisites.outputs.continue == 'true'
-        id: config_git
-        uses: ./.github/actions/run-with-capture
+      - name: "[Portal Deployment] Prepare build"
+        if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_flutter_env.outputs.outcome == 'success'
+        id: prepare_build
+        uses: ./.github/actions/prepare-flutter-build
         with:
-          command: 'bash .github/scripts/shared/config_git.sh'
-          step_name: 'Configure Git'
-
-      - name: "[Portal Deployment] Install dependencies"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.config_git.outputs.outcome == 'success'
-        id: install_dependencies
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'flutter pub get'
-          step_name: 'Install Dependencies'
-
-      - name: "[Portal Deployment] Bump build number"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.install_dependencies.outputs.outcome == 'success'
-        id: bump_build
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/bump_build_number.sh'
-          step_name: 'Bump Build Number'
-        env:
-          GITHUB_RUN_NUMBER: ${{ github.run_number }}
-
-      - name: "[Portal Deployment] Run build_runner"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.bump_build.outputs.outcome == 'success'
-        id: run_build_runner
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'dart run build_runner build --delete-conflicting-outputs'
-          step_name: 'Run build_runner'
-
-      - name: "[Portal Deployment] Setup environment"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.run_build_runner.outputs.outcome == 'success'
-        id: setup_env
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/setup_env.sh'
-          step_name: 'Setup Environment'
-
-      - name: "[Portal Deployment] Download Amplify configuration"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_env.outputs.outcome == 'success'
-        id: setup_amplify
-        uses: actions/download-artifact@v4
-        with:
-          name: amplify-config-${{ matrix.tenant }}
-          path: ./
+          tenant: ${{ matrix.tenant }}
+          github-run-number: ${{ github.run_number }}
 
       - name: "[Portal Deployment] Build Flutter web"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_amplify.outcome == 'success'
+        if: steps.check_prerequisites.outputs.continue == 'true' && steps.prepare_build.outputs.outcome == 'success'
         id: build_web
         uses: ./.github/actions/run-with-capture
         with:
@@ -485,12 +413,8 @@ jobs:
         shell: bash
         env:
           CHECK_PREREQUISITES: ${{ steps.check_prerequisites.outputs.continue }}
-          CONFIG_GIT_OUTCOME: ${{ steps.config_git.outputs.outcome }}
-          INSTALL_DEPS_OUTCOME: ${{ steps.install_dependencies.outputs.outcome }}
-          BUMP_BUILD_OUTCOME: ${{ steps.bump_build.outputs.outcome }}
-          BUILD_RUNNER_OUTCOME: ${{ steps.run_build_runner.outputs.outcome }}
-          SETUP_ENV_OUTCOME: ${{ steps.setup_env.outputs.outcome }}
-          SETUP_AMPLIFY_OUTCOME: ${{ steps.setup_amplify.outputs.outcome }}
+          SETUP_FLUTTER_OUTCOME: ${{ steps.setup_flutter_env.outputs.outcome }}
+          PREPARE_BUILD_OUTCOME: ${{ steps.prepare_build.outputs.outcome }}
           BUILD_WEB_OUTCOME: ${{ steps.build_web.outputs.outcome }}
           POST_BUILD_OUTCOME: ${{ steps.post_build_web.outputs.outcome }}
           DEPLOY_OUTCOME: ${{ steps.deploy_amplify.outputs.outcome }}
@@ -498,24 +422,12 @@ jobs:
           if [ "$CHECK_PREREQUISITES" != "true" ]; then
             echo "status=skipped" >> $GITHUB_OUTPUT
             echo "error=Prerequisites not met" >> $GITHUB_OUTPUT
-          elif [ "$CONFIG_GIT_OUTCOME" != "success" ]; then
+          elif [ "$SETUP_FLUTTER_OUTCOME" != "success" ]; then
             echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to configure Git" >> $GITHUB_OUTPUT
-          elif [ "$INSTALL_DEPS_OUTCOME" != "success" ]; then
+            echo "error=Failed to setup Flutter environment" >> $GITHUB_OUTPUT
+          elif [ "$PREPARE_BUILD_OUTCOME" != "success" ]; then
             echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to install dependencies" >> $GITHUB_OUTPUT
-          elif [ "$BUMP_BUILD_OUTCOME" != "success" ]; then
-            echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to bump build number" >> $GITHUB_OUTPUT
-          elif [ "$BUILD_RUNNER_OUTCOME" != "success" ]; then
-            echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to run build_runner" >> $GITHUB_OUTPUT
-          elif [ "$SETUP_ENV_OUTCOME" != "success" ]; then
-            echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to setup environment" >> $GITHUB_OUTPUT
-          elif [ "$SETUP_AMPLIFY_OUTCOME" != "success" ]; then
-            echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to pull Amplify config" >> $GITHUB_OUTPUT
+            echo "error=Failed to prepare build" >> $GITHUB_OUTPUT
           elif [ "$BUILD_WEB_OUTCOME" != "success" ]; then
             echo "status=failed" >> $GITHUB_OUTPUT
             echo "error=Failed to build web app" >> $GITHUB_OUTPUT
@@ -550,15 +462,15 @@ jobs:
         with:
           name: status-portal-deploy-${{ matrix.tenant }}
           path: status-reports/
-          retention-days: 1
+          retention-days: 7
 
   # ═══════════════════════════════════════════════════════════
-  # JOB 7: POS DEPLOYMENT (DESKTOP) - Self-Contained
+  # JOB 5: POS DEPLOYMENT (DESKTOP) - Self-Contained
   # ═══════════════════════════════════════════════════════════
   pos-deploy:
     name: POS Deploy (${{ matrix.tenant }})
     runs-on: windows-latest
-    needs: [discover-tenants, amplify-init, setup-flutter-windows]
+    needs: [discover-tenants, amplify-init]
     if: github.event.inputs.dry_run != 'true' && fromJson(needs.discover-tenants.outputs.tenant_count) > 0
     timeout-minutes: 25
     strategy:
@@ -584,6 +496,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: "[POS Deployment] Download amplify-init status"
         uses: actions/download-artifact@v4
@@ -605,67 +519,23 @@ jobs:
             echo "✅ Proceeding with POS deployment"
           fi
 
-      - name: "[POS Deployment] Setup Flutter"
+      - name: "[POS Deployment] Setup Flutter & Git"
         if: steps.check_prerequisites.outputs.continue == 'true'
-        uses: subosito/flutter-action@v2
+        id: setup_flutter_env
+        uses: ./.github/actions/setup-flutter-env
         with:
-          flutter-version: '3.32.8'
-          channel: 'stable'
-          cache: true
           cache-key: flutter-windows-${{ hashFiles('**/pubspec.lock') }}
 
-      - name: "[POS Deployment] Configure Git"
-        if: steps.check_prerequisites.outputs.continue == 'true'
-        id: config_git
-        uses: ./.github/actions/run-with-capture
+      - name: "[POS Deployment] Prepare build"
+        if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_flutter_env.outputs.outcome == 'success'
+        id: prepare_build
+        uses: ./.github/actions/prepare-flutter-build
         with:
-          command: 'bash .github/scripts/shared/config_git.sh'
-          step_name: 'Configure Git'
-
-      - name: "[POS Deployment] Install dependencies"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.config_git.outputs.outcome == 'success'
-        id: install_dependencies
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'flutter pub get'
-          step_name: 'Install Dependencies'
-
-      - name: "[POS Deployment] Bump build number"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.install_dependencies.outputs.outcome == 'success'
-        id: bump_build
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/bump_build_number.sh'
-          step_name: 'Bump Build Number'
-        env:
-          GITHUB_RUN_NUMBER: ${{ github.run_number }}
-
-      - name: "[POS Deployment] Run build_runner"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.bump_build.outputs.outcome == 'success'
-        id: run_build_runner
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'dart run build_runner build --delete-conflicting-outputs'
-          step_name: 'Run build_runner'
-
-      - name: "[POS Deployment] Setup environment"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.run_build_runner.outputs.outcome == 'success'
-        id: setup_env
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/setup_env.sh'
-          step_name: 'Setup Environment'
-
-      - name: "[POS Deployment] Download Amplify configuration"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_env.outputs.outcome == 'success'
-        id: setup_amplify
-        uses: actions/download-artifact@v4
-        with:
-          name: amplify-config-${{ matrix.tenant }}
-          path: ./
+          tenant: ${{ matrix.tenant }}
+          github-run-number: ${{ github.run_number }}
 
       - name: "[POS Deployment] Build Flutter desktop"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_amplify.outcome == 'success'
+        if: steps.check_prerequisites.outputs.continue == 'true' && steps.prepare_build.outputs.outcome == 'success'
         id: build_desktop
         uses: ./.github/actions/run-with-capture
         with:
@@ -702,12 +572,8 @@ jobs:
         shell: bash
         env:
           CHECK_PREREQUISITES: ${{ steps.check_prerequisites.outputs.continue }}
-          CONFIG_GIT_OUTCOME: ${{ steps.config_git.outputs.outcome }}
-          INSTALL_DEPS_OUTCOME: ${{ steps.install_dependencies.outputs.outcome }}
-          BUMP_BUILD_OUTCOME: ${{ steps.bump_build.outputs.outcome }}
-          BUILD_RUNNER_OUTCOME: ${{ steps.run_build_runner.outputs.outcome }}
-          SETUP_ENV_OUTCOME: ${{ steps.setup_env.outputs.outcome }}
-          SETUP_AMPLIFY_OUTCOME: ${{ steps.setup_amplify.outputs.outcome }}
+          SETUP_FLUTTER_OUTCOME: ${{ steps.setup_flutter_env.outputs.outcome }}
+          PREPARE_BUILD_OUTCOME: ${{ steps.prepare_build.outputs.outcome }}
           BUILD_DESKTOP_OUTCOME: ${{ steps.build_desktop.outputs.outcome }}
           BUNDLE_RUNTIME_OUTCOME: ${{ steps.bundle_runtime.outputs.outcome }}
           CREATE_INSTALLER_OUTCOME: ${{ steps.create_installer.outputs.outcome }}
@@ -716,24 +582,12 @@ jobs:
           if [ "$CHECK_PREREQUISITES" != "true" ]; then
             echo "status=skipped" >> $GITHUB_OUTPUT
             echo "error=Prerequisites not met" >> $GITHUB_OUTPUT
-          elif [ "$CONFIG_GIT_OUTCOME" != "success" ]; then
+          elif [ "$SETUP_FLUTTER_OUTCOME" != "success" ]; then
             echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to configure Git" >> $GITHUB_OUTPUT
-          elif [ "$INSTALL_DEPS_OUTCOME" != "success" ]; then
+            echo "error=Failed to setup Flutter environment" >> $GITHUB_OUTPUT
+          elif [ "$PREPARE_BUILD_OUTCOME" != "success" ]; then
             echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to install dependencies" >> $GITHUB_OUTPUT
-          elif [ "$BUMP_BUILD_OUTCOME" != "success" ]; then
-            echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to bump build number" >> $GITHUB_OUTPUT
-          elif [ "$BUILD_RUNNER_OUTCOME" != "success" ]; then
-            echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to run build_runner" >> $GITHUB_OUTPUT
-          elif [ "$SETUP_ENV_OUTCOME" != "success" ]; then
-            echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to setup environment" >> $GITHUB_OUTPUT
-          elif [ "$SETUP_AMPLIFY_OUTCOME" != "success" ]; then
-            echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed to pull Amplify config" >> $GITHUB_OUTPUT
+            echo "error=Failed to prepare build" >> $GITHUB_OUTPUT
           elif [ "$BUILD_DESKTOP_OUTCOME" != "success" ]; then
             echo "status=failed" >> $GITHUB_OUTPUT
             echo "error=Failed to build desktop app" >> $GITHUB_OUTPUT
@@ -771,10 +625,10 @@ jobs:
         with:
           name: status-pos-deploy-${{ matrix.tenant }}
           path: status-reports/
-          retention-days: 1
+          retention-days: 7
 
   # ═══════════════════════════════════════════════════════════
-  # JOB 8: REPORT SUMMARY
+  # JOB 6: REPORT SUMMARY
   # ═══════════════════════════════════════════════════════════
   report-summary:
     name: Report
