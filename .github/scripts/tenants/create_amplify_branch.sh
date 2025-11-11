@@ -2,7 +2,7 @@
 set -e
 
 # Read from environment variables with default for BRANCH_NAME
-BRANCH_NAME=${BRANCH_NAME:-prod}  # Default to "prod" if not set
+BRANCH_NAME=${BRANCH_NAME:-dev}  # Default to "prod" for tenants. For testing, use dev
 
 # Validate required environment variables
 if [ -z "$AMPLIFY_APP_ID" ] || [ -z "$AWS_REGION" ]; then

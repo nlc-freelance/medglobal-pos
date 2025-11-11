@@ -260,6 +260,17 @@ jobs:
           command: 'bash .github/scripts/portal_web/configure_amplify_rewrites.sh'
           step_name: 'Configure SPA Rewrites'
 
+      - name: "[Amplify Initialization] Upload Amplify configuration"
+        if: steps.configure_rewrites.outputs.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: amplify-config-${{ matrix.tenant }}
+          path: |
+            amplify/
+            amplifyconfiguration.json
+            amplify_outputs.json
+          retention-days: 1
+
       - name: "[Amplify Initialization] Set status"
         if: always()
         id: init_amplify_status
@@ -446,19 +457,16 @@ jobs:
           command: 'bash .github/scripts/shared/setup_env.sh'
           step_name: 'Setup Environment'
 
-      - name: "[Portal Deployment] Pull Amplify Config"
+      - name: "[Portal Deployment] Download Amplify configuration"
         if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_env.outputs.outcome == 'success'
         id: setup_amplify
-        uses: ./.github/actions/run-with-capture
+        uses: actions/download-artifact@v4
         with:
-          command: 'bash .github/scripts/shared/setup_amplify.sh'
-          step_name: 'Pull Amplify Config'
-        env:
-          PROJECT_NAME: medglobalportal${{ vars.TENANT_NAME }}
-          CREATE_BRANCH: true
+          name: amplify-config-${{ matrix.tenant }}
+          path: ./
 
       - name: "[Portal Deployment] Build Flutter web"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_amplify.outputs.outcome == 'success'
+        if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_amplify.outcome == 'success'
         id: build_web
         uses: ./.github/actions/run-with-capture
         with:
@@ -675,19 +683,16 @@ jobs:
           command: 'bash .github/scripts/shared/setup_env.sh'
           step_name: 'Setup Environment'
 
-      - name: "[POS Deployment] Pull Amplify Config"
+      - name: "[POS Deployment] Download Amplify configuration"
         if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_env.outputs.outcome == 'success'
         id: setup_amplify
-        uses: ./.github/actions/run-with-capture
+        uses: actions/download-artifact@v4
         with:
-          command: 'bash .github/scripts/shared/setup_amplify.sh'
-          step_name: 'Pull Amplify Config'
-        env:
-          PROJECT_NAME: medglobalportal${{ vars.TENANT_NAME }}
-          CREATE_BRANCH: true
+          name: amplify-config-${{ matrix.tenant }}
+          path: ./
 
       - name: "[POS Deployment] Build Flutter desktop"
-        if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_amplify.outputs.outcome == 'success'
+        if: steps.check_prerequisites.outputs.continue == 'true' && steps.setup_amplify.outcome == 'success'
         id: build_desktop
         uses: ./.github/actions/run-with-capture
         with:
