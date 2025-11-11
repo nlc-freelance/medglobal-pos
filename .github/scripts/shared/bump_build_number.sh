@@ -50,4 +50,4 @@ NEW_VERSION_LINE="version: ${VERSION}+${NEW_BUILD}"
 sed -i "s/^version:.*/$NEW_VERSION_LINE/" pubspec.yaml
 echo "✅ Updated version to: $NEW_VERSION_LINE (local only)"
 echo ""
-echo "ℹ️  Version bump will be committed after successful deployment"
+echo "ℹ️ Version bump will be committed after successful deployment"

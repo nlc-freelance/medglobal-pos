@@ -338,23 +338,6 @@ jobs:
           path: status-reports/
           retention-days: 1
 
-      - name: "[Status Tracking] Job Summary"
-        if: always()
-        shell: bash
-        run: |
-          echo "## Tenant: ${{ matrix.tenant }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ "${{ steps.init_amplify_status.outputs.status }}" == "success" ]; then
-            echo "✅ **Status:** Amplify initialization successful" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Amplify App ID:** ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **Status:** Amplify initialization failed" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Error:** ${{ steps.init_amplify_status.outputs.error }}" >> $GITHUB_STEP_SUMMARY
-          fi
-
       - name: "[Status Tracking] Fail job if initialization failed"
         if: always() && steps.init_amplify_status.outputs.status == 'failed'
         shell: bash
@@ -385,6 +368,8 @@ jobs:
       BASE_URL: ${{ vars.BASE_URL }}
       TENANT_NAME: ${{ vars.TENANT_NAME }}
       AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
@@ -567,25 +552,6 @@ jobs:
           path: status-reports/
           retention-days: 1
 
-      - name: "[Status Tracking] Job Summary"
-        if: always()
-        shell: bash
-        run: |
-          echo "## Tenant: ${{ matrix.tenant }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ "${{ steps.portal_status.outputs.status }}" == "success" ]; then
-            echo "✅ **Status:** Portal deployment successful" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ steps.portal_status.outputs.status }}" == "skipped" ]; then
-            echo "⏭️ **Status:** Portal deployment skipped" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Reason:** ${{ steps.portal_status.outputs.error }}" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **Status:** Portal deployment failed" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Error:** ${{ steps.portal_status.outputs.error }}" >> $GITHUB_STEP_SUMMARY
-          fi
-
   # ═══════════════════════════════════════════════════════════
   # JOB 7: POS DEPLOYMENT (DESKTOP) - Self-Contained
   # ═══════════════════════════════════════════════════════════
@@ -608,6 +574,8 @@ jobs:
       BASE_URL: ${{ vars.BASE_URL }}
       TENANT_NAME: ${{ vars.TENANT_NAME }}
       AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       INSTALLER_PUBLISHER: ${{ vars.INSTALLER_PUBLISHER }}
       INSTALLER_APP_NAME: ${{ vars.INSTALLER_APP_NAME }}
@@ -804,25 +772,6 @@ jobs:
           name: status-pos-deploy-${{ matrix.tenant }}
           path: status-reports/
           retention-days: 1
-
-      - name: "[Status Tracking] Job Summary"
-        if: always()
-        shell: bash
-        run: |
-          echo "## Tenant: ${{ matrix.tenant }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          if [ "${{ steps.pos_status.outputs.status }}" == "success" ]; then
-            echo "✅ **Status:** POS deployment successful" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ steps.pos_status.outputs.status }}" == "skipped" ]; then
-            echo "⏭️ **Status:** POS deployment skipped" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Reason:** ${{ steps.pos_status.outputs.error }}" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **Status:** POS deployment failed" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Error:** ${{ steps.pos_status.outputs.error }}" >> $GITHUB_STEP_SUMMARY
-          fi
 
   # ═══════════════════════════════════════════════════════════
   # JOB 8: REPORT SUMMARY
