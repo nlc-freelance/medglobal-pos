@@ -51,10 +51,6 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
-      - name: Record start time
-        id: start_time
-        run: echo "epoch=$(date +%s)" >> $GITHUB_OUTPUT
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -174,14 +170,6 @@ jobs:
             echo "error=" >> $GITHUB_OUTPUT
           fi
 
-      - name: Calculate duration
-        if: always()
-        id: duration
-        run: |
-          END_TIME=$(date +%s)
-          DURATION=$((END_TIME - ${{ steps.start_time.outputs.epoch }}))
-          echo "duration=$DURATION" >> $GITHUB_OUTPUT
-
       - name: Save status with composite action
         if: always()
         uses: ./.github/actions/save-tenant-status
@@ -190,18 +178,6 @@ jobs:
           phase: 'amplify-init'
           status: ${{ steps.determine_status.outputs.status }}
           error: ${{ steps.determine_status.outputs.error }}
-          duration: ${{ steps.duration.outputs.duration }}
-          config_snapshot: |
-            {
-              "AWS_REGION": "${{ env.AWS_REGION }}",
-              "BASE_URL": "${{ env.BASE_URL }}",
-              "TENANT_NAME": "${{ env.TENANT_NAME }}",
-              "AMPLIFY_APP_ID": "${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}"
-            }
-          resource_urls: |
-            {
-              "amplify_console": "https://console.aws.amazon.com/amplify/home?region=${{ env.AWS_REGION }}#/${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}"
-            }
 
       - name: Set final status for job output
         if: always()
@@ -232,10 +208,6 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
-      - name: Record start time
-        id: start_time
-        run: echo "epoch=$(date +%s)" >> $GITHUB_OUTPUT
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -324,14 +296,6 @@ jobs:
             echo "error=" >> $GITHUB_OUTPUT
           fi
 
-      - name: Calculate duration
-        if: always()
-        id: duration
-        run: |
-          END_TIME=$(date +%s)
-          DURATION=$((END_TIME - ${{ steps.start_time.outputs.epoch }}))
-          echo "duration=$DURATION" >> $GITHUB_OUTPUT
-
       - name: Save status with composite action
         if: always()
         uses: ./.github/actions/save-tenant-status
@@ -340,18 +304,9 @@ jobs:
           phase: 'portal-deploy'
           status: ${{ steps.determine_status.outputs.status }}
           error: ${{ steps.determine_status.outputs.error }}
-          duration: ${{ steps.duration.outputs.duration }}
-          config_snapshot: |
-            {
-              "AWS_REGION": "${{ env.AWS_REGION }}",
-              "BASE_URL": "${{ env.BASE_URL }}",
-              "TENANT_NAME": "${{ env.TENANT_NAME }}",
-              "AMPLIFY_APP_ID": "${{ env.AMPLIFY_APP_ID }}"
-            }
           resource_urls: |
             {
-              "portal_url": "${{ env.BASE_URL }}",
-              "amplify_console": "https://console.aws.amazon.com/amplify/home?region=${{ env.AWS_REGION }}#/${{ env.AMPLIFY_APP_ID }}"
+              "portal_url": "${{ env.BASE_URL }}"
             }
 
       - name: Set final status for job output
@@ -387,10 +342,6 @@ jobs:
       INSTALLER_SUPPORT_URL: ${{ vars.INSTALLER_SUPPORT_URL }}
 
     steps:
-      - name: Record start time
-        id: start_time
-        run: echo "epoch=$(date +%s)" >> $GITHUB_OUTPUT
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -477,14 +428,6 @@ jobs:
             echo "error=" >> $GITHUB_OUTPUT
           fi
 
-      - name: Calculate duration
-        if: always()
-        id: duration
-        run: |
-          END_TIME=$(date +%s)
-          DURATION=$((END_TIME - ${{ steps.start_time.outputs.epoch }}))
-          echo "duration=$DURATION" >> $GITHUB_OUTPUT
-
       - name: Save status with composite action
         if: always()
         uses: ./.github/actions/save-tenant-status
@@ -493,15 +436,6 @@ jobs:
           phase: 'pos-deploy'
           status: ${{ steps.determine_status.outputs.status }}
           error: ${{ steps.determine_status.outputs.error }}
-          duration: ${{ steps.duration.outputs.duration }}
-          config_snapshot: |
-            {
-              "AWS_REGION": "${{ env.AWS_REGION }}",
-              "BASE_URL": "${{ env.BASE_URL }}",
-              "TENANT_NAME": "${{ env.TENANT_NAME }}",
-              "INSTALLER_PUBLISHER": "${{ env.INSTALLER_PUBLISHER }}",
-              "INSTALLER_APP_NAME": "${{ env.INSTALLER_APP_NAME }}"
-            }
           resource_urls: |
             {
               "release_url": "${{ steps.create_release.outputs.release_url || format('https://github.com/{0}/releases', github.repository) }}"
@@ -539,15 +473,14 @@ jobs:
           # Phase results table
           echo "### Phase Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Phase | Status | Duration | Error |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Phase | Status | Error/Remarks |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|---------------|" >> $GITHUB_STEP_SUMMARY
 
           # Process each phase
           for phase in amplify-init portal-deploy pos-deploy; do
             FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
             if [ -f "$FILE" ]; then
               STATUS=$(jq -r '.status' "$FILE")
-              DURATION=$(jq -r '.duration // "0"' "$FILE")
               ERROR=$(jq -r '.error // ""' "$FILE")
 
               # Status icon
@@ -559,16 +492,16 @@ jobs:
                 ICON="❌"
               fi
 
-              # Format error
+              # Format error - show full message
               if [ -n "$ERROR" ]; then
-                ERROR_DISPLAY="${ERROR:0:50}..."
+                ERROR_DISPLAY="$ERROR"
               else
                 ERROR_DISPLAY="-"
               fi
 
-              echo "| $phase | $ICON $STATUS | ${DURATION}s | $ERROR_DISPLAY |" >> $GITHUB_STEP_SUMMARY
+              echo "| $phase | $ICON $STATUS | $ERROR_DISPLAY |" >> $GITHUB_STEP_SUMMARY
             else
-              echo "| $phase | ⚠️ Missing | - | No status file |" >> $GITHUB_STEP_SUMMARY
+              echo "| $phase | ⚠️ Missing | No status file |" >> $GITHUB_STEP_SUMMARY
             fi
           done
 
@@ -588,56 +521,3 @@ jobs:
               fi
             fi
           done
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          # Detailed error section (expandable)
-          HAS_ERRORS=false
-          for phase in amplify-init portal-deploy pos-deploy; do
-            FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
-            if [ -f "$FILE" ]; then
-              STATUS=$(jq -r '.status' "$FILE")
-              if [ "$STATUS" == "failed" ]; then
-                HAS_ERRORS=true
-                break
-              fi
-            fi
-          done
-
-          if [ "$HAS_ERRORS" == "true" ]; then
-            echo "<details><summary>❌ Error Details</summary>" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-
-            for phase in amplify-init portal-deploy pos-deploy; do
-              FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
-              if [ -f "$FILE" ]; then
-                STATUS=$(jq -r '.status' "$FILE")
-                if [ "$STATUS" == "failed" ]; then
-                  ERROR=$(jq -r '.error // "Unknown error"' "$FILE")
-                  echo "[$phase] $ERROR" >> $GITHUB_STEP_SUMMARY
-                fi
-              fi
-            done
-
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            echo "</details>" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          # Configuration snapshot (expandable)
-          echo "<details><summary>⚙️ Configuration Snapshot</summary>" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
-
-          FILE="status-reports/${{ inputs.tenant }}-amplify-init.json"
-          if [ -f "$FILE" ]; then
-            jq -r '.config // {}' "$FILE" >> $GITHUB_STEP_SUMMARY
-          fi
-
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "</details>" >> $GITHUB_STEP_SUMMARY
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY

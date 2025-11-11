@@ -159,11 +159,9 @@ jobs:
       - name: Generate comprehensive report
         shell: bash
         run: |
-          echo "# 🌱 Tenant Onboarding Report (v3)" >> $GITHUB_STEP_SUMMARY
+          echo "# Multi-Tenant Onboarding" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Workflow Run:** [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-          echo "**Mode:** ${{ github.event.inputs.dry_run == 'true' && '🧪 Dry Run' || '🚀 Live Deployment' }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Triggered by:** @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "**🎉 Onboarding workflow complete!**" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Calculate statistics
@@ -181,11 +179,6 @@ jobs:
 
           # For dry run, check validation only
           if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
-            echo "## 📊 Validation Results" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "| Tenant | Validation | Config |" >> $GITHUB_STEP_SUMMARY
-            echo "|--------|------------|--------|" >> $GITHUB_STEP_SUMMARY
-
             for TENANT in $TENANTS; do
               TOTAL_TENANTS=$((TOTAL_TENANTS + 1))
 
@@ -195,24 +188,25 @@ jobs:
 
                 if [ "$VAL_STATUS" == "success" ]; then
                   SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
-                  echo "| $TENANT | ✅ Valid | $(jq -r '.config.BASE_URL // "-"' "$VAL_FILE") |" >> $GITHUB_STEP_SUMMARY
                 else
                   FAILED_COUNT=$((FAILED_COUNT + 1))
-                  ERROR=$(jq -r '.error // "Unknown error"' "$VAL_FILE")
-                  echo "| $TENANT | ❌ Invalid | ${ERROR:0:30}... |" >> $GITHUB_STEP_SUMMARY
                 fi
               else
                 FAILED_COUNT=$((FAILED_COUNT + 1))
-                echo "| $TENANT | ⚠️ Missing | - |" >> $GITHUB_STEP_SUMMARY
               fi
             done
+
+            # Display dry run metadata
+            echo "**Mode:** 🧪 Dry Run" >> $GITHUB_STEP_SUMMARY
+            echo "**Total tenants:** $TOTAL_TENANTS" >> $GITHUB_STEP_SUMMARY
+            echo "**Successful:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "**Failed:** $FAILED_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "This was a dry-run execution. Only pre-flight checks were performed to validate tenant configurations. No actual deployments were made." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "To proceed with full onboarding, re-run the workflow with mode: \`live-deployment\`." >> $GITHUB_STEP_SUMMARY
           else
             # Live deployment - check all phases
-            echo "## 📊 Statistics" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-
-            # Process each tenant
-            declare -A TENANT_DATA
             for TENANT in $TENANTS; do
               TOTAL_TENANTS=$((TOTAL_TENANTS + 1))
 
@@ -224,125 +218,17 @@ jobs:
               # Determine overall status
               if [ "$VAL_STATUS" == "success" ] && [ "$AMP_STATUS" == "success" ] && [ "$POR_STATUS" == "success" ] && [ "$POS_STATUS" == "success" ]; then
                 SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
-                TENANT_DATA[$TENANT]="success"
               else
                 FAILED_COUNT=$((FAILED_COUNT + 1))
-                TENANT_DATA[$TENANT]="failed"
               fi
             done
 
-            # Display statistics
-            echo "- **Total tenants:** $TOTAL_TENANTS" >> $GITHUB_STEP_SUMMARY
-            echo "- **Successful:** $SUCCESS_COUNT ✅" >> $GITHUB_STEP_SUMMARY
-            echo "- **Failed:** $FAILED_COUNT ❌" >> $GITHUB_STEP_SUMMARY
-
-            if [ $TOTAL_TENANTS -gt 0 ]; then
-              SUCCESS_RATE=$((SUCCESS_COUNT * 100 / TOTAL_TENANTS))
-              echo "- **Success rate:** ${SUCCESS_RATE}%" >> $GITHUB_STEP_SUMMARY
-            fi
-
-            echo "" >> $GITHUB_STEP_SUMMARY
-
-            # Detailed results table
-            echo "## 📋 Detailed Results" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "| Tenant | Validation | Amplify | Portal | POS | Duration | Status |" >> $GITHUB_STEP_SUMMARY
-            echo "|--------|------------|---------|--------|-----|----------|--------|" >> $GITHUB_STEP_SUMMARY
-
-            for TENANT in $TENANTS; do
-              # Read statuses
-              VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
-              AMP_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-amplify-init.json" 2>/dev/null || echo "unknown")
-              POR_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "unknown")
-              POS_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "unknown")
-
-              # Read durations
-              AMP_DUR=$(jq -r '.duration // "0"' "all-status/${TENANT}-amplify-init.json" 2>/dev/null || echo "0")
-              POR_DUR=$(jq -r '.duration // "0"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "0")
-              POS_DUR=$(jq -r '.duration // "0"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "0")
-              TOTAL_DUR=$((AMP_DUR + POR_DUR + POS_DUR))
-
-              # Status icons
-              VAL_ICON=$([ "$VAL_STATUS" == "success" ] && echo "✅" || echo "❌")
-              AMP_ICON=$([ "$AMP_STATUS" == "success" ] && echo "✅" || echo "❌")
-              POR_ICON=$([ "$POR_STATUS" == "success" ] && echo "✅" || ([ "$POR_STATUS" == "skipped" ] && echo "⏭️" || echo "❌"))
-              POS_ICON=$([ "$POS_STATUS" == "success" ] && echo "✅" || ([ "$POS_STATUS" == "skipped" ] && echo "⏭️" || echo "❌"))
-
-              # Overall status
-              if [ "${TENANT_DATA[$TENANT]}" == "success" ]; then
-                OVERALL="✅ Success"
-              else
-                OVERALL="❌ Failed"
-              fi
-
-              # Format duration
-              if [ $TOTAL_DUR -ge 60 ]; then
-                TOTAL_MIN=$((TOTAL_DUR / 60))
-                TOTAL_SEC=$((TOTAL_DUR % 60))
-                DURATION_STR="${TOTAL_MIN}m ${TOTAL_SEC}s"
-              else
-                DURATION_STR="${TOTAL_DUR}s"
-              fi
-
-              echo "| $TENANT | $VAL_ICON | $AMP_ICON | $POR_ICON | $POS_ICON | $DURATION_STR | $OVERALL |" >> $GITHUB_STEP_SUMMARY
-            done
-
-            echo "" >> $GITHUB_STEP_SUMMARY
-
-            # Failure details section
-            if [ $FAILED_COUNT -gt 0 ]; then
-              echo "## ❌ Failure Details" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-
-              for TENANT in $TENANTS; do
-                if [ "${TENANT_DATA[$TENANT]}" == "failed" ]; then
-                  echo "<details><summary><b>$TENANT</b></summary>" >> $GITHUB_STEP_SUMMARY
-                  echo "" >> $GITHUB_STEP_SUMMARY
-                  echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-
-                  for phase in validation amplify-init portal-deploy pos-deploy; do
-                    FILE="all-status/${TENANT}-${phase}.json"
-                    if [ -f "$FILE" ]; then
-                      STATUS=$(jq -r '.status' "$FILE")
-                      if [ "$STATUS" == "failed" ]; then
-                        ERROR=$(jq -r '.error // "Unknown error"' "$FILE")
-                        echo "[$phase] $ERROR" >> $GITHUB_STEP_SUMMARY
-                      fi
-                    fi
-                  done
-
-                  echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-                  echo "" >> $GITHUB_STEP_SUMMARY
-
-                  # Resource links
-                  echo "**Resources:**" >> $GITHUB_STEP_SUMMARY
-                  for phase in amplify-init portal-deploy pos-deploy; do
-                    FILE="all-status/${TENANT}-${phase}.json"
-                    if [ -f "$FILE" ]; then
-                      RESOURCES=$(jq -r '.resources // {}' "$FILE")
-                      if [ "$RESOURCES" != "{}" ]; then
-                        echo "$RESOURCES" | jq -r 'to_entries[] | "- \(.key): \(.value)"' >> $GITHUB_STEP_SUMMARY
-                      fi
-                    fi
-                  done
-
-                  echo "</details>" >> $GITHUB_STEP_SUMMARY
-                  echo "" >> $GITHUB_STEP_SUMMARY
-                fi
-              done
-            fi
-
-            # Quick links
-            echo "## 🔗 Quick Links" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "- [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-            echo "- [AWS Amplify Console](https://console.aws.amazon.com/amplify/home)" >> $GITHUB_STEP_SUMMARY
-            echo "- [GitHub Releases](https://github.com/${{ github.repository }}/releases)" >> $GITHUB_STEP_SUMMARY
+            # Display live mode metadata
+            echo "**Mode:** 🚀 Live Deployment" >> $GITHUB_STEP_SUMMARY
+            echo "**Total tenants:** $TOTAL_TENANTS" >> $GITHUB_STEP_SUMMARY
+            echo "**Successful:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "**Failed:** $FAILED_COUNT" >> $GITHUB_STEP_SUMMARY
           fi
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "*Generated at $(date -u +%Y-%m-%dT%H:%M:%SZ)*" >> $GITHUB_STEP_SUMMARY
 
           # Create JSON summary for next retry
           cat > summary.json <<EOF

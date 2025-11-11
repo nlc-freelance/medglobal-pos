@@ -52,24 +52,6 @@ runs:
         }
         EOF
 
-    - name: Display status
-      shell: bash
-      run: |
-        echo "### Status Report: ${{ inputs.tenant }} - ${{ inputs.phase }}" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "- **Status**: ${{ inputs.status }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Timestamp**: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY
-
-        if [ "${{ inputs.status }}" = "failed" ] && [ -n "${{ inputs.error }}" ]; then
-          echo "- **Error**: ${{ inputs.error }}" >> $GITHUB_STEP_SUMMARY
-        fi
-
-        if [ "${{ inputs.duration }}" != "0" ]; then
-          echo "- **Duration**: ${{ inputs.duration }}s" >> $GITHUB_STEP_SUMMARY
-        fi
-
-        echo "" >> $GITHUB_STEP_SUMMARY
-
     - name: Upload status artifact
       uses: actions/upload-artifact@v4
       with:
