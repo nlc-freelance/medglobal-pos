@@ -1,0 +1,674 @@
+name: "_Tenant Deploy Pipeline"
+
+on:
+  workflow_call:
+    inputs:
+      tenant:
+        description: 'Tenant name'
+        required: true
+        type: string
+      dry_run:
+        description: 'Dry run mode (no actual deployment)'
+        type: boolean
+        default: false
+    outputs:
+      amplify_status:
+        description: 'Amplify initialization status'
+        value: ${{ jobs.amplify-init.outputs.status }}
+      portal_status:
+        description: 'Portal deployment status'
+        value: ${{ jobs.portal-deploy.outputs.status }}
+      pos_status:
+        description: 'POS deployment status'
+        value: ${{ jobs.pos-deploy.outputs.status }}
+
+permissions:
+  contents: write  # For creating GitHub releases (desktop)
+  id-token: write  # For AWS OIDC
+
+jobs:
+  # ═══════════════════════════════════════════════════════════
+  # JOB 1: AMPLIFY INITIALIZATION
+  # ═══════════════════════════════════════════════════════════
+  amplify-init:
+    name: Amplify Init (${{ inputs.tenant }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ inputs.tenant }}
+    outputs:
+      status: ${{ steps.final_status.outputs.status }}
+      amplify_app_id: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
+
+    env:
+      ENV_NAME: dev
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      BASE_URL: ${{ vars.BASE_URL }}
+      TENANT_NAME: ${{ vars.TENANT_NAME }}
+      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    steps:
+      - name: Record start time
+        id: start_time
+        run: echo "epoch=$(date +%s)" >> $GITHUB_OUTPUT
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install Amplify CLI
+        id: install_amplify_cli
+        uses: ./.github/actions/run-with-capture
+        with:
+          command: 'bash .github/scripts/shared/install_amplify_cli.sh'
+          step_name: 'Install Amplify CLI'
+
+      - name: Configure AWS Credentials (OIDC)
+        if: steps.install_amplify_cli.outputs.outcome == 'success'
+        id: configure_aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: GitHubActions-${{ github.run_id }}
+
+      - name: Initialize Amplify Stack
+        if: steps.configure_aws.outcome == 'success'
+        id: init_amplify
+        shell: bash
+        run: bash .github/scripts/tenants/init_amplify_stack.sh
+
+      - name: Create AMPLIFY_APP_ID Secret
+        if: steps.init_amplify.outcome == 'success' && steps.init_amplify.outputs.AMPLIFY_APP_ID != ''
+        id: create_secret
+        uses: ./.github/actions/run-with-capture
+        with:
+          command: |
+            AMPLIFY_APP_ID="${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}"
+
+            echo "🔐 Saving AMPLIFY_APP_ID secret to ${{ inputs.tenant }} environment..."
+            echo "App ID: $AMPLIFY_APP_ID"
+
+            gh secret set AMPLIFY_APP_ID \
+              --body "$AMPLIFY_APP_ID" \
+              --env "${{ inputs.tenant }}" \
+              --repo "${{ github.repository }}"
+
+            echo "✅ AMPLIFY_APP_ID secret saved successfully"
+          step_name: 'Auto-create AMPLIFY_APP_ID secret'
+
+      - name: Import Cognito Authentication
+        if: steps.init_amplify.outcome == 'success'
+        id: import_auth
+        uses: ./.github/actions/run-with-capture
+        with:
+          command: 'bash .github/scripts/tenants/import_cognito_auth.sh'
+          step_name: 'Import Cognito Authentication'
+
+      - name: Create Amplify Branch
+        if: steps.import_auth.outputs.outcome == 'success'
+        id: create_amplify_branch
+        uses: ./.github/actions/run-with-capture
+        env:
+          AMPLIFY_APP_ID: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
+          BRANCH_NAME: dev
+        with:
+          command: 'bash .github/scripts/tenants/create_amplify_branch.sh'
+          step_name: 'Create Amplify Branch'
+
+      - name: Configure Rewrites & Redirects
+        if: steps.create_amplify_branch.outputs.outcome == 'success'
+        id: configure_rewrites
+        uses: ./.github/actions/run-with-capture
+        env:
+          AMPLIFY_APP_ID: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
+        with:
+          command: 'bash .github/scripts/portal_web/configure_amplify_rewrites.sh'
+          step_name: 'Configure SPA Rewrites'
+
+      - name: Compress Amplify configuration
+        if: steps.configure_rewrites.outputs.outcome == 'success'
+        shell: bash
+        run: |
+          tar -czf amplify-config.tar.gz amplify/ lib/amplifyconfiguration.dart
+          echo "✅ Compressed Amplify configuration (amplify/ + lib/amplifyconfiguration.dart)"
+
+      - name: Upload Amplify configuration
+        if: steps.configure_rewrites.outputs.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: amplify-config-${{ inputs.tenant }}
+          path: amplify-config.tar.gz
+          retention-days: 7
+
+      - name: Determine status and error
+        if: always()
+        id: determine_status
+        shell: bash
+        env:
+          INSTALL_AMPLIFY_OUTCOME: ${{ steps.install_amplify_cli.outputs.outcome }}
+          CONFIGURE_AWS_OUTCOME: ${{ steps.configure_aws.outcome }}
+          INIT_AMPLIFY_OUTCOME: ${{ steps.init_amplify.outcome }}
+          CREATE_SECRET_OUTCOME: ${{ steps.create_secret.outputs.outcome }}
+          IMPORT_AUTH_OUTCOME: ${{ steps.import_auth.outputs.outcome }}
+          CREATE_BRANCH_OUTCOME: ${{ steps.create_amplify_branch.outputs.outcome }}
+          CONFIGURE_REWRITES_OUTCOME: ${{ steps.configure_rewrites.outputs.outcome }}
+        run: |
+          if [ "$INSTALL_AMPLIFY_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to install Amplify CLI" >> $GITHUB_OUTPUT
+          elif [ "$CONFIGURE_AWS_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to configure AWS credentials" >> $GITHUB_OUTPUT
+          elif [ "$INIT_AMPLIFY_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to initialize Amplify app" >> $GITHUB_OUTPUT
+          elif [ "$CREATE_SECRET_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to create AMPLIFY_APP_ID secret" >> $GITHUB_OUTPUT
+          elif [ "$IMPORT_AUTH_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to import Cognito authentication" >> $GITHUB_OUTPUT
+          elif [ "$CREATE_BRANCH_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to create Amplify branch" >> $GITHUB_OUTPUT
+          elif [ "$CONFIGURE_REWRITES_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to configure SPA rewrites" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "error=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Calculate duration
+        if: always()
+        id: duration
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - ${{ steps.start_time.outputs.epoch }}))
+          echo "duration=$DURATION" >> $GITHUB_OUTPUT
+
+      - name: Save status with composite action
+        if: always()
+        uses: ./.github/actions/save-tenant-status
+        with:
+          tenant: ${{ inputs.tenant }}
+          phase: 'amplify-init'
+          status: ${{ steps.determine_status.outputs.status }}
+          error: ${{ steps.determine_status.outputs.error }}
+          duration: ${{ steps.duration.outputs.duration }}
+          config_snapshot: |
+            {
+              "AWS_REGION": "${{ env.AWS_REGION }}",
+              "BASE_URL": "${{ env.BASE_URL }}",
+              "TENANT_NAME": "${{ env.TENANT_NAME }}",
+              "AMPLIFY_APP_ID": "${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}"
+            }
+          resource_urls: |
+            {
+              "amplify_console": "https://console.aws.amazon.com/amplify/home?region=${{ env.AWS_REGION }}#/${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}"
+            }
+
+      - name: Set final status for job output
+        if: always()
+        id: final_status
+        run: echo "status=${{ steps.determine_status.outputs.status }}" >> $GITHUB_OUTPUT
+
+      - name: Fail job if initialization failed
+        if: always() && steps.determine_status.outputs.status == 'failed'
+        shell: bash
+        run: |
+          echo "❌ Job failed: Amplify initialization failed"
+          echo "Error: ${{ steps.determine_status.outputs.error }}"
+          exit 1
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 2: PORTAL DEPLOYMENT (WEB)
+  # ═══════════════════════════════════════════════════════════
+  portal-deploy:
+    name: Portal (${{ inputs.tenant }})
+    runs-on: ubuntu-latest
+    needs: amplify-init
+    if: needs.amplify-init.outputs.status == 'success'
+    timeout-minutes: 15
+    environment: ${{ inputs.tenant }}
+    outputs:
+      status: ${{ steps.final_status.outputs.status }}
+
+    env:
+      ENV_NAME: dev
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      BASE_URL: ${{ vars.BASE_URL }}
+      TENANT_NAME: ${{ vars.TENANT_NAME }}
+      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    steps:
+      - name: Record start time
+        id: start_time
+        run: echo "epoch=$(date +%s)" >> $GITHUB_OUTPUT
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download Amplify configuration
+        uses: actions/download-artifact@v4
+        with:
+          name: amplify-config-${{ inputs.tenant }}
+
+      - name: Extract Amplify configuration
+        run: tar -xzf amplify-config.tar.gz
+
+      - name: Configure AWS Credentials (OIDC)
+        id: configure_aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: ${{ inputs.tenant }}-portal-deploy-${{ github.run_id }}
+
+      - name: Setup Flutter & Git
+        id: setup_flutter_env
+        uses: ./.github/actions/setup-flutter-env
+        with:
+          cache-key: flutter-linux-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: Prepare build
+        if: steps.setup_flutter_env.outputs.outcome == 'success'
+        id: prepare_build
+        uses: ./.github/actions/prepare-flutter-build
+        with:
+          tenant: ${{ inputs.tenant }}
+          github-run-number: ${{ github.run_number }}
+
+      - name: Build Flutter web
+        if: steps.prepare_build.outputs.outcome == 'success'
+        id: build_web
+        uses: ./.github/actions/run-with-capture
+        with:
+          command: 'bash .github/scripts/shared/build_web.sh'
+          step_name: 'Build Flutter Web'
+
+      - name: Post-build processing
+        if: steps.build_web.outputs.outcome == 'success'
+        id: post_build_web
+        uses: ./.github/actions/run-with-capture
+        with:
+          command: 'bash .github/scripts/shared/post_build_web.sh'
+          step_name: 'Post-build Web Processing'
+
+      - name: Deploy to Amplify
+        if: steps.post_build_web.outputs.outcome == 'success'
+        id: deploy_amplify
+        uses: ./.github/actions/run-with-capture
+        with:
+          command: 'bash .github/scripts/portal_web/deploy_amplify_web.sh'
+          step_name: 'Deploy to Amplify'
+
+      - name: Determine status and error
+        if: always()
+        id: determine_status
+        shell: bash
+        env:
+          CONFIGURE_AWS_OUTCOME: ${{ steps.configure_aws.outcome }}
+          SETUP_FLUTTER_OUTCOME: ${{ steps.setup_flutter_env.outputs.outcome }}
+          PREPARE_BUILD_OUTCOME: ${{ steps.prepare_build.outputs.outcome }}
+          BUILD_WEB_OUTCOME: ${{ steps.build_web.outputs.outcome }}
+          POST_BUILD_OUTCOME: ${{ steps.post_build_web.outputs.outcome }}
+          DEPLOY_OUTCOME: ${{ steps.deploy_amplify.outputs.outcome }}
+        run: |
+          if [ "$CONFIGURE_AWS_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to configure AWS credentials" >> $GITHUB_OUTPUT
+          elif [ "$SETUP_FLUTTER_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to setup Flutter environment" >> $GITHUB_OUTPUT
+          elif [ "$PREPARE_BUILD_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to prepare build" >> $GITHUB_OUTPUT
+          elif [ "$BUILD_WEB_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to build web app" >> $GITHUB_OUTPUT
+          elif [ "$POST_BUILD_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed post-build processing" >> $GITHUB_OUTPUT
+          elif [ "$DEPLOY_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to deploy to Amplify" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "error=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Calculate duration
+        if: always()
+        id: duration
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - ${{ steps.start_time.outputs.epoch }}))
+          echo "duration=$DURATION" >> $GITHUB_OUTPUT
+
+      - name: Save status with composite action
+        if: always()
+        uses: ./.github/actions/save-tenant-status
+        with:
+          tenant: ${{ inputs.tenant }}
+          phase: 'portal-deploy'
+          status: ${{ steps.determine_status.outputs.status }}
+          error: ${{ steps.determine_status.outputs.error }}
+          duration: ${{ steps.duration.outputs.duration }}
+          config_snapshot: |
+            {
+              "AWS_REGION": "${{ env.AWS_REGION }}",
+              "BASE_URL": "${{ env.BASE_URL }}",
+              "TENANT_NAME": "${{ env.TENANT_NAME }}",
+              "AMPLIFY_APP_ID": "${{ env.AMPLIFY_APP_ID }}"
+            }
+          resource_urls: |
+            {
+              "portal_url": "${{ env.BASE_URL }}",
+              "amplify_console": "https://console.aws.amazon.com/amplify/home?region=${{ env.AWS_REGION }}#/${{ env.AMPLIFY_APP_ID }}"
+            }
+
+      - name: Set final status for job output
+        if: always()
+        id: final_status
+        run: echo "status=${{ steps.determine_status.outputs.status }}" >> $GITHUB_OUTPUT
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 3: POS DEPLOYMENT (DESKTOP)
+  # ═══════════════════════════════════════════════════════════
+  pos-deploy:
+    name: POS (${{ inputs.tenant }})
+    runs-on: windows-latest
+    needs: amplify-init
+    if: needs.amplify-init.outputs.status == 'success'
+    timeout-minutes: 25
+    environment: ${{ inputs.tenant }}
+    outputs:
+      status: ${{ steps.final_status.outputs.status }}
+      release_url: ${{ steps.create_release.outputs.release_url }}
+
+    env:
+      ENV_NAME: dev
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      BASE_URL: ${{ vars.BASE_URL }}
+      TENANT_NAME: ${{ vars.TENANT_NAME }}
+      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
+      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
+      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      INSTALLER_PUBLISHER: ${{ vars.INSTALLER_PUBLISHER }}
+      INSTALLER_APP_NAME: ${{ vars.INSTALLER_APP_NAME }}
+      INSTALLER_SUPPORT_URL: ${{ vars.INSTALLER_SUPPORT_URL }}
+
+    steps:
+      - name: Record start time
+        id: start_time
+        run: echo "epoch=$(date +%s)" >> $GITHUB_OUTPUT
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download Amplify configuration
+        uses: actions/download-artifact@v4
+        with:
+          name: amplify-config-${{ inputs.tenant }}
+
+      - name: Extract Amplify configuration
+        run: tar -xzf amplify-config.tar.gz
+
+      - name: Setup Flutter & Git
+        id: setup_flutter_env
+        uses: ./.github/actions/setup-flutter-env
+        with:
+          cache-key: flutter-windows-${{ hashFiles('**/pubspec.lock') }}
+
+      - name: Prepare build
+        if: steps.setup_flutter_env.outputs.outcome == 'success'
+        id: prepare_build
+        uses: ./.github/actions/prepare-flutter-build
+        with:
+          tenant: ${{ inputs.tenant }}
+          github-run-number: ${{ github.run_number }}
+
+      - name: Build Flutter desktop
+        if: steps.prepare_build.outputs.outcome == 'success'
+        id: build_desktop
+        uses: ./.github/actions/run-with-capture
+        with:
+          command: 'bash .github/scripts/shared/build_desktop.sh'
+          step_name: 'Build Flutter Desktop'
+
+      - name: Bundle Windows runtime
+        if: steps.build_desktop.outputs.outcome == 'success'
+        id: bundle_runtime
+        uses: ./.github/actions/run-with-capture
+        with:
+          command: 'bash .github/scripts/pos_desktop/bundle_windows_runtime.sh'
+          step_name: 'Bundle Windows Runtime'
+
+      - name: Create installer
+        if: steps.bundle_runtime.outputs.outcome == 'success'
+        id: create_installer
+        uses: ./.github/actions/run-with-capture
+        with:
+          command: 'bash .github/scripts/pos_desktop/create_installer.sh'
+          step_name: 'Create Installer'
+
+      - name: Create GitHub Release
+        if: steps.create_installer.outputs.outcome == 'success'
+        id: create_release
+        uses: ./.github/actions/run-with-capture
+        with:
+          command: 'bash .github/scripts/pos_desktop/create_github_release_desktop.sh'
+          step_name: 'Create GitHub Release'
+
+      - name: Determine status and error
+        if: always()
+        id: determine_status
+        shell: bash
+        env:
+          SETUP_FLUTTER_OUTCOME: ${{ steps.setup_flutter_env.outputs.outcome }}
+          PREPARE_BUILD_OUTCOME: ${{ steps.prepare_build.outputs.outcome }}
+          BUILD_DESKTOP_OUTCOME: ${{ steps.build_desktop.outputs.outcome }}
+          BUNDLE_RUNTIME_OUTCOME: ${{ steps.bundle_runtime.outputs.outcome }}
+          CREATE_INSTALLER_OUTCOME: ${{ steps.create_installer.outputs.outcome }}
+          CREATE_RELEASE_OUTCOME: ${{ steps.create_release.outputs.outcome }}
+        run: |
+          if [ "$SETUP_FLUTTER_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to setup Flutter environment" >> $GITHUB_OUTPUT
+          elif [ "$PREPARE_BUILD_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to prepare build" >> $GITHUB_OUTPUT
+          elif [ "$BUILD_DESKTOP_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to build desktop app" >> $GITHUB_OUTPUT
+          elif [ "$BUNDLE_RUNTIME_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to bundle Windows runtime" >> $GITHUB_OUTPUT
+          elif [ "$CREATE_INSTALLER_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to create installer" >> $GITHUB_OUTPUT
+          elif [ "$CREATE_RELEASE_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "error=Failed to create GitHub release" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "error=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Calculate duration
+        if: always()
+        id: duration
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - ${{ steps.start_time.outputs.epoch }}))
+          echo "duration=$DURATION" >> $GITHUB_OUTPUT
+
+      - name: Save status with composite action
+        if: always()
+        uses: ./.github/actions/save-tenant-status
+        with:
+          tenant: ${{ inputs.tenant }}
+          phase: 'pos-deploy'
+          status: ${{ steps.determine_status.outputs.status }}
+          error: ${{ steps.determine_status.outputs.error }}
+          duration: ${{ steps.duration.outputs.duration }}
+          config_snapshot: |
+            {
+              "AWS_REGION": "${{ env.AWS_REGION }}",
+              "BASE_URL": "${{ env.BASE_URL }}",
+              "TENANT_NAME": "${{ env.TENANT_NAME }}",
+              "INSTALLER_PUBLISHER": "${{ env.INSTALLER_PUBLISHER }}",
+              "INSTALLER_APP_NAME": "${{ env.INSTALLER_APP_NAME }}"
+            }
+          resource_urls: |
+            {
+              "release_url": "${{ steps.create_release.outputs.release_url || format('https://github.com/{0}/releases', github.repository) }}"
+            }
+
+      - name: Set final status for job output
+        if: always()
+        id: final_status
+        run: echo "status=${{ steps.determine_status.outputs.status }}" >> $GITHUB_OUTPUT
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 4: TENANT REPORT
+  # ═══════════════════════════════════════════════════════════
+  tenant-report:
+    name: Report (${{ inputs.tenant }})
+    runs-on: ubuntu-latest
+    needs: [amplify-init, portal-deploy, pos-deploy]
+    if: always()
+    timeout-minutes: 5
+
+    steps:
+      - name: Download all status artifacts for this tenant
+        uses: actions/download-artifact@v4
+        with:
+          pattern: status-*-${{ inputs.tenant }}
+          path: status-reports
+          merge-multiple: true
+
+      - name: Generate tenant summary
+        shell: bash
+        run: |
+          echo "## 🌱 Tenant: ${{ inputs.tenant }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Phase results table
+          echo "### Phase Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Phase | Status | Duration | Error |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|----------|-------|" >> $GITHUB_STEP_SUMMARY
+
+          # Process each phase
+          for phase in amplify-init portal-deploy pos-deploy; do
+            FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
+            if [ -f "$FILE" ]; then
+              STATUS=$(jq -r '.status' "$FILE")
+              DURATION=$(jq -r '.duration // "0"' "$FILE")
+              ERROR=$(jq -r '.error // ""' "$FILE")
+
+              # Status icon
+              if [ "$STATUS" == "success" ]; then
+                ICON="✅"
+              elif [ "$STATUS" == "skipped" ]; then
+                ICON="⏭️"
+              else
+                ICON="❌"
+              fi
+
+              # Format error
+              if [ -n "$ERROR" ]; then
+                ERROR_DISPLAY="${ERROR:0:50}..."
+              else
+                ERROR_DISPLAY="-"
+              fi
+
+              echo "| $phase | $ICON $STATUS | ${DURATION}s | $ERROR_DISPLAY |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| $phase | ⚠️ Missing | - | No status file |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Resource links section
+          echo "### 🔗 Resource Links" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Extract resource URLs from status files
+          for phase in amplify-init portal-deploy pos-deploy; do
+            FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
+            if [ -f "$FILE" ]; then
+              RESOURCES=$(jq -r '.resources // {}' "$FILE")
+              if [ "$RESOURCES" != "{}" ]; then
+                echo "$RESOURCES" | jq -r 'to_entries[] | "- **\(.key)**: \(.value)"' >> $GITHUB_STEP_SUMMARY
+              fi
+            fi
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Detailed error section (expandable)
+          HAS_ERRORS=false
+          for phase in amplify-init portal-deploy pos-deploy; do
+            FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
+            if [ -f "$FILE" ]; then
+              STATUS=$(jq -r '.status' "$FILE")
+              if [ "$STATUS" == "failed" ]; then
+                HAS_ERRORS=true
+                break
+              fi
+            fi
+          done
+
+          if [ "$HAS_ERRORS" == "true" ]; then
+            echo "<details><summary>❌ Error Details</summary>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+            for phase in amplify-init portal-deploy pos-deploy; do
+              FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
+              if [ -f "$FILE" ]; then
+                STATUS=$(jq -r '.status' "$FILE")
+                if [ "$STATUS" == "failed" ]; then
+                  ERROR=$(jq -r '.error // "Unknown error"' "$FILE")
+                  echo "[$phase] $ERROR" >> $GITHUB_STEP_SUMMARY
+                fi
+              fi
+            done
+
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            echo "</details>" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Configuration snapshot (expandable)
+          echo "<details><summary>⚙️ Configuration Snapshot</summary>" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+
+          FILE="status-reports/${{ inputs.tenant }}-amplify-init.json"
+          if [ -f "$FILE" ]; then
+            jq -r '.config // {}' "$FILE" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "</details>" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
