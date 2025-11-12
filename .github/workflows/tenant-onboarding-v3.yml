@@ -54,7 +54,7 @@ jobs:
 
       - name: Summary
         run: |
-          echo "## 🔍 Tenant Discovery" >> $GITHUB_STEP_SUMMARY
+          echo "## Tenant Discovery" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Mode:** ${{ github.event.inputs.dry_run == 'true' && '🧪 Dry Run' || '🚀 Live Deployment' }}" >> $GITHUB_STEP_SUMMARY
           echo "**Tenants found:** ${{ steps.count.outputs.tenant_count }}" >> $GITHUB_STEP_SUMMARY

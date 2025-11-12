@@ -34,7 +34,7 @@ jobs:
   # JOB 1: VALIDATE CONFIGURATION
   # ═══════════════════════════════════════════════════════════
   validate-config:
-    name: Validate (${{ inputs.tenant }})
+    name: Validate
     runs-on: ubuntu-latest
     timeout-minutes: 5
     environment: ${{ inputs.tenant }}
@@ -87,7 +87,7 @@ jobs:
   # JOB 2: AMPLIFY INITIALIZATION
   # ═══════════════════════════════════════════════════════════
   amplify-init:
-    name: Amplify Init (${{ inputs.tenant }})
+    name: Amplify Init
     runs-on: ubuntu-latest
     needs: validate-config
     if: inputs.dry_run != true && needs.validate-config.outputs.status == 'success'
@@ -273,7 +273,7 @@ jobs:
   # JOB 5: TENANT REPORT
   # ═══════════════════════════════════════════════════════════
   tenant-report:
-    name: Report (${{ inputs.tenant }})
+    name: Report
     runs-on: ubuntu-latest
     needs: [validate-config, amplify-init, deploy-portal, deploy-pos]
     if: always()
@@ -290,7 +290,7 @@ jobs:
       - name: Generate tenant summary
         shell: bash
         run: |
-          echo "## 🌱 Tenant: ${{ inputs.tenant }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Tenant: ${{ inputs.tenant }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Phase results table
@@ -299,12 +299,24 @@ jobs:
           echo "| Phase | Status | Error/Remarks |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|---------------|" >> $GITHUB_STEP_SUMMARY
 
+          # Define phase names mapping (id -> display name)
+          declare -A PHASE_NAMES
+          PHASE_NAMES["validation"]="Validation"
+          PHASE_NAMES["amplify-init"]="Amplify Init"
+          PHASE_NAMES["portal-deploy"]="Portal Deploy"
+          PHASE_NAMES["pos-deploy"]="POS Deploy"
+
           # Process each phase
           for phase in validation amplify-init portal-deploy pos-deploy; do
             FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
+            PHASE_DISPLAY="${PHASE_NAMES[$phase]}"
+
             if [ -f "$FILE" ]; then
               STATUS=$(jq -r '.status' "$FILE")
               ERROR=$(jq -r '.error // ""' "$FILE")
+
+              # Capitalize status
+              STATUS_DISPLAY=$(echo "$STATUS" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')
 
               # Status icon
               if [ "$STATUS" == "success" ]; then
@@ -322,25 +334,35 @@ jobs:
                 ERROR_DISPLAY="-"
               fi
 
-              echo "| $phase | $ICON $STATUS | $ERROR_DISPLAY |" >> $GITHUB_STEP_SUMMARY
+              echo "| $PHASE_DISPLAY | $ICON $STATUS_DISPLAY | $ERROR_DISPLAY |" >> $GITHUB_STEP_SUMMARY
             else
-              echo "| $phase | ⚠️ Missing | No status file |" >> $GITHUB_STEP_SUMMARY
+              # Missing file - if dry run, mark as skipped; otherwise missing
+              if [ "${{ inputs.dry_run }}" == "true" ]; then
+                echo "| $PHASE_DISPLAY | ⏭️ Skipped | - |" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "| $PHASE_DISPLAY | ⚠️ Missing | No status file |" >> $GITHUB_STEP_SUMMARY
+              fi
             fi
           done
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Resource links section
-          echo "### 🔗 Resource Links" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          # Resource links section (no heading, only show if links exist)
+          HAS_RESOURCES=false
+          RESOURCE_OUTPUT=""
 
-          # Extract resource URLs from status files
           for phase in validation amplify-init portal-deploy pos-deploy; do
             FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
             if [ -f "$FILE" ]; then
               RESOURCES=$(jq -r '.resources // {}' "$FILE")
               if [ "$RESOURCES" != "{}" ]; then
-                echo "$RESOURCES" | jq -r 'to_entries[] | "- **\(.key)**: \(.value)"' >> $GITHUB_STEP_SUMMARY
+                HAS_RESOURCES=true
+                RESOURCE_OUTPUT+=$(echo "$RESOURCES" | jq -r 'to_entries[] | "- **\(.key)**: `\(.value)`\n"')
               fi
             fi
           done
+
+          # Only display resources if they exist
+          if [ "$HAS_RESOURCES" = true ]; then
+            echo -e "$RESOURCE_OUTPUT" >> $GITHUB_STEP_SUMMARY
+          fi
