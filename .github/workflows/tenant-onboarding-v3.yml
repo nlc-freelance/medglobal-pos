@@ -146,9 +146,36 @@ jobs:
 
             # Display dry run metadata
             echo "**Mode:** 🧪 Dry Run" >> $GITHUB_STEP_SUMMARY
-            echo "**Total tenants:** $TOTAL_TENANTS" >> $GITHUB_STEP_SUMMARY
-            echo "**Successful:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
-            echo "**Failed:** $FAILED_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "**Total:** $TOTAL_TENANTS" >> $GITHUB_STEP_SUMMARY
+            echo "**Valid Configs:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "**Invalid Configs:** $FAILED_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            # Display tenant summary table
+            echo "| Tenant | Validation | Result |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|------------|--------|" >> $GITHUB_STEP_SUMMARY
+
+            for TENANT in $TENANTS; do
+              # Extract tenant display name
+              TENANT_DISPLAY=$(echo "$TENANT" | sed 's/^tenant-//')
+
+              VAL_FILE="all-status/${TENANT}-validation.json"
+              if [ -f "$VAL_FILE" ]; then
+                VAL_STATUS=$(jq -r '.status' "$VAL_FILE")
+              else
+                VAL_STATUS="unknown"
+              fi
+
+              # Map status to icons
+              case "$VAL_STATUS" in
+                success) VAL_ICON="✅"; RESULT="✅ Valid" ;;
+                skipped) VAL_ICON="⏭️"; RESULT="⏭️ Skipped" ;;
+                *) VAL_ICON="❌"; RESULT="❌ Invalid" ;;
+              esac
+
+              echo "| $TENANT_DISPLAY | $VAL_ICON | $RESULT |" >> $GITHUB_STEP_SUMMARY
+            done
+
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "This was a dry-run execution. Only pre-flight checks were performed to validate tenant configurations. No actual deployments were made." >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
@@ -173,9 +200,55 @@ jobs:
 
             # Display live mode metadata
             echo "**Mode:** 🚀 Live Deployment" >> $GITHUB_STEP_SUMMARY
-            echo "**Total tenants:** $TOTAL_TENANTS" >> $GITHUB_STEP_SUMMARY
+            echo "**Total:** $TOTAL_TENANTS" >> $GITHUB_STEP_SUMMARY
             echo "**Successful:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
             echo "**Failed:** $FAILED_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            # Display tenant summary table
+            echo "| Tenant | Validation | Amplify Init | Portal | POS | Result |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|------------|--------------|--------|-----|--------|" >> $GITHUB_STEP_SUMMARY
+
+            for TENANT in $TENANTS; do
+              # Extract tenant display name
+              TENANT_DISPLAY=$(echo "$TENANT" | sed 's/^tenant-//')
+
+              VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
+              AMP_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-amplify-init.json" 2>/dev/null || echo "unknown")
+              POR_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "unknown")
+              POS_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "unknown")
+
+              # Map statuses to icons
+              case "$VAL_STATUS" in
+                success) VAL_ICON="✅" ;;
+                skipped) VAL_ICON="⏭️" ;;
+                *) VAL_ICON="❌" ;;
+              esac
+              case "$AMP_STATUS" in
+                success) AMP_ICON="✅" ;;
+                skipped) AMP_ICON="⏭️" ;;
+                *) AMP_ICON="❌" ;;
+              esac
+              case "$POR_STATUS" in
+                success) POR_ICON="✅" ;;
+                skipped) POR_ICON="⏭️" ;;
+                *) POR_ICON="❌" ;;
+              esac
+              case "$POS_STATUS" in
+                success) POS_ICON="✅" ;;
+                skipped) POS_ICON="⏭️" ;;
+                *) POS_ICON="❌" ;;
+              esac
+
+              # Determine overall result
+              if [ "$VAL_STATUS" == "success" ] && [ "$AMP_STATUS" == "success" ] && [ "$POR_STATUS" == "success" ] && [ "$POS_STATUS" == "success" ]; then
+                RESULT="✅ Success"
+              else
+                RESULT="❌ Failed"
+              fi
+
+              echo "| $TENANT_DISPLAY | $VAL_ICON | $AMP_ICON | $POR_ICON | $POS_ICON | $RESULT |" >> $GITHUB_STEP_SUMMARY
+            done
           fi
 
           # Create JSON summary for next retry

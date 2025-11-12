@@ -290,7 +290,9 @@ jobs:
       - name: Generate tenant summary
         shell: bash
         run: |
-          echo "## Tenant: ${{ inputs.tenant }}" >> $GITHUB_STEP_SUMMARY
+          # Extract tenant name without "tenant-" prefix
+          TENANT_DISPLAY=$(echo "${{ inputs.tenant }}" | sed 's/^tenant-//')
+          echo "## Tenant: $TENANT_DISPLAY" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Phase results table
@@ -351,13 +353,24 @@ jobs:
           HAS_RESOURCES=false
           RESOURCE_OUTPUT=""
 
+          # Define key name mapping (json key -> display name)
+          declare -A RESOURCE_NAMES
+          RESOURCE_NAMES["portal_url"]="Portal URL"
+          RESOURCE_NAMES["release_url"]="POS Installer"
+
           for phase in validation amplify-init portal-deploy pos-deploy; do
             FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
             if [ -f "$FILE" ]; then
               RESOURCES=$(jq -r '.resources // {}' "$FILE")
               if [ "$RESOURCES" != "{}" ]; then
                 HAS_RESOURCES=true
-                RESOURCE_OUTPUT+=$(echo "$RESOURCES" | jq -r 'to_entries[] | "- **\(.key)**: `\(.value)`\n"')
+                # Process each resource with custom display names
+                while IFS= read -r line; do
+                  KEY=$(echo "$line" | jq -r '.key')
+                  VALUE=$(echo "$line" | jq -r '.value')
+                  DISPLAY_NAME="${RESOURCE_NAMES[$KEY]:-$KEY}"
+                  RESOURCE_OUTPUT+="**${DISPLAY_NAME}**: ${VALUE}\n"
+                done < <(echo "$RESOURCES" | jq -c 'to_entries[]')
               fi
             fi
           done
