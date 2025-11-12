@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       tenants:
-        description: 'Tenant names (comma-separated, e.g., "hospital-a,clinic-b") or "all" for all tenants'
+        description: 'Tenant names (comma-separated or "all"'
         required: true
         default: 'all'
       dry_run:
-        description: 'Dry run (validate config only, no deployment)'
+        description: 'Dry run (no deployment)'
         type: boolean
         default: false
 
