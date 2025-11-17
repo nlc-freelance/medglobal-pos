@@ -96,6 +96,7 @@ jobs:
         env:
           TENANTS_DATA: ${{ steps.read_tenants.outputs.tenants }}
         with:
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const tenants = process.env.TENANTS_DATA.trim().split('\n')
             const repo = context.repo
