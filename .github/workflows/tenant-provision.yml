@@ -92,123 +92,108 @@ jobs:
           echo "$TENANTS" | jq -r '"- " + .tenant_name' >> $GITHUB_STEP_SUMMARY
 
       - name: Provision GitHub Environments
-        uses: actions/github-script@v7
+        shell: bash
         env:
-          TENANTS_DATA: ${{ steps.read_tenants.outputs.tenants }}
-        with:
-          github-token: ${{ secrets.GH_TOKEN }}
-          script: |
-            const tenants = process.env.TENANTS_DATA.trim().split('\n')
-            const repo = context.repo
-            const repoId = context.payload.repository.id
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo ""
+          echo "📦 Provisioning tenant environments..."
+          echo ""
 
-            console.log(`\n📦 Provisioning ${tenants.length} tenant environment(s)...\n`)
+          # Read tenant configurations
+          TENANTS=$(jq -c '.tenants[]' tenants.json)
+          TENANT_COUNT=$(echo "$TENANTS" | wc -l)
 
-            for (const tenantLine of tenants) {
-              const tenant = JSON.parse(tenantLine)
-              const envName = `tenant-${tenant.tenant_name}`
+          echo "Found $TENANT_COUNT tenant(s) to provision"
+          echo ""
 
-              console.log(`\n${'='.repeat(60)}`)
-              console.log(`🚀 Provisioning environment: ${envName}`)
-              console.log(`${'='.repeat(60)}`)
+          # Process each tenant
+          while IFS= read -r TENANT_LINE; do
+            TENANT_NAME=$(echo "$TENANT_LINE" | jq -r '.tenant_name')
+            ENV_NAME="tenant-${TENANT_NAME}"
 
-              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              // 1️⃣ CREATE GITHUB ENVIRONMENT
-              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              try {
-                await github.rest.repos.createOrUpdateEnvironment({
-                  owner: repo.owner,
-                  repo: repo.repo,
-                  environment_name: envName,
-                })
-                console.log(`✅ Environment created/updated: ${envName}`)
-              } catch (error) {
-                console.error(`❌ Failed to create environment ${envName}: ${error.message}`)
-                throw error
-              }
+            echo "======================================================"
+            echo "🚀 Provisioning environment: $ENV_NAME"
+            echo "======================================================"
 
-              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              // 2️⃣ PROVISION VARIABLES
-              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              if (tenant.variables) {
-                console.log(`\n🔧 Provisioning ${Object.keys(tenant.variables).length} variable(s)...`)
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            # 1️⃣ CREATE GITHUB ENVIRONMENT
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            echo ""
+            echo "Creating environment: $ENV_NAME"
 
-                for (const [key, value] of Object.entries(tenant.variables)) {
-                  try {
-                    // Try to update first (if exists)
-                    try {
-                      await github.rest.actions.updateEnvironmentVariable({
-                        repository_id: repoId,
-                        environment_name: envName,
-                        name: key,
-                        value: String(value)
-                      })
-                      console.log(`   ✅ Updated variable: ${key}`)
-                    } catch (updateError) {
-                      // If update fails (doesn't exist), create new
-                      if (updateError.status === 404) {
-                        await github.rest.actions.createEnvironmentVariable({
-                          repository_id: repoId,
-                          environment_name: envName,
-                          name: key,
-                          value: String(value)
-                        })
-                        console.log(`   ✅ Created variable: ${key}`)
-                      } else {
-                        throw updateError
-                      }
-                    }
-                  } catch (error) {
-                    console.error(`   ❌ Failed to set variable ${key}: ${error.message}`)
-                    throw error
-                  }
-                }
-              }
+            gh api \
+              --method PUT \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/repos/$REPO/environments/$ENV_NAME" \
+              || { echo "❌ Failed to create environment $ENV_NAME"; exit 1; }
 
-              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              // 3️⃣ PROVISION SECRETS (ENCRYPTED)
-              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-              if (tenant.secrets) {
-                console.log(`\n🔐 Provisioning ${Object.keys(tenant.secrets).length} secret(s)...`)
+            echo "✅ Environment created/updated: $ENV_NAME"
 
-                // Fetch public key for encryption
-                const { data: pubKey } = await github.rest.actions.getEnvironmentPublicKey({
-                  repository_id: repoId,
-                  environment_name: envName
-                })
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            # 2️⃣ PROVISION VARIABLES
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            VARIABLES=$(echo "$TENANT_LINE" | jq -r '.variables // {}')
+            if [ "$VARIABLES" != "{}" ]; then
+              VAR_COUNT=$(echo "$VARIABLES" | jq 'length')
+              echo ""
+              echo "🔧 Provisioning $VAR_COUNT variable(s)..."
 
-                const sodium = require('tweetsodium')
+              echo "$VARIABLES" | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' | while IFS='=' read -r KEY VALUE; do
+                # Try to update variable (if it exists), otherwise create it
+                gh api \
+                  --method POST \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "X-GitHub-Api-Version: 2022-11-28" \
+                  "/repositories/${{ github.event.repository.id }}/environments/$ENV_NAME/variables" \
+                  -f "name=$KEY" \
+                  -f "value=$VALUE" \
+                  2>/dev/null && echo "   ✅ Created variable: $KEY" || \
+                gh api \
+                  --method PATCH \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "X-GitHub-Api-Version: 2022-11-28" \
+                  "/repositories/${{ github.event.repository.id }}/environments/$ENV_NAME/variables/$KEY" \
+                  -f "name=$KEY" \
+                  -f "value=$VALUE" \
+                  && echo "   ✅ Updated variable: $KEY" || \
+                  { echo "   ❌ Failed to set variable $KEY"; exit 1; }
+              done
+            fi
 
-                for (const [key, value] of Object.entries(tenant.secrets)) {
-                  try {
-                    // Encrypt the secret value
-                    const messageBytes = Buffer.from(String(value))
-                    const keyBytes = Buffer.from(pubKey.key, 'base64')
-                    const encryptedBytes = sodium.seal(messageBytes, keyBytes)
-                    const encryptedValue = Buffer.from(encryptedBytes).toString('base64')
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            # 3️⃣ PROVISION SECRETS (using gh secret set - auto-encrypts)
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            SECRETS=$(echo "$TENANT_LINE" | jq -r '.secrets // {}')
+            if [ "$SECRETS" != "{}" ]; then
+              SECRET_COUNT=$(echo "$SECRETS" | jq 'length')
+              echo ""
+              echo "🔐 Provisioning $SECRET_COUNT secret(s)..."
 
-                    // Create or update the secret
-                    await github.rest.actions.createOrUpdateEnvironmentSecret({
-                      repository_id: repoId,
-                      environment_name: envName,
-                      secret_name: key,
-                      encrypted_value: encryptedValue,
-                      key_id: pubKey.key_id
-                    })
-                    console.log(`   ✅ Secret provisioned: ${key}`)
-                  } catch (error) {
-                    console.error(`   ❌ Failed to set secret ${key}: ${error.message}`)
-                    throw error
-                  }
-                }
-              }
+              echo "$SECRETS" | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' | while IFS='=' read -r KEY REST; do
+                # Handle values that might contain '=' by extracting everything after first '='
+                VALUE="${REST}"
 
-              console.log(`\n🎉 Tenant '${tenant.tenant_name}' provisioned successfully!`)
-            }
+                # Use gh secret set (automatically encrypts)
+                echo "$VALUE" | gh secret set "$KEY" \
+                  --env "$ENV_NAME" \
+                  --repo "$REPO" \
+                  && echo "   ✅ Secret provisioned: $KEY" || \
+                  { echo "   ❌ Failed to set secret $KEY"; exit 1; }
+              done
+            fi
 
-            console.log(`\n${'='.repeat(60)}`)
-            console.log(`✅ All ${tenants.length} tenant(s) provisioned successfully!`)
-            console.log(`${'='.repeat(60)}`)
+            echo ""
+            echo "🎉 Tenant '$TENANT_NAME' provisioned successfully!"
+            echo ""
+
+          done <<< "$TENANTS"
+
+          echo "======================================================"
+          echo "✅ All $TENANT_COUNT tenant(s) provisioned successfully!"
+          echo "======================================================"
 
       - name: Generate Final Summary
         if: always()
