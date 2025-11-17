@@ -33,6 +33,7 @@ PROJECT_NAME="medglobalportal${TENANT_NAME}"
 # Step 1: Pull Amplify configuration from existing app
 amplify pull \
   --amplify "{\"projectName\":\"${PROJECT_NAME}\",\"envName\":\"dev\",\"appId\":\"${AMPLIFY_APP_ID}\"}" \
+  --frontend "{\"frontend\":\"flutter\",\"config\":{\"ResDir\":\"./lib/\"}}" \
   --providers "{\"awscloudformation\":{\"configLevel\":\"general\",\"useProfile\":false,\"region\":\"${AWS_REGION}\"}}" \
   --yes
 
