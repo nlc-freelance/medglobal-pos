@@ -1,4 +1,4 @@
-name: "📦 Tenant Deploy"
+name: "🌐 Tenant Deploy"
 
 on:
   workflow_dispatch:
