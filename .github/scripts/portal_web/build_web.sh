@@ -15,4 +15,4 @@ dart run build_runner build --delete-conflicting-outputs
 flutter build web --release --no-tree-shake-icons --dart-define=ENV=$ENV_NAME
 
 # Post-process build to ensure fonts are included
-bash .github/scripts/shared/post_build_web.sh
+bash .github/scripts/portal_web/post_build_web.sh

@@ -128,7 +128,7 @@ jobs:
         if: steps.configure_aws.outcome == 'success'
         id: pull_amplify
         shell: bash
-        run: bash .github/scripts/tenants/pull_amplify_config.sh
+        run: bash .github/scripts/shared/pull_amplify_config.sh
 
       - name: Compress Amplify configuration
         if: steps.pull_amplify.outcome == 'success'

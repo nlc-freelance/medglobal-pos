@@ -85,7 +85,7 @@ jobs:
         if: steps.prepare_build.outputs.outcome == 'success'
         id: build_desktop
         shell: bash
-        run: bash .github/scripts/shared/build_desktop.sh
+        run: bash .github/scripts/pos_desktop/build_desktop.sh
 
       - name: Bundle Windows runtime
         if: steps.build_desktop.outcome == 'success'

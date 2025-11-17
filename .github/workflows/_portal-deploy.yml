@@ -90,13 +90,13 @@ jobs:
         if: steps.prepare_build.outputs.outcome == 'success'
         id: build_web
         shell: bash
-        run: bash .github/scripts/shared/build_web.sh
+        run: bash .github/scripts/portal_web/build_web.sh
 
       - name: Post-build processing
         if: steps.build_web.outcome == 'success'
         id: post_build_web
         shell: bash
-        run: bash .github/scripts/shared/post_build_web.sh
+        run: bash .github/scripts/portal_web/post_build_web.sh
 
       - name: Deploy to Amplify
         if: steps.post_build_web.outcome == 'success'
