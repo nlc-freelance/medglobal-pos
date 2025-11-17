@@ -1,4 +1,4 @@
-name: "⚙️ Tenant Provision"
+name: "🧱️ Tenant Provision"
 
 on:
   workflow_dispatch:
