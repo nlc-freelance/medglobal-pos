@@ -1,4 +1,4 @@
-name: "_Deploy POS (Desktop)"
+name: "_Deploy POS"
 
 on:
   workflow_call:

@@ -1,4 +1,4 @@
-name: "_Deploy Portal (Web)"
+name: "_Deploy Portal"
 
 on:
   workflow_call:
