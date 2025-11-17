@@ -1,4 +1,4 @@
-name: "Tenant Onboarding"
+name: "🛫 Tenant Onboarding"
 
 on:
   workflow_dispatch:

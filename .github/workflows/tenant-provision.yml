@@ -1,0 +1,234 @@
+name: "🧱 Tenant Provision"
+
+on:
+  workflow_dispatch:
+    inputs:
+      s3_path:
+        description: 'S3 path to tenant config JSON'
+        default: 's3://medglobal-multi-tenant-config-non-prod/FE/tenants.json'
+        required: true
+      aws_region:
+        description: 'AWS region for S3'
+        default: 'us-east-1'
+        required: true
+
+permissions:
+  actions: write    # For creating GitHub environments
+  contents: read    # For checkout
+  id-token: write   # For AWS OIDC
+
+jobs:
+  provision:
+    name: Provision Tenant Environments
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      AWS_REGION: ${{ github.event.inputs.aws_region }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Configure AWS Credentials (OIDC)
+        id: configure_aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: GitHubActions-TenantProvision-${{ github.run_id }}
+
+      - name: Download tenant config from S3
+        id: download_config
+        shell: bash
+        run: |
+          S3_PATH="${{ github.event.inputs.s3_path }}"
+
+          echo "📥 Downloading tenant configuration from S3..."
+          echo "   Path: $S3_PATH"
+
+          # Download config file
+          aws s3 cp "$S3_PATH" tenants.json
+
+          if [ ! -f "tenants.json" ]; then
+            echo "❌ Error: Failed to download tenant config from S3"
+            exit 1
+          fi
+
+          echo "✅ Configuration downloaded successfully"
+
+          # Validate JSON structure
+          if ! jq empty tenants.json 2>/dev/null; then
+            echo "❌ Error: Invalid JSON in tenant config file"
+            exit 1
+          fi
+
+          # Check if tenants array exists
+          if ! jq -e '.tenants' tenants.json > /dev/null 2>&1; then
+            echo "❌ Error: Missing 'tenants' array in config file"
+            exit 1
+          fi
+
+          TENANT_COUNT=$(jq '.tenants | length' tenants.json)
+          echo "📊 Found $TENANT_COUNT tenant(s) to provision"
+
+      - name: Read tenant configurations
+        id: read_tenants
+        shell: bash
+        run: |
+          # Extract tenant configurations as JSON lines
+          TENANTS=$(jq -c '.tenants[]' tenants.json)
+
+          # Store in output (handle multiline)
+          echo "tenants<<EOF" >> $GITHUB_OUTPUT
+          echo "$TENANTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          # Display summary
+          echo "## Tenant Provisioning Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Source:** \`${{ github.event.inputs.s3_path }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Total Tenants:** $(echo "$TENANTS" | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Tenants to Provision:" >> $GITHUB_STEP_SUMMARY
+          echo "$TENANTS" | jq -r '"- " + .tenant_name' >> $GITHUB_STEP_SUMMARY
+
+      - name: Provision GitHub Environments
+        uses: actions/github-script@v7
+        env:
+          TENANTS_DATA: ${{ steps.read_tenants.outputs.tenants }}
+        with:
+          script: |
+            const tenants = process.env.TENANTS_DATA.trim().split('\n')
+            const repo = context.repo
+            const repoId = context.payload.repository.id
+
+            console.log(`\n📦 Provisioning ${tenants.length} tenant environment(s)...\n`)
+
+            for (const tenantLine of tenants) {
+              const tenant = JSON.parse(tenantLine)
+              const envName = `tenant-${tenant.tenant_name}`
+
+              console.log(`\n${'='.repeat(60)}`)
+              console.log(`🚀 Provisioning environment: ${envName}`)
+              console.log(`${'='.repeat(60)}`)
+
+              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+              // 1️⃣ CREATE GITHUB ENVIRONMENT
+              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+              try {
+                await github.rest.repos.createOrUpdateEnvironment({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  environment_name: envName,
+                })
+                console.log(`✅ Environment created/updated: ${envName}`)
+              } catch (error) {
+                console.error(`❌ Failed to create environment ${envName}: ${error.message}`)
+                throw error
+              }
+
+              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+              // 2️⃣ PROVISION VARIABLES
+              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+              if (tenant.variables) {
+                console.log(`\n🔧 Provisioning ${Object.keys(tenant.variables).length} variable(s)...`)
+
+                for (const [key, value] of Object.entries(tenant.variables)) {
+                  try {
+                    // Try to update first (if exists)
+                    try {
+                      await github.rest.actions.updateEnvironmentVariable({
+                        repository_id: repoId,
+                        environment_name: envName,
+                        name: key,
+                        value: String(value)
+                      })
+                      console.log(`   ✅ Updated variable: ${key}`)
+                    } catch (updateError) {
+                      // If update fails (doesn't exist), create new
+                      if (updateError.status === 404) {
+                        await github.rest.actions.createEnvironmentVariable({
+                          repository_id: repoId,
+                          environment_name: envName,
+                          name: key,
+                          value: String(value)
+                        })
+                        console.log(`   ✅ Created variable: ${key}`)
+                      } else {
+                        throw updateError
+                      }
+                    }
+                  } catch (error) {
+                    console.error(`   ❌ Failed to set variable ${key}: ${error.message}`)
+                    throw error
+                  }
+                }
+              }
+
+              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+              // 3️⃣ PROVISION SECRETS (ENCRYPTED)
+              // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+              if (tenant.secrets) {
+                console.log(`\n🔐 Provisioning ${Object.keys(tenant.secrets).length} secret(s)...`)
+
+                // Fetch public key for encryption
+                const { data: pubKey } = await github.rest.actions.getEnvironmentPublicKey({
+                  repository_id: repoId,
+                  environment_name: envName
+                })
+
+                const sodium = require('tweetsodium')
+
+                for (const [key, value] of Object.entries(tenant.secrets)) {
+                  try {
+                    // Encrypt the secret value
+                    const messageBytes = Buffer.from(String(value))
+                    const keyBytes = Buffer.from(pubKey.key, 'base64')
+                    const encryptedBytes = sodium.seal(messageBytes, keyBytes)
+                    const encryptedValue = Buffer.from(encryptedBytes).toString('base64')
+
+                    // Create or update the secret
+                    await github.rest.actions.createOrUpdateEnvironmentSecret({
+                      repository_id: repoId,
+                      environment_name: envName,
+                      secret_name: key,
+                      encrypted_value: encryptedValue,
+                      key_id: pubKey.key_id
+                    })
+                    console.log(`   ✅ Secret provisioned: ${key}`)
+                  } catch (error) {
+                    console.error(`   ❌ Failed to set secret ${key}: ${error.message}`)
+                    throw error
+                  }
+                }
+              }
+
+              console.log(`\n🎉 Tenant '${tenant.tenant_name}' provisioned successfully!`)
+            }
+
+            console.log(`\n${'='.repeat(60)}`)
+            console.log(`✅ All ${tenants.length} tenant(s) provisioned successfully!`)
+            console.log(`${'='.repeat(60)}`)
+
+      - name: Generate Final Summary
+        if: always()
+        shell: bash
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ **Status:** All tenants provisioned successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Status:** Provisioning failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Verify environments in **Settings → Environments**" >> $GITHUB_STEP_SUMMARY
+          echo "2. Run **Tenant Onboarding** workflow to initialize infrastructure" >> $GITHUB_STEP_SUMMARY
+          echo "3. Run **Tenant Deploy** workflow to deploy applications" >> $GITHUB_STEP_SUMMARY

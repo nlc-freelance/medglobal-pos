@@ -1,4 +1,4 @@
-name: "Internal Deploy"
+name: "🚀 Internal Deploy"
 
 on:
   workflow_dispatch:
