@@ -1,25 +1,33 @@
-name: "🌱 Tenant Onboarding"
+name: "Tenant Onboarding"
 
 on:
   workflow_dispatch:
     inputs:
       tenants:
-        description: 'Tenant names (comma-separated, e.g., "hospital-a,clinic-b") or "all" for all tenants'
+        description: 'Tenant names (comma-separated or "all"'
         required: true
         default: 'all'
       dry_run:
-        description: 'Dry run mode (validate config only, no deployment)'
+        description: 'Dry run (no deployment)'
         type: boolean
         default: false
 
+concurrency:
+  group: tenant-onboarding-v3-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write  # For creating GitHub releases (desktop)
-  id-token: write  # For AWS OIDC if configured
+  id-token: write  # For AWS OIDC
 
 jobs:
+  # ═══════════════════════════════════════════════════════════
+  # JOB 1: DISCOVER TENANTS
+  # ═══════════════════════════════════════════════════════════
   discover-tenants:
-    name: Setup
+    name: Discover Tenants
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       tenants: ${{ steps.discover.outputs.tenants }}
       tenant_count: ${{ steps.count.outputs.tenant_count }}
@@ -30,6 +38,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Discover tenant environments
         id: discover
@@ -52,1045 +62,284 @@ jobs:
           echo "**Tenants to process:**" >> $GITHUB_STEP_SUMMARY
           echo '${{ steps.discover.outputs.tenants }}' | jq -r '.[] | "- " + .' >> $GITHUB_STEP_SUMMARY
 
-  onboard-phases-1-3:
-    name: ${{ matrix.tenant }} (Prerequisites)
-    runs-on: ubuntu-latest  # Linux for phases 1-3 (validation, amplify, dependencies)
+      - name: Exit if no tenants to process
+        if: fromJson(steps.count.outputs.tenant_count) == 0
+        run: |
+          echo "⚠️ No tenants to process. Exiting."
+          exit 0
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 2: ONBOARD TENANTS (CALLS REUSABLE WORKFLOW)
+  # ═══════════════════════════════════════════════════════════
+  onboard-tenants:
+    name: Onboard Tenant
     needs: discover-tenants
     if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0
     strategy:
-      fail-fast: false  # Continue processing all tenants even if one fails
+      fail-fast: false
       matrix:
         tenant: ${{ fromJson(needs.discover-tenants.outputs.tenants) }}
-      max-parallel: 3  # Process up to 3 tenants concurrently
-    environment: ${{ matrix.tenant }}
+      max-parallel: 3
+    uses: ./.github/workflows/_tenant-onboarding.yml
+    with:
+      tenant: ${{ matrix.tenant }}
+      dry_run: ${{ github.event.inputs.dry_run == 'true' }}
+    secrets: inherit
 
-    env:
-      # Common variables used across multiple steps
-      ENV_NAME: dev
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      BASE_URL: ${{ vars.BASE_URL }}
-      TENANT_NAME: ${{ vars.TENANT_NAME }}
-      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
-      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
-      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      INSTALLER_PUBLISHER: ${{ vars.INSTALLER_PUBLISHER }}
-      INSTALLER_APP_NAME: ${{ vars.INSTALLER_APP_NAME }}
+  # ═══════════════════════════════════════════════════════════
+  # JOB 3: GENERATE FINAL REPORT
+  # ═══════════════════════════════════════════════════════════
+  final-report:
+    name: Final Report
+    runs-on: ubuntu-latest
+    needs: [discover-tenants, onboard-tenants]
+    if: always()
+    timeout-minutes: 5
 
     steps:
-      # ═══════════════════════════════════════════════════════════
-      # PHASE 1: VALIDATION
-      # ═══════════════════════════════════════════════════════════
-      - name: "[Pre-Flight Check] Checkout code"
-        uses: actions/checkout@v4
-
-      - name: "[Pre-Flight Check] Validate tenant configuration"
-        id: preflight
-        uses: ./.github/actions/run-with-capture
+      - name: Download all status artifacts
+        uses: actions/download-artifact@v4
         with:
-          command: 'bash .github/scripts/tenants/validate_tenant_config.sh "${{ matrix.tenant }}" "onboarding"'
-          step_name: 'Configuration Validation'
+          pattern: "status-*"
+          path: all-status
+          merge-multiple: true
 
-      #  Stop here if dry run or validation failed
-      - name: "[Pre-Flight Check] Determine deployment flow"
-        id: check_deployment_prerequisites
-        if: always()
-        shell: bash
-        env:
-          DRY_RUN: ${{ github.event.inputs.dry_run }}
-          PREFLIGHT_OUTCOME: ${{ steps.preflight.outputs.outcome }}
-        run: |
-            if [[ "$DRY_RUN" == "true" ]]; then
-              echo "🧪 Dry run mode — skipping execution"
-              echo "continue=false" >> "$GITHUB_OUTPUT"
-              echo "reason=dry_run" >> "$GITHUB_OUTPUT"
-            elif [[ "$PREFLIGHT_OUTCOME" != "success" ]]; then
-              echo "🛑 Pre-flight validation failed"
-              echo "continue=false" >> "$GITHUB_OUTPUT"
-              echo "reason=validation_failed" >> "$GITHUB_OUTPUT"
-            else
-              echo "✅ All checks passed — continuing"
-              echo "continue=true" >> "$GITHUB_OUTPUT"
-              echo "reason=ok" >> "$GITHUB_OUTPUT"
-            fi
-
-      # ═══════════════════════════════════════════════════════════
-      # PHASE 2: INITIALIZATION
-      # ═══════════════════════════════════════════════════════════
-      - name: "[Amplify Initialization] Install Amplify CLI"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true'
-        id: install_amplify_cli
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/install_amplify_cli.sh'
-          step_name: 'Install Amplify CLI'
-
-      - name: "[Amplify Initialization] Configure AWS Credentials (OIDC)"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.install_amplify_cli.outputs.outcome == 'success'
-        id: configure_aws
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
-          role-session-name: ${{ matrix.tenant }}-onboard-${{ github.run_id }}
-          role-duration-seconds: 7200
-
-      - name: "[Amplify Initialization] Remove internal Amplify config"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.configure_aws.outcome == 'success'
+      - name: Generate comprehensive report
         shell: bash
         run: |
-          echo "🗑️ Removing internal amplify/ folder to create tenant-specific Amplify app"
-          if [ -d "amplify" ]; then
-            rm -rf amplify
-            echo "   ✅ Removed internal amplify/ config"
-          else
-            echo "   ℹ️  No amplify/ folder found (already clean)"
-          fi
-
-      - name: "[Amplify Initialization] Initialize Amplify app and backend"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.configure_aws.outcome == 'success'
-        id: init_amplify
-        shell: bash
-        run: bash .github/scripts/tenants/init_amplify_stack.sh
-
-      - name: "[Amplify Initialization] Auto-create AMPLIFY_APP_ID secret"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify.outcome == 'success' && steps.init_amplify.outputs.AMPLIFY_APP_ID != ''
-        id: create_secret
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: |
-            AMPLIFY_APP_ID="${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}"
-
-            echo "🔐 Saving AMPLIFY_APP_ID secret to ${{ matrix.tenant }} environment..."
-            echo "App ID: $AMPLIFY_APP_ID"
-
-            # Always overwrite the secret with new value
-            gh secret set AMPLIFY_APP_ID \
-              --body "$AMPLIFY_APP_ID" \
-              --env "${{ matrix.tenant }}" \
-              --repo "${{ github.repository }}"
-
-            echo "✅ AMPLIFY_APP_ID secret saved successfully"
-          step_name: 'Auto-create AMPLIFY_APP_ID secret'
-
-      - name: "[Amplify Initialization] Import Cognito Auth"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify.outcome == 'success'
-        id: import_auth
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/tenants/import_cognito_auth.sh'
-          step_name: 'Import Cognito Auth'
-
-      - name: "[Amplify Initialization] Create Amplify Branch"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.import_auth.outcome == 'success'
-        id: create_amplify_branch
-        uses: ./.github/actions/run-with-capture
-        env:
-          AMPLIFY_APP_ID: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
-          BRANCH_NAME: dev
-        with:
-          command: 'bash .github/scripts/tenants/create_amplify_branch.sh'
-          step_name: 'Create Amplify Branch'
-
-      - name: "[Amplify Initialization] Configure Rewrites & Redirects"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.create_amplify_branch.outcome == 'success'
-        id: configure_rewrites
-        uses: ./.github/actions/run-with-capture
-        env:
-          AMPLIFY_APP_ID: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
-        with:
-          command: 'bash .github/scripts/portal_web/configure_amplify_rewrites.sh'
-          step_name: 'Configure Rewrites & Redirects'
-
-      - name: "[Amplify Initialization] Set Status"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true'
-        id: init_amplify_status
-        shell: bash
-        env:
-          INSTALL_AMPLIFY_OUTCOME: ${{ steps.install_amplify_cli.outputs.outcome }}
-          CONFIGURE_AWS_OUTCOME: ${{ steps.configure_aws.outcome }}
-          INIT_AMPLIFY_OUTCOME: ${{ steps.init_amplify.outcome }}
-          CREATE_SECRET_OUTCOME: ${{ steps.create_secret.outputs.outcome }}
-          IMPORT_AUTH_OUTCOME: ${{ steps.import_auth.outputs.outcome }}
-          CREATE_BRANCH_OUTCOME: ${{ steps.create_amplify_branch.outputs.outcome }}
-          CONFIGURE_REWRITES_OUTCOME: ${{ steps.configure_rewrites.outputs.outcome }}
-        run: |
-            if [ "$INSTALL_AMPLIFY_OUTCOME" != "success" ]; then
-              echo "status=failed" >> $GITHUB_OUTPUT
-              echo "error=Failed to install Amplify CLI" >> $GITHUB_OUTPUT
-            elif [ "$CONFIGURE_AWS_OUTCOME" != "success" ]; then
-              echo "status=failed" >> $GITHUB_OUTPUT
-              echo "error=Failed to configure AWS credentials" >> $GITHUB_OUTPUT
-            elif [ "$INIT_AMPLIFY_OUTCOME" != "success" ]; then
-              echo "status=failed" >> $GITHUB_OUTPUT
-              echo "error=Failed to initialize Amplify app" >> $GITHUB_OUTPUT
-            elif [ "$CREATE_SECRET_OUTCOME" != "success" ]; then
-              echo "status=failed" >> $GITHUB_OUTPUT
-              echo "error=Failed to create AMPLIFY_APP_ID secret" >> $GITHUB_OUTPUT
-            elif [ "$IMPORT_AUTH_OUTCOME" != "success" ]; then
-              echo "status=failed" >> $GITHUB_OUTPUT
-              echo "error=Failed to import Cognito authentication" >> $GITHUB_OUTPUT
-            elif [ "$CREATE_BRANCH_OUTCOME" != "success" ]; then
-              echo "status=failed" >> $GITHUB_OUTPUT
-              echo "error=Failed to create Amplify branch" >> $GITHUB_OUTPUT
-            elif [ "$CONFIGURE_REWRITES_OUTCOME" != "success" ]; then
-              echo "status=failed" >> $GITHUB_OUTPUT
-              echo "error=Failed to configure SPA rewrites" >> $GITHUB_OUTPUT
-            else
-              echo "status=success" >> $GITHUB_OUTPUT
-            fi
-
-      # ═══════════════════════════════════════════════════════════
-      # PHASE 3: FLUTTER SETUP (Shared for Web & Desktop)
-      # ═══════════════════════════════════════════════════════════
-      - name: "[Setup Dependencies] Setup Flutter"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success'
-        id: setup_flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.32.8'
-          channel: 'stable'
-          cache: true
-          cache-key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
-
-      - name: "[Setup Dependencies] Configure Git for private dependencies"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.setup_flutter.outcome == 'success'
-        id: setup_git
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/config_git.sh'
-          step_name: 'Git Configuration'
-
-      - name: "[Setup Dependencies] Install dependencies"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.setup_git.outputs.outcome == 'success'
-        id: install_dependencies
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'flutter pub get'
-          step_name: 'Install Dependencies'
-
-      - name: "[Setup Dependencies] Bump build number"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.install_dependencies.outputs.outcome == 'success'
-        id: bump_build
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/bump_build_number.sh'
-          step_name: 'Bump Build Number'
-        env:
-          GITHUB_RUN_NUMBER: ${{ github.run_number }}
-          ENV_NAME: ${{ matrix.tenant }}
-
-      - name: "[Setup Dependencies] Run build_runner"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.bump_build.outputs.outcome == 'success'
-        id: run_build_runner
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'dart run build_runner build --delete-conflicting-outputs'
-          step_name: 'Build Runner Code Generation'
-
-      - name: "[Setup Dependencies] Setup environment file"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.run_build_runner.outputs.outcome == 'success'
-        id: setup_env
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/setup_env.sh'
-          step_name: 'Setup Environment File'
-
-      - name: "[Setup Dependencies] Pull Amplify Config"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success' && steps.setup_env.outputs.outcome == 'success'
-        id: pull_amplify_config
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/setup_amplify.sh'
-          step_name: 'Pull Amplify Config'
-        env:
-          PROJECT_NAME: medglobalportal${{ vars.TENANT_NAME }}
-          CREATE_BRANCH: true
-
-      - name: "[Setup Dependencies] Set Status"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.init_amplify_status.outputs.status == 'success'
-        id: setup_dependencies_status
-        shell: bash
-        env:
-          SETUP_FLUTTER: ${{ steps.setup_flutter.outcome }}
-          SETUP_GIT: ${{ steps.setup_git.outcome }}
-          INSTALL_DEP: ${{ steps.install_dependencies.outcome }}
-          BUMP_BUILD: ${{ steps.bump_build.outcome }}
-          RUN_BUILD_RUNNER: ${{ steps.run_build_runner.outcome }}
-          SETUP_ENV: ${{ steps.setup_env.outcome }}
-          PULL_AMPLIFY_CONFIG: ${{ steps.pull_amplify_config.outcome }}
-          SETUP_GIT_ERROR: ${{ steps.setup_git.outputs.error_message }}
-          INSTALL_DEP_ERROR: ${{ steps.install_dependencies.outputs.error_message }}
-          BUMP_BUILD_ERROR: ${{ steps.bump_build.outputs.error_message }}
-          RUN_BUILD_RUNNER_ERROR: ${{ steps.run_build_runner.outputs.error_message }}
-          SETUP_ENV_ERROR: ${{ steps.setup_env.outputs.error_message }}
-          PULL_AMPLIFY_CONFIG_ERROR: ${{ steps.pull_amplify_config.outputs.error_message }}
-        run: |
-            # Capture the bumped version
-            if [ "$BUMP_BUILD" == "success" ]; then
-              VERSION_LINE=$(grep '^version:' pubspec.yaml || echo "version: unknown")
-              BUMPED_VERSION=$(echo "$VERSION_LINE" | awk '{print $2}')
-              echo "bumped_version=$BUMPED_VERSION" >> "$GITHUB_OUTPUT"
-            else
-              echo "bumped_version=N/A" >> "$GITHUB_OUTPUT"
-            fi
-
-            # Check which step failed
-            if [ "$SETUP_FLUTTER" != "success" ]; then
-              echo "status=failed" >> "$GITHUB_OUTPUT"
-              echo "error=Flutter SDK setup failed" >> "$GITHUB_OUTPUT"
-            elif [ "$SETUP_GIT" != "success" ]; then
-              echo "status=failed" >> "$GITHUB_OUTPUT"
-              echo "error=$SETUP_GIT_ERROR" >> "$GITHUB_OUTPUT"
-            elif [ "$INSTALL_DEP" != "success" ]; then
-              echo "status=failed" >> "$GITHUB_OUTPUT"
-              echo "error=$INSTALL_DEP_ERROR" >> "$GITHUB_OUTPUT"
-            elif [ "$BUMP_BUILD" != "success" ]; then
-              echo "status=failed" >> "$GITHUB_OUTPUT"
-              echo "error=$BUMP_BUILD_ERROR" >> "$GITHUB_OUTPUT"
-            elif [ "$RUN_BUILD_RUNNER" != "success" ]; then
-              echo "status=failed" >> "$GITHUB_OUTPUT"
-              echo "error=$RUN_BUILD_RUNNER_ERROR" >> "$GITHUB_OUTPUT"
-            elif [ "$SETUP_ENV" != "success" ]; then
-              echo "status=failed" >> "$GITHUB_OUTPUT"
-              echo "error=$SETUP_ENV_ERROR" >> "$GITHUB_OUTPUT"
-            elif [ "$PULL_AMPLIFY_CONFIG" != "success" ]; then
-              echo "status=failed" >> "$GITHUB_OUTPUT"
-              echo "error=$PULL_AMPLIFY_CONFIG_ERROR" >> "$GITHUB_OUTPUT"
-            else
-              echo "status=success" >> "$GITHUB_OUTPUT"
-            fi
-
-      # ═══════════════════════════════════════════════════════════
-      # PHASE STATUS: Save Status for Phases 4 & 5
-      # ═══════════════════════════════════════════════════════════
-      - name: "[Status Tracking] Create build artifacts for Phases 4 & 5"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.setup_dependencies_status.outputs.status == 'success'
-        shell: bash
-        run: |
-          mkdir -p build-artifacts
-
-          # Copy Flutter build for Phase 5 (Windows desktop needs these)
-          if [ -d "build" ]; then
-            cp -r build build-artifacts/
-          fi
-
-          # Copy configuration files
-          if [ -f ".env" ]; then
-            cp .env build-artifacts/
-          fi
-
-          if [ -f "pubspec.yaml" ]; then
-            cp pubspec.yaml build-artifacts/
-          fi
-
-          if [ -f "pubspec.lock" ]; then
-            cp pubspec.lock build-artifacts/
-          fi
-
-          # Copy Amplify config
-          if [ -f "amplifyconfiguration.json" ]; then
-            cp amplifyconfiguration.json build-artifacts/
-          fi
-
-          if [ -f "amplify_outputs.json" ]; then
-            cp amplify_outputs.json build-artifacts/
-          fi
-
-          echo "✓ Build artifacts prepared for Phase 5"
-
-      - name: "[Status Tracking] Upload build artifacts"
-        if: steps.check_deployment_prerequisites.outputs.continue == 'true' && steps.setup_dependencies_status.outputs.status == 'success'
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts-${{ matrix.tenant }}
-          path: build-artifacts/
-          retention-days: 1
-
-      - name: "[Status Tracking] Save phases 1-4 status"
-        if: always()
-        shell: bash
-        run: |
-          mkdir -p status-reports
-
-          # Validate status
-          VALIDATE_STATUS="success"
-          if [ "${{ steps.preflight.outputs.outcome }}" != "success" ]; then
-            VALIDATE_STATUS="failed"
-          fi
-
-          # Init status
-          INIT_STATUS="skipped"
-          if [ "${{ steps.check_deployment_prerequisites.outputs.continue }}" == "true" ]; then
-            INIT_STATUS="${{ steps.init_amplify_status.outputs.status }}"
-          fi
-
-          # Dependencies status
-          DEPENDENCIES_STATUS="skipped"
-          if [ "${{ steps.check_deployment_prerequisites.outputs.continue }}" == "true" ] && [ "$INIT_STATUS" == "success" ]; then
-            DEPENDENCIES_STATUS="${{ steps.setup_dependencies_status.outputs.status }}"
-          fi
-
-          # Web status
-          WEB_STATUS="skipped"
-          if [ "${{ steps.check_deployment_prerequisites.outputs.continue }}" == "true" ] && [ "$INIT_STATUS" == "success" ] && [ "$DEPENDENCIES_STATUS" == "success" ]; then
-            if [ "${{ steps.deploy_web.outputs.outcome }}" == "success" ]; then
-              WEB_STATUS="success"
-            elif [ "${{ steps.build_web.outcome }}" == "failure" ] || [ "${{ steps.deploy_web.outputs.outcome }}" == "failure" ]; then
-              WEB_STATUS="failed"
-            fi
-          fi
-
-          # Write phases 1-3 statuses (Phases 4 & 5 will be tracked separately)
-          cat > status-reports/${{ matrix.tenant }}-phases-1-3.json <<EOF
-          {
-            "tenant": "${{ matrix.tenant }}",
-            "validate": "$VALIDATE_STATUS",
-            "init": "$INIT_STATUS",
-            "dependencies": "$DEPENDENCIES_STATUS",
-            "bumped_version": "${{ steps.setup_dependencies_status.outputs.bumped_version }}",
-            "amplify_app_id": "${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}",
-            "dry_run": "${{ github.event.inputs.dry_run }}",
-            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          }
-          EOF
-
-          echo "✓ Phases 1-3 status saved to artifact"
-
-      - name: "[Status Tracking] Upload phases 1-3 status artifact"
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: status-phases-1-3-${{ matrix.tenant }}
-          path: status-reports/
-          retention-days: 1
-
-      - name: "[Status Tracking] Generate Phases 1-3 summary"
-        if: always()
-        shell: bash
-        run: |
-          # Read status
-          PHASES_STATUS=$(cat status-reports/${{ matrix.tenant }}-phases-1-3.json)
-
-          VALIDATE_STATUS=$(echo "$PHASES_STATUS" | jq -r '.validate')
-          INIT_STATUS=$(echo "$PHASES_STATUS" | jq -r '.init')
-          DEPENDENCIES_STATUS=$(echo "$PHASES_STATUS" | jq -r '.dependencies')
-          BUMPED_VERSION=$(echo "$PHASES_STATUS" | jq -r '.bumped_version')
-          AMPLIFY_APP_ID=$(echo "$PHASES_STATUS" | jq -r '.amplify_app_id')
-          DRY_RUN=$(echo "$PHASES_STATUS" | jq -r '.dry_run')
-
-          # Calculate overall status
-          PREREQ_STATUS="✅ Success"
-          if [ "$VALIDATE_STATUS" == "failed" ] || [ "$INIT_STATUS" == "failed" ] || [ "$DEPENDENCIES_STATUS" == "failed" ]; then
-            PREREQ_STATUS="❌ Failed"
-          elif [ "$DRY_RUN" == "true" ]; then
-            PREREQ_STATUS="⏭️ Dry Run"
-          fi
-
-          # Generate summary
-          echo "## Tenant: ${{ vars.TENANT_NAME }} - Prerequisites" >> $GITHUB_STEP_SUMMARY
+          echo "# Multi-Tenant Onboarding" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          if [ "$DRY_RUN" == "true" ]; then
-            echo "**Mode:** 🧪 Dry Run" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "**Mode:** 🚀 Live Deployment" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "**Status:** ${PREREQ_STATUS}" >> $GITHUB_STEP_SUMMARY
+          echo "**🎉 Onboarding workflow complete!**" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Phase 1
-          echo "#### Phase 1: Pre-Flight Check" >> $GITHUB_STEP_SUMMARY
-          if [ "$VALIDATE_STATUS" == "success" ]; then
-            echo "- **Remarks:** ✅ Success" >> $GITHUB_STEP_SUMMARY
-            echo "- **Details:**" >> $GITHUB_STEP_SUMMARY
-            echo "  - BASE_URL: \`${{ vars.BASE_URL }}\`" >> $GITHUB_STEP_SUMMARY
-            echo "  - AWS_REGION: \`${{ vars.AWS_REGION }}\`" >> $GITHUB_STEP_SUMMARY
-            echo "  - TENANT_NAME: \`${{ vars.TENANT_NAME }}\`" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- **Remarks:** ❌ Failed" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
+          # Calculate statistics
+          TOTAL_TENANTS=0
+          SUCCESS_COUNT=0
+          FAILED_COUNT=0
 
-          # Phase 2
-          echo "#### Phase 2: Amplify Initialization" >> $GITHUB_STEP_SUMMARY
-          if [ "$DRY_RUN" == "true" ]; then
-            echo "- **Remarks:** ⏭️ Skipped - Dry run mode" >> $GITHUB_STEP_SUMMARY
-          elif [ "$VALIDATE_STATUS" != "success" ]; then
-            echo "- **Remarks:** ⏭️ Skipped - Pre-Flight Check failed" >> $GITHUB_STEP_SUMMARY
-          elif [ "$INIT_STATUS" == "success" ]; then
-            echo "- **Remarks:** ✅ Success" >> $GITHUB_STEP_SUMMARY
-            echo "- **Details:**" >> $GITHUB_STEP_SUMMARY
-            echo "  - Amplify App ID: \`${AMPLIFY_APP_ID}\`" >> $GITHUB_STEP_SUMMARY
-            echo "  - Cognito: \`Imported\`" >> $GITHUB_STEP_SUMMARY
-            echo "  - Branch: \`dev\`" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- **Remarks:** ❌ Failed" >> $GITHUB_STEP_SUMMARY
-          fi
-          echo "" >> $GITHUB_STEP_SUMMARY
+          # Get unique tenant names
+          TENANTS=$(ls all-status/*-validation.json 2>/dev/null | sed 's|all-status/||; s|-validation.json||' | sort -u || echo "")
 
-          # Phase 3
-          echo "#### Phase 3: Dependencies Setup" >> $GITHUB_STEP_SUMMARY
-          if [ "$DRY_RUN" == "true" ]; then
-            echo "- **Remarks:** ⏭️ Skipped - Dry run mode" >> $GITHUB_STEP_SUMMARY
-          elif [ "$INIT_STATUS" != "success" ]; then
-            echo "- **Remarks:** ⏭️ Skipped - Amplify Initialization failed" >> $GITHUB_STEP_SUMMARY
-          elif [ "$DEPENDENCIES_STATUS" == "success" ]; then
-            echo "- **Remarks:** ✅ Success" >> $GITHUB_STEP_SUMMARY
-            echo "- **Details:**" >> $GITHUB_STEP_SUMMARY
-            echo "  - Flutter SDK: \`3.32.8 (stable)\`" >> $GITHUB_STEP_SUMMARY
-            echo "  - Build Number: \`${BUMPED_VERSION}\`" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- **Remarks:** ❌ Failed" >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: "[Status Tracking] Fail job if prerequisites failed"
-        if: always()
-        shell: bash
-        run: |
-          # This step ensures the job fails if any critical phase failed
-          VALIDATE_STATUS="${{ steps.preflight.outputs.outcome }}"
-          INIT_STATUS="${{ steps.init_amplify_status.outputs.status }}"
-          DEPENDENCIES_STATUS="${{ steps.setup_dependencies_status.outputs.status }}"
-          DRY_RUN="${{ github.event.inputs.dry_run }}"
-
-          echo "Checking prerequisites status..."
-          echo "  Validation: $VALIDATE_STATUS"
-          echo "  Initialization: $INIT_STATUS"
-          echo "  Dependencies: $DEPENDENCIES_STATUS"
-          echo "  Dry Run: $DRY_RUN"
-
-          # Skip failure check for dry run
-          if [ "$DRY_RUN" == "true" ]; then
-            echo "✅ Dry run completed - validation only"
+          if [ -z "$TENANTS" ]; then
+            echo "⚠️ No tenant status files found" >> $GITHUB_STEP_SUMMARY
             exit 0
           fi
 
-          # Check critical phases
-          if [ "$VALIDATE_STATUS" == "failure" ]; then
-            echo "❌ Job failed: Pre-flight validation failed"
-            exit 1
-          fi
-
-          if [ "$INIT_STATUS" == "failed" ]; then
-            echo "❌ Job failed: Amplify initialization failed"
-            echo "Error: ${{ steps.init_amplify_status.outputs.error }}"
-            exit 1
-          fi
-
-          if [ "$DEPENDENCIES_STATUS" == "failed" ]; then
-            echo "❌ Job failed: Dependencies setup failed"
-            echo "Error: ${{ steps.setup_dependencies_status.outputs.error }}"
-            exit 1
-          fi
-
-          echo "✅ All prerequisites completed successfully for ${{ matrix.tenant }}"
-
-  onboard-phase-4:
-    name: ${{ matrix.tenant }} (Portal)
-    runs-on: ubuntu-latest  # Linux for web deployment
-    needs: [discover-tenants, onboard-phases-1-3]
-    if: github.event.inputs.dry_run != 'true' && needs.onboard-phases-1-3.result == 'success'
-    strategy:
-      fail-fast: false
-      matrix:
-        tenant: ${{ fromJson(needs.discover-tenants.outputs.tenants) }}
-      max-parallel: 3
-    environment: ${{ matrix.tenant }}
-
-    env:
-      ENV_NAME: dev
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      BASE_URL: ${{ vars.BASE_URL }}
-      TENANT_NAME: ${{ vars.TENANT_NAME }}
-      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
-      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
-      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-    steps:
-      - name: "[Phase 4 Setup] Checkout code"
-        uses: actions/checkout@v4
-
-      - name: "[Phase 4 Setup] Download phases 1-3 status"
-        uses: actions/download-artifact@v4
-        with:
-          name: status-phases-1-3-${{ matrix.tenant }}
-          path: status-reports/
-
-      - name: "[Phase 4 Setup] Check if Phase 4 should run"
-        id: check_phase4_prerequisites
-        shell: bash
-        run: |
-          # Read phases 1-3 status
-          PHASES_STATUS=$(cat status-reports/${{ matrix.tenant }}-phases-1-3.json)
-
-          DRY_RUN=$(echo "$PHASES_STATUS" | jq -r '.dry_run')
-          DEPENDENCIES_STATUS=$(echo "$PHASES_STATUS" | jq -r '.dependencies')
-
-          if [ "$DRY_RUN" == "true" ]; then
-            echo "continue=false" >> $GITHUB_OUTPUT
-            echo "reason=dry_run" >> $GITHUB_OUTPUT
-            echo "⏭️ Skipping Phase 4 - Dry run mode"
-          elif [ "$DEPENDENCIES_STATUS" != "success" ]; then
-            echo "continue=false" >> $GITHUB_OUTPUT
-            echo "reason=dependencies_failed" >> $GITHUB_OUTPUT
-            echo "⏭️ Skipping Phase 4 - Dependencies setup failed"
-          else
-            echo "continue=true" >> $GITHUB_OUTPUT
-            echo "reason=ok" >> $GITHUB_OUTPUT
-            echo "✅ Proceeding with Phase 4"
-          fi
-
-      - name: "[Phase 4 Setup] Download build artifacts"
-        if: steps.check_phase4_prerequisites.outputs.continue == 'true'
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts-${{ matrix.tenant }}
-          path: ./
-
-      # ═══════════════════════════════════════════════════════════
-      # PHASE 4: PORTAL WEB DEPLOYMENT
-      # ═══════════════════════════════════════════════════════════
-      - name: "[Portal Deployment] Setup Flutter"
-        if: steps.check_phase4_prerequisites.outputs.continue == 'true'
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.32.8'
-          channel: 'stable'
-          cache: true
-
-      - name: "[Portal Deployment] Build Flutter web"
-        if: steps.check_phase4_prerequisites.outputs.continue == 'true'
-        id: build_web
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/build_web.sh'
-          step_name: 'Build Flutter Web'
-
-      - name: "[Portal Deployment] Deploy to Amplify"
-        if: steps.build_web.outputs.outcome == 'success'
-        id: deploy_web
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/portal_web/deploy_amplify_web.sh'
-          step_name: 'Deploy to Amplify Hosting'
-
-      # ═══════════════════════════════════════════════════════════
-      # STATUS TRACKING: Phase 4 Only
-      # ═══════════════════════════════════════════════════════════
-      - name: "[Status Tracking] Save Phase 4 status"
-        if: always()
-        shell: bash
-        run: |
-          mkdir -p status-reports
-
-          # Phase 4 status
-          WEB_STATUS="skipped"
-          if [ "${{ steps.check_phase4_prerequisites.outputs.continue }}" == "true" ]; then
-            if [ "${{ steps.deploy_web.outputs.outcome }}" == "success" ]; then
-              WEB_STATUS="success"
-            elif [ "${{ steps.deploy_web.outputs.outcome }}" == "failure" ]; then
-              WEB_STATUS="failed"
-            fi
-          fi
-
-          # Write phase 4 status
-          cat > status-reports/${{ matrix.tenant }}-phase-4.json <<EOF
-          {
-            "tenant": "${{ matrix.tenant }}",
-            "web": "$WEB_STATUS",
-            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          }
-          EOF
-
-          echo "✓ Phase 4 status saved"
-
-      - name: "[Status Tracking] Upload Phase 4 status artifact"
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: status-phase-4-${{ matrix.tenant }}
-          path: status-reports/${{ matrix.tenant }}-phase-4.json
-          retention-days: 1
-
-      - name: "[Status Tracking] Generate Phase 4 summary"
-        if: always()
-        shell: bash
-        run: |
-          # Read statuses
-          PHASES_1_3=$(cat status-reports/${{ matrix.tenant }}-phases-1-3.json)
-          PHASE_4=$(cat status-reports/${{ matrix.tenant }}-phase-4.json)
-
-          WEB_STATUS=$(echo "$PHASE_4" | jq -r '.web')
-          BUMPED_VERSION=$(echo "$PHASES_1_3" | jq -r '.bumped_version')
-          AMPLIFY_APP_ID=$(echo "$PHASES_1_3" | jq -r '.amplify_app_id')
-          DEPENDENCIES_STATUS=$(echo "$PHASES_1_3" | jq -r '.dependencies')
-          DRY_RUN=$(echo "$PHASES_1_3" | jq -r '.dry_run')
-
-          # Generate summary
-          echo "## Tenant: ${{ vars.TENANT_NAME }} - Portal Deployment" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          echo "#### Phase 4: Portal Web" >> $GITHUB_STEP_SUMMARY
-          if [ "$DRY_RUN" == "true" ]; then
-            echo "- **Remarks:** ⏭️ Skipped - Dry run mode" >> $GITHUB_STEP_SUMMARY
-          elif [ "$DEPENDENCIES_STATUS" != "success" ]; then
-            echo "- **Remarks:** ⏭️ Skipped - Dependencies setup failed" >> $GITHUB_STEP_SUMMARY
-          elif [ "$WEB_STATUS" == "success" ]; then
-            echo "- **Remarks:** ✅ Success" >> $GITHUB_STEP_SUMMARY
-            echo "- **Details:**" >> $GITHUB_STEP_SUMMARY
-            echo "  - Build: \`${BUMPED_VERSION}\`" >> $GITHUB_STEP_SUMMARY
-            echo "  - Portal URL: \`https://dev.${AMPLIFY_APP_ID}.amplifyapp.com\`" >> $GITHUB_STEP_SUMMARY
-          elif [ "$WEB_STATUS" == "failed" ]; then
-            echo "- **Remarks:** ❌ Failed" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "- **Remarks:** ⏭️ Skipped" >> $GITHUB_STEP_SUMMARY
-          fi
-
-  onboard-phase-5:
-    name: ${{ matrix.tenant }} (POS Desktop)
-    runs-on: windows-latest  # Windows required for desktop build
-    needs: [discover-tenants, onboard-phases-1-3, onboard-phase-4]
-    if: github.event.inputs.dry_run != 'true' && needs.onboard-phases-1-3.result == 'success' && needs.onboard-phase-4.result != 'cancelled'
-    strategy:
-      fail-fast: false
-      matrix:
-        tenant: ${{ fromJson(needs.discover-tenants.outputs.tenants) }}
-      max-parallel: 3
-    environment: ${{ matrix.tenant }}
-
-    env:
-      ENV_NAME: dev
-      AWS_REGION: ${{ vars.AWS_REGION }}
-      BASE_URL: ${{ vars.BASE_URL }}
-      TENANT_NAME: ${{ vars.TENANT_NAME }}
-      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
-      COGNITO_POOL_ID: ${{ secrets.COGNITO_POOL_ID }}
-      COGNITO_CLIENT_ID: ${{ secrets.COGNITO_CLIENT_ID }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      INSTALLER_PUBLISHER: ${{ vars.INSTALLER_PUBLISHER }}
-      INSTALLER_APP_NAME: ${{ vars.INSTALLER_APP_NAME }}
-
-    steps:
-      - name: "[Phase 5 Setup] Checkout code"
-        uses: actions/checkout@v4
-
-      - name: "[Phase 5 Setup] Download phases 1-3 status"
-        uses: actions/download-artifact@v4
-        with:
-          name: status-phases-1-3-${{ matrix.tenant }}
-          path: status-reports/
-
-      - name: "[Phase 5 Setup] Download phase 4 status"
-        uses: actions/download-artifact@v4
-        with:
-          name: status-phase-4-${{ matrix.tenant }}
-          path: status-reports/
-
-      - name: "[Phase 5 Setup] Check if Phase 5 should run"
-        id: check_phase5_prerequisites
-        shell: bash
-        run: |
-          # Read phases 1-3 status
-          PHASES_STATUS=$(cat status-reports/${{ matrix.tenant }}-phases-1-3.json)
-
-          DRY_RUN=$(echo "$PHASES_STATUS" | jq -r '.dry_run')
-          DEPENDENCIES_STATUS=$(echo "$PHASES_STATUS" | jq -r '.dependencies')
-
-          if [ "$DRY_RUN" == "true" ]; then
-            echo "continue=false" >> $GITHUB_OUTPUT
-            echo "reason=dry_run" >> $GITHUB_OUTPUT
-            echo "⏭️ Skipping Phase 5 - Dry run mode"
-          elif [ "$DEPENDENCIES_STATUS" != "success" ]; then
-            echo "continue=false" >> $GITHUB_OUTPUT
-            echo "reason=dependencies_failed" >> $GITHUB_OUTPUT
-            echo "⏭️ Skipping Phase 5 - Dependencies setup failed"
-          else
-            echo "continue=true" >> $GITHUB_OUTPUT
-            echo "reason=ok" >> $GITHUB_OUTPUT
-            echo "✅ Proceeding with Phase 5"
-          fi
-
-      - name: "[Phase 5 Setup] Download build artifacts"
-        if: steps.check_phase5_prerequisites.outputs.continue == 'true'
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts-${{ matrix.tenant }}
-          path: ./
-
-      # ═══════════════════════════════════════════════════════════
-      # PHASE 5: DESKTOP DEPLOYMENT
-      # ═══════════════════════════════════════════════════════════
-      - name: "[POS Deployment] Setup Flutter"
-        if: steps.check_phase5_prerequisites.outputs.continue == 'true'
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.32.8'
-          channel: 'stable'
-          cache: true
-
-      - name: "[POS Deployment] Build Flutter desktop"
-        if: steps.check_phase5_prerequisites.outputs.continue == 'true'
-        id: build_desktop
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/shared/build_desktop.sh'
-          step_name: 'Build Flutter Windows Desktop'
-
-      - name: "[POS Deployment] Bundle Windows runtime"
-        if: steps.build_desktop.outputs.outcome == 'success'
-        id: bundle_runtime
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/pos_desktop/bundle_windows_runtime.sh'
-          step_name: 'Bundle Windows Runtime Dependencies'
-
-      - name: "[POS Deployment] Install InnoSetup"
-        if: steps.bundle_runtime.outputs.outcome == 'success'
-        id: install_innosetup
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'choco install innosetup -y'
-          step_name: 'Install InnoSetup'
-
-      - name: "[POS Deployment] Create Windows installer"
-        if: steps.install_innosetup.outputs.outcome == 'success'
-        id: create_installer
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/pos_desktop/create_installer.sh'
-          step_name: 'Create Windows Installer'
-
-      - name: "[POS Deployment] Create GitHub release"
-        if: steps.create_installer.outputs.outcome == 'success'
-        id: deploy_desktop
-        uses: ./.github/actions/run-with-capture
-        with:
-          command: 'bash .github/scripts/pos_desktop/create_github_release_desktop.sh'
-          step_name: 'POS Desktop Deployment'
-
-      # ═══════════════════════════════════════════════════════════
-      # STATUS TRACKING: Phase 5 Only
-      # ═══════════════════════════════════════════════════════════
-      - name: "[Status Tracking] Save Phase 5 status"
-        if: always()
-        shell: bash
-        run: |
-          mkdir -p status-reports
-
-          # Phase 5 status
-          DESKTOP_STATUS="skipped"
-          if [ "${{ steps.check_phase5_prerequisites.outputs.continue }}" == "true" ]; then
-            if [ "${{ steps.deploy_desktop.outputs.outcome }}" == "success" ]; then
-              DESKTOP_STATUS="success"
-            elif [ "${{ steps.deploy_desktop.outputs.outcome }}" == "failure" ]; then
-              DESKTOP_STATUS="failed"
-            fi
-          fi
-
-          # Write phase 5 status
-          cat > status-reports/${{ matrix.tenant }}-phase-5.json <<EOF
-          {
-            "tenant": "${{ matrix.tenant }}",
-            "desktop": "$DESKTOP_STATUS",
-            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          }
-          EOF
-
-          echo "✓ Phase 5 status saved"
-
-      - name: "[Status Tracking] Upload Phase 5 status artifact"
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: status-phase-5-${{ matrix.tenant }}
-          path: status-reports/${{ matrix.tenant }}-phase-5.json
-          retention-days: 1
-
-      - name: "[Status Tracking] Generate Phase 5 summary"
-        if: always()
-        shell: bash
-        run: |
-          # Read statuses
-          PHASES_1_3=$(cat status-reports/${{ matrix.tenant }}-phases-1-3.json)
-          PHASE_5=$(cat status-reports/${{ matrix.tenant }}-phase-5.json)
-
-          DESKTOP_STATUS=$(echo "$PHASE_5" | jq -r '.desktop')
-          BUMPED_VERSION=$(echo "$PHASES_1_3" | jq -r '.bumped_version')
-          DEPENDENCIES_STATUS=$(echo "$PHASES_1_3" | jq -r '.dependencies')
-          DRY_RUN=$(echo "$PHASES_1_3" | jq -r '.dry_run')
-
-          # Generate summary
-          echo "## Tenant: ${{ vars.TENANT_NAME }} - POS Desktop Deployment" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
-          echo "#### Phase 5: POS Desktop" >> $GITHUB_STEP_SUMMARY
-          if [ "$DRY_RUN" == "true" ]; then
-            echo "- **Remarks:** ⏭️ Skipped - Dry run mode" >> $GITHUB_STEP_SUMMARY
-          elif [ "$DEPENDENCIES_STATUS" != "success" ]; then
-            echo "- **Remarks:** ⏭️ Skipped - Dependencies setup failed" >> $GITHUB_STEP_SUMMARY
-          elif [ "$DESKTOP_STATUS" == "success" ]; then
-            echo "- **Remarks:** ✅ Success" >> $GITHUB_STEP_SUMMARY
-            echo "- **Details:**" >> $GITHUB_STEP_SUMMARY
-            echo "  - Build: \`${BUMPED_VERSION}\`" >> $GITHUB_STEP_SUMMARY
-            echo "  - Installer: \`Windows installer created\`" >> $GITHUB_STEP_SUMMARY
-            echo "  - Release: \`Published to GitHub Releases\`" >> $GITHUB_STEP_SUMMARY
-            echo "  - Download: [View Releases](https://github.com/${{ github.repository }}/releases)" >> $GITHUB_STEP_SUMMARY
-          elif [ "$DESKTOP_STATUS" == "failed" ]; then
-            echo "- **Remarks:** ❌ Failed" >> $GITHUB_STEP_SUMMARY
-            if [ "${{ steps.build_desktop.outputs.outcome }}" == "success" ]; then
-              echo "- **Details:**" >> $GITHUB_STEP_SUMMARY
-              echo "  - Build: \`Completed\`" >> $GITHUB_STEP_SUMMARY
-              if [ "${{ steps.create_installer.outputs.outcome }}" != "success" ]; then
-                echo "  - Installer: \`❌ Failed to create installer\`" >> $GITHUB_STEP_SUMMARY
-              elif [ "${{ steps.deploy_desktop.outputs.outcome }}" != "success" ]; then
-                echo "  - Release: \`❌ Failed to publish release\`" >> $GITHUB_STEP_SUMMARY
-              fi
-            else
-              echo "- **Details:**" >> $GITHUB_STEP_SUMMARY
-              echo "  - Build: \`❌ Failed to build desktop app\`" >> $GITHUB_STEP_SUMMARY
-            fi
-          else
-            echo "- **Remarks:** ⏭️ Skipped" >> $GITHUB_STEP_SUMMARY
-          fi
-
-  report-summary:
-    name: Report
-    runs-on: ubuntu-latest
-    needs: [discover-tenants, onboard-phases-1-3, onboard-phase-4, onboard-phase-5]
-    if: always()
-    steps:
-      - name: Download phases 1-3 status artifacts
-        if: github.event.inputs.dry_run != 'true'
-        uses: actions/download-artifact@v4
-        with:
-          pattern: status-phases-1-3-*
-          path: all-status-reports
-          merge-multiple: true
-
-      - name: Download phase 4 status artifacts
-        if: github.event.inputs.dry_run != 'true'
-        uses: actions/download-artifact@v4
-        with:
-          pattern: status-phase-4-*
-          path: all-status-reports
-          merge-multiple: true
-
-      - name: Download phase 5 status artifacts
-        if: github.event.inputs.dry_run != 'true'
-        uses: actions/download-artifact@v4
-        with:
-          pattern: status-phase-5-*
-          path: all-status-reports
-          merge-multiple: true
-
-      - name: Summary
-        run: |
-          echo "## Tenant Onboarding Analysis" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Total tenants processed:** ${{ needs.discover-tenants.outputs.tenant_count }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Mode:** ${{ github.event.inputs.dry_run == 'true' && '🧪 Dry Run' || '🚀 Live Deployment' }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-
+          # For dry run, check validation only
           if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
-            echo "### ✅ Validation Results" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "All tenant configurations have been validated successfully." >> $GITHUB_STEP_SUMMARY
-            echo "No AWS resources were created or modified." >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "To perform actual deployment, run this workflow again with dry run disabled." >> $GITHUB_STEP_SUMMARY
-          else
+            for TENANT in $TENANTS; do
+              TOTAL_TENANTS=$((TOTAL_TENANTS + 1))
 
-            # Create tenant status table
-            echo "| Tenant | Validate | Initialize | Dependencies | Portal | Desktop |" >> $GITHUB_STEP_SUMMARY
-            echo "|--------|----------|------------|--------------|--------|---------|" >> $GITHUB_STEP_SUMMARY
+              VAL_FILE="all-status/${TENANT}-validation.json"
+              if [ -f "$VAL_FILE" ]; then
+                VAL_STATUS=$(jq -r '.status' "$VAL_FILE")
 
-            # Get unique tenants from artifacts
-            cd all-status-reports 2>/dev/null || true
-            for tenant_file in $(ls *-phases-1-3.json 2>/dev/null | sed 's/-phases-1-3.json//' | sort -u); do
-              # Read from three separate files
-              PHASES_1_3=$(cat "${tenant_file}-phases-1-3.json" 2>/dev/null || echo '{}')
-              PHASE_4=$(cat "${tenant_file}-phase-4.json" 2>/dev/null || echo '{}')
-              PHASE_5=$(cat "${tenant_file}-phase-5.json" 2>/dev/null || echo '{}')
-
-              VALIDATE_STATUS=$(echo "$PHASES_1_3" | jq -r '.validate // "unknown"')
-              INIT_STATUS=$(echo "$PHASES_1_3" | jq -r '.init // "skipped"')
-              DEPENDENCIES_STATUS=$(echo "$PHASES_1_3" | jq -r '.dependencies // "skipped"')
-              WEB_STATUS=$(echo "$PHASE_4" | jq -r '.web // "skipped"')
-              DESKTOP_STATUS=$(echo "$PHASE_5" | jq -r '.desktop // "skipped"')
-
-              # Convert status to emoji
-              case "$VALIDATE_STATUS" in
-                success) VALIDATE_ICON="✅" ;;
-                failed) VALIDATE_ICON="❌" ;;
-                skipped) VALIDATE_ICON="⏭️" ;;
-                *) VALIDATE_ICON="❓" ;;
-              esac
-
-              case "$INIT_STATUS" in
-                success) INIT_ICON="✅" ;;
-                failed) INIT_ICON="❌" ;;
-                skipped) INIT_ICON="⏭️" ;;
-                *) INIT_ICON="❓" ;;
-              esac
-
-              case "$DEPENDENCIES_STATUS" in
-                success) DEPENDENCIES_ICON="✅" ;;
-                failed) DEPENDENCIES_ICON="❌" ;;
-                skipped) DEPENDENCIES_ICON="⏭️" ;;
-                *) DEPENDENCIES_ICON="❓" ;;
-              esac
-
-              case "$WEB_STATUS" in
-                success) WEB_ICON="✅" ;;
-                failed) WEB_ICON="❌" ;;
-                skipped) WEB_ICON="⏭️" ;;
-                *) WEB_ICON="❓" ;;
-              esac
-
-              case "$DESKTOP_STATUS" in
-                success) DESKTOP_ICON="✅" ;;
-                failed) DESKTOP_ICON="❌" ;;
-                skipped) DESKTOP_ICON="⏭️" ;;
-                *) DESKTOP_ICON="❓" ;;
-              esac
-
-              echo "| $tenant_file | $VALIDATE_ICON | $INIT_ICON | $DEPENDENCIES_ICON | $WEB_ICON | $DESKTOP_ICON |" >> $GITHUB_STEP_SUMMARY
+                if [ "$VAL_STATUS" == "success" ]; then
+                  SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+                else
+                  FAILED_COUNT=$((FAILED_COUNT + 1))
+                fi
+              else
+                FAILED_COUNT=$((FAILED_COUNT + 1))
+              fi
             done
-            cd - > /dev/null 2>&1 || true
+
+            # Display dry run metadata
+            echo "**Mode:** 🧪 Dry Run" >> $GITHUB_STEP_SUMMARY
+            echo "**Total:** $TOTAL_TENANTS" >> $GITHUB_STEP_SUMMARY
+            echo "**Valid Configs:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "**Invalid Configs:** $FAILED_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            # Display tenant summary table
+            echo "| Tenant | Validation | Result |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|------------|--------|" >> $GITHUB_STEP_SUMMARY
+
+            for TENANT in $TENANTS; do
+              # Extract tenant display name
+              TENANT_DISPLAY=$(echo "$TENANT" | sed 's/^tenant-//')
+
+              VAL_FILE="all-status/${TENANT}-validation.json"
+              if [ -f "$VAL_FILE" ]; then
+                VAL_STATUS=$(jq -r '.status' "$VAL_FILE")
+              else
+                VAL_STATUS="unknown"
+              fi
+
+              # Map status to icons
+              case "$VAL_STATUS" in
+                success) VAL_ICON="✅"; RESULT="✅ Valid" ;;
+                skipped) VAL_ICON="⏭️"; RESULT="⏭️ Skipped" ;;
+                *) VAL_ICON="❌"; RESULT="❌ Invalid" ;;
+              esac
+
+              echo "| $TENANT_DISPLAY | $VAL_ICON | $RESULT |" >> $GITHUB_STEP_SUMMARY
+            done
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "This was a dry-run execution. Only pre-flight checks were performed to validate tenant configurations. No actual deployments were made." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "To proceed with full onboarding, re-run the workflow with mode: \`live-deployment\`." >> $GITHUB_STEP_SUMMARY
+          else
+            # Live deployment - check all phases
+            for TENANT in $TENANTS; do
+              TOTAL_TENANTS=$((TOTAL_TENANTS + 1))
+
+              VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
+              AMP_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-amplify-init.json" 2>/dev/null || echo "unknown")
+              POR_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "unknown")
+              POS_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "unknown")
+
+              # Determine overall status
+              if [ "$VAL_STATUS" == "success" ] && [ "$AMP_STATUS" == "success" ] && [ "$POR_STATUS" == "success" ] && [ "$POS_STATUS" == "success" ]; then
+                SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+              else
+                FAILED_COUNT=$((FAILED_COUNT + 1))
+              fi
+            done
+
+            # Display live mode metadata
+            echo "**Mode:** 🚀 Live Deployment" >> $GITHUB_STEP_SUMMARY
+            echo "**Total:** $TOTAL_TENANTS" >> $GITHUB_STEP_SUMMARY
+            echo "**Successful:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "**Failed:** $FAILED_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            # Display tenant summary table
+            echo "| Tenant | Validation | Amplify Init | Portal | POS | Result |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|------------|--------------|--------|-----|--------|" >> $GITHUB_STEP_SUMMARY
+
+            for TENANT in $TENANTS; do
+              # Extract tenant display name
+              TENANT_DISPLAY=$(echo "$TENANT" | sed 's/^tenant-//')
+
+              VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
+              AMP_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-amplify-init.json" 2>/dev/null || echo "unknown")
+              POR_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "unknown")
+              POS_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "unknown")
+
+              # Map statuses to icons
+              case "$VAL_STATUS" in
+                success) VAL_ICON="✅" ;;
+                skipped) VAL_ICON="⏭️" ;;
+                *) VAL_ICON="❌" ;;
+              esac
+              case "$AMP_STATUS" in
+                success) AMP_ICON="✅" ;;
+                skipped) AMP_ICON="⏭️" ;;
+                *) AMP_ICON="❌" ;;
+              esac
+              case "$POR_STATUS" in
+                success) POR_ICON="✅" ;;
+                skipped) POR_ICON="⏭️" ;;
+                *) POR_ICON="❌" ;;
+              esac
+              case "$POS_STATUS" in
+                success) POS_ICON="✅" ;;
+                skipped) POS_ICON="⏭️" ;;
+                *) POS_ICON="❌" ;;
+              esac
+
+              # Determine overall result
+              if [ "$VAL_STATUS" == "success" ] && [ "$AMP_STATUS" == "success" ] && [ "$POR_STATUS" == "success" ] && [ "$POS_STATUS" == "success" ]; then
+                RESULT="✅ Success"
+              else
+                RESULT="❌ Failed"
+              fi
+
+              echo "| $TENANT_DISPLAY | $VAL_ICON | $AMP_ICON | $POR_ICON | $POS_ICON | $RESULT |" >> $GITHUB_STEP_SUMMARY
+            done
           fi
 
-          echo "" >> $GITHUB_STEP_SUMMARY
+          # Create JSON summary for next retry
+          cat > summary.json <<EOF
+          {
+            "workflow_run": "${{ github.run_id }}",
+            "mode": "${{ github.event.inputs.dry_run == 'true' && 'dry_run' || 'live' }}",
+            "total_tenants": $TOTAL_TENANTS,
+            "successful": $SUCCESS_COUNT,
+            "failed": $FAILED_COUNT,
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tenants": [
+          EOF
 
-      - name: Check for workflow success
-        if: github.event.inputs.dry_run != 'true'
+          FIRST=true
+          for TENANT in $TENANTS; do
+            if [ "$FIRST" == "true" ]; then
+              FIRST=false
+            else
+              echo "," >> summary.json
+            fi
+
+            OVERALL_STATUS="${TENANT_DATA[$TENANT]}"
+            cat >> summary.json <<EOF
+            {
+              "name": "$TENANT",
+              "overall_status": "$OVERALL_STATUS"
+            }
+          EOF
+          done
+
+          cat >> summary.json <<EOF
+            ]
+          }
+          EOF
+
+      - name: Upload final report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-report
+          path: summary.json
+          retention-days: 30
+
+      - name: Determine workflow status
+        shell: bash
         run: |
-          # Count tenants where BOTH Portal AND POS succeeded
-          cd all-status-reports
-          TOTAL_TENANTS=$(ls *-phases-1-3.json 2>/dev/null | wc -l)
-          FULLY_SUCCESSFUL_TENANTS=0
+          # Get statistics from files
+          TENANTS=$(ls all-status/*-validation.json 2>/dev/null | sed 's|all-status/||; s|-validation.json||' | sort -u || echo "")
 
-          for tenant_file in $(ls *-phases-1-3.json 2>/dev/null | sed 's/-phases-1-3.json//' | sort -u); do
-            # Read from separate files
-            PHASE_4=$(cat "${tenant_file}-phase-4.json" 2>/dev/null || echo '{}')
-            PHASE_5=$(cat "${tenant_file}-phase-5.json" 2>/dev/null || echo '{}')
+          if [ -z "$TENANTS" ]; then
+            echo "⚠️ No tenants processed"
+            exit 1
+          fi
 
-            WEB_STATUS=$(echo "$PHASE_4" | jq -r '.web // "unknown"')
-            DESKTOP_STATUS=$(echo "$PHASE_5" | jq -r '.desktop // "unknown"')
+          FAILED_COUNT=0
 
-            # Tenant is successful ONLY if BOTH Portal AND POS succeeded
-            if [ "$WEB_STATUS" == "success" ] && [ "$DESKTOP_STATUS" == "success" ]; then
-              FULLY_SUCCESSFUL_TENANTS=$((FULLY_SUCCESSFUL_TENANTS + 1))
+          # For dry run, check validation only
+          if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+            for TENANT in $TENANTS; do
+              VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
+              if [ "$VAL_STATUS" != "success" ]; then
+                FAILED_COUNT=$((FAILED_COUNT + 1))
+              fi
+            done
+
+            if [ $FAILED_COUNT -gt 0 ]; then
+              echo "❌ Workflow failed: $FAILED_COUNT tenant(s) have invalid configuration"
+              exit 1
+            else
+              echo "✅ Workflow successful: All tenant configurations are valid"
+              exit 0
+            fi
+          fi
+
+          # For live deployment, check if any tenant failed
+          for TENANT in $TENANTS; do
+            VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
+            AMP_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-amplify-init.json" 2>/dev/null || echo "unknown")
+            POR_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "unknown")
+            POS_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "unknown")
+
+            if [ "$VAL_STATUS" != "success" ] || [ "$AMP_STATUS" != "success" ] || [ "$POR_STATUS" != "success" ] || [ "$POS_STATUS" != "success" ]; then
+              FAILED_COUNT=$((FAILED_COUNT + 1))
             fi
           done
 
-          echo "✅ $FULLY_SUCCESSFUL_TENANTS out of $TOTAL_TENANTS tenant(s) completed BOTH Portal and POS deployments"
-
-          # Workflow succeeds if at least 1 tenant has both Portal AND POS succeeded
-          if [ "$FULLY_SUCCESSFUL_TENANTS" -gt 0 ]; then
-            echo "🎉 Workflow succeeded: At least one tenant fully deployed (both Portal and POS)"
-            exit 0
-          else
-            echo "❌ Workflow failed: No tenants completed both Portal and POS deployments"
+          if [ $FAILED_COUNT -gt 0 ]; then
+            echo "⚠️ Workflow completed with failures: $FAILED_COUNT tenant(s) failed"
             exit 1
+          else
+            echo "✅ Workflow successful: All tenants deployed successfully"
+            exit 0
           fi

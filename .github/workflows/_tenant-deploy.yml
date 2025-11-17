@@ -1,4 +1,4 @@
-name: "_Tenant Deploy Pipeline"
+name: "_Tenant Deploy"
 
 on:
   workflow_call:
@@ -58,7 +58,7 @@ jobs:
 
       - name: Validate tenant configuration
         id: validate
-        run: bash .github/scripts/tenants/validate_tenant_config.sh "${{ inputs.tenant }}" "full"
+        run: bash .github/scripts/tenants/validate_config.sh "${{ inputs.tenant }}" "full"
 
       - name: Save validation status
         if: always()
@@ -189,7 +189,7 @@ jobs:
     name: Deploy Portal
     needs: [validate-config, amplify-pull]
     if: needs.validate-config.outputs.status == 'success' && needs.amplify-pull.outputs.status == 'success'
-    uses: ./.github/workflows/_deploy-portal.yml
+    uses: ./.github/workflows/_portal-deploy.yml
     with:
       context: ${{ inputs.tenant }}
       amplify_config_artifact: amplify-config-${{ inputs.tenant }}
@@ -203,7 +203,7 @@ jobs:
     name: Deploy POS
     needs: [validate-config, amplify-pull]
     if: needs.validate-config.outputs.status == 'success' && needs.amplify-pull.outputs.status == 'success'
-    uses: ./.github/workflows/_deploy-pos.yml
+    uses: ./.github/workflows/_pos-deploy.yml
     with:
       context: ${{ inputs.tenant }}
       amplify_config_artifact: amplify-config-${{ inputs.tenant }}

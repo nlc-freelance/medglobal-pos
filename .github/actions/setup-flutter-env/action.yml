@@ -13,7 +13,7 @@ inputs:
 outputs:
   outcome:
     description: 'Success or failure outcome'
-    value: ${{ steps.config_git.outputs.outcome }}
+    value: ${{ steps.config_git.outcome }}
 
 runs:
   using: "composite"
@@ -28,7 +28,5 @@ runs:
 
     - name: Configure Git
       id: config_git
-      uses: ./.github/actions/run-with-capture
-      with:
-        command: 'bash .github/scripts/shared/config_git.sh'
-        step_name: 'Configure Git'
+      shell: bash
+      run: bash .github/scripts/shared/config_git.sh

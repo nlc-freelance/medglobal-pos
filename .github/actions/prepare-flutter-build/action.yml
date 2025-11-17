@@ -28,39 +28,31 @@ runs:
 
     - name: Install dependencies
       id: install_dependencies
-      uses: ./.github/actions/run-with-capture
-      with:
-        command: 'flutter pub get'
-        step_name: 'Install Dependencies'
+      shell: bash
+      run: flutter pub get
 
     - name: Bump build number
-      if: steps.install_dependencies.outputs.outcome == 'success'
+      if: steps.install_dependencies.outcome == 'success'
       id: bump_build
-      uses: ./.github/actions/run-with-capture
-      with:
-        command: 'bash .github/scripts/shared/bump_build_number.sh'
-        step_name: 'Bump Build Number'
+      shell: bash
+      run: bash .github/scripts/shared/bump_build_number.sh
       env:
         GITHUB_RUN_NUMBER: ${{ inputs.github-run-number }}
 
     - name: Run build_runner
-      if: steps.bump_build.outputs.outcome == 'success'
+      if: steps.bump_build.outcome == 'success'
       id: run_build_runner
-      uses: ./.github/actions/run-with-capture
-      with:
-        command: 'dart run build_runner build --delete-conflicting-outputs'
-        step_name: 'Run build_runner'
+      shell: bash
+      run: dart run build_runner build --delete-conflicting-outputs
 
     - name: Setup environment
-      if: steps.run_build_runner.outputs.outcome == 'success'
+      if: steps.run_build_runner.outcome == 'success'
       id: setup_env
-      uses: ./.github/actions/run-with-capture
-      with:
-        command: 'bash .github/scripts/shared/setup_env.sh'
-        step_name: 'Setup Environment'
+      shell: bash
+      run: bash .github/scripts/shared/setup_env.sh
 
     - name: Download Amplify configuration
-      if: steps.setup_env.outputs.outcome == 'success'
+      if: steps.setup_env.outcome == 'success'
       id: download_amplify
       uses: actions/download-artifact@v4
       with:
@@ -81,13 +73,13 @@ runs:
       id: check
       shell: bash
       run: |
-        if [ "${{ steps.install_dependencies.outputs.outcome }}" != "success" ]; then
+        if [ "${{ steps.install_dependencies.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT
-        elif [ "${{ steps.bump_build.outputs.outcome }}" != "success" ]; then
+        elif [ "${{ steps.bump_build.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT
-        elif [ "${{ steps.run_build_runner.outputs.outcome }}" != "success" ]; then
+        elif [ "${{ steps.run_build_runner.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT
-        elif [ "${{ steps.setup_env.outputs.outcome }}" != "success" ]; then
+        elif [ "${{ steps.setup_env.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT
         elif [ "${{ steps.download_amplify.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT

@@ -7,9 +7,9 @@
         "COGNITO_POOL_ID": "alpha-pool-id"
       },
       "variables": {
-        "AWS_IAM_ROLE_ARN": "arn:aws:iam::1234567890:role/alpha-role",
-        "AWS_REGION": "us-east-1",
-        "BASE_URL": "https://alpha.example.com",
+        "AWS_IAM_ROLE_ARN": "arn:aws:iam::280954863577:role/github-actions-amplify-deploy-dev",
+        "AWS_REGION": "ap-southeast-1",
+        "BASE_URL": "https://awimrjguq7.execute-api.ap-southeast-1.amazonaws.com/dev",
         "TENANT_NAME": "alpha"
       }
     },
@@ -20,9 +20,9 @@
         "COGNITO_POOL_ID": "beta-pool-id"
       },
       "variables": {
-        "AWS_IAM_ROLE_ARN": "arn:aws:iam::1234567890:role/beta-role",
+        "AWS_IAM_ROLE_ARN": "arn:aws:iam::280954863577:role/github-actions-amplify-deploy-dev",
         "AWS_REGION": "ap-southeast-1",
-        "BASE_URL": "https://beta.example.com",
+        "BASE_URL": "https://awimrjguq7.execute-api.ap-southeast-1.amazonaws.com/dev",
         "TENANT_NAME": "beta"
       }
     }
