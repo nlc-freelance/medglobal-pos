@@ -4,12 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       s3_path:
-        description: 'S3 path to tenant config JSON'
+        description: 'S3 URI to tenant config'
         default: 's3://medglobal-multi-tenant-config-non-prod/FE/tenants.json'
-        required: true
-      aws_region:
-        description: 'AWS region for S3'
-        default: 'us-east-1'
         required: true
 
 permissions:
@@ -24,7 +20,7 @@ jobs:
     timeout-minutes: 15
 
     env:
-      AWS_REGION: ${{ github.event.inputs.aws_region }}
+      AWS_REGION: ap-southeast-1
 
     steps:
       - name: Checkout Repository
