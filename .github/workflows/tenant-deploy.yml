@@ -264,14 +264,20 @@ jobs:
 
           FAILED_COUNT=0
 
-          # Check if any tenant failed
+          # Check if any tenant failed (only count explicit failures, not skipped/unknown)
           for TENANT in $TENANTS; do
             VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
             AMP_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-amplify-pull.json" 2>/dev/null || echo "unknown")
             POR_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "unknown")
             POS_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "unknown")
 
-            if [ "$VAL_STATUS" != "success" ] || [ "$AMP_STATUS" != "success" ] || [ "$POR_STATUS" != "success" ] || [ "$POS_STATUS" != "success" ]; then
+            # Only count as failed if status is explicitly "failed"
+            # Validation and Amplify Pull are required (must be success)
+            # Portal and POS are optional (can be skipped/unknown if not selected)
+            if [ "$VAL_STATUS" == "failed" ] || [ "$AMP_STATUS" == "failed" ] || [ "$POR_STATUS" == "failed" ] || [ "$POS_STATUS" == "failed" ]; then
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            elif [ "$VAL_STATUS" != "success" ] || [ "$AMP_STATUS" != "success" ]; then
+              # Validation and Amplify Pull must succeed (cannot be unknown/skipped)
               FAILED_COUNT=$((FAILED_COUNT + 1))
             fi
           done
