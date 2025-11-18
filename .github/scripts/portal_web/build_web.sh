@@ -9,9 +9,6 @@ fi
 
 echo "💻️ Building Flutter Web for $ENV_NAME"
 
-flutter clean
-flutter pub get
-dart run build_runner build --delete-conflicting-outputs
 flutter build web --release --no-tree-shake-icons --dart-define=ENV=$ENV_NAME
 
 # Post-process build to ensure fonts are included

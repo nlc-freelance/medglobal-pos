@@ -7,6 +7,14 @@ on:
         description: 'Tenant names (comma-separated or "all"'
         required: true
         default: 'all'
+      deploy_portal:
+        description: 'Deploy Portal Web'
+        type: boolean
+        default: true
+      deploy_pos:
+        description: 'Deploy POS Desktop'
+        type: boolean
+        default: true
 
 concurrency:
   group: tenant-deploy-${{ github.ref }}
@@ -79,6 +87,8 @@ jobs:
     uses: ./.github/workflows/_tenant-deploy.yml
     with:
       tenant: ${{ matrix.tenant }}
+      deploy_portal: ${{ github.event.inputs.deploy_portal == 'true' }}
+      deploy_pos: ${{ github.event.inputs.deploy_pos == 'true' }}
     secrets: inherit
 
   # ═══════════════════════════════════════════════════════════

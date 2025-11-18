@@ -41,8 +41,16 @@ runs:
         rm amplify-config.tar.gz
         echo "✅ Extracted Amplify configuration"
 
-    - name: Setup environment
+    - name: Flutter clean
       if: steps.setup_amplify.outcome == 'success'
+      id: flutter_clean
+      shell: bash
+      run: |
+        flutter clean
+        echo "✅ Cleaned Flutter build cache and old .env"
+
+    - name: Setup environment
+      if: steps.flutter_clean.outcome == 'success'
       id: setup_env
       shell: bash
       run: bash .github/scripts/shared/setup_env.sh
@@ -79,6 +87,8 @@ runs:
         elif [ "${{ steps.bump_build.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT
         elif [ "${{ steps.run_build_runner.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.flutter_clean.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT
         elif [ "${{ steps.setup_env.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT

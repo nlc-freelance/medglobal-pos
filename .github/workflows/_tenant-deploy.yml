@@ -7,6 +7,14 @@ on:
         description: 'Tenant name'
         required: true
         type: string
+      deploy_portal:
+        description: 'Deploy Portal Web'
+        type: boolean
+        default: true
+      deploy_pos:
+        description: 'Deploy POS Desktop'
+        type: boolean
+        default: true
     outputs:
       validation_status:
         description: 'Configuration validation status'
@@ -188,7 +196,7 @@ jobs:
   deploy-portal:
     name: Deploy Portal
     needs: [validate-config, amplify-pull]
-    if: needs.validate-config.outputs.status == 'success' && needs.amplify-pull.outputs.status == 'success'
+    if: inputs.deploy_portal && needs.validate-config.outputs.status == 'success' && needs.amplify-pull.outputs.status == 'success'
     uses: ./.github/workflows/_portal-deploy.yml
     with:
       context: ${{ inputs.tenant }}
@@ -202,7 +210,7 @@ jobs:
   deploy-pos:
     name: Deploy POS
     needs: [validate-config, amplify-pull]
-    if: needs.validate-config.outputs.status == 'success' && needs.amplify-pull.outputs.status == 'success'
+    if: inputs.deploy_pos && needs.validate-config.outputs.status == 'success' && needs.amplify-pull.outputs.status == 'success'
     uses: ./.github/workflows/_pos-deploy.yml
     with:
       context: ${{ inputs.tenant }}
@@ -253,6 +261,17 @@ jobs:
           for phase in validation amplify-pull portal-deploy pos-deploy; do
             FILE="status-reports/${{ inputs.tenant }}-${phase}.json"
             PHASE_DISPLAY="${PHASE_NAMES[$phase]}"
+
+            # Check if phase was not selected by user
+            if [ "$phase" == "portal-deploy" ] && [ "${{ inputs.deploy_portal }}" != "true" ]; then
+              echo "| $PHASE_DISPLAY | ⏭️ Not Selected | - |" >> $GITHUB_STEP_SUMMARY
+              continue
+            fi
+
+            if [ "$phase" == "pos-deploy" ] && [ "${{ inputs.deploy_pos }}" != "true" ]; then
+              echo "| $PHASE_DISPLAY | ⏭️ Not Selected | - |" >> $GITHUB_STEP_SUMMARY
+              continue
+            fi
 
             if [ -f "$FILE" ]; then
               STATUS=$(jq -r '.status' "$FILE")
