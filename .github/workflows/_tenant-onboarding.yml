@@ -171,7 +171,7 @@ jobs:
         env:
           AMPLIFY_APP_ID: ${{ steps.init_amplify.outputs.AMPLIFY_APP_ID }}
         shell: bash
-        run: bash .github/scripts/portal_web/configure_amplify_rewrites.sh
+        run: bash .github/scripts/tenants/configure_amplify_rewrites.sh
 
       - name: Compress Amplify configuration
         if: steps.configure_rewrites.outcome == 'success'

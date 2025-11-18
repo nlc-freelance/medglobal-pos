@@ -7,7 +7,7 @@ if [ -z "$AMPLIFY_APP_ID" ] || [ -z "$AWS_REGION" ]; then
   exit 1
 fi
 
-echo "🔀 Configuring SPA rewrites and redirects"
+echo "🔀 Configuring Hosting Rewrites & Redirects"
 echo "   App ID: $AMPLIFY_APP_ID"
 
 # SPA rewrite configuration for Flutter web
@@ -27,5 +27,5 @@ aws amplify update-app \
   --custom-rules "$CUSTOM_RULES"
 
 echo ""
-echo "✅ SPA rewrites configured successfully"
+echo "✅ Hosting rewrites & redirects configured successfully"
 echo "   Rule: All non-static files → /index.html (200)"
