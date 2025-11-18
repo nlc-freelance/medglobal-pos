@@ -70,29 +70,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       result.when(
         success: (data) async {
-          final user = data.user;
-
-          if (user == null) {
-            emit(const AuthAccessDeniedState(message: 'Login failed. User data is missing.'));
-            return;
-          }
-
-          final isAllowed = getIsAllowedByType(data.user?.type);
-
-          if (isAllowed) {
-            if (data.isFirstTimeLogin == true) {
-              emit(const FirstTimeLoginState());
-            } else {
-              emit(AuthenticatedState(user: data.user!));
-            }
+          /// New accounts need to confirm sign in by providing new password
+          if (data.isFirstTimeLogin == true) {
+            emit(const FirstTimeLoginState());
           } else {
-            emit(
-              const AuthAccessDeniedState(
-                message:
-                    'Your account is not authorized to use this application.\nContact your administrator if you believe this is an error.',
-              ),
-            );
-            await logout.call(NoParams());
+            final user = data.user;
+
+            if (user == null) {
+              emit(const AuthAccessDeniedState(message: 'We could not proceed with login as user data is missing.'));
+              await logout.call(NoParams());
+              return;
+            }
+
+            final isAllowed = getIsAllowedByType(data.user?.type);
+
+            if (isAllowed) {
+              emit(AuthenticatedState(user: data.user!));
+            } else {
+              emit(
+                const AuthAccessDeniedState(
+                  message:
+                      'Your account is not authorized to use this application.\nContact your administrator if you need assistance.',
+                ),
+              );
+              await logout.call(NoParams());
+            }
           }
         },
         failure: (error) => emit(AuthErrorState(message: error.message)),
@@ -108,7 +110,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final result = await confirmLoginWithNewPassword.call(ConfirmFirstTimeLoginParams(event.password));
       result.when(
-        success: (data) => emit(AuthenticatedState(user: data.user!)),
+        success: (data) async {
+          final user = data.user;
+
+          if (user == null) {
+            emit(const AuthAccessDeniedState(message: 'We could not proceed with login as user data is missing.'));
+            await logout.call(NoParams());
+            return;
+          }
+
+          final isAllowed = getIsAllowedByType(data.user?.type);
+
+          if (isAllowed) {
+            emit(AuthenticatedState(user: data.user!));
+          } else {
+            emit(
+              const AuthAccessDeniedState(
+                message:
+                    'You have successfully entered your new password.\nHowever, your account is not authorized to use this application. Contact your administrator if you need assistance.',
+              ),
+            );
+            await logout.call(NoParams());
+          }
+        },
         failure: (error) => emit(ConfirmLoginErrorState(message: error.message)),
       );
     } catch (e) {

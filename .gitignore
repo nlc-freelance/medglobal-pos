@@ -18,10 +18,13 @@ migrate_working_dir/
 *.iws
 .idea/
 
+# Environment files (generated at build/run time)
+.env
+
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
-#.vscode/
+.vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -32,6 +35,17 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+*.g.dart
+*freezed.dart
+*.gen.dart
+
+.packages
+ios/Flutter/Flutter.framework
+ios/Flutter/FlutterPluginRegistrant
+ios/Flutter/GeneratedPluginRegistrant.*
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.kt
+android/app/src/main/cpp/generated_plugin_registrant.cc
 
 # Symbolication related
 app.*.symbols
@@ -43,3 +57,41 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+# Add fvm files needed to be added in gitignore
+.fvm
+
+
+# Windows Installer (InnoSetup)
+windows/installer/Output/
+windows/installer/setup_compiled.iss
+build/windows_installer_staging/
+
+# Note: runtime_dlls/*.dll should be committed (not ignored)
+# They are required for the CI/CD pipeline to build installers
+
+#amplify-do-not-edit-begin
+amplify/\#current-cloud-backend
+amplify/.config/local-*
+amplify/logs
+amplify/mock-data
+amplify/mock-api-resources
+amplify/backend/amplify-meta.json
+amplify/backend/.temp
+build/
+dist/
+node_modules/
+aws-exports.js
+awsconfiguration.json
+amplifyconfiguration.json
+amplifyconfiguration.dart
+amplify-build-config.json
+amplify-gradle-config.json
+amplifytools.xcconfig
+.secret-*
+**.sample
+#amplify-do-not-edit-end
+
+amplify/hooks
+amplify/README.md
