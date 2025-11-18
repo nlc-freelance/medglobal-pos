@@ -47,16 +47,10 @@ runs:
       shell: bash
       run: |
         flutter clean
-        echo "✅ Cleaned Flutter build cache and old .env"
-
-    - name: Setup environment
-      if: steps.flutter_clean.outcome == 'success'
-      id: setup_env
-      shell: bash
-      run: bash .github/scripts/shared/setup_env.sh
+        echo "✅ Cleaned Flutter build cache"
 
     - name: Cache pub dependencies
-      if: steps.setup_env.outcome == 'success'
+      if: steps.flutter_clean.outcome == 'success'
       uses: actions/cache@v4
       with:
         path: |
@@ -66,7 +60,7 @@ runs:
           ${{ runner.os }}-pub-
 
     - name: Install dependencies
-      if: steps.setup_env.outcome == 'success'
+      if: steps.flutter_clean.outcome == 'success'
       id: install_dependencies
       shell: bash
       run: flutter pub get
@@ -89,8 +83,6 @@ runs:
         elif [ "${{ steps.run_build_runner.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT
         elif [ "${{ steps.flutter_clean.outcome }}" != "success" ]; then
-          echo "outcome=failed" >> $GITHUB_OUTPUT
-        elif [ "${{ steps.setup_env.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT
         elif [ "${{ steps.download_amplify.outcome }}" != "success" ]; then
           echo "outcome=failed" >> $GITHUB_OUTPUT

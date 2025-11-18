@@ -534,14 +534,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.1.5"
-  flutter_dotenv:
-    dependency: "direct main"
-    description:
-      name: flutter_dotenv
-      sha256: d4130c4a43e0b13fefc593bc3961f2cb46e30cb79e253d4a526b1b5d24ae1ce4
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.0"
   flutter_gen_core:
     dependency: transitive
     description:
@@ -934,7 +926,7 @@ packages:
       path: "."
       ref: main
       resolved-ref: b9e6a0f169f22aa14c0aad20aee2e40c1dd2fe5f
-      url: "https://github.com/nlcanada/medglobal_shared.git"
+      url: "git@github-nlc-freelance:nlc-freelance/medglobal_shared.git"
     source: git
     version: "0.0.1"
   meta:
