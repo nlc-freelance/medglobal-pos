@@ -130,17 +130,17 @@ jobs:
     secrets: inherit
 
   # ═══════════════════════════════════════════════════════════
-  # JOB 4: DEPLOYMENT SUMMARY
+  # JOB 4: DEPLOYMENT REPORT
   # ═══════════════════════════════════════════════════════════
-  deployment-summary:
-    name: Summary
+  deployment-report:
+    name: Report
     runs-on: ubuntu-latest
     needs: [amplify-pull, deploy-portal, deploy-pos]
     if: always()
     timeout-minutes: 2
 
     steps:
-      - name: Generate deployment summary
+      - name: Generate deployment report
         shell: bash
         run: |
           echo "## Internal Deployment: ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
@@ -183,6 +183,20 @@ jobs:
             fi
           else
             echo "| POS Desktop | ⏭️ Not Selected |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Display resource URLs if available
+          PORTAL_URL="${{ needs.deploy-portal.outputs.portal_url }}"
+          RELEASE_URL="${{ needs.deploy-pos.outputs.release_url }}"
+
+          if [ -n "$PORTAL_URL" ] && [ "$PORTAL_URL" != "" ]; then
+            echo "**Portal URL**: $PORTAL_URL" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ -n "$RELEASE_URL" ] && [ "$RELEASE_URL" != "" ]; then
+            echo "**POS Installer**: $RELEASE_URL" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
