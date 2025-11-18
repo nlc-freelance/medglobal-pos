@@ -86,8 +86,14 @@ jobs:
           tenant: ${{ inputs.context }}
           github-run-number: ${{ github.run_number }}
 
-      - name: Build Flutter web
+      - name: Extract version information
         if: steps.prepare_build.outputs.outcome == 'success'
+        id: extract_version
+        shell: bash
+        run: bash .github/scripts/shared/extract_version.sh
+
+      - name: Build Flutter web
+        if: steps.extract_version.outcome == 'success'
         id: build_web
         shell: bash
         run: bash .github/scripts/portal_web/build_web.sh

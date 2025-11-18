@@ -81,8 +81,14 @@ jobs:
           tenant: ${{ inputs.context }}
           github-run-number: ${{ github.run_number }}
 
-      - name: Build Flutter desktop
+      - name: Extract version information
         if: steps.prepare_build.outputs.outcome == 'success'
+        id: extract_version
+        shell: bash
+        run: bash .github/scripts/shared/extract_version.sh
+
+      - name: Build Flutter desktop
+        if: steps.extract_version.outcome == 'success'
         id: build_desktop
         shell: bash
         run: bash .github/scripts/pos_desktop/build_desktop.sh
