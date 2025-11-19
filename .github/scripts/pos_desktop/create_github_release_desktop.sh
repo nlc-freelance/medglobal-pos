@@ -1,13 +1,18 @@
 #!/bin/bash
 set -e
 
-# Validate required environment variable
+# Validate required environment variables
 if [ -z "$ENV_NAME" ]; then
   echo "❌ Error: ENV_NAME environment variable is required"
   exit 1
 fi
 
-echo "🚀 Creating GitHub release for $ENV_NAME environment..."
+if [ -z "$TENANT_NAME" ]; then
+  echo "❌ Error: TENANT_NAME environment variable is required"
+  exit 1
+fi
+
+echo "🚀 Creating GitHub release for $TENANT_NAME tenant..."
 
 # ──────────────────────────────────────────────────────────────
 # Extract version information from pubspec.yaml
@@ -24,32 +29,44 @@ fi
 echo "📋 Version: $APP_VERSION"
 echo "📋 Build: $APP_BUILD"
 echo "📋 Environment: $ENV_NAME"
+echo "📋 Tenant: $TENANT_NAME"
 
 APP_NAME="${INSTALLER_APP_NAME}"
 
 # ──────────────────────────────────────────────────────────────
 # Define release tag and name
 # Production: Simplified tag (pos-desktop-v2.0.0)
-# Non-prod: Include env and build (pos-desktop-v2.0.0-dev+43)
+# Internal (dev/preprod): Include tenant and build (pos-desktop-v2.0.0-dev+43)
+# Tenant deployments: Include tenant only (pos-desktop-v2.0.0-beta)
 # ──────────────────────────────────────────────────────────────
 if [ "$ENV_NAME" == "main" ]; then
   RELEASE_TAG="pos-desktop-v${APP_VERSION}"
   RELEASE_NAME="${APP_NAME} Desktop v${APP_VERSION}"
+elif [[ "$TENANT_NAME" =~ ^(dev|preprod)$ ]]; then
+  # Internal environments: Include build number
+  RELEASE_TAG="pos-desktop-v${APP_VERSION}-${TENANT_NAME}+${APP_BUILD}"
+  RELEASE_NAME="${APP_NAME} Desktop v${APP_VERSION}-${TENANT_NAME}+${APP_BUILD}"
 else
-  RELEASE_TAG="pos-desktop-v${APP_VERSION}-${ENV_NAME}+${APP_BUILD}"
-  RELEASE_NAME="${APP_NAME} Desktop v${APP_VERSION}-${ENV_NAME}+${APP_BUILD}"
+  # Tenant deployments: No build number
+  RELEASE_TAG="pos-desktop-v${APP_VERSION}-${TENANT_NAME}"
+  RELEASE_NAME="${APP_NAME} Desktop v${APP_VERSION}-${TENANT_NAME}"
 fi
 
 echo "🏷️  Release Tag: $RELEASE_TAG"
 echo "📝 Release Name: $RELEASE_NAME"
 
 # ──────────────────────────────────────────────────────────────
-# Check if installer exists
+# Check if installer exists (must match create_installer.sh logic)
 # ──────────────────────────────────────────────────────────────
 if [ "$ENV_NAME" == "main" ]; then
+  # Production: No tenant name, no build number
   INSTALLER_NAME="${APP_NAME}-v${APP_VERSION}.exe"
+elif [[ "$TENANT_NAME" =~ ^(dev|preprod)$ ]]; then
+  # Internal environments: Include build number
+  INSTALLER_NAME="${APP_NAME}-v${APP_VERSION}-${TENANT_NAME}+${APP_BUILD}.exe"
 else
-  INSTALLER_NAME="${APP_NAME}-v${APP_VERSION}-${ENV_NAME}+${APP_BUILD}.exe"
+  # Tenant deployments: No build number
+  INSTALLER_NAME="${APP_NAME}-v${APP_VERSION}-${TENANT_NAME}.exe"
 fi
 INSTALLER_PATH="windows/installer/Output/$INSTALLER_NAME"
 

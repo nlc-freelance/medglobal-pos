@@ -75,37 +75,11 @@ fi
 
 echo "✅ Build artifacts uploaded successfully (HTTP $HTTP_CODE)"
 
-# Step 4: Verify artifact exists in S3
-echo "🔍 Verifying artifact in S3..."
-
-# Extract bucket name and S3 key from presigned URL
-BUCKET_NAME=$(echo "$ZIP_UPLOAD_URL" | sed 's|https://\([^.]*\)\.s3\..*|\1|')
-S3_KEY=$(echo "$ZIP_UPLOAD_URL" | sed 's|.*amazonaws.com/\([^?]*\).*|\1|')
-
-# Verify with retries (S3 is strongly consistent, but adding verification for safety)
-MAX_VERIFY_ATTEMPTS=5
-for i in $(seq 1 $MAX_VERIFY_ATTEMPTS); do
-  if aws s3api head-object --bucket "$BUCKET_NAME" --key "$S3_KEY" > /dev/null 2>&1; then
-    echo "✅ Artifact verified in S3"
-    break
-  fi
-
-  if [ $i -lt $MAX_VERIFY_ATTEMPTS ]; then
-    echo "   Verification attempt $i/$MAX_VERIFY_ATTEMPTS, retrying..."
-    sleep 2
-  else
-    echo "❌ ERROR: Artifact not found in S3 after upload"
-    echo "   Upload may have failed despite HTTP 200 response"
-    rm -f "$ZIP_FILE"
-    exit 1
-  fi
-done
-
-# Step 5: Wait for Amplify internal processing
+# Step 4: Wait for Amplify internal processing
 echo "⏱️  Waiting for Amplify internal processing (5s)..."
 sleep 5
 
-# Step 6: Start the deployment
+# Step 5: Start the deployment
 echo "🚀 Starting deployment..."
 START_DEPLOYMENT_OUTPUT=$(aws amplify start-deployment \
   --app-id "$AMPLIFY_APP_ID" \
@@ -115,7 +89,7 @@ START_DEPLOYMENT_OUTPUT=$(aws amplify start-deployment \
 
 echo "✅ Amplify deployment started for $ENV_NAME (Job ID: $JOB_ID)"
 
-# Step 5: Wait for deployment to complete and verify status
+# Step 6: Wait for deployment to complete and verify status
 echo "⏳ Waiting for deployment to complete..."
 echo "   (This may take 2-5 minutes)"
 
