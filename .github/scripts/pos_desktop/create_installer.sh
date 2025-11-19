@@ -75,13 +75,13 @@ if [ ! -f "$TEMPLATE_FILE" ]; then
 fi
 
 # Replace placeholders in template
-# For production (main): Replace ENV_NAME with empty string, then clean up
-# For non-prod: Replace ENV_NAME with actual environment value
+# For production (main): Replace TENANT_NAME with empty string, then clean up
+# For non-prod: Replace TENANT_NAME with actual tenant name value
 if [ "$ENV_NAME" == "main" ]; then
-  # Production: Replace ENV_NAME with empty, then remove resulting empty patterns
+  # Production: Replace TENANT_NAME with empty, then remove resulting empty patterns
   sed -e "s|{{APP_VERSION}}|$APP_VERSION|g" \
       -e "s|{{APP_BUILD}}|$APP_BUILD|g" \
-      -e "s|{{ENV_NAME}}||g" \
+      -e "s|{{TENANT_NAME}}||g" \
       -e "s|--||g" \
       -e "s|-+|+|g" \
       -e "s|{{APP_PUBLISHER}}|$APP_PUBLISHER|g" \
@@ -89,10 +89,10 @@ if [ "$ENV_NAME" == "main" ]; then
       -e "s|{{SUPPORT_URL}}|$SUPPORT_URL|g" \
       "$TEMPLATE_FILE" > "$COMPILED_FILE"
 else
-  # Non-production: Replace ENV_NAME with actual value
+  # Non-production: Replace TENANT_NAME with actual value
   sed -e "s|{{APP_VERSION}}|$APP_VERSION|g" \
       -e "s|{{APP_BUILD}}|$APP_BUILD|g" \
-      -e "s|{{ENV_NAME}}|$ENV_NAME|g" \
+      -e "s|{{TENANT_NAME}}|$TENANT_NAME|g" \
       -e "s|{{APP_PUBLISHER}}|$APP_PUBLISHER|g" \
       -e "s|{{APP_NAME}}|$APP_NAME|g" \
       -e "s|{{SUPPORT_URL}}|$SUPPORT_URL|g" \
@@ -122,9 +122,14 @@ fi
 # Verify installer was created
 # ──────────────────────────────────────────────────────────────
 if [ "$ENV_NAME" == "main" ]; then
+  # Production: No tenant name, no build number
   INSTALLER_NAME="${APP_NAME}-v${APP_VERSION}.exe"
+elif [[ "$TENANT_NAME" =~ ^(dev|staging|preprod)$ ]]; then
+  # Internal environments: Include build number
+  INSTALLER_NAME="${APP_NAME}-v${APP_VERSION}-${TENANT_NAME}+${APP_BUILD}.exe"
 else
-  INSTALLER_NAME="${APP_NAME}-v${APP_VERSION}-${ENV_NAME}+${APP_BUILD}.exe"
+  # Tenant deployments: No build number
+  INSTALLER_NAME="${APP_NAME}-v${APP_VERSION}-${TENANT_NAME}.exe"
 fi
 INSTALLER_PATH="windows/installer/Output/$INSTALLER_NAME"
 

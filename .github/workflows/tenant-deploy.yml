@@ -92,13 +92,13 @@ jobs:
     secrets: inherit
 
   # ═══════════════════════════════════════════════════════════
-  # JOB 3: COMMIT VERSION BUMP
+  # JOB 3: COMMIT BUILD NUMBER
   # ═══════════════════════════════════════════════════════════
-  commit-version-bump:
-    name: Commit Version
+  commit-build-number:
+    name: Commit Build Number
     runs-on: ubuntu-latest
     needs: [discover-tenants, deploy-tenants]
-    if: always() && needs.deploy-tenants.result == 'success'
+    if: always() && contains(fromJson('["success", "failure"]'), needs.deploy-tenants.result)
     timeout-minutes: 5
 
     steps:
@@ -108,7 +108,7 @@ jobs:
           fetch-depth: 1
           token: ${{ secrets.GH_TOKEN }}
 
-      - name: Commit version bump
+      - name: Commit build number
         shell: bash
         run: bash .github/scripts/shared/commit_build_number.sh
         env:
@@ -306,10 +306,18 @@ jobs:
             fi
           done
 
-          if [ $FAILED_COUNT -gt 0 ]; then
-            echo "⚠️ Workflow completed with failures: $FAILED_COUNT tenant(s) failed"
+          SUCCESS_COUNT=$((TOTAL_TENANTS - FAILED_COUNT))
+
+          if [ $FAILED_COUNT -gt 0 ] && [ $SUCCESS_COUNT -gt 0 ]; then
+            # Partial success - at least one succeeded and at least one failed
+            echo "⚠️ Workflow completed with partial success: $SUCCESS_COUNT succeeded, $FAILED_COUNT failed"
+            exit 0  # Don't fail the workflow on partial success
+          elif [ $FAILED_COUNT -gt 0 ]; then
+            # Complete failure - all tenants failed
+            echo "❌ Workflow failed: All $FAILED_COUNT tenant(s) failed"
             exit 1
           else
-            echo "✅ Workflow successful: All tenants deployed successfully"
+            # Complete success - all tenants succeeded
+            echo "✅ Workflow successful: All $TOTAL_TENANTS tenant(s) deployed successfully"
             exit 0
           fi
