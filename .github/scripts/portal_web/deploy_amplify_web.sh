@@ -39,39 +39,73 @@ echo "✅ Deployment job created: $JOB_ID"
 # Step 3: Upload the zip file to the provided URL with error handling
 echo "⬆️ Uploading build artifacts..."
 
-# Capture HTTP status code and upload with retry logic
-HTTP_CODE=$(curl -X PUT \
+# Capture both response body and HTTP code for detailed error detection
+UPLOAD_RESPONSE=$(curl -X PUT \
   -H "Content-Type: application/zip" \
   --data-binary "@${ZIP_FILE}" \
-  --fail \
+  --write-out "\n%{http_code}" \
   --silent \
   --show-error \
-  --write-out "%{http_code}" \
   --retry 3 \
   --retry-delay 2 \
   --retry-all-errors \
-  "$ZIP_UPLOAD_URL" 2>&1 | tail -n 1)
+  "$ZIP_UPLOAD_URL" 2>&1)
 
-# Validate upload succeeded
+# Extract HTTP code from last line
+HTTP_CODE=$(echo "$UPLOAD_RESPONSE" | tail -n 1)
+RESPONSE_BODY=$(echo "$UPLOAD_RESPONSE" | sed '$d')
+
+# Validate HTTP status code
 if [ "$HTTP_CODE" != "200" ]; then
   echo "❌ ERROR: Upload failed with HTTP status code: $HTTP_CODE"
-  echo "   Deployment artifacts could not be uploaded to S3"
-  echo "   This may indicate:"
-  echo "   - S3 bucket ACLs are disabled (check bucket Object Ownership settings)"
-  echo "   - Presigned URL expired or is invalid"
-  echo "   - Network connectivity issues"
-  echo ""
-  echo "💡 To diagnose:"
-  echo "   1. Check S3 bucket ACL settings in AWS Console"
-  echo "   2. Verify Amplify app platform type is WEB (not WEB_DYNAMIC)"
-  echo "   3. Check IAM role has s3:PutObject permissions"
+  if [ -n "$RESPONSE_BODY" ]; then
+    echo "   $RESPONSE_BODY"
+  fi
+  rm -f "$ZIP_FILE"
+  exit 1
+fi
+
+# Check for embedded errors in 200 response (S3 can return HTTP 200 with XML errors)
+if echo "$RESPONSE_BODY" | grep -q "<Error>"; then
+  echo "❌ ERROR: S3 returned error despite HTTP 200"
+  echo "   $RESPONSE_BODY"
   rm -f "$ZIP_FILE"
   exit 1
 fi
 
 echo "✅ Build artifacts uploaded successfully (HTTP $HTTP_CODE)"
 
-# Step 4: Start the deployment
+# Step 4: Verify artifact exists in S3
+echo "🔍 Verifying artifact in S3..."
+
+# Extract bucket name and S3 key from presigned URL
+BUCKET_NAME=$(echo "$ZIP_UPLOAD_URL" | sed 's|https://\([^.]*\)\.s3\..*|\1|')
+S3_KEY=$(echo "$ZIP_UPLOAD_URL" | sed 's|.*amazonaws.com/\([^?]*\).*|\1|')
+
+# Verify with retries (S3 is strongly consistent, but adding verification for safety)
+MAX_VERIFY_ATTEMPTS=5
+for i in $(seq 1 $MAX_VERIFY_ATTEMPTS); do
+  if aws s3api head-object --bucket "$BUCKET_NAME" --key "$S3_KEY" > /dev/null 2>&1; then
+    echo "✅ Artifact verified in S3"
+    break
+  fi
+
+  if [ $i -lt $MAX_VERIFY_ATTEMPTS ]; then
+    echo "   Verification attempt $i/$MAX_VERIFY_ATTEMPTS, retrying..."
+    sleep 2
+  else
+    echo "❌ ERROR: Artifact not found in S3 after upload"
+    echo "   Upload may have failed despite HTTP 200 response"
+    rm -f "$ZIP_FILE"
+    exit 1
+  fi
+done
+
+# Step 5: Wait for Amplify internal processing
+echo "⏱️  Waiting for Amplify internal processing (5s)..."
+sleep 5
+
+# Step 6: Start the deployment
 echo "🚀 Starting deployment..."
 START_DEPLOYMENT_OUTPUT=$(aws amplify start-deployment \
   --app-id "$AMPLIFY_APP_ID" \
@@ -149,15 +183,22 @@ while [ $ELAPSED_TIME -lt $MAX_WAIT_TIME ]; do
   elif [ "$JOB_STATUS" = "FAILED" ] || [ "$JOB_STATUS" = "CANCELLED" ]; then
     echo ""
     echo "❌ ERROR: Deployment failed with status: $JOB_STATUS"
-    echo ""
-    echo "📋 To view detailed logs:"
-    echo "   1. Go to AWS Amplify Console: https://console.aws.amazon.com/amplify/home?region=${AWS_REGION:-us-east-1}#/${AMPLIFY_APP_ID}/${ENV_NAME}/${JOB_ID}"
-    echo "   2. Or run: aws amplify get-job --app-id $AMPLIFY_APP_ID --branch-name $ENV_NAME --job-id $JOB_ID"
-    echo ""
-    echo "💡 Common causes:"
-    echo "   - S3 bucket ACLs disabled (MissingBuildArtifacts error)"
-    echo "   - Platform type mismatch (WEB_DYNAMIC instead of WEB)"
-    echo "   - Build artifacts not found in S3"
+
+    # Get actual error details from the job
+    JOB_DETAILS=$(aws amplify get-job \
+      --app-id "$AMPLIFY_APP_ID" \
+      --branch-name "$ENV_NAME" \
+      --job-id "$JOB_ID" \
+      --output json 2>/dev/null)
+
+    # Extract and display error message if available
+    if [ -n "$JOB_DETAILS" ]; then
+      ERROR_MSG=$(echo "$JOB_DETAILS" | jq -r '.job.summary.jobArn // empty' 2>/dev/null)
+      if [ -n "$ERROR_MSG" ]; then
+        echo ""
+        echo "View details: https://console.aws.amazon.com/amplify/home?region=${AWS_REGION:-ap-southeast-1}#/${AMPLIFY_APP_ID}/${ENV_NAME}/${JOB_ID}"
+      fi
+    fi
 
     # Cleanup
     rm -f "$ZIP_FILE"

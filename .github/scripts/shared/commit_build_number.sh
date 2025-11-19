@@ -17,7 +17,7 @@ if [ -z "$GITHUB_RUN_NUMBER" ]; then
   exit 1
 fi
 
-echo "💾 Bumping and committing build number for $ENV_NAME"
+echo "💾 Bumping and committing build number"
 
 # Skip commit for production environments
 if [ "$ENV_NAME" = "prod" ]; then
@@ -44,7 +44,7 @@ git config user.email "github-actions[bot]@users.noreply.github.com"
 git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
 
 git add pubspec.yaml
-git commit -m "🔢 Bump build number to ${BUILD} for ${ENV_NAME}"
+git commit -m "Bump build number to ${BUILD}"
 
 if git push; then
   echo "✅ Build number committed and pushed successfully"
