@@ -92,7 +92,30 @@ jobs:
     secrets: inherit
 
   # ═══════════════════════════════════════════════════════════
-  # JOB 3: GENERATE FINAL REPORT
+  # JOB 3: COMMIT VERSION BUMP
+  # ═══════════════════════════════════════════════════════════
+  commit-version-bump:
+    name: Commit Version
+    runs-on: ubuntu-latest
+    needs: [discover-tenants, deploy-tenants]
+    if: always() && needs.deploy-tenants.result == 'success'
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Commit version bump
+        shell: bash
+        run: bash .github/scripts/shared/commit_version_bump.sh
+        env:
+          ENV_NAME: dev
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 4: GENERATE FINAL REPORT
   # ═══════════════════════════════════════════════════════════
   final-report:
     name: Final Report
