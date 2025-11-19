@@ -1,9 +1,14 @@
 #!/bin/bash
 set -e
 
-# Validate required environment variable
+# Validate required environment variables
 if [ -z "$ENV_NAME" ]; then
   echo "❌ Error: ENV_NAME environment variable is required"
+  exit 1
+fi
+
+if [ -z "$GH_TOKEN" ]; then
+  echo "❌ Error: GH_TOKEN environment variable is required for pushing"
   exit 1
 fi
 
@@ -23,8 +28,13 @@ if ! git diff --quiet pubspec.yaml; then
 
   echo "📝 Committing version bump to ${VERSION}+${BUILD}"
 
+  # Configure git user
   git config user.name "github-actions[bot]"
   git config user.email "github-actions[bot]@users.noreply.github.com"
+
+  # Configure git to use token for authentication
+  git config --global url."https://${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+
   git add pubspec.yaml
   git commit -m "🔢 Bump build number to ${BUILD} for ${ENV_NAME}"
 

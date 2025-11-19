@@ -36,7 +36,7 @@ jobs:
     environment: ${{ inputs.context }}
     outputs:
       status: ${{ steps.final_status.outputs.status }}
-      portal_url: ${{ env.BASE_URL }}
+      portal_url: ${{ steps.deploy_amplify.outputs.PORTAL_URL || format('https://{0}.{1}.amplifyapp.com', inputs.context, secrets.AMPLIFY_APP_ID) }}
 
     env:
       ENV_NAME: dev
@@ -113,7 +113,6 @@ jobs:
           SETUP_FLUTTER_OUTCOME: ${{ steps.setup_flutter_env.outputs.outcome }}
           PREPARE_BUILD_OUTCOME: ${{ steps.prepare_build.outputs.outcome }}
           BUILD_WEB_OUTCOME: ${{ steps.build_web.outcome }}
-          POST_BUILD_OUTCOME: ${{ steps.post_build_web.outcome }}
           DEPLOY_OUTCOME: ${{ steps.deploy_amplify.outcome }}
         run: |
           if [ "$CONFIGURE_AWS_OUTCOME" != "success" ]; then
@@ -128,9 +127,6 @@ jobs:
           elif [ "$BUILD_WEB_OUTCOME" != "success" ]; then
             echo "status=failed" >> $GITHUB_OUTPUT
             echo "error=Failed to build web app" >> $GITHUB_OUTPUT
-          elif [ "$POST_BUILD_OUTCOME" != "success" ]; then
-            echo "status=failed" >> $GITHUB_OUTPUT
-            echo "error=Failed post-build processing" >> $GITHUB_OUTPUT
           elif [ "$DEPLOY_OUTCOME" != "success" ]; then
             echo "status=failed" >> $GITHUB_OUTPUT
             echo "error=Failed to deploy to Amplify" >> $GITHUB_OUTPUT
@@ -149,7 +145,7 @@ jobs:
           error: ${{ steps.determine_status.outputs.error }}
           resource_urls: |
             {
-              "portal_url": "${{ env.BASE_URL }}"
+              "portal_url": "${{ steps.deploy_amplify.outputs.PORTAL_URL || format('https://{0}.{1}.amplifyapp.com', inputs.context, secrets.AMPLIFY_APP_ID) }}"
             }
 
       - name: Set final status for job output

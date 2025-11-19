@@ -107,7 +107,40 @@ while [ $ELAPSED_TIME -lt $MAX_WAIT_TIME ]; do
     echo "   Job ID: $JOB_ID"
     echo "   Branch: $ENV_NAME"
     echo ""
-    echo "🌐 Your app is deployed at: https://${ENV_NAME}.${AMPLIFY_APP_ID}.amplifyapp.com"
+
+    # Resolve portal URL (custom domain or default)
+    echo "🔍 Resolving portal URL..."
+
+    # Try to get custom domain for this branch
+    CUSTOM_URL=$(aws amplify list-domain-associations \
+      --app-id "$AMPLIFY_APP_ID" \
+      --output json 2>/dev/null | jq -r \
+      --arg branch "$ENV_NAME" \
+      '.domainAssociations[] |
+       select(.domainStatus == "AVAILABLE") |
+       . as $domain |
+       .subDomains[] |
+       select(.subDomainSetting.branchName == $branch and .verified == true) |
+       if .subDomainSetting.prefix == "" then
+         "https://" + $domain.domainName
+       else
+         "https://" + .subDomainSetting.prefix + "." + $domain.domainName
+       end' 2>/dev/null | head -n 1)
+
+    # Fallback to default Amplify URL if no custom domain found
+    if [ -n "$CUSTOM_URL" ] && [ "$CUSTOM_URL" != "null" ] && [ "$CUSTOM_URL" != "" ]; then
+      PORTAL_URL="$CUSTOM_URL"
+      echo "   Using custom domain: $PORTAL_URL"
+    else
+      PORTAL_URL="https://${ENV_NAME}.${AMPLIFY_APP_ID}.amplifyapp.com"
+      echo "   Using default Amplify URL: $PORTAL_URL"
+    fi
+
+    echo ""
+    echo "🌐 Your app is deployed at: $PORTAL_URL"
+
+    # Export portal URL for GitHub Actions to capture
+    echo "PORTAL_URL=$PORTAL_URL" >> $GITHUB_OUTPUT
 
     # Cleanup
     rm -f "$ZIP_FILE"

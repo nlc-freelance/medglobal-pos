@@ -110,9 +110,10 @@ jobs:
 
       - name: Commit version bump
         shell: bash
-        run: bash .github/scripts/shared/commit_version_bump.sh
+        run: bash .github/scripts/shared/commit_build_number.sh
         env:
           ENV_NAME: dev
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
   # ═══════════════════════════════════════════════════════════
   # JOB 4: GENERATE FINAL REPORT
