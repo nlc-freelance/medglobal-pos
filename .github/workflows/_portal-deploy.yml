@@ -39,7 +39,7 @@ jobs:
       portal_url: ${{ steps.deploy_amplify.outputs.PORTAL_URL || format('https://{0}.{1}.amplifyapp.com', inputs.context, secrets.AMPLIFY_APP_ID) }}
 
     env:
-      ENV_NAME: dev
+      ENV_NAME: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
       AWS_REGION: ${{ vars.AWS_REGION }}
       BASE_URL: ${{ vars.BASE_URL }}
       TENANT_NAME: ${{ vars.TENANT_NAME }}

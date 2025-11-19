@@ -172,6 +172,9 @@ gh release create "$RELEASE_TAG" \
 # ──────────────────────────────────────────────────────────────
 RELEASE_URL=$(gh release view "$RELEASE_TAG" --json url --jq '.url')
 
+# Export release URL for GitHub Actions to capture
+echo "release_url=$RELEASE_URL" >> $GITHUB_OUTPUT
+
 echo ""
 echo "✅ Release created successfully!"
 echo "🔗 Release URL: $RELEASE_URL"
