@@ -7,6 +7,7 @@
 ;   {{APP_BUILD}}       - Build number from pubspec.yaml (e.g., 123)
 ;   {{APP_PUBLISHER}}   - Publisher name from env var
 ;   {{APP_NAME}}        - Application display name from env var
+;   {{TENANT_NAME}}     - Tenant name or environment (e.g., alpha, dev)
 ;   {{SUPPORT_URL}}     - Support website URL (optional)
 ; ──────────────────────────────────────────────────────────────
 
@@ -41,7 +42,7 @@ PrivilegesRequiredOverridesAllowed=dialog
 ; Output Configuration
 ; ──────────────────────────────────────────────────────────────
 OutputDir=Output
-OutputBaseFilename={#MyAppName}-v{#MyAppVersion}-{{ENV_NAME}}+{#MyAppBuildNumber}
+OutputBaseFilename={#MyAppName}-v{#MyAppVersion}-{{TENANT_NAME}}+{#MyAppBuildNumber}
 SetupIconFile=..\runner\resources\app_icon.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 

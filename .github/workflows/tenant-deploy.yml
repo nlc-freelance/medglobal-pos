@@ -114,6 +114,7 @@ jobs:
         env:
           ENV_NAME: dev
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
 
   # ═══════════════════════════════════════════════════════════
   # JOB 4: GENERATE FINAL REPORT
