@@ -99,7 +99,7 @@ jobs:
         run: bash .github/scripts/portal_web/build_web.sh
 
       - name: Deploy to Amplify
-        if: steps.post_build_web.outcome == 'success'
+        if: steps.build_web.outcome == 'success'
         id: deploy_amplify
         shell: bash
         run: bash .github/scripts/portal_web/deploy_amplify_web.sh
