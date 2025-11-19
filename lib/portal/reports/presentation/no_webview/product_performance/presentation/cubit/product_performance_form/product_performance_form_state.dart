@@ -39,16 +39,14 @@ class ProductPerformanceFormState with _$ProductPerformanceFormState {
 
     switch (type!) {
       case ProductPerformanceType.abc:
-        final hasBranch = branch != null;
         final hasRankingCriteria = rankingCriteria != null;
 
-        return hasBranch && hasRankingCriteria && _hasPeriod;
+        return hasRankingCriteria && _hasPeriod;
       case ProductPerformanceType.pnl:
-        final hasBranch = branch != null;
         final hasTopN = topN != null && topN! > 0;
         final hasRankingCriteria = rankingCriteria != null;
 
-        return hasBranch && hasTopN && hasRankingCriteria && _hasPeriod;
+        return hasTopN && hasRankingCriteria && _hasPeriod;
     }
   }
 
@@ -127,14 +125,14 @@ class ProductPerformanceFormState with _$ProductPerformanceFormState {
 
     final payload = switch (type!) {
       ProductPerformanceType.abc => CreateProductABCDto(
-          branchId: branch!.id!,
+          branchId: branch?.id,
           productCategoryIds: categories?.map((category) => category.id!).toList(),
           rankingCriteria: rankingCriteria!.name,
           startDate: _startDateByPeriod!,
           endDate: _endDateByPeriod!,
         ).toJson(),
       ProductPerformanceType.pnl => CreateProductPNLDto(
-          branchId: branch!.id!,
+          branchId: branch?.id,
           productCategoryIds: categories?.map((category) => category.id!).toList(),
           topSize: topN!,
           rankingCriteria: rankingCriteria!.name,

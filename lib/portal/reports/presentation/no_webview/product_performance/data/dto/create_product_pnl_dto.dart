@@ -4,7 +4,7 @@ part 'create_product_pnl_dto.g.dart';
 
 @JsonSerializable()
 class CreateProductPNLDto {
-  final int branchId;
+  final int? branchId;
   final List<int>? productCategoryIds;
   final int topSize;
   final String rankingCriteria;

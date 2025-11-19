@@ -4,7 +4,7 @@ part 'create_product_abc_dto.g.dart';
 
 @JsonSerializable()
 class CreateProductABCDto {
-  final int branchId;
+  final int? branchId;
   final List<int>? productCategoryIds;
   final String rankingCriteria;
   final String startDate;

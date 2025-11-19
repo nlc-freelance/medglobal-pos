@@ -25,11 +25,12 @@ class ProductPerformanceForm extends StatelessWidget {
             UIText.labelMedium('Please provide the source data needed to generate ${state.type!.title}.'),
             AppDropdownFormField<Branch>.lazy(
               label: 'Branch',
-              hint: 'Select branch',
-              isRequired: true,
+              hint: 'All Branches',
+              showProminentHint: true,
               value: state.branch,
               getName: (branch) => branch.name,
               onChanged: (branch) => context.read<ProductPerformanceFormCubit>().setBranch(branch),
+              onRemoveSelectedItem: () => context.read<ProductPerformanceFormCubit>().setBranch(null),
             ),
             AppDropdownFormField<Category>.lazy(
               label: 'Category',

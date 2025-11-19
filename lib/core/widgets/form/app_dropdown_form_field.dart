@@ -36,8 +36,9 @@ class AppDropdownFormField<T> extends StatefulWidget {
     this.showSelectedItem = true,
     this.isMultiSelect = false,
     this.showSelectedItems = true,
-    this.selectedItems,
     this.onRemoveFromMultiSelect,
+    this.selectedItems,
+    this.onRemoveSelectedItem,
     this.onRemoveAllFromMultiSelect,
     this.isSelectedInMultiSelect,
   });
@@ -55,10 +56,11 @@ class AppDropdownFormField<T> extends StatefulWidget {
   final void Function(T item) onChanged;
   final Anchor? anchor;
 
-  // SingleSelect
+  // Single select
   final bool showSelectedItem;
+  final VoidCallback? onRemoveSelectedItem;
 
-  // MultiSelect
+  // Multi-selection
   final bool isMultiSelect;
   final bool showSelectedItems;
   final List<T>? selectedItems;
@@ -77,7 +79,12 @@ class AppDropdownFormField<T> extends StatefulWidget {
     required String Function(T item) getName,
     required void Function(T item) onChanged,
     Anchor? anchor,
+
+    // Single selection
     bool showSelectedItem = true,
+    VoidCallback? onRemoveSelectedItem,
+
+    // Multi-selection
     bool isMultiSelect = false,
     bool showSelectedItems = true,
     List<T>? selectedItems,
@@ -97,7 +104,12 @@ class AppDropdownFormField<T> extends StatefulWidget {
       getName: getName,
       onChanged: onChanged,
       anchor: anchor,
+
+      // Single selection
       showSelectedItem: showSelectedItem,
+      onRemoveSelectedItem: onRemoveSelectedItem,
+
+      // Multi-selection
       isMultiSelect: isMultiSelect,
       showSelectedItems: showSelectedItems,
       selectedItems: selectedItems,
@@ -112,15 +124,17 @@ class AppDropdownFormField<T> extends StatefulWidget {
     required List<T> items,
     required String label,
     required String hint,
-    bool isMultiSelect = false,
-    bool showSelectedItems = false,
-    List<T>? selectedItems,
     bool isRequired = false,
     bool isReadOnly = false,
-    T? value,
     required String Function(T item) getName,
     required void Function(T item) onChanged,
     Anchor? anchor,
+    T? value,
+
+    // Multi-selection
+    List<T>? selectedItems,
+    bool showSelectedItems = false,
+    bool isMultiSelect = false,
     void Function(T item)? onRemoveFromMultiSelect,
     bool Function(T item)? isSelectedInMultiSelect,
   }) {
@@ -136,6 +150,8 @@ class AppDropdownFormField<T> extends StatefulWidget {
       getName: getName,
       onChanged: onChanged,
       anchor: anchor,
+
+      // Multi-selection
       isMultiSelect: isMultiSelect,
       showSelectedItems: showSelectedItems,
       selectedItems: selectedItems,
@@ -237,7 +253,9 @@ class _DropdownFormFieldState<T> extends State<AppDropdownFormField<T>> {
               menuKey: menuKey,
               value: value == null ? null : widget.getName(value as T),
               hint: widget.hint,
+              showProminentHint: widget.showProminentHint,
               isReadOnly: widget.isReadOnly,
+              onRemove: widget.onRemoveSelectedItem,
               showSelectedItem: widget.showSelectedItem,
             ),
       follower: widget.type == DropdownListType.lazy
@@ -330,45 +348,90 @@ class _FormField extends StatelessWidget {
   }
 }
 
-class _SingleSelectDropdownContainer extends StatelessWidget {
+class _SingleSelectDropdownContainer<T> extends StatelessWidget {
   const _SingleSelectDropdownContainer({
     required this.menuKey,
     required this.hint,
+    this.showProminentHint = false,
     required this.isReadOnly,
     required this.value,
     this.showSelectedItem = true,
+    this.onRemove,
   });
 
   final GlobalKey menuKey;
   final String hint;
+  final bool showProminentHint;
   final bool isReadOnly;
   final String? value;
   final bool showSelectedItem;
+  final VoidCallback? onRemove;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      key: menuKey,
-      readOnly: true,
-      enabled: false,
-      controller: TextEditingController(text: showSelectedItem ? value : null),
-      mouseCursor: isReadOnly ? null : SystemMouseCursors.click,
-      showCursor: false,
-      style: UIStyleText.chip.copyWith(color: UIColors.textDark),
-      decoration: InputDecoration(
-        hintText: hint,
-        suffixIcon: isReadOnly
-            ? Assets.icons.lock.svg(colorFilter: UIColors.textMuted.toColorFilter)
-            : Assets.icons.arrowDown.svg(),
-        suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
-        fillColor: UIColors.borderMuted.withValues(alpha: isReadOnly ? 0.5 : 0.15),
-        filled: true,
-        disabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          borderSide: BorderSide(color: UIColors.borderRegular),
+    return MouseRegion(
+      cursor: isReadOnly ? SystemMouseCursors.basic : SystemMouseCursors.click,
+      child: Container(
+        key: menuKey,
+        constraints: const BoxConstraints(minHeight: 42.5),
+        width: double.infinity,
+        padding: value?.isNotEmpty == true && onRemove != null
+            ? const EdgeInsets.fromLTRB(16, 4, 12, 4)
+            : const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: UIColors.borderMuted.withValues(alpha: isReadOnly ? 0.5 : 0.15),
+          border: Border.all(color: UIColors.borderRegular.withValues(alpha: 0.75)),
+          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            value?.isNotEmpty == true && showSelectedItem
+                ? Text(
+                    value!,
+                    style: UIStyleText.chip.copyWith(color: UIColors.textDark),
+                  )
+                : Text(
+                    hint,
+                    style: UIStyleText.hint.copyWith(
+                      color: showProminentHint ? UIColors.textRegular : UIColors.textMuted,
+                    ),
+                  ),
+            isReadOnly
+                ? Assets.icons.lock.svg(colorFilter: UIColors.textMuted.toColorFilter, width: 12)
+                : value?.isNotEmpty == true && onRemove != null
+                    ? InkWell(
+                        onTap: onRemove,
+                        borderRadius: BorderRadius.circular(10),
+                        child: Assets.icons.close.setSize(20),
+                      )
+                    : Assets.icons.arrowDown.svg(),
+          ],
         ),
       ),
     );
+    // return TextFormField(
+    //   key: menuKey,
+    //   readOnly: true,
+    //   enabled: false,
+    //   controller: TextEditingController(text: showSelectedItem ? value : null),
+    //   mouseCursor: isReadOnly ? null : SystemMouseCursors.click,
+    //   showCursor: false,
+    //   style: UIStyleText.chip.copyWith(color: UIColors.textDark),
+    //   decoration: InputDecoration(
+    //     hintText: hint,
+    //     suffixIcon: isReadOnly
+    //         ? Assets.icons.lock.svg(colorFilter: UIColors.textMuted.toColorFilter)
+    //         : Assets.icons.arrowDown.svg(),
+    //     suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
+    //     fillColor: UIColors.borderMuted.withValues(alpha: isReadOnly ? 0.5 : 0.15),
+    //     filled: true,
+    //     disabledBorder: const OutlineInputBorder(
+    //       borderRadius: BorderRadius.all(Radius.circular(10.0)),
+    //       borderSide: BorderSide(color: UIColors.borderRegular),
+    //     ),
+    //   ),
+    // );
   }
 }
 
@@ -424,6 +487,7 @@ class _MultiSelectDropdownContainer<T> extends StatelessWidget {
                           .map(
                             (item) => Chip(
                               label: Text(getName(item), style: UIStyleText.chip),
+                              deleteButtonTooltipMessage: 'Remove',
                               backgroundColor: UIColors.whiteBg,
                               deleteIcon: onRemove != null ? Assets.icons.close.svg() : const SizedBox.shrink(),
                               onDeleted: onRemove != null ? () => onRemove!(item) : () {},
@@ -445,8 +509,8 @@ class _MultiSelectDropdownContainer<T> extends StatelessWidget {
             values?.isNotEmpty == true && onRemoveAll != null
                 ? InkWell(
                     onTap: onRemoveAll,
-                    borderRadius: BorderRadius.circular(16),
-                    child: Assets.icons.close.svg(),
+                    borderRadius: BorderRadius.circular(10),
+                    child: Assets.icons.close.setSize(20),
                   )
                 : Assets.icons.arrowDown.svg(),
           ],
