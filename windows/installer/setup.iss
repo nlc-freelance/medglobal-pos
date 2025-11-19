@@ -42,7 +42,7 @@ PrivilegesRequiredOverridesAllowed=dialog
 ; Output Configuration
 ; ──────────────────────────────────────────────────────────────
 OutputDir=Output
-OutputBaseFilename={#MyAppName}-v{#MyAppVersion}-{{TENANT_NAME}}+{#MyAppBuildNumber}
+OutputBaseFilename={#MyAppName}-v{#MyAppVersion}{{FILENAME_SUFFIX}}
 SetupIconFile=..\runner\resources\app_icon.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 

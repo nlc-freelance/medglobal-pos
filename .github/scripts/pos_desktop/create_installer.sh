@@ -78,26 +78,24 @@ fi
 # For production (main): Replace TENANT_NAME with empty string, then clean up
 # For non-prod: Replace TENANT_NAME with actual tenant name value
 if [ "$ENV_NAME" == "main" ]; then
-  # Production: Replace TENANT_NAME with empty, then remove resulting empty patterns
-  sed -e "s|{{APP_VERSION}}|$APP_VERSION|g" \
-      -e "s|{{APP_BUILD}}|$APP_BUILD|g" \
-      -e "s|{{TENANT_NAME}}||g" \
-      -e "s|--||g" \
-      -e "s|-+|+|g" \
-      -e "s|{{APP_PUBLISHER}}|$APP_PUBLISHER|g" \
-      -e "s|{{APP_NAME}}|$APP_NAME|g" \
-      -e "s|{{SUPPORT_URL}}|$SUPPORT_URL|g" \
-      "$TEMPLATE_FILE" > "$COMPILED_FILE"
+  # Production: No tenant name, no build number
+  FILENAME_SUFFIX=""
+elif [[ "$TENANT_NAME" =~ ^(dev|preprod)$ ]]; then
+  # Internal environments: Include tenant name and build number
+  FILENAME_SUFFIX="-${TENANT_NAME}+${APP_BUILD}"
 else
-  # Non-production: Replace TENANT_NAME with actual value
-  sed -e "s|{{APP_VERSION}}|$APP_VERSION|g" \
-      -e "s|{{APP_BUILD}}|$APP_BUILD|g" \
-      -e "s|{{TENANT_NAME}}|$TENANT_NAME|g" \
-      -e "s|{{APP_PUBLISHER}}|$APP_PUBLISHER|g" \
-      -e "s|{{APP_NAME}}|$APP_NAME|g" \
-      -e "s|{{SUPPORT_URL}}|$SUPPORT_URL|g" \
-      "$TEMPLATE_FILE" > "$COMPILED_FILE"
+  # Tenant deployments: Include tenant name only, no build number
+  FILENAME_SUFFIX="-${TENANT_NAME}"
 fi
+
+# Replace all placeholders in the template
+sed -e "s|{{APP_VERSION}}|$APP_VERSION|g" \
+    -e "s|{{APP_BUILD}}|$APP_BUILD|g" \
+    -e "s|{{FILENAME_SUFFIX}}|$FILENAME_SUFFIX|g" \
+    -e "s|{{APP_PUBLISHER}}|$APP_PUBLISHER|g" \
+    -e "s|{{APP_NAME}}|$APP_NAME|g" \
+    -e "s|{{SUPPORT_URL}}|$SUPPORT_URL|g" \
+    "$TEMPLATE_FILE" > "$COMPILED_FILE"
 
 echo "✅ InnoSetup script prepared: $COMPILED_FILE"
 
