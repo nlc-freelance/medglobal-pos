@@ -5,6 +5,4 @@ class EnvConfig {
 
   static const String baseUrl = String.fromEnvironment('BASE_URL', defaultValue: _devUrl);
   static const String envPrefix = String.fromEnvironment('ENV_NAME', defaultValue: 'dev');
-  static const String version = String.fromEnvironment('VERSION', defaultValue: '0.0.0');
-  static const String buildNumber = String.fromEnvironment('BUILD_NUMBER', defaultValue: '0');
 }
