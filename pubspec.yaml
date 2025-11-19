@@ -1,7 +1,7 @@
 name: medglobal_admin_portal
 description: "MedGlobal Inventory Management System and Point-of-Sale"
 publish_to: 'none'
-version: 2.0.0+0
+version: 2.0.0+14
 
 environment:
   sdk: '>=3.4.0-282.3.beta <4.0.0'
