@@ -13,14 +13,7 @@ echo "📦 Installing jq for JSON parsing..."
 
 sudo apt-get update && sudo apt-get install -y jq
 
-# Step 1: Copy custom HTTP headers config to build output
-if [ -f "customHttp.yml" ]; then
-  echo "📋 Copying custom headers configuration..."
-  cp customHttp.yml build/web/
-  echo "✅ customHttp.yml added to build output"
-fi
-
-# Step 2: Create a zip file of the build output
+# Step 1: Create a zip file of the build output
 BUILD_DIR="build/web"
 ZIP_FILE="amplify-deploy-${ENV_NAME}.zip"
 
@@ -31,7 +24,7 @@ cd ../..
 
 echo "✅ Deployment package created: ${ZIP_FILE}"
 
-# Step 3: Create deployment and get upload URL
+# Step 2: Create deployment and get upload URL
 echo "🔗 Creating deployment job..."
 DEPLOYMENT_RESPONSE=$(aws amplify create-deployment \
   --app-id "$AMPLIFY_APP_ID" \
@@ -43,7 +36,7 @@ ZIP_UPLOAD_URL=$(echo "$DEPLOYMENT_RESPONSE" | jq -r '.zipUploadUrl')
 
 echo "✅ Deployment job created: $JOB_ID"
 
-# Step 4: Upload the zip file to the provided URL with error handling
+# Step 3: Upload the zip file to the provided URL with error handling
 echo "⬆️ Uploading build artifacts..."
 
 # Capture HTTP status code and upload with retry logic
@@ -78,7 +71,7 @@ fi
 
 echo "✅ Build artifacts uploaded successfully (HTTP $HTTP_CODE)"
 
-# Step 5: Start the deployment
+# Step 4: Start the deployment
 echo "🚀 Starting deployment..."
 START_DEPLOYMENT_OUTPUT=$(aws amplify start-deployment \
   --app-id "$AMPLIFY_APP_ID" \
@@ -88,7 +81,7 @@ START_DEPLOYMENT_OUTPUT=$(aws amplify start-deployment \
 
 echo "✅ Amplify deployment started for $ENV_NAME (Job ID: $JOB_ID)"
 
-# Step 6: Wait for deployment to complete and verify status
+# Step 5: Wait for deployment to complete and verify status
 echo "⏳ Waiting for deployment to complete..."
 echo "   (This may take 2-5 minutes)"
 

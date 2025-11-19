@@ -10,9 +10,6 @@ fi
 
 echo "💻️ Building Flutter Web for $ENV_NAME"
 
-flutter build web --release --no-tree-shake-icons \
+flutter build web --release \
   --dart-define=BASE_URL=$BASE_URL \
   --dart-define=ENV_NAME=$ENV_NAME
-
-# Post-process build to ensure fonts are included
-bash .github/scripts/portal_web/post_build_web.sh
