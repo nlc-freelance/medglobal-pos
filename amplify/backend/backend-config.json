@@ -1,6 +1,6 @@
 {
   "auth": {
-    "medglobalposa24c1822": {
+    "medglobalpos330bc758": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -9,35 +9,35 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_medglobalposa24c1822_nativeClientId": {
+    "AMPLIFY_auth_medglobalpos330bc758_nativeClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalposa24c1822"
+          "resourceName": "medglobalpos330bc758"
         }
       ]
     },
-    "AMPLIFY_auth_medglobalposa24c1822_userPoolId": {
+    "AMPLIFY_auth_medglobalpos330bc758_userPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalposa24c1822"
+          "resourceName": "medglobalpos330bc758"
         }
       ]
     },
-    "AMPLIFY_auth_medglobalposa24c1822_userPoolName": {
+    "AMPLIFY_auth_medglobalpos330bc758_userPoolName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalposa24c1822"
+          "resourceName": "medglobalpos330bc758"
         }
       ]
     },
-    "AMPLIFY_auth_medglobalposa24c1822_webClientId": {
+    "AMPLIFY_auth_medglobalpos330bc758_webClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalposa24c1822"
+          "resourceName": "medglobalpos330bc758"
         }
       ]
     }

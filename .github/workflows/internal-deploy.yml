@@ -3,14 +3,6 @@ name: "🚀 Internal Deploy"
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Environment to deploy to'
-        required: true
-        type: choice
-        options:
-          - dev
-          - preprod
-          - prod
       deploy_portal:
         description: 'Deploy Portal Web'
         type: boolean
@@ -32,14 +24,15 @@ jobs:
     name: Pull Amplify Config
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    environment: ${{ inputs.environment }}
+    environment: ${{ github.ref_name }}
     outputs:
       status: ${{ steps.final_status.outputs.status }}
 
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
       AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
-      TENANT_NAME: ${{ inputs.environment }}
+      TENANT_NAME: ${{ vars.TENANT_NAME }}
+      ENV_NAME: ${{ github.ref_name }}
 
     steps:
       - name: Checkout code
@@ -80,7 +73,7 @@ jobs:
         id: upload_config
         uses: actions/upload-artifact@v4
         with:
-          name: amplify-config-${{ inputs.environment }}
+          name: amplify-config-${{ github.ref_name }}
           path: amplify-config.tar.gz
           retention-days: 1
 
@@ -110,8 +103,8 @@ jobs:
     if: inputs.deploy_portal && needs.amplify-pull.outputs.status == 'success'
     uses: ./.github/workflows/_portal-deploy.yml
     with:
-      context: ${{ inputs.environment }}
-      amplify_config_artifact: amplify-config-${{ inputs.environment }}
+      context: ${{ github.ref_name }}
+      amplify_config_artifact: amplify-config-${{ github.ref_name }}
       save_status: false
     secrets: inherit
 
@@ -124,8 +117,8 @@ jobs:
     if: inputs.deploy_pos && needs.amplify-pull.outputs.status == 'success'
     uses: ./.github/workflows/_pos-deploy.yml
     with:
-      context: ${{ inputs.environment }}
-      amplify_config_artifact: amplify-config-${{ inputs.environment }}
+      context: ${{ github.ref_name }}
+      amplify_config_artifact: amplify-config-${{ github.ref_name }}
       save_status: false
     secrets: inherit
 
@@ -150,7 +143,7 @@ jobs:
         shell: bash
         run: bash .github/scripts/shared/commit_build_number.sh
         env:
-          ENV_NAME: ${{ inputs.environment }}
+          ENV_NAME: ${{ github.ref_name }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
   # ═══════════════════════════════════════════════════════════
@@ -167,7 +160,7 @@ jobs:
       - name: Generate deployment report
         shell: bash
         run: |
-          echo "## Internal Deployment: ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Internal Deployment: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           echo "| Component | Status |" >> $GITHUB_STEP_SUMMARY
