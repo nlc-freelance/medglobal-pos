@@ -1,0 +1,45 @@
+{
+  "auth": {
+    "medglobalposa24c1822": {
+      "customAuth": false,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "serviceType": "imported"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_medglobalposa24c1822_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "medglobalposa24c1822"
+        }
+      ]
+    },
+    "AMPLIFY_auth_medglobalposa24c1822_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "medglobalposa24c1822"
+        }
+      ]
+    },
+    "AMPLIFY_auth_medglobalposa24c1822_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "medglobalposa24c1822"
+        }
+      ]
+    },
+    "AMPLIFY_auth_medglobalposa24c1822_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "medglobalposa24c1822"
+        }
+      ]
+    }
+  }
+}

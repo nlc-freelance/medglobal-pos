@@ -68,6 +68,10 @@ build/windows_installer_staging/
 # Note: runtime_dlls/*.dll should be committed (not ignored)
 # They are required for the CI/CD pipeline to build installers
 
+
+amplify/hooks
+amplify/README.md
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
@@ -89,6 +93,3 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-
-amplify/hooks
-amplify/README.md
