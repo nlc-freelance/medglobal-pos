@@ -26,9 +26,9 @@ fi
 echo "🚀 Initializing Amplify app and backend for tenant: $TENANT_NAME"
 echo "   Region: $AWS_REGION"
 
-APP_NAME="medglobal-portal-${TENANT_NAME}"
+APP_NAME="medglobal-pos-portal-${TENANT_NAME}"
 # Project name for local Amplify CLI (no hyphens allowed)
-PROJECT_NAME="medglobalportal${TENANT_NAME}"
+PROJECT_NAME="medglobalposportal${TENANT_NAME}"
 
 # Check if already initialized
 if [ -d "amplify" ] && [ -f "amplify/.config/project-config.json" ]; then

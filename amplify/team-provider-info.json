@@ -1,19 +1,19 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-medglobalportal-dev-bd94d-authRole",
-      "UnauthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-bd94d-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-bd94d-authRole",
+      "AuthRoleName": "amplify-medglobalposportal-dev-be080-authRole",
+      "UnauthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalposportal-dev-be080-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalposportal-dev-be080-authRole",
       "Region": "ap-southeast-1",
-      "DeploymentBucketName": "amplify-medglobalportal-dev-bd94d-deployment",
-      "UnauthRoleName": "amplify-medglobalportal-dev-bd94d-unauthRole",
-      "StackName": "amplify-medglobalportal-dev-bd94d",
-      "StackId": "arn:aws:cloudformation:ap-southeast-1:280954863577:stack/amplify-medglobalportal-dev-bd94d/a2dbf1d0-b7f1-11f0-8765-024095b3a911",
-      "AmplifyAppId": "d3o9zsjtt1p6v6"
+      "DeploymentBucketName": "amplify-medglobalposportal-dev-be080-deployment",
+      "UnauthRoleName": "amplify-medglobalposportal-dev-be080-unauthRole",
+      "StackName": "amplify-medglobalposportal-dev-be080",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:280954863577:stack/amplify-medglobalposportal-dev-be080/29328ee0-cc4e-11f0-9413-0aec59753d59",
+      "AmplifyAppId": "d22nc21gji9mw9"
     },
     "categories": {
       "auth": {
-        "medglobalportaladeafc54": {
+        "medglobalposportalcfd073a8": {
           "userPoolId": "ap-southeast-1_u2ldk8PVd",
           "userPoolName": "employees",
           "webClientId": "6309eiplj9jqf6jpb0tqbe84aj",
