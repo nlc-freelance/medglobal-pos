@@ -1,0 +1,299 @@
+name: "🌐 Tenant Deploy"
+
+on:
+  workflow_dispatch:
+    inputs:
+      tenants:
+        description: 'Tenant names (comma-separated or "all"'
+        required: true
+        default: 'all'
+      deploy_portal:
+        description: 'Deploy Portal Web'
+        type: boolean
+        default: true
+      deploy_pos:
+        description: 'Deploy POS Desktop'
+        type: boolean
+        default: true
+
+concurrency:
+  group: tenant-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write  # For creating GitHub releases (desktop)
+  id-token: write  # For AWS OIDC
+
+jobs:
+  # ═══════════════════════════════════════════════════════════
+  # JOB 1: DISCOVER TENANTS
+  # ═══════════════════════════════════════════════════════════
+  discover-tenants:
+    name: Discover Tenants
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tenants: ${{ steps.discover.outputs.tenants }}
+      tenant_count: ${{ steps.count.outputs.tenant_count }}
+
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Discover tenant environments
+        id: discover
+        run: bash .github/scripts/tenants/discover_tenants.sh "${{ github.repository }}" "${{ github.event.inputs.tenants }}"
+
+      - name: Calculate tenant count
+        id: count
+        run: |
+          TENANT_COUNT=$(echo '${{ steps.discover.outputs.tenants }}' | jq 'length')
+          echo "tenant_count=$TENANT_COUNT" >> $GITHUB_OUTPUT
+          echo "Found $TENANT_COUNT tenant(s) to process"
+
+      - name: Summary
+        run: |
+          echo "## Tenant Discovery" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Mode:** 🚀 Live Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "**Tenants found:** ${{ steps.count.outputs.tenant_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tenants to process:**" >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.discover.outputs.tenants }}' | jq -r '.[] | "- " + .' >> $GITHUB_STEP_SUMMARY
+
+      - name: Exit if no tenants to process
+        if: fromJson(steps.count.outputs.tenant_count) == 0
+        run: |
+          echo "⚠️ No tenants to process. Exiting."
+          exit 0
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 2: DEPLOY TENANTS (CALLS REUSABLE WORKFLOW)
+  # ═══════════════════════════════════════════════════════════
+  deploy-tenants:
+    name: Deploy Tenant
+    needs: discover-tenants
+    if: fromJson(needs.discover-tenants.outputs.tenant_count) > 0
+    strategy:
+      fail-fast: false
+      matrix:
+        tenant: ${{ fromJson(needs.discover-tenants.outputs.tenants) }}
+      max-parallel: 3
+    uses: ./.github/workflows/_tenant-deploy.yml
+    with:
+      tenant: ${{ matrix.tenant }}
+      deploy_portal: ${{ github.event.inputs.deploy_portal == 'true' }}
+      deploy_pos: ${{ github.event.inputs.deploy_pos == 'true' }}
+    secrets: inherit
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 3: GENERATE FINAL REPORT
+  # ═══════════════════════════════════════════════════════════
+  final-report:
+    name: Final Report
+    runs-on: ubuntu-latest
+    needs: [discover-tenants, deploy-tenants]
+    if: always()
+    timeout-minutes: 5
+
+    steps:
+      - name: Download all status artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "status-*"
+          path: all-status
+          merge-multiple: true
+
+      - name: Generate comprehensive report
+        shell: bash
+        run: |
+          echo "# Multi-Tenant Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**🎉 Deployment workflow complete!**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Calculate statistics
+          TOTAL_TENANTS=0
+          SUCCESS_COUNT=0
+          FAILED_COUNT=0
+
+          # Get unique tenant names
+          TENANTS=$(ls all-status/*-validation.json 2>/dev/null | sed 's|all-status/||; s|-validation.json||' | sort -u || echo "")
+
+          if [ -z "$TENANTS" ]; then
+            echo "⚠️ No tenant status files found" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
+          # Check all phases for each tenant
+          for TENANT in $TENANTS; do
+            TOTAL_TENANTS=$((TOTAL_TENANTS + 1))
+
+            VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
+            AMP_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-amplify-pull.json" 2>/dev/null || echo "unknown")
+            POR_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "unknown")
+            POS_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "unknown")
+
+            # Determine overall status
+            if [ "$VAL_STATUS" == "success" ] && [ "$AMP_STATUS" == "success" ] && [ "$POR_STATUS" == "success" ] && [ "$POS_STATUS" == "success" ]; then
+              SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+            else
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            fi
+          done
+
+          # Display metadata
+          echo "**Mode:** 🚀 Live Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "**Total:** $TOTAL_TENANTS" >> $GITHUB_STEP_SUMMARY
+          echo "**Successful:** $SUCCESS_COUNT" >> $GITHUB_STEP_SUMMARY
+          echo "**Failed:** $FAILED_COUNT" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Display tenant summary table
+          echo "| Tenant | Validation | Amplify Pull | Portal | POS | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|------------|--------------|--------|-----|--------|" >> $GITHUB_STEP_SUMMARY
+
+          for TENANT in $TENANTS; do
+            # Extract tenant display name
+            TENANT_DISPLAY=$(echo "$TENANT" | sed 's/^tenant-//')
+
+            VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
+            AMP_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-amplify-pull.json" 2>/dev/null || echo "unknown")
+            POR_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "unknown")
+            POS_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "unknown")
+
+            # Map statuses to icons
+            case "$VAL_STATUS" in
+              success) VAL_ICON="✅" ;;
+              skipped) VAL_ICON="⏭️" ;;
+              *) VAL_ICON="❌" ;;
+            esac
+            case "$AMP_STATUS" in
+              success) AMP_ICON="✅" ;;
+              skipped) AMP_ICON="⏭️" ;;
+              *) AMP_ICON="❌" ;;
+            esac
+            case "$POR_STATUS" in
+              success) POR_ICON="✅" ;;
+              skipped) POR_ICON="⏭️" ;;
+              *) POR_ICON="❌" ;;
+            esac
+            case "$POS_STATUS" in
+              success) POS_ICON="✅" ;;
+              skipped) POS_ICON="⏭️" ;;
+              *) POS_ICON="❌" ;;
+            esac
+
+            # Determine overall result
+            if [ "$VAL_STATUS" == "success" ] && [ "$AMP_STATUS" == "success" ] && [ "$POR_STATUS" == "success" ] && [ "$POS_STATUS" == "success" ]; then
+              RESULT="✅ Success"
+            else
+              RESULT="❌ Failed"
+            fi
+
+            echo "| $TENANT_DISPLAY | $VAL_ICON | $AMP_ICON | $POR_ICON | $POS_ICON | $RESULT |" >> $GITHUB_STEP_SUMMARY
+          done
+
+          # Create JSON summary
+          cat > summary.json <<EOF
+          {
+            "workflow_run": "${{ github.run_id }}",
+            "mode": "live",
+            "total_tenants": $TOTAL_TENANTS,
+            "successful": $SUCCESS_COUNT,
+            "failed": $FAILED_COUNT,
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "tenants": [
+          EOF
+
+          FIRST=true
+          for TENANT in $TENANTS; do
+            if [ "$FIRST" == "true" ]; then
+              FIRST=false
+            else
+              echo "," >> summary.json
+            fi
+
+            VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
+            AMP_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-amplify-pull.json" 2>/dev/null || echo "unknown")
+            POR_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "unknown")
+            POS_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "unknown")
+
+            if [ "$VAL_STATUS" == "success" ] && [ "$AMP_STATUS" == "success" ] && [ "$POR_STATUS" == "success" ] && [ "$POS_STATUS" == "success" ]; then
+              OVERALL_STATUS="success"
+            else
+              OVERALL_STATUS="failed"
+            fi
+
+            cat >> summary.json <<EOF
+            {
+              "name": "$TENANT",
+              "overall_status": "$OVERALL_STATUS"
+            }
+          EOF
+          done
+
+          cat >> summary.json <<EOF
+            ]
+          }
+          EOF
+
+      - name: Upload final report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-report
+          path: summary.json
+          retention-days: 30
+
+      - name: Determine workflow status
+        shell: bash
+        run: |
+          # Get statistics from files
+          TENANTS=$(ls all-status/*-validation.json 2>/dev/null | sed 's|all-status/||; s|-validation.json||' | sort -u || echo "")
+
+          if [ -z "$TENANTS" ]; then
+            echo "⚠️ No tenants processed"
+            exit 1
+          fi
+
+          FAILED_COUNT=0
+
+          # Check if any tenant failed (only count explicit failures, not skipped/unknown)
+          for TENANT in $TENANTS; do
+            VAL_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-validation.json" 2>/dev/null || echo "unknown")
+            AMP_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-amplify-pull.json" 2>/dev/null || echo "unknown")
+            POR_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-portal-deploy.json" 2>/dev/null || echo "unknown")
+            POS_STATUS=$(jq -r '.status // "unknown"' "all-status/${TENANT}-pos-deploy.json" 2>/dev/null || echo "unknown")
+
+            # Only count as failed if status is explicitly "failed"
+            # Validation and Amplify Pull are required (must be success)
+            # Portal and POS are optional (can be skipped/unknown if not selected)
+            if [ "$VAL_STATUS" == "failed" ] || [ "$AMP_STATUS" == "failed" ] || [ "$POR_STATUS" == "failed" ] || [ "$POS_STATUS" == "failed" ]; then
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            elif [ "$VAL_STATUS" != "success" ] || [ "$AMP_STATUS" != "success" ]; then
+              # Validation and Amplify Pull must succeed (cannot be unknown/skipped)
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            fi
+          done
+
+          SUCCESS_COUNT=$((TOTAL_TENANTS - FAILED_COUNT))
+
+          if [ $FAILED_COUNT -gt 0 ] && [ $SUCCESS_COUNT -gt 0 ]; then
+            # Partial success - at least one succeeded and at least one failed
+            echo "⚠️ Workflow completed with partial success: $SUCCESS_COUNT succeeded, $FAILED_COUNT failed"
+            exit 0  # Don't fail the workflow on partial success
+          elif [ $FAILED_COUNT -gt 0 ]; then
+            # Complete failure - all tenants failed
+            echo "❌ Workflow failed: All $FAILED_COUNT tenant(s) failed"
+            exit 1
+          else
+            # Complete success - all tenants succeeded
+            echo "✅ Workflow successful: All $TOTAL_TENANTS tenant(s) deployed successfully"
+            exit 0
+          fi

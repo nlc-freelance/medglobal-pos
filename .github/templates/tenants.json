@@ -1,0 +1,30 @@
+{
+  "tenants": [
+    {
+      "tenant_name": "alpha",
+      "secrets": {
+        "COGNITO_CLIENT_ID": "alpha-client-id",
+        "COGNITO_POOL_ID": "alpha-pool-id"
+      },
+      "variables": {
+        "AWS_IAM_ROLE_ARN": "arn:aws:iam::280954863577:role/github-actions-amplify-deploy-dev",
+        "AWS_REGION": "ap-southeast-1",
+        "BASE_URL": "https://awimrjguq7.execute-api.ap-southeast-1.amazonaws.com/dev",
+        "TENANT_NAME": "alpha"
+      }
+    },
+    {
+      "tenant_name": "beta",
+      "secrets": {
+        "COGNITO_CLIENT_ID": "beta-client-id",
+        "COGNITO_POOL_ID": "beta-pool-id"
+      },
+      "variables": {
+        "AWS_IAM_ROLE_ARN": "arn:aws:iam::280954863577:role/github-actions-amplify-deploy-dev",
+        "AWS_REGION": "ap-southeast-1",
+        "BASE_URL": "https://awimrjguq7.execute-api.ap-southeast-1.amazonaws.com/dev",
+        "TENANT_NAME": "beta"
+      }
+    }
+  ]
+}

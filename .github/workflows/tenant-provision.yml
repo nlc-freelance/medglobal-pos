@@ -1,0 +1,216 @@
+name: "🧱️ Tenant Provision"
+
+on:
+  workflow_dispatch:
+    inputs:
+      s3_path:
+        description: 'S3 URI to tenant config'
+        default: 's3://medglobal-multi-tenant-config-non-prod/FE/tenants.json'
+        required: true
+
+permissions:
+  actions: write    # For creating GitHub environments
+  contents: read    # For checkout
+  id-token: write   # For AWS OIDC
+
+jobs:
+  provision:
+    name: Provision Tenant Environments
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      AWS_REGION: ap-southeast-1
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Configure AWS Credentials (OIDC)
+        id: configure_aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: GitHubActions-TenantProvision-${{ github.run_id }}
+
+      - name: Download tenant config from S3
+        id: download_config
+        shell: bash
+        run: |
+          S3_PATH="${{ github.event.inputs.s3_path }}"
+
+          echo "📥 Downloading tenant configuration from S3..."
+          echo "   Path: $S3_PATH"
+
+          # Download config file
+          aws s3 cp "$S3_PATH" tenants.json
+
+          if [ ! -f "tenants.json" ]; then
+            echo "❌ Error: Failed to download tenant config from S3"
+            exit 1
+          fi
+
+          echo "✅ Configuration downloaded successfully"
+
+          # Validate JSON structure
+          if ! jq empty tenants.json 2>/dev/null; then
+            echo "❌ Error: Invalid JSON in tenant config file"
+            exit 1
+          fi
+
+          # Check if tenants array exists
+          if ! jq -e '.tenants' tenants.json > /dev/null 2>&1; then
+            echo "❌ Error: Missing 'tenants' array in config file"
+            exit 1
+          fi
+
+          TENANT_COUNT=$(jq '.tenants | length' tenants.json)
+          echo "📊 Found $TENANT_COUNT tenant(s) to provision"
+
+      - name: Read tenant configurations
+        id: read_tenants
+        shell: bash
+        run: |
+          # Extract tenant configurations as JSON lines
+          TENANTS=$(jq -c '.tenants[]' tenants.json)
+
+          # Store in output (handle multiline)
+          echo "tenants<<EOF" >> $GITHUB_OUTPUT
+          echo "$TENANTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          # Display summary
+          echo "## Tenant Provisioning Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Source:** \`${{ github.event.inputs.s3_path }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Total Tenants:** $(echo "$TENANTS" | wc -l)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Tenants to Provision:" >> $GITHUB_STEP_SUMMARY
+          echo "$TENANTS" | jq -r '"- " + .tenant_name' >> $GITHUB_STEP_SUMMARY
+
+      - name: Provision GitHub Environments
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo ""
+          echo "📦 Provisioning tenant environments..."
+          echo ""
+
+          # Read tenant configurations
+          TENANTS=$(jq -c '.tenants[]' tenants.json)
+          TENANT_COUNT=$(echo "$TENANTS" | wc -l)
+
+          echo "Found $TENANT_COUNT tenant(s) to provision"
+          echo ""
+
+          # Process each tenant
+          while IFS= read -r TENANT_LINE; do
+            TENANT_NAME=$(echo "$TENANT_LINE" | jq -r '.tenant_name')
+            ENV_NAME="tenant-${TENANT_NAME}"
+
+            echo "======================================================"
+            echo "🚀 Provisioning environment: $ENV_NAME"
+            echo "======================================================"
+
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            # 1️⃣ CREATE GITHUB ENVIRONMENT
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            echo ""
+            echo "Creating environment: $ENV_NAME"
+
+            gh api \
+              --method PUT \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/repos/$REPO/environments/$ENV_NAME" \
+              || { echo "❌ Failed to create environment $ENV_NAME"; exit 1; }
+
+            echo "✅ Environment created/updated: $ENV_NAME"
+
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            # 2️⃣ PROVISION VARIABLES
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            VARIABLES=$(echo "$TENANT_LINE" | jq -r '.variables // {}')
+            if [ "$VARIABLES" != "{}" ]; then
+              VAR_COUNT=$(echo "$VARIABLES" | jq 'length')
+              echo ""
+              echo "🔧 Provisioning $VAR_COUNT variable(s)..."
+
+              echo "$VARIABLES" | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' | while IFS='=' read -r KEY VALUE; do
+                # Try to update variable (if it exists), otherwise create it
+                gh api \
+                  --method POST \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "X-GitHub-Api-Version: 2022-11-28" \
+                  "/repositories/${{ github.event.repository.id }}/environments/$ENV_NAME/variables" \
+                  -f "name=$KEY" \
+                  -f "value=$VALUE" \
+                  2>/dev/null && echo "   ✅ Created variable: $KEY" || \
+                gh api \
+                  --method PATCH \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "X-GitHub-Api-Version: 2022-11-28" \
+                  "/repositories/${{ github.event.repository.id }}/environments/$ENV_NAME/variables/$KEY" \
+                  -f "name=$KEY" \
+                  -f "value=$VALUE" \
+                  && echo "   ✅ Updated variable: $KEY" || \
+                  { echo "   ❌ Failed to set variable $KEY"; exit 1; }
+              done
+            fi
+
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            # 3️⃣ PROVISION SECRETS (using gh secret set - auto-encrypts)
+            # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            SECRETS=$(echo "$TENANT_LINE" | jq -r '.secrets // {}')
+            if [ "$SECRETS" != "{}" ]; then
+              SECRET_COUNT=$(echo "$SECRETS" | jq 'length')
+              echo ""
+              echo "🔐 Provisioning $SECRET_COUNT secret(s)..."
+
+              echo "$SECRETS" | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' | while IFS='=' read -r KEY REST; do
+                # Handle values that might contain '=' by extracting everything after first '='
+                VALUE="${REST}"
+
+                # Use gh secret set (automatically encrypts)
+                echo "$VALUE" | gh secret set "$KEY" \
+                  --env "$ENV_NAME" \
+                  --repo "$REPO" \
+                  && echo "   ✅ Secret provisioned: $KEY" || \
+                  { echo "   ❌ Failed to set secret $KEY"; exit 1; }
+              done
+            fi
+
+            echo ""
+            echo "🎉 Tenant '$TENANT_NAME' provisioned successfully!"
+            echo ""
+
+          done <<< "$TENANTS"
+
+          echo "======================================================"
+          echo "✅ All $TENANT_COUNT tenant(s) provisioned successfully!"
+          echo "======================================================"
+
+      - name: Generate Final Summary
+        if: always()
+        shell: bash
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ **Status:** All tenants provisioned successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Status:** Provisioning failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Verify environments in **Settings → Environments**" >> $GITHUB_STEP_SUMMARY
+          echo "2. Run **Tenant Onboarding** workflow to initialize infrastructure" >> $GITHUB_STEP_SUMMARY
+          echo "3. Run **Tenant Deploy** workflow to deploy applications" >> $GITHUB_STEP_SUMMARY

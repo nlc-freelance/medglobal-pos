@@ -1,0 +1,60 @@
+name: Save Tenant Status
+description: Composite action to track tenant deployment status with detailed context
+
+inputs:
+  tenant:
+    description: 'Tenant name'
+    required: true
+  phase:
+    description: 'Deployment phase (e.g., amplify-init, portal-deploy, pos-deploy)'
+    required: true
+  status:
+    description: 'Status: success, failed, or skipped'
+    required: true
+  error:
+    description: 'Error message with stack trace (if failed)'
+    required: false
+    default: ''
+  config_snapshot:
+    description: 'JSON string of configuration values used'
+    required: false
+    default: '{}'
+  resource_urls:
+    description: 'JSON string of deployment resource URLs'
+    required: false
+    default: '{}'
+  duration:
+    description: 'Duration in seconds'
+    required: false
+    default: '0'
+
+runs:
+  using: composite
+  steps:
+    - name: Create status report directory
+      shell: bash
+      run: mkdir -p status-reports
+
+    - name: Generate status JSON
+      shell: bash
+      run: |
+        cat > status-reports/${{ inputs.tenant }}-${{ inputs.phase }}.json <<'EOF'
+        {
+          "tenant": "${{ inputs.tenant }}",
+          "phase": "${{ inputs.phase }}",
+          "status": "${{ inputs.status }}",
+          "error": ${{ toJson(inputs.error) }},
+          "config": ${{ inputs.config_snapshot }},
+          "resources": ${{ inputs.resource_urls }},
+          "duration": "${{ inputs.duration }}",
+          "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+          "workflow_run": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        }
+        EOF
+
+    - name: Upload status artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: status-${{ inputs.phase }}-${{ inputs.tenant }}
+        path: status-reports/${{ inputs.tenant }}-${{ inputs.phase }}.json
+        retention-days: 7

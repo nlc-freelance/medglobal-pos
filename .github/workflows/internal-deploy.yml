@@ -1,0 +1,195 @@
+name: "🚀 Internal Deploy"
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_portal:
+        description: 'Deploy Portal Web'
+        type: boolean
+        default: true
+      deploy_pos:
+        description: 'Deploy POS Desktop'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write  # For creating GitHub releases (POS desktop)
+  id-token: write  # For AWS OIDC
+
+jobs:
+  # ═══════════════════════════════════════════════════════════
+  # JOB 1: PULL AMPLIFY CONFIGURATION
+  # ═══════════════════════════════════════════════════════════
+  amplify-pull:
+    name: Pull Amplify Config
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: ${{ github.ref_name }}
+    outputs:
+      status: ${{ steps.final_status.outputs.status }}
+
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AMPLIFY_APP_ID: ${{ secrets.AMPLIFY_APP_ID }}
+      TENANT_NAME: ${{ vars.TENANT_NAME }}
+      ENV_NAME: ${{ github.ref_name }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install Amplify CLI
+        id: install_amplify_cli
+        shell: bash
+        run: bash .github/scripts/shared/install_amplify_cli.sh
+
+      - name: Configure AWS Credentials (OIDC)
+        if: steps.install_amplify_cli.outcome == 'success'
+        id: configure_aws
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: GitHubActions-${{ github.run_id }}
+
+      - name: Pull Amplify Configuration
+        if: steps.configure_aws.outcome == 'success'
+        id: pull_amplify
+        shell: bash
+        run: bash .github/scripts/shared/pull_amplify_config.sh
+
+      - name: Compress Amplify configuration
+        if: steps.pull_amplify.outcome == 'success'
+        id: compress_config
+        shell: bash
+        run: |
+          tar -czf amplify-config.tar.gz amplify/ lib/amplifyconfiguration.dart
+          echo "✅ Compressed Amplify configuration (amplify/ + lib/amplifyconfiguration.dart)"
+
+      - name: Upload Amplify configuration
+        if: steps.compress_config.outcome == 'success'
+        id: upload_config
+        uses: actions/upload-artifact@v4
+        with:
+          name: amplify-config-${{ github.ref_name }}
+          path: amplify-config.tar.gz
+          retention-days: 1
+
+      - name: Set final status
+        if: always()
+        id: final_status
+        shell: bash
+        env:
+          INSTALL_OUTCOME: ${{ steps.install_amplify_cli.outcome }}
+          AWS_OUTCOME: ${{ steps.configure_aws.outcome }}
+          PULL_OUTCOME: ${{ steps.pull_amplify.outcome }}
+          COMPRESS_OUTCOME: ${{ steps.compress_config.outcome }}
+          UPLOAD_OUTCOME: ${{ steps.upload_config.outcome }}
+        run: |
+          if [ "$INSTALL_OUTCOME" != "success" ] || [ "$AWS_OUTCOME" != "success" ] || [ "$PULL_OUTCOME" != "success" ] || [ "$COMPRESS_OUTCOME" != "success" ] || [ "$UPLOAD_OUTCOME" != "success" ]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+          fi
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 2: DEPLOY PORTAL (CALLS REUSABLE WORKFLOW)
+  # ═══════════════════════════════════════════════════════════
+  deploy-portal:
+    name: Deploy Portal
+    needs: amplify-pull
+    if: inputs.deploy_portal && needs.amplify-pull.outputs.status == 'success'
+    uses: ./.github/workflows/_portal-deploy.yml
+    with:
+      context: ${{ github.ref_name }}
+      amplify_config_artifact: amplify-config-${{ github.ref_name }}
+      save_status: false
+    secrets: inherit
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 3: DEPLOY POS (CALLS REUSABLE WORKFLOW)
+  # ═══════════════════════════════════════════════════════════
+  deploy-pos:
+    name: Deploy POS
+    needs: amplify-pull
+    if: inputs.deploy_pos && needs.amplify-pull.outputs.status == 'success'
+    uses: ./.github/workflows/_pos-deploy.yml
+    with:
+      context: ${{ github.ref_name }}
+      amplify_config_artifact: amplify-config-${{ github.ref_name }}
+      save_status: false
+    secrets: inherit
+
+  # ═══════════════════════════════════════════════════════════
+  # JOB 4: DEPLOYMENT REPORT
+  # ═══════════════════════════════════════════════════════════
+  deployment-report:
+    name: Report
+    runs-on: ubuntu-latest
+    needs: [amplify-pull, deploy-portal, deploy-pos]
+    if: always()
+    timeout-minutes: 2
+
+    steps:
+      - name: Generate deployment report
+        shell: bash
+        run: |
+          echo "## Internal Deployment: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "| Component | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          # Amplify Pull Status
+          AMPLIFY_STATUS="${{ needs.amplify-pull.outputs.status }}"
+          if [ "$AMPLIFY_STATUS" == "success" ]; then
+            echo "| Amplify Config | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Amplify Config | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Portal Deploy Status
+          if [ "${{ inputs.deploy_portal }}" == "true" ]; then
+            PORTAL_RESULT="${{ needs.deploy-portal.result }}"
+            if [ "$PORTAL_RESULT" == "success" ]; then
+              echo "| Portal Web | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+            elif [ "$PORTAL_RESULT" == "skipped" ]; then
+              echo "| Portal Web | ⏭️ Skipped |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| Portal Web | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "| Portal Web | ⏭️ Not Selected |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # POS Deploy Status
+          if [ "${{ inputs.deploy_pos }}" == "true" ]; then
+            POS_RESULT="${{ needs.deploy-pos.result }}"
+            if [ "$POS_RESULT" == "success" ]; then
+              echo "| POS Desktop | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+            elif [ "$POS_RESULT" == "skipped" ]; then
+              echo "| POS Desktop | ⏭️ Skipped |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| POS Desktop | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "| POS Desktop | ⏭️ Not Selected |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Display resource URLs if available
+          PORTAL_URL="${{ needs.deploy-portal.outputs.portal_url }}"
+          RELEASE_URL="${{ needs.deploy-pos.outputs.release_url }}"
+
+          if [ -n "$PORTAL_URL" ] && [ "$PORTAL_URL" != "" ]; then
+            echo "**Portal URL**: $PORTAL_URL" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ -n "$RELEASE_URL" ] && [ "$RELEASE_URL" != "" ]; then
+            echo "**POS Installer**: $RELEASE_URL" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY

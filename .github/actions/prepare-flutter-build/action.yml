@@ -1,0 +1,93 @@
+name: 'Prepare Flutter Build'
+description: 'Common Flutter build preparation steps: install deps, bump build, run build_runner, setup env, download Amplify config'
+
+inputs:
+  tenant:
+    description: 'Tenant name for Amplify config artifact'
+    required: true
+  github-run-number:
+    description: 'GitHub run number for version bump'
+    required: true
+
+outputs:
+  outcome:
+    description: 'Success or failure outcome'
+    value: ${{ steps.check.outputs.outcome }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Bump build number
+      id: bump_build
+      shell: bash
+      run: bash .github/scripts/shared/bump_build_number.sh
+      env:
+        GITHUB_RUN_NUMBER: ${{ inputs.github-run-number }}
+
+    - name: Download Amplify configuration
+      if: steps.bump_build.outcome == 'success'
+      id: download_amplify
+      uses: actions/download-artifact@v4
+      with:
+        name: amplify-config-${{ inputs.tenant }}
+        path: ./
+
+    - name: Extract Amplify configuration
+      if: steps.download_amplify.outcome == 'success'
+      id: setup_amplify
+      shell: bash
+      run: |
+        tar -xzf amplify-config.tar.gz
+        rm amplify-config.tar.gz
+        echo "✅ Extracted Amplify configuration"
+
+    - name: Flutter clean
+      if: steps.setup_amplify.outcome == 'success'
+      id: flutter_clean
+      shell: bash
+      run: |
+        flutter clean
+        echo "✅ Cleaned Flutter build cache"
+
+    - name: Cache pub dependencies
+      if: steps.flutter_clean.outcome == 'success'
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.pub-cache
+        key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pub-
+
+    - name: Install dependencies
+      if: steps.flutter_clean.outcome == 'success'
+      id: install_dependencies
+      shell: bash
+      run: flutter pub get
+
+    - name: Run build_runner
+      if: steps.install_dependencies.outcome == 'success'
+      id: run_build_runner
+      shell: bash
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Check overall outcome
+      if: always()
+      id: check
+      shell: bash
+      run: |
+        if [ "${{ steps.install_dependencies.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.bump_build.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.run_build_runner.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.flutter_clean.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.download_amplify.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        elif [ "${{ steps.setup_amplify.outcome }}" != "success" ]; then
+          echo "outcome=failed" >> $GITHUB_OUTPUT
+        else
+          echo "outcome=success" >> $GITHUB_OUTPUT
+        fi
