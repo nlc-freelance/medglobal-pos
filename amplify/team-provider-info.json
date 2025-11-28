@@ -1,0 +1,25 @@
+{
+  "preprod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-medglobalpos-preprod-a5cf1-authRole",
+      "UnauthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalpos-preprod-a5cf1-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalpos-preprod-a5cf1-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-medglobalpos-preprod-a5cf1-deployment",
+      "UnauthRoleName": "amplify-medglobalpos-preprod-a5cf1-unauthRole",
+      "StackName": "amplify-medglobalpos-preprod-a5cf1",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:280954863577:stack/amplify-medglobalpos-preprod-a5cf1/d7385dc0-cc54-11f0-9aea-0a15b90e607f",
+      "AmplifyAppId": "d2st5bndm8uodn"
+    },
+    "categories": {
+      "auth": {
+        "medglobalpos330bc758": {
+          "userPoolId": "ap-southeast-1_WIWGmTSfS",
+          "userPoolName": "medglobal-pos-inventory-employees-nonprod-preprod",
+          "webClientId": "2i717imumh6likdm6agvc092q",
+          "nativeClientId": "2i717imumh6likdm6agvc092q"
+        }
+      }
+    }
+  }
+}
