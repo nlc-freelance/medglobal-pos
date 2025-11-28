@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:medglobal_admin_portal/core/configs/config.dart';
 import 'package:medglobal_admin_portal/core/constants/strings.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -28,5 +29,12 @@ class AppVersion extends StatelessWidget {
 
 Future<String> getAppVersion() async {
   final PackageInfo info = await PackageInfo.fromPlatform();
-  return 'v${info.version}-preprod (build ${info.buildNumber})';
+
+  // Production: Show version only
+  if (EnvConfig.envPrefix == 'main') {
+    return 'v${info.version}';
+  }
+
+  // Non-production: Show version with environment and build number
+  return 'v${info.version}-${EnvConfig.envPrefix}+${info.buildNumber}';
 }

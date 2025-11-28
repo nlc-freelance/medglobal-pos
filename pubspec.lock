@@ -923,9 +923,11 @@ packages:
   medglobal_shared:
     dependency: "direct main"
     description:
-      path: "../medglobal_shared"
-      relative: true
-    source: path
+      path: "."
+      ref: main
+      resolved-ref: b9e6a0f169f22aa14c0aad20aee2e40c1dd2fe5f
+      url: "https://github.com/nlcanada/medglobal_shared.git"
+    source: git
     version: "0.0.1"
   meta:
     dependency: transitive
@@ -1388,6 +1390,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  sqlcipher_flutter_libs:
+    dependency: "direct main"
+    description:
+      name: sqlcipher_flutter_libs
+      sha256: dd1fcc74d5baf3c36ad53e2652b2d06c9f8747494a3ccde0076e88b159dfe622
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.8"
   sqlite3:
     dependency: transitive
     description:
