@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/domain/entities/supply_need_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 
@@ -22,10 +22,10 @@ class SupplyNeedItemDto extends Equatable {
 
   factory SupplyNeedItemDto.fromJson(Map<String, dynamic> json) => _$SupplyNeedItemDtoFromJson(json);
 
-  SupplyNeedItem toEntity(Branch? branch) => SupplyNeedItem(
+  SupplyNeedItem toEntity(BranchPartial? branch) => SupplyNeedItem(
         id: id,
         branch: branch,
-        variantName: '${variant?.product?.name} ${variant?.name}',
+        variantName: variant?.productVariantName,
         sku: variant?.sku,
         qty: qty,
         warningStock: variant?.warningStock ?? 0,

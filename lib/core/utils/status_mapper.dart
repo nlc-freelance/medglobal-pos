@@ -43,8 +43,6 @@ class StatusMapper {
         return UIColors.borderMuted;
       case StockOrderStatus.CANCELLED:
         return UIColors.cancelledBg;
-      default:
-        throw Exception('Invalid status: $status');
     }
   }
 
@@ -64,8 +62,6 @@ class StatusMapper {
         return UIColors.textLight;
       case StockOrderStatus.CANCELLED:
         return UIColors.cancelled;
-      default:
-        throw Exception('Invalid status: $status');
     }
   }
 }

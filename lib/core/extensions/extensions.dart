@@ -1,6 +1,7 @@
 import 'package:animated_tree_view/animated_tree_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -50,6 +51,15 @@ extension PathTransformExt on String {
 
     return transformedText;
   }
+
+  String get capitalized {
+    if (isEmpty) return this;
+    return '${this[0].toUpperCase()}${substring(1)}';
+  }
+
+  int? toInt() => int.tryParse(trim());
+
+  double? toDouble() => double.tryParse(trim());
 }
 
 extension DataGridRowExt on DataGridRow {
@@ -66,4 +76,49 @@ extension DoubleAsCurrency on double? {
   String toPesoString() => this != null ? this!.toStringAsFixed(2) : '0.00';
 
   double roundToTwoDecimalPlaces() => this != null ? (this! * 100).round() / 100 : 0.00;
+}
+
+extension SafeFirstWhereExtension<T> on Iterable<T> {
+  /// Safely get the first element that matches a condition.
+  /// Returns null if no item is found.
+  T? firstWhereOrNull(bool Function(T) test) {
+    for (final item in this) {
+      if (test(item)) return item;
+    }
+    return null;
+  }
+}
+
+extension NullableMapNullRemover on Map<String, dynamic>? {
+  ///  Returns a new [Map<String, dynamic>] with all entries that have `null` values removed.
+  Map<String, dynamic> removeNullValues() {
+    if (this == null) return {};
+
+    return Map.fromEntries(
+      this!.entries.where((entry) => entry.value != null),
+    );
+  }
+}
+
+extension ReadableDateTime on DateTime {
+  /// Formats as: 'Monday, August 5, 2024, 3:45 PM'
+  String toFormattedFullDateTime12Hr() {
+    return DateFormat('EEEE, MMMM d, yyyy, h:mm a').format(this);
+  }
+
+  String toFormattedDayAndFullDate() {
+    return DateFormat('E, d MMMM yyyy').format(this);
+  }
+
+  String toFormattedDateTime24Hr() {
+    return DateFormat('MM/dd/yyyy HH:mm').format(this);
+  }
+
+  String toFormattedDateTime12Hr() {
+    return DateFormat('MM/dd/yyyy h:mm a').format(this);
+  }
+
+  String toFormattedShortDate() {
+    return DateFormat('yyyy-MM-dd').format(this);
+  }
 }

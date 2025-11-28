@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/domain/entities/supply_need_item.dart';
 
 part 'supply_need.g.dart';
@@ -8,7 +8,7 @@ part 'supply_need.g.dart';
 @JsonSerializable()
 class SupplyNeed extends Equatable {
   final int? id;
-  final Branch? branch;
+  final BranchPartial? branch;
   final List<SupplyNeedItem>? items;
 
   const SupplyNeed({

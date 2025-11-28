@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/repositories/stock_take_repository.dart';
 
@@ -9,7 +9,7 @@ class GetStockTakesUseCase implements UseCase<StockTakePaginatedList, GetStockTa
   GetStockTakesUseCase(this._repository);
 
   @override
-  Future<Either<Failure, StockTakePaginatedList>> call(GetStockTakesParams params) => _repository.getStockTakes(
+  Future<ApiResult<StockTakePaginatedList>> call(GetStockTakesParams params) => _repository.getStockTakes(
         page: params.page,
         size: params.size,
         status: params.status,

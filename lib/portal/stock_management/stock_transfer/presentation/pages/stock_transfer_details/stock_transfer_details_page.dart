@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer_remote/stock_transfer_remote_cubit.dart';
@@ -50,11 +51,12 @@ class _StockTransferDetailsPageState extends State<StockTransferDetailsPage> {
         }
         if (state is StockTransferSuccess) {
           _stockTransfer = state.stockTransfer;
-          ToastNotification.success(context, 'Stock Transfer updated successfully.');
+          SnackbarUtil.success(context, 'Stock Transfer updated successfully.');
         }
         if (state is StockTransferDeleteSuccess) {
-          AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TRANSFERS.name);
-          ToastNotification.success(context, 'Stock Transfer deleted successfully.');
+          // AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TRANSFERS.name);
+          context.goNamed('stockTransferList');
+          SnackbarUtil.success(context, 'Stock Transfer deleted successfully.');
         }
       },
       builder: (context, state) {

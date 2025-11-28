@@ -30,9 +30,9 @@ class StockReturnListRemoteCubit extends Cubit<StockReturnListRemoteState> {
         startDate: startDate,
         endDate: endDate,
       ));
-      result.fold(
-        (error) => emit(StockReturnListError(message: error.message)),
-        (data) => emit(StockReturnListLoaded(data: data)),
+      result.when(
+        success: (data) => emit(StockReturnListLoaded(data: data)),
+        failure: (error) => emit(StockReturnListError(message: error.message)),
       );
     } catch (e) {
       emit(StockReturnListError(message: e.toString()));

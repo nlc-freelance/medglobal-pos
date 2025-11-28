@@ -30,16 +30,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutEvent>(_logout);
   }
 
+  bool getIsAllowedByType(UserType? type) {
+    final isPortalUser = type == UserType.admin;
+    final isPosUser = type == UserType.cashier;
+    final isBoth = type == UserType.supervisor;
+
+    if (AppConfig.isPortalApp) return isPortalUser || isBoth;
+    if (AppConfig.isPOSApp) return isPosUser || isBoth;
+
+    return false;
+  }
+
   void _clearSharedPreferencesOnLogout() async => await SharedPreferencesService.clearPreferences();
 
   Future<void> _onAppInit(event, emit) async {
     try {
       final result = await getAuthSession.call(NoParams());
-      result.fold(
-          (error) => emit(AuthErrorState(message: error.message)),
-          (data) => data.isLoggedIn == true
-              ? emit(AuthenticatedState(user: data.user!))
-              : emit(const UnauthenticatedState()));
+      result.when(
+        success: (data) {
+          final isLoggedIn = data.isLoggedIn == true;
+          final isAllowed = getIsAllowedByType(data.user?.type);
+
+          if (isAllowed) {
+            isLoggedIn ? emit(AuthenticatedState(user: data.user!)) : emit(const UnauthenticatedState());
+          }
+        },
+        failure: (error) => emit(AuthErrorState(message: error.message)),
+      );
     } catch (e) {
       emit(AuthErrorState(message: e.toString()));
     }
@@ -50,11 +67,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       final result = await login.call(LoginParams(event.email, event.password));
-      result.fold(
-        (error) => emit(AuthErrorState(message: error.message)),
-        (data) => data.isFirstTimeLogin == true
-            ? emit(const FirstTimeLoginState())
-            : emit(AuthenticatedState(user: data.user!)),
+
+      result.when(
+        success: (data) async {
+          final user = data.user;
+
+          if (user == null) {
+            emit(const AuthAccessDeniedState(message: 'Login failed. User data is missing.'));
+            return;
+          }
+
+          final isAllowed = getIsAllowedByType(data.user?.type);
+
+          if (isAllowed) {
+            if (data.isFirstTimeLogin == true) {
+              emit(const FirstTimeLoginState());
+            } else {
+              emit(AuthenticatedState(user: data.user!));
+            }
+          } else {
+            emit(
+              const AuthAccessDeniedState(
+                message:
+                    'Your account is not authorized to use this application.\nContact your administrator if you believe this is an error.',
+              ),
+            );
+            await logout.call(NoParams());
+          }
+        },
+        failure: (error) => emit(AuthErrorState(message: error.message)),
       );
     } catch (e) {
       emit(AuthErrorState(message: e.toString()));
@@ -66,9 +107,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       final result = await confirmLoginWithNewPassword.call(ConfirmFirstTimeLoginParams(event.password));
-      result.fold(
-        (error) => emit(ConfirmLoginErrorState(message: error.message)),
-        (data) => emit(AuthenticatedState(user: data.user!)),
+      result.when(
+        success: (data) => emit(AuthenticatedState(user: data.user!)),
+        failure: (error) => emit(ConfirmLoginErrorState(message: error.message)),
       );
     } catch (e) {
       emit(ConfirmLoginErrorState(message: e.toString()));
@@ -80,12 +121,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       final result = await logout.call(NoParams());
-      result.fold(
-        (error) => emit(AuthErrorState(message: error.message)),
-        (_) {
+      result.when(
+        success: (_) {
           emit(const UnauthenticatedState());
           _clearSharedPreferencesOnLogout();
         },
+        failure: (error) => emit(AuthErrorState(message: error.message)),
       );
     } catch (e) {
       emit(AuthErrorState(message: e.toString()));

@@ -1,16 +1,24 @@
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/local_db/app_database.dart';
+import 'package:medglobal_admin_portal/portal/employee_management/domain/entities/employee.dart';
+import 'package:medglobal_admin_portal/pos/device_setup/domain/entities/receipt_configuration.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
-import 'package:medglobal_admin_portal/shared/transactions/domain/entities/transaction.dart';
+import 'package:medglobal_admin_portal/pos/transactions/domain/entities/transaction.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:printing/printing.dart';
 import 'package:universal_html/html.dart' as html;
 
 class PrintUtil {
   const PrintUtil();
 
-  static Future<void> generateAndPrintReceipt(Transaction transaction) async {
+  static Future<void> generateAndPrintReceipt({
+    required Transaction transaction,
+    required ReceiptConfiguration config,
+  }) async {
     try {
       final doc = Document();
 
@@ -34,182 +42,208 @@ class PrintUtil {
           theme: theme,
           pageFormat: PdfPageFormat.roll80,
           build: (Context context) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Text(
-                          'MEDGLOBAL PHARMACY',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Center(child: Text('${transaction.branch?.name}', style: theme.header2)),
-                      Center(
-                        child: Text(
-                          transaction.branch!.address!,
-                          style: theme.tableCell,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      SizedBox(height: 30),
-                      Text(
-                        'Receipt Date: ${DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now())}',
-                        style: theme.header4,
-                      ),
-                      SizedBox(height: 1),
-                      Text('Receipt ID: ${transaction.receiptId}', style: theme.header4),
-                      SizedBox(height: 1),
-                      Text('Cashier: ${transaction.employee?.name}', style: theme.header4),
-                      SizedBox(height: 1),
-                      Text('Register: ${transaction.registerNo}', style: theme.header4),
-                      SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 10),
+                  Center(
+                    child: Text(
+                      (config.companyName ?? Strings.noValue).toUpperCase(),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  if (config.showBranchName) ...[
+                    SizedBox(height: 10),
+                    Center(child: Text('${config.branchName}', style: theme.header2)),
+                  ],
+                  Center(
+                    child: Text(
+                      config.branchAddress ?? Strings.noValue,
+                      style: theme.tableCell,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  if (config.showBranchContact) ...[
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(flex: 2, child: Text('Item', style: theme.tableHeader)),
-                          SizedBox(width: 8),
-                          Expanded(child: Text('Qty', style: theme.tableHeader)),
-                          SizedBox(width: 8),
-                          Expanded(child: Text('Price', style: theme.tableHeader)),
-                          Expanded(child: Text('Total', style: theme.tableHeader, textAlign: TextAlign.end)),
+                          Text(
+                            'Phone: ${config.branchPhone ?? Strings.noValue}',
+                            style: theme.header4,
+                          ),
+                          if (config.branchEmail?.isNotEmpty == true)
+                            Text(
+                              'Email: ${config.branchEmail ?? Strings.noValue}',
+                              style: theme.header4,
+                              textAlign: TextAlign.center,
+                            )
                         ],
                       ),
-                      SizedBox(height: 2),
-                      Container(margin: const EdgeInsets.symmetric(vertical: 2), height: 0.9, color: PdfColors.black),
-                      ...(transaction.items ?? []).map(
-                        (item) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                  ],
+                  SizedBox(height: 30),
+                  Text(
+                    'Receipt Date: ${transaction.createdAt.toFormattedDateTime24Hr()}',
+                    style: theme.header4,
+                  ),
+                  SizedBox(height: 1),
+                  Text('Receipt ID: ${transaction.receiptId}', style: theme.header4),
+                  SizedBox(height: 1),
+                  Text('Cashier: ${transaction.employee.name}', style: theme.header4),
+                  SizedBox(height: 1),
+                  Text('Register: ${transaction.register.name}', style: theme.header4),
+                  SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(flex: 2, child: Text('Item', style: theme.tableHeader)),
+                      SizedBox(width: 8),
+                      Expanded(child: Text('Qty', style: theme.tableHeader)),
+                      SizedBox(width: 8),
+                      Expanded(child: Text('Price', style: theme.tableHeader)),
+                      Expanded(child: Text('Total', style: theme.tableHeader, textAlign: TextAlign.end)),
+                    ],
+                  ),
+                  SizedBox(height: 2),
+                  Container(margin: const EdgeInsets.symmetric(vertical: 2), height: 0.9, color: PdfColors.black),
+                  ...(transaction.items ?? []).map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      item.name!,
-                                      style: TextStyle(font: interMedium, fontSize: 11, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              if (item.discount != null && item.discount != 0 && item.discountInPeso != null) ...[
-                                SizedBox(height: 2),
-                                Text(
-                                  '*Disc. ${item.discountType == DiscountType.PERCENT ? '${item.discount}%' : '₱${item.discount.toPesoString()}'}  (-${item.discountInPeso.toPesoString()})',
-                                  style: theme.tableCell,
+                              Expanded(
+                                child: Text(
+                                  item.name!,
+                                  style: TextStyle(font: interMedium, fontSize: 11, fontWeight: FontWeight.bold),
                                 ),
-                              ],
-                              SizedBox(height: 2),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Spacer(),
-                                  Expanded(
-                                    child: Text(
-                                      item.qty.toString(),
-                                      style: theme.tableCell,
-                                      textAlign: TextAlign.end,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      item.price.toPesoString(),
-                                      style: theme.tableCell,
-                                      textAlign: TextAlign.end,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      item.total.toPesoString(),
-                                      style: theme.tableCell,
-                                      textAlign: TextAlign.end,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          '${(transaction.items ?? []).length.toString()} ITEMS',
-                          style: theme.header3,
-                        ),
-                      ),
-                      Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('SUBTOTAL', style: theme.header3),
-                          Text(
-                            transaction.subtotal.toPesoString(),
-                            style: theme.header3,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'TOTAL DISCOUNT',
-                            style: theme.header3,
-                          ),
-                          Text('-${transaction.totalDiscountInPeso.toPesoString()}', style: theme.header3),
-                        ],
-                      ),
-                      Divider(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('TOTAL', style: theme.header3),
-                            Text(transaction.total.toPesoString(), style: theme.header3),
+                          if (item.discount != null && item.discount != 0 && item.discountAmount != null) ...[
+                            SizedBox(height: 2),
+                            Text(
+                              '*Disc. ${item.discountType == DiscountType.percentage ? '${item.discount}%' : '₱${item.discount.toPesoString()}'}  (-${item.discountAmount.toPesoString()})',
+                              style: theme.tableCell,
+                            ),
                           ],
-                        ),
-                      ),
-                      Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('CASH', style: theme.header3),
-                          Text(transaction.amountPaid.toPesoString(), style: theme.header3),
+                          SizedBox(height: 2),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Spacer(),
+                              Expanded(
+                                child: Text(
+                                  item.quantity.toString(),
+                                  style: theme.tableCell,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  item.price.toPesoString(),
+                                  style: theme.tableCell,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  item.total.toPesoString(),
+                                  style: theme.tableCell,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('CHANGE', style: theme.header3),
-                          Text('${transaction.amountPaid! - transaction.total!}'.toPesoString(), style: theme.header3),
-                        ],
-                      ),
-                      SizedBox(height: 30),
-                      Center(
-                        child: Text(
-                          'Stay safe and take care!',
-                          style: theme.tableHeader,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      SizedBox(height: 2),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '${(transaction.items)?.length.toString()} ITEMS',
+                      style: theme.header3,
+                    ),
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('SUBTOTAL', style: theme.header3),
                       Text(
-                        'We appreciate your feedback! Please feel free to text or call us at 09177094242.',
-                        textAlign: TextAlign.center,
-                        style: theme.paragraphStyle.copyWith(lineSpacing: 0.6),
+                        transaction.subtotal.toPesoString(),
+                        style: theme.header3,
                       ),
                     ],
                   ),
-                ),
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'TOTAL DISCOUNT',
+                        style: theme.header3,
+                      ),
+                      Text('-${transaction.totalDiscountAmount.toPesoString()}', style: theme.header3),
+                    ],
+                  ),
+                  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('TOTAL', style: theme.header3),
+                        Text(transaction.total.toPesoString(), style: theme.header3),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('CASH', style: theme.header3),
+                      Text(transaction.amountPaid.toPesoString(), style: theme.header3),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('CHANGE', style: theme.header3),
+                      Text('${transaction.amountPaid! - transaction.total!}'.toPesoString(), style: theme.header3),
+                    ],
+                  ),
+                  if (config.showFooterMessage) ...[
+                    SizedBox(height: 30),
+                    Center(
+                      child: Text(
+                        config.footerTitle ?? Strings.noValue,
+                        style: theme.tableHeader,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    if (config.footerMessage?.isNotEmpty == true) ...[
+                      SizedBox(height: 2),
+                      Center(
+                        child: Text(
+                          config.footerMessage!,
+                          textAlign: TextAlign.center,
+                          style: theme.paragraphStyle.copyWith(lineSpacing: 0.6),
+                        ),
+                      ),
+                    ],
+                  ],
+                  SizedBox(height: 20),
+                  Divider(thickness: 0.5),
+                ],
+              ),
             );
           },
         ),
@@ -221,34 +255,43 @@ class PrintUtil {
       //   onLayout: (PdfPageFormat format) async => doc.save(),
       // );
 
-      // Convert PDF to Uint8List
-      final pdfData = await doc.save();
+      // // Convert PDF to Uint8List
+      // final pdfData = await doc.save();
+      //
+      // // Create a Blob from the Uint8List
+      // final blob = html.Blob([pdfData], 'application/pdf');
+      // final url = html.Url.createObjectUrlFromBlob(blob);
+      //
+      // Future.delayed(const Duration(milliseconds: 500), () {
+      //   final script = html.ScriptElement()
+      //     ..type = 'text/javascript'
+      //     ..text = '''
+      //               (function() {
+      //                 var printWindow = window.open('$url', '_blank');
+      //                 // Trigger the print dialog
+      //                 printWindow.onload = function() {
+      //                   printWindow.focus(); // Ensure the new window is in focus
+      //                   printWindow.print(); // Trigger the print dialog
+      //               }
+      //               })();
+      //             ''';
+      //   html.document.body?.append(script);
+      // });
+      //
+      // // Clean up the URL object and iframe
+      // Future.delayed(const Duration(milliseconds: 500), () {
+      //   html.Url.revokeObjectUrl(url); // Clean up URL
+      //   html.document.querySelector('script')?.remove(); // Remove injected script
+      // });
 
-      // Create a Blob from the Uint8List
-      final blob = html.Blob([pdfData], 'application/pdf');
-      final url = html.Url.createObjectUrlFromBlob(blob);
+      final printer = await GetIt.I<AppDatabase>().settingsDao.getPrinter();
 
-      Future.delayed(const Duration(milliseconds: 500), () {
-        final script = html.ScriptElement()
-          ..type = 'text/javascript'
-          ..text = '''
-                    (function() {
-                      var printWindow = window.open('$url', '_blank');
-                      // Trigger the print dialog
-                      printWindow.onload = function() {
-                        printWindow.focus(); // Ensure the new window is in focus
-                        printWindow.print(); // Trigger the print dialog
-                    }
-                    })();
-                  ''';
-        html.document.body?.append(script);
-      });
+      if (printer == null) throw Exception('Printer not set up');
 
-      // Clean up the URL object and iframe
-      Future.delayed(const Duration(milliseconds: 500), () {
-        html.Url.revokeObjectUrl(url); // Clean up URL
-        html.document.querySelector('script')?.remove(); // Remove injected script
-      });
+      Printing.directPrintPdf(
+        printer: Printer(url: printer),
+        onLayout: (_) => doc.save(),
+      );
     } catch (e) {
       throw Exception(e);
     }
@@ -273,7 +316,8 @@ class PrintUtil {
       final List<List<String?>> tableData = order.items
               ?.map((item) => [
                     item.name,
-                    (order.status == StockOrderStatus.FOR_RECEIVING ? item.qtyToOrder : item.qtyReceived).toString(),
+                    (order.status == StockOrderStatus.FOR_RECEIVING ? item.quantityOrdered : item.quantityReceived)
+                        .toString(),
                     item.supplierPrice.toPesoString(),
                     item.total.toPesoString(),
                   ])

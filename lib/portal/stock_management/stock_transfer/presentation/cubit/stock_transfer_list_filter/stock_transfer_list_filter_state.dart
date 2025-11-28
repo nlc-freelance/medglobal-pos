@@ -38,4 +38,12 @@ class StockTransferListFilterState extends Equatable {
       endDate: nullEndDate == true ? null : endDate ?? this.endDate,
     );
   }
+
+  Map<String, dynamic> get filters => {
+        'status': status?.label.toLowerCase(),
+        'fromBranch': sourceBranch?.id,
+        'toBranch': destinationBranch?.id,
+        'startDate': startDate,
+        'endDate': endDate,
+      };
 }

@@ -27,19 +27,7 @@ class _StockTakeMarkAsCompletedDialogState extends State<StockTakeMarkAsComplete
   @override
   Widget build(BuildContext context) => BlocConsumer<StockTakeBloc, StockTakeBlocRemoteState>(
         listener: (context, state) {
-          if (state is StockTakeMarkAsCompletedSuccess) {
-            if (state.stockTake.status == StockOrderStatus.PENDING) {
-              context.read<StockTakeBloc>().add(
-                    StartStockTakePollingEvent(
-                      widget.stockTake.id!,
-                      targetStatus: StockOrderStatus.COMPLETED,
-                    ),
-                  );
-            } else {
-              context.read<CountedItemsListCubit>().getItems(id: state.stockTake.id!);
-            }
-            Navigator.pop(context);
-          }
+          if (state is StockTakeMarkAsCompletedSuccess) Navigator.pop(context);
           if (state is StockTakeMarkAsCompletedError) setState(() => _isInitialRebuild = false);
         },
         builder: (_, state) {
@@ -77,14 +65,12 @@ class _StockTakeMarkAsCompletedDialogState extends State<StockTakeMarkAsComplete
                         onCancel: () => Navigator.pop(context),
                         onAction: () {
                           context.read<StockTakeBloc>().add(
-                                UpdateStockTakeEvent(
-                                  StockOrderUpdate.MARK_AS_COMPLETE,
+                                CompleteStockTakeEvent(
                                   id: widget.stockTake.id!,
                                   stockTake: widget.stockTake,
                                   action: action,
                                 ),
                               );
-                          context.read<CountedItemsListCubit>().reset();
                         },
                       ),
                     ],

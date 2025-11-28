@@ -1,65 +1,33 @@
-import 'package:dio/dio.dart';
+abstract class AppException implements Exception {
+  final String message;
+  final int? code;
 
-class CustomException implements Exception {
-  late String messsage;
-
-  CustomException(this.messsage);
-
-  CustomException.fromDioException(DioException exception) {
-    switch (exception.type) {
-      case DioExceptionType.cancel:
-        messsage = 'Request to the server was cancelled.';
-        break;
-      case DioExceptionType.connectionTimeout:
-        messsage = 'Connection timed out.';
-        break;
-      case DioExceptionType.receiveTimeout:
-        messsage = 'Receiving timeout occurred.';
-        break;
-      case DioExceptionType.sendTimeout:
-        messsage = 'Request send timeout.';
-        break;
-      case DioExceptionType.badResponse:
-        messsage = _handleStatusCode(exception.response?.statusCode);
-        break;
-      case DioExceptionType.unknown:
-        if (exception.message!.contains('SocketException')) {
-          messsage = 'No internet connection.';
-          break;
-        }
-        messsage = 'Unexpected error occurred.';
-        break;
-      default:
-        messsage = 'Something went wrong.';
-        break;
-    }
-  }
-
-  String _handleStatusCode(int? statusCode) {
-    switch (statusCode) {
-      case 400:
-        return 'Bad request.';
-      case 401:
-        return 'Authentication failed.';
-      case 403:
-        return 'The authenticated user is not allowed to access the specified API endpoint.';
-      case 404:
-        return 'The requested resource does not exist.';
-      case 405:
-        return 'Method not allowed. Please check the Allow header for the allowed HTTP methods.';
-      case 415:
-        return 'Unsupported media type. The requested content type or version number is invalid.';
-      case 422:
-        return 'Data validation failed.';
-      case 429:
-        return 'Too many requests.';
-      case 500:
-        return 'Internal server error.';
-      default:
-        return 'Oops something went wrong!';
-    }
-  }
+  const AppException(this.message, {this.code});
 
   @override
-  String toString() => messsage;
+  String toString() => message;
+}
+
+class ServerException extends AppException {
+  ServerException(super.message, {super.code});
+}
+
+class ClientException extends AppException {
+  ClientException(super.message, {super.code});
+}
+
+class NetworkException extends AppException {
+  NetworkException() : super('No internet connection. Please check your network and try again.');
+}
+
+class LocalDatabaseException extends AppException {
+  LocalDatabaseException(super.message);
+}
+
+class SyncException extends AppException {
+  SyncException(super.message);
+}
+
+class UnexpectedException extends AppException {
+  UnexpectedException(super.message);
 }

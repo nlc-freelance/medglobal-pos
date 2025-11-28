@@ -62,28 +62,26 @@ class _CountedItemsDataGridState extends State<CountedItemsDataGrid> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const UIVerticalSpace(16),
-            DataGridToolbar(
-              padding: const EdgeInsets.only(bottom: 16),
-              search: UISearchField(
-                fieldWidth: 500.0,
-                hint: 'Search variant name',
-                icon: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Assets.icons.search.svg(),
-                ),
-                controller: _searchController,
-                onChanged: (value) => _debouncer.run(
-                  (() {
-                    context.read<CountedItemsListCubit>().getItems(
-                          id: context.read<StockTakeCubit>().state.stockTake.id!,
-                          size: context.read<CountedItemsListFilterCubit>().state.size!,
-                          search: value,
-                        );
-                    context.read<CountedItemsListFilterCubit>().setSearch(value);
-                  }),
-                ),
+            UISearchField(
+              fieldWidth: 500.0,
+              hint: 'Search variant name',
+              icon: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Assets.icons.search.svg(),
+              ),
+              controller: _searchController,
+              onChanged: (value) => _debouncer.run(
+                (() {
+                  context.read<CountedItemsListCubit>().getItems(
+                        id: context.read<StockTakeCubit>().state.stockTake.id!,
+                        size: context.read<CountedItemsListFilterCubit>().state.size!,
+                        search: value,
+                      );
+                  context.read<CountedItemsListFilterCubit>().setSearch(value);
+                }),
               ),
             ),
+            const UIVerticalSpace(16),
             if (state is CountedItemsListInitial)
               DataGridNoData.custom(
                 columns: DataGridUtil.getColumns(DataGridColumn.ST_COUNTED_ITEMS),

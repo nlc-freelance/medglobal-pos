@@ -43,6 +43,10 @@ class DataGridUtil {
         indentColumnWidth: 0,
         indentColumnColor: UIColors.background,
         groupExpanderIcon: Assets.icons.arrowDown.svg(width: 10, colorFilter: UIColors.textDark.toColorFilter),
+
+        /// Frozen row/columns
+        frozenPaneLineColor: UIColors.transparent,
+        frozenPaneElevation: 5,
       );
 
   static SfDataGridThemeData get rowNavigationStyle => baseStyle.copyWith(
@@ -53,14 +57,21 @@ class DataGridUtil {
       );
 
   static SfDataGridThemeData get cellNavigationStyle => baseStyle.copyWith(
-        selectionColor: UIColors.transparent,
+        rowHoverColor: UIColors.transparent,
         currentCellStyle: const DataGridCurrentCellStyle(
           borderColor: UIColors.transparent,
           borderWidth: 0.0,
         ),
       );
+
+  static BoxDecoration get verticalBorder => const BoxDecoration(
+        border: Border.symmetric(
+          horizontal: BorderSide(width: 0.8, color: UIColors.borderMuted),
+        ),
+      );
 }
 
+// TODO: Remove and just use verticalBorder for all DataGrid
 class HorizontalBorderClipper extends CustomClipper<Rect> {
   @override
   Rect getClip(Size size) {

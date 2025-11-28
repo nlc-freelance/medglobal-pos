@@ -43,11 +43,11 @@ class UserDto extends Equatable {
   UserType? mapUserType() {
     switch (type) {
       case 'cashier':
-        return UserType.CASHIER;
+        return UserType.cashier;
       case 'admin':
-        return UserType.ADMIN;
+        return UserType.admin;
       case 'store_manager':
-        return UserType.STORE_MANAGER;
+        return UserType.supervisor;
       default:
         return null;
     }

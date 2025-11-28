@@ -30,8 +30,8 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-pubspec.lock
 *.g.dart
+*freezed.dart
 *.gen.dart
 
 .packages

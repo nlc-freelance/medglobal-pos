@@ -58,6 +58,35 @@ final class StockTakeSuccess extends StockTakeBlocRemoteState {
   List<Object?> get props => [stockTake];
 }
 
+/// Cancel
+final class StockTakeCancelSuccess extends StockTakeBlocRemoteState {
+  final StockTake stockTake;
+  const StockTakeCancelSuccess({required this.stockTake});
+
+  @override
+  List<Object?> get props => [stockTake];
+}
+
+/// Ready for immediate completion (No remaining uncounted items)
+///
+final class StockTakeReadyForCompletion extends StockTakeBlocRemoteState {
+  final StockTake stockTake;
+  const StockTakeReadyForCompletion({required this.stockTake});
+
+  @override
+  List<Object?> get props => [stockTake];
+}
+
+/// Confirm action for remaining uncounted items before completion
+///
+final class StockTakeConfirmUncountedItemAction extends StockTakeBlocRemoteState {
+  final StockTake stockTake;
+  const StockTakeConfirmUncountedItemAction({required this.stockTake});
+
+  @override
+  List<Object?> get props => [stockTake];
+}
+
 final class StockTakeMarkAsCompletedSuccess extends StockTakeBlocRemoteState {
   final StockTake stockTake;
   const StockTakeMarkAsCompletedSuccess({required this.stockTake});
@@ -71,6 +100,8 @@ final class StockTakeMarkAsCompletedSuccess extends StockTakeBlocRemoteState {
 final class StockTakeByIdLoading extends StockTakeBlocRemoteState {}
 
 final class StockTakeSaveLoading extends StockTakeBlocRemoteState {}
+
+final class StockTakeCheckingItemsForCompletion extends StockTakeBlocRemoteState {}
 
 final class StockTakeMarkAsCompletedLoading extends StockTakeBlocRemoteState {}
 
@@ -97,6 +128,14 @@ final class StockTakeError extends StockTakeBlocRemoteState {
 final class StockTakeMarkAsCompletedError extends StockTakeBlocRemoteState {
   final String message;
   const StockTakeMarkAsCompletedError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+final class StockTakeConfirmUncountedItemError extends StockTakeBlocRemoteState {
+  final String message;
+  const StockTakeConfirmUncountedItemError({required this.message});
 
   @override
   List<Object?> get props => [message];

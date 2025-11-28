@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/presentation/cubit/supplier/supplier_cubit.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class SupplierActions extends StatelessWidget {
@@ -21,34 +19,31 @@ class SupplierActions extends StatelessWidget {
   final bool isSupplierValid;
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<SupplierCubit, SupplierState>(
-        builder: (context, state) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (isSupplierExisting) ...[
-                Row(
-                  children: [
-                    UIButton.text(
-                      'Delete',
-                      iconBuilder: (isHover) => Assets.icons.trash.setColorOnHover(isHover),
-                      onClick: onDelete,
-                    ),
-                    if (state is SupplierDeleteLoading) ...[
-                      const UIHorizontalSpace(16),
-                      const CupertinoActivityIndicator(),
-                    ],
-                  ],
+  Widget build(BuildContext context) => Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if (isSupplierExisting) ...[
+            Row(
+              children: [
+                UIButton.text(
+                  'Delete',
+                  iconBuilder: (isHover) => Assets.icons.trash.setColorOnHover(isHover),
+                  onClick: onDelete,
                 ),
-                const Spacer(),
+
+                // if (state is SupplierDeleteLoading) ...[
+                //   const UIHorizontalSpace(16),
+                //   const CupertinoActivityIndicator(),
+                // ],
               ],
-              CancelActionButton(
-                onCancel: onCancel,
-                onAction: onSave,
-                isLoading: state is SupplierSaveLoading || state is SupplierDeleteLoading,
-              ),
-            ],
-          );
-        },
+            ),
+            const Spacer(),
+          ],
+          CancelActionButton(
+            onCancel: onCancel,
+            onAction: onSave,
+            // isLoading: state is SupplierSaveLoading || state is SupplierDeleteLoading,
+          ),
+        ],
       );
 }

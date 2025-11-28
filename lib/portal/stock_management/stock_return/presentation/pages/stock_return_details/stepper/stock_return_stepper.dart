@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/new_stock_return/new_stock_return_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return/stock_return_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_list_remote/stock_return_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/cubit/stock_return_remote/stock_return_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/details/stock_return_details.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/new/new_stock_return_form.dart';
@@ -59,10 +61,13 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
               listener: (context, state) {
                 if (state is StockReturnCreateSuccess) {
                   final id = state.stockReturn.id;
-                  AppRouter.router.goNamed(
-                    SideMenuTreeItem.STOCK_RETURN_DETAILS.name,
+                  context.goNamed(
+                    'stockReturnDetails',
                     pathParameters: {'id': id.toString()},
                   );
+
+                  // Reload list
+                  context.read<StockReturnListRemoteCubit>().getStockReturns();
                 }
                 if (state is StockReturnSuccess) {
                   context.read<StockReturnCubit>().setStockReturn(state.stockReturn);
@@ -92,7 +97,7 @@ class _StockReturnStepperState extends State<StockReturnStepper> {
                             padding: const EdgeInsets.only(right: 8),
                             child: UIButton.outlined(
                               'Cancel',
-                              onClick: () => AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_RETURNS.name),
+                              onClick: () => context.goNamed('stockReturnList'),
                             ),
                           ),
                         if (_currentStep == 0)

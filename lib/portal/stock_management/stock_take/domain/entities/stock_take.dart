@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take_item.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -12,7 +12,7 @@ part 'stock_take.g.dart';
 @JsonSerializable()
 class StockTake extends Equatable {
   final int? id;
-  final Branch? branch;
+  final BranchPartial? branch;
   final Supplier? supplier;
   final bool? isAllSupplier;
   final StockOrderStatus? status;
@@ -96,7 +96,7 @@ class StockTake extends Equatable {
 
   StockTake copyWith({
     int? id,
-    Branch? branch,
+    BranchPartial? branch,
     Supplier? supplier,
     bool? isAllSupplier,
     StockOrderStatus? status,

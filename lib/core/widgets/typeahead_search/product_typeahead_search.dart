@@ -3,7 +3,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/product_management/data/api/product_api.dart';
-import 'package:medglobal_admin_portal/portal/product_management/data/dto/product_dto.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/product/product_dto.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class ProductTypeAheadSearch extends StatefulWidget {
@@ -34,7 +34,7 @@ class _ProductTypeAheadSearchState extends State<ProductTypeAheadSearch> {
 
   @override
   Widget build(BuildContext context) => TypeAheadField<ProductDto>(
-        suggestionsCallback: (search) async => await GetIt.I<ProductApi>().searchProducts(search: search),
+        suggestionsCallback: (search) async => await GetIt.I<ProductApi>().getProductsBy(search: search),
         constraints: const BoxConstraints(maxHeight: 200),
         builder: (context, _, focusNode) {
           return TextField(
@@ -93,7 +93,7 @@ class _ProductTypeAheadSearchState extends State<ProductTypeAheadSearch> {
         itemBuilder: (BuildContext context, ProductDto value) => HoverBuilder(
           builder: (isHover) => ListTile(
             tileColor: isHover ? UIColors.whiteBg : UIColors.transparent,
-            title: UIText.bodyRegular(value.name ?? Strings.noValue),
+            title: UIText.bodyRegular(value.name),
           ),
         ),
         debounceDuration: const Duration(milliseconds: 500),
@@ -101,10 +101,11 @@ class _ProductTypeAheadSearchState extends State<ProductTypeAheadSearch> {
         hideOnUnfocus: true,
         loadingBuilder: (context) =>
             const Center(child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)),
-        errorBuilder: (context, error) => const Center(child: Text('Something went wrong.')),
+        errorBuilder: (context, error) => Center(child: Text(error.toString())),
+        // errorBuilder: (context, error) => const Center(child: Text('Something went wrong.')),
         emptyBuilder: (context) => const Center(child: Text('No items found.')),
         onSelected: (value) {
-          _controller.text = value.name ?? Strings.noValue;
+          _controller.text = value.name;
           widget.onSelected(value);
         },
         controller: _controller,

@@ -18,11 +18,15 @@ class VariantTypeAheadSearch extends StatefulWidget {
 
 class _VariantTypeAheadSearchState extends State<VariantTypeAheadSearch> {
   late TextEditingController _controller;
+  bool _hasValue = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _controller = TextEditingController()
+      ..addListener(() {
+        setState(() => _hasValue = _controller.text.isNotEmpty);
+      });
   }
 
   @override
@@ -39,23 +43,19 @@ class _VariantTypeAheadSearchState extends State<VariantTypeAheadSearch> {
           return TextField(
             controller: _controller,
             focusNode: focusNode,
-            // ..addListener(() {
-            //   if (!focusNode.hasFocus) _controller.clear();
-            // }),
-            style: UIStyleText.bodyRegular,
+            style: UIStyleText.labelSemiBold.copyWith(fontWeight: FontWeight.w500),
             cursorHeight: 14,
             decoration: InputDecoration(
-              hintText: 'Search for a product',
+              hintText: 'Type to search',
               hintStyle: UIStyleText.hint,
-              constraints: const BoxConstraints(maxHeight: 38),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(vertical: 12),
               prefixIcon: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Assets.icons.search.setSize(14),
+                child: UIText.labelMedium('Product', color: UIColors.textMuted),
               ),
-              prefixIconConstraints: const BoxConstraints(maxWidth: 48, maxHeight: 30),
+              prefixIconConstraints: const BoxConstraints(maxWidth: 100, maxHeight: 30),
               suffixIcon: Visibility(
-                visible: _controller.text.isNotEmpty,
+                visible: _hasValue,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: InkWell(
@@ -74,6 +74,13 @@ class _VariantTypeAheadSearchState extends State<VariantTypeAheadSearch> {
           );
         },
         offset: const Offset(0, 0),
+        // listBuilder: (context, list) => Container(
+        //   decoration: BoxDecoration(
+        //     border: Border.all(color: UIColors.borderMuted),
+        //     borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+        //   ),
+        //   child: Text(list.length.toString()),
+        // ),
         decorationBuilder: (context, child) {
           return Material(
             color: UIColors.background,
@@ -91,8 +98,9 @@ class _VariantTypeAheadSearchState extends State<VariantTypeAheadSearch> {
         },
         itemBuilder: (BuildContext context, ProductVariantDto value) => HoverBuilder(
           builder: (isHover) => ListTile(
+            dense: true,
             tileColor: isHover ? UIColors.whiteBg : UIColors.transparent,
-            title: UIText.bodyRegular(value.displayName!),
+            title: Text(value.displayName!, style: UIStyleText.chip.copyWith(fontSize: 12)),
           ),
         ),
         debounceDuration: const Duration(milliseconds: 500),

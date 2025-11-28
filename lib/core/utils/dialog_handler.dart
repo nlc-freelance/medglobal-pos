@@ -10,7 +10,7 @@ abstract class DialogHandler {
       barrierDismissible: false,
       transitionDuration: const Duration(milliseconds: 300),
       context: context,
-      pageBuilder: (context, animation1, animation2) => SidePeekModal(child: create(context)),
+      pageBuilder: (_, animation1, animation2) => SidePeekModal(context, child: create(context)),
       transitionBuilder: (context, animation1, animation2, child1) {
         return SlideTransition(
           position: Tween(begin: const Offset(1, 0), end: const Offset(0, 0)).animate(animation1),

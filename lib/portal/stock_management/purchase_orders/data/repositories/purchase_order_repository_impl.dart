@@ -1,79 +1,122 @@
-import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:medglobal_admin_portal/core/enums/enums.dart';
-import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/enums/purchase_order_enum.dart';
+import 'package:medglobal_admin_portal/core/helper/base_repository.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/api/purchase_order_api.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/dto/request/create_purchase_order_dto.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/dto/request/update_purchase_order_dto.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/data/dto/request/update_purchase_order_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/new_purchase_order.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order_paginated_list.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/repositories/purchase_order_repository.dart';
 
-class PurchaseOrderRepositoryImpl implements PurchaseOrderRepository {
-  final PurchaseOrderApi _purchaseOrderApi;
+/// Concrete implementation of [PurchaseOrderRepository] that uses [PurchaseOrderApi] for API calls
+/// and [BaseRepository] to centralize error handling.
+class PurchaseOrderRepositoryImpl extends BaseRepository implements PurchaseOrderRepository {
+  final PurchaseOrderApi _api;
 
-  PurchaseOrderRepositoryImpl(this._purchaseOrderApi);
+  PurchaseOrderRepositoryImpl({required PurchaseOrderApi api}) : _api = api;
 
   @override
-  Future<Either<Failure, PurchaseOrder>> create(NewPurchaseOrder payload) async {
-    try {
-      final response = await _purchaseOrderApi.create(payload);
-      return Right(response.toEntity());
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+  Future<ApiResult<PurchaseOrder>> create(NewPurchaseOrder po) {
+    return call(() async {
+      final requestDto = CreatePurchaseOrderDto.fromDomain(po);
+      final response = await _api.createPurchaseOrder(requestDto);
+      return response.toDomain();
+    });
   }
 
   @override
-  Future<Either<Failure, PurchaseOrder>> getPurchaseOrderById(int id) async {
-    try {
-      final response = await _purchaseOrderApi.getPurchaseOrderById(id);
-      return Right(response.toEntity());
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+  Future<ApiResult<PurchaseOrder>> getPurchaseOrderById(int id) {
+    return call(() async {
+      final response = await _api.getPurchaseOrderById(id);
+      return response.toDomain();
+    });
   }
 
   @override
-  Future<Either<Failure, PurchaseOrderPaginatedList>> getPurchaseOrders({
-    required int page,
-    required int size,
-    StockOrderStatus? status,
-    int? branchId,
-    String? startDate,
-    String? endDate,
-  }) async {
-    try {
-      final response = await _purchaseOrderApi.getPurchaseOrders(
-        page: page,
-        size: size,
-        status: status,
-        branchId: branchId,
-        startDate: startDate,
-        endDate: endDate,
+  Future<ApiResult<PaginatedList<PurchaseOrder>>> getPurchaseOrders(PageQuery query) {
+    return call(() async {
+      final response = await _api.getPurchaseOrders(query);
+      return response.convert((po) => po.toDomain());
+    });
+  }
+
+  @override
+  Future<ApiResult<PurchaseOrder>> update({
+    required UpdatePurchaseOrder action,
+    required int id,
+    required PurchaseOrder po,
+  }) {
+    return call(() async {
+      final requestDto = switch (action) {
+        UpdatePurchaseOrder.save => UpdatePurchaseOrderDto.saveOrShip(
+            status: StockOrderStatus.NEW.label.toLowerCase(),
+            purchaseOrderDetails: po.items
+                ?.map((item) => UpdatePurchaseOrderItemDto.save(
+                      variantId: item.variantId!,
+                      orderedQuantity: item.quantityOrdered,
+                      supplierPrice: item.supplierPrice!,
+                    ))
+                .toList(),
+            estimatedDateOfArrival: po.estimatedDateOfArrival?.toIso8601String(),
+            tax: po.tax,
+            discount: po.discount,
+            notes: po.notes,
+          ),
+        UpdatePurchaseOrder.saveAndMarkAsShippedWithNewItems => UpdatePurchaseOrderDto.saveOrShip(
+            status: StockOrderStatus.FOR_RECEIVING.label.toLowerCase(),
+            purchaseOrderDetails: po.items
+                ?.map((item) => UpdatePurchaseOrderItemDto.saveAndMarkAsShippedWithNewItems(
+                      variantId: item.variantId!,
+                      orderedQuantity: item.quantityOrdered!,
+                      supplierPrice: item.supplierPrice!,
+                    ))
+                .toList(),
+            estimatedDateOfArrival: po.estimatedDateOfArrival?.toIso8601String(),
+            tax: po.tax,
+            discount: po.discount,
+            notes: po.notes,
+          ),
+        UpdatePurchaseOrder.saveAndMarkAsShipped => UpdatePurchaseOrderDto.saveOrShip(
+            status: StockOrderStatus.FOR_RECEIVING.label.toLowerCase(),
+            purchaseOrderDetails: po.items
+                ?.map((item) => UpdatePurchaseOrderItemDto.saveAndMarkAsShipped(
+                      id: item.id!,
+                      orderedQuantity: item.quantityOrdered!,
+                      supplierPrice: item.supplierPrice!,
+                    ))
+                .toList(),
+            estimatedDateOfArrival: po.estimatedDateOfArrival?.toIso8601String(),
+            tax: po.tax,
+            discount: po.discount,
+            notes: po.notes,
+          ),
+        UpdatePurchaseOrder.saveAndReceived => UpdatePurchaseOrderDto.receive(
+            status: StockOrderStatus.COMPLETED.label.toLowerCase(),
+            purchaseOrderDetails: po.items
+                ?.map((item) => UpdatePurchaseOrderItemDto.saveAndReceived(
+                      id: item.id!,
+                      receivedQuantity: item.quantityReceived ?? 0,
+                    ))
+                .toList(),
+            notes: po.notes,
+          ),
+        UpdatePurchaseOrder.cancel =>
+          UpdatePurchaseOrderDto.cancel(status: StockOrderStatus.CANCELLED.label.toLowerCase()),
+      };
+
+      final response = await _api.updatePurchaseOrder(
+        id: id,
+        dto: requestDto,
       );
-      return Right(response);
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+      return response.toDomain();
+    });
   }
 
   @override
-  Future<Either<Failure, PurchaseOrder>> update(StockOrderUpdate type,
-      {required int id, required PurchaseOrder purchaseOrder}) async {
-    try {
-      final response = await _purchaseOrderApi.update(type, id: id, purchaseOrder: purchaseOrder);
-      return Right(response.toEntity());
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> delete(int id) async {
-    try {
-      return Right(await _purchaseOrderApi.delete(id));
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message!));
-    }
+  Future<ApiResult<void>> delete(int id) {
+    return call(() async => await _api.delete(id));
   }
 }

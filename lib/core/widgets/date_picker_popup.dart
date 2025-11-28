@@ -5,26 +5,27 @@ import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class DatePickerPopup extends StatefulWidget {
-  const DatePickerPopup({
-    super.key,
-    this.selectedDate,
-    this.selectedDateRange,
-    this.isInput = false,
-    required this.selectionMode,
-    this.onSelect,
-    this.onSelectRange,
-    this.onRemoveSelected,
-    this.showEndIcon = true,
-  });
+  const DatePickerPopup(
+      {super.key,
+      this.selectedDate,
+      this.selectedDateRange,
+      this.isInput = false,
+      required this.selectionMode,
+      this.onSelect,
+      this.onSelectRange,
+      this.onRemoveSelected,
+      this.showClearButton = true,
+      this.maxDate});
 
   final bool isInput;
-  final bool showEndIcon;
+  final bool showClearButton;
   final DateTime? selectedDate;
   final List<DateTime?>? selectedDateRange;
   final void Function(DateTime)? onSelect;
   final void Function(List<DateTime?>)? onSelectRange;
   final DateRangePickerSelectionMode selectionMode;
   final VoidCallback? onRemoveSelected;
+  final DateTime? maxDate;
 
   @override
   State<DatePickerPopup> createState() => _DatePickerPopupState();
@@ -46,6 +47,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      hoverColor: UIColors.transparent,
       borderRadius: BorderRadius.circular(12),
       onTap: () => showDialog(
         context: context,
@@ -71,13 +73,14 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
               initialSelectedRange: _selectedDateRange.isNotEmpty
                   ? PickerDateRange(_selectedDateRange.first, _selectedDateRange.last)
                   : null,
+              maxDate: widget.maxDate,
               view: DateRangePickerView.month,
               selectionMode: widget.selectionMode,
               enableMultiView: widget.selectionMode == DateRangePickerSelectionMode.range,
               navigationDirection: DateRangePickerNavigationDirection.horizontal,
               viewSpacing: 20,
               headerHeight: 60,
-              allowViewNavigation: false,
+              allowViewNavigation: true,
               showActionButtons: true,
               backgroundColor: UIColors.background,
               selectionColor: UIColors.primary,
@@ -109,7 +112,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
       child: HoverBuilder(
         builder: (isHover) => Container(
           constraints: const BoxConstraints(minWidth: 150),
-          padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(vertical: 7.2, horizontal: 16.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: highlight
@@ -134,14 +137,14 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
                           UIStyleText.labelMedium.copyWith(color: highlight ? UIColors.primary : UIColors.textRegular),
                     )
                   : Text(
-                      widget.isInput ? 'Select date' : 'All Time',
+                      widget.isInput ? 'Select date' : 'All Date',
                       style: UIStyleText.hint.copyWith(
-                        color: widget.isInput ? UIColors.textMuted : UIColors.textRegular,
+                        color: UIColors.textMuted,
                         fontWeight: widget.isInput ? FontWeight.w400 : FontWeight.w500,
                       ),
                     ),
               const UIHorizontalSpace(10),
-              if (widget.showEndIcon)
+              if (widget.showClearButton)
                 (_selectedDate != null || _selectedDateRange.isNotEmpty) && widget.onRemoveSelected != null
                     ? SizedBox(
                         height: 18,
@@ -156,7 +159,7 @@ class _DatePickerPopupState extends State<DatePickerPopup> {
                           child: Assets.icons.close.svg(height: 22),
                         ),
                       )
-                    : Assets.icons.arrowDown.svg(height: 10),
+                    : Assets.icons.arrowDown.svg(),
             ],
           ),
         ),

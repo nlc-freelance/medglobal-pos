@@ -21,7 +21,7 @@ class _NewStockReturnPageState extends State<NewStockReturnPage> {
     context.read<StockReturnRemoteCubit>().reset();
     context.read<NewStockReturnCubit>().reset();
 
-    /// TODO: Can be removed if the initState is always triggered when navigating to [StockReturnsPage]
+    /// TODO: Can be removed if the initState is always triggered when navigating to [StockReturnListPage]
     context.read<StockReturnCubit>().reset();
   }
 

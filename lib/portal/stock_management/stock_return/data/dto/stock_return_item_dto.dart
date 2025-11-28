@@ -28,7 +28,7 @@ class StockReturnItemDto extends Equatable {
   StockReturnItem toEntity() => StockReturnItem(
         id: id,
         variantId: variant?.id,
-        name: '${variant?.product?.name} ${variant?.name}',
+        name: variant?.productVariantName,
         sku: variant?.sku,
         qtyOnHand: variant?.qtyOnHand,
         qtyToReturn: qtyToReturn,

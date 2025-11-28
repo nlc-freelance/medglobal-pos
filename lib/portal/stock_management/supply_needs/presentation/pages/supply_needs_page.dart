@@ -1,29 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
-import 'package:medglobal_admin_portal/portal/reports/bloc/reports_bloc.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order/new_purchase_order_cubit.dart';
+import 'package:medglobal_admin_portal/portal/reports/data/dto/request/report_payload.dart';
+import 'package:medglobal_admin_portal/portal/reports/domain/entities/report_task.dart';
+import 'package:medglobal_admin_portal/portal/reports/shared/report_manager_cubit/report_manager_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order_form/new_purchase_order_form_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/new_stock_transfer/new_stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_need/supply_need_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/cubit/supply_needs/supply_needs_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/pages/supply_needs_data_grid.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
-class SupplyNeedsPage extends StatefulWidget {
-  const SupplyNeedsPage({super.key});
+class SupplyNeedListPage extends StatelessWidget {
+  const SupplyNeedListPage({super.key});
 
   @override
-  State<SupplyNeedsPage> createState() => _SupplyNeedsPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      // TODO: Convert to SupplyNeedBloc
+      create: (context) => GetIt.I<SupplyNeedsCubit>()..getSupplyNeeds(),
+      child: const SupplyNeedList(),
+    );
+  }
 }
 
-class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
-  int? _downloadingSupplyNeedPerBranch;
+class SupplyNeedList extends StatefulWidget {
+  const SupplyNeedList({super.key});
+
+  @override
+  State<SupplyNeedList> createState() => _SupplyNeedsListState();
+}
+
+class _SupplyNeedsListState extends State<SupplyNeedList> {
+  // int? _downloadingSupplyNeedPerBranch;
 
   @override
   void initState() {
     super.initState();
-    context.read<SupplyNeedsCubit>().getSupplyNeeds();
+    // context.read<SupplyNeedsCubit>().getSupplyNeeds();
   }
 
   @override
@@ -43,29 +58,33 @@ class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
             }
             if (state is SupplyNeedsLoaded) {
               return state.supplyNeeds.isNotEmpty
-                  ? BlocConsumer<ReportsBloc, ReportsState>(
-                      listener: (context, state) {
-                        if (state is ReportCreateSuccess && state.type == ReportType.SUPPLY_NEEDS_CSV) {
-                          context
-                              .read<ReportsBloc>()
-                              .add(StartReportGeneratePollingEvent(ReportType.SUPPLY_NEEDS_CSV, id: state.reportId));
-                        }
-                        if (state is ReportByIdSuccess && state.type == ReportType.SUPPLY_NEEDS_CSV) {
-                          if (state.report.status == ReportStatus.COMPLETED) {
-                            context
-                                .read<ReportsBloc>()
-                                .add(DownloadReportEvent(ReportType.SUPPLY_NEEDS_CSV, fileUrl: state.report.fileUrl!));
-                            setState(() => _downloadingSupplyNeedPerBranch = null);
-                          }
-                        }
-                        if (state is ReportError && state.type == ReportType.SUPPLY_NEEDS_CSV) {
-                          ToastNotification.error(context, state.message);
-                        }
-                        if (state is ReportByIdError && state.type == ReportType.SUPPLY_NEEDS_CSV) {
-                          ToastNotification.error(context, state.message);
-                        }
-                      },
-                      builder: (context, reportState) {
+                  ? BlocBuilder<ReportManagerCubit, ReportManagerState>(
+                      // listener: (context, state) {
+                      //   state.maybeWhen(
+                      //     created: (type, report) {
+                      //       if (type == ReportType.supplyNeeds) {
+                      //         context.read<ReportBloc>().add(ReportEvent.poll(
+                      //               id: report.id,
+                      //               type: ReportType.supplyNeeds,
+                      //             ));
+                      //       }
+                      //     },
+                      //     loaded: (type, report) {
+                      //       if (type == ReportType.supplyNeeds) {
+                      //         if (report.status == ReportStatus.completed) {
+                      //           context.read<ReportBloc>().add(ReportEvent.download(
+                      //                 url: report.fileUrl!,
+                      //                 type: ReportType.supplyNeeds,
+                      //               ));
+                      //           setState(() => _downloadingSupplyNeedPerBranch = null);
+                      //         }
+                      //       }
+                      //     },
+                      //     failure: (action, type, message) => SnackbarUtil.error(context, message),
+                      //     orElse: () => {},
+                      //   );
+                      // },
+                      builder: (context, reportManagerState) {
                         return Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +100,14 @@ class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
                                                 child: ExpansionTile(
                                                   initiallyExpanded: true,
                                                   leading: Assets.icons.arrowDown.setSize(12),
-                                                  trailing: _downloadingSupplyNeedPerBranch == supplyNeed.branch?.id
+                                                  trailing: reportManagerState.tasks.any(
+                                                    (task) =>
+                                                        task.type == ReportType.supplyNeeds &&
+                                                        (task.status == ReportTaskStatus.creating ||
+                                                            task.status == ReportTaskStatus.polling ||
+                                                            task.status == ReportTaskStatus.downloading),
+                                                  )
+                                                      // trailing: _downloadingSupplyNeedPerBranch == supplyNeed.branch?.id
                                                       ? const SizedBox(
                                                           width: 12,
                                                           height: 12,
@@ -94,14 +120,20 @@ class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
                                                           menuAsString: (option) => option.label,
                                                           onSelect: (action) {
                                                             if (action == SupplyNeedsAction.DOWNLOAD_CSV) {
-                                                              context.read<ReportsBloc>().add(
-                                                                    CreateReportEvent(
-                                                                      ReportType.SUPPLY_NEEDS_CSV,
-                                                                      filters: {'branch': supplyNeed.branch?.id},
-                                                                    ),
-                                                                  );
-                                                              setState(() => _downloadingSupplyNeedPerBranch =
-                                                                  supplyNeed.branch?.id);
+                                                              context
+                                                                  .read<ReportManagerCubit>()
+                                                                  .generateReport(ReportPayload(
+                                                                    type: ReportType.supplyNeeds.value,
+                                                                    filters: {'branch': supplyNeed.branch?.id},
+                                                                  ));
+                                                              // context.read<ReportBloc>().add(
+                                                              //       ReportEvent.create(
+                                                              //         type: ReportType.supplyNeeds,
+                                                              //         filters: {'branch': supplyNeed.branch?.id},
+                                                              //       ),
+                                                              //     );
+                                                              // setState(() => _downloadingSupplyNeedPerBranch =
+                                                              //     supplyNeed.branch?.id);
                                                             }
                                                             if (action == SupplyNeedsAction.NEW_PURCHASE_ORDER) {
                                                               AppRouter.router
@@ -113,7 +145,7 @@ class _SupplyNeedsPageState extends State<SupplyNeedsPage> {
 
                                                               /// set the value
                                                               context
-                                                                  .read<NewPurchaseOrderCubit>()
+                                                                  .read<NewPurchaseOrderFormCubit>()
                                                                   .setBranchId(supplyNeed.branch!.id!);
                                                             }
                                                             if (action == SupplyNeedsAction.NEW_STOCK_TRANSFER) {

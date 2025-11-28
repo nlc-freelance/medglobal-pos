@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/domain/entities/supply_need.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/domain/repository/supply_needs_repository.dart';
 
@@ -9,7 +9,7 @@ class GetSupplyNeedsUseCase implements UseCase<List<SupplyNeed>, GetSupplyNeedsP
   GetSupplyNeedsUseCase(this._repository);
 
   @override
-  Future<Either<Failure, List<SupplyNeed>>> call(GetSupplyNeedsParams params) =>
+  Future<ApiResult<List<SupplyNeed>>> call(GetSupplyNeedsParams params) =>
       _repository.getSupplyNeeds(branchId: params.branchId);
 }
 

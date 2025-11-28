@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_no_data.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
 import 'package:medglobal_admin_portal/core/widgets/typeahead_search/typeahead_search.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
@@ -49,23 +49,20 @@ class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataG
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const PageSectionTitle(title: 'Items to Transfer'),
-        DataGridToolbar(
-          search: SizedBox(
-            width: MediaQuery.sizeOf(context).width * 0.3,
-            child: TypeAheadSearch(
-              branchId: context.read<StockTransferCubit>().state.stockTransfer.destinationBranch?.id,
-              onSelected: (value) {
-                if (_stockItemsToTransferDataSource._itemsToTransfer.any((item) => item.variantId == value.id) ==
-                    true) {
-                  ToastNotification.duplicate(context, 'Item was already added.');
-                  return;
-                }
-                final stockTransferItem = value.toStockTransferItem();
+        SizedBox(
+          width: MediaQuery.sizeOf(context).width * 0.3,
+          child: TypeAheadSearch(
+            branchId: context.read<StockTransferCubit>().state.stockTransfer.destinationBranch?.id,
+            onSelected: (value) {
+              if (_stockItemsToTransferDataSource._itemsToTransfer.any((item) => item.variantId == value.id) == true) {
+                SnackbarUtil.duplicate(context, 'Item was already added.');
+                return;
+              }
+              final stockTransferItem = value.toStockTransferItem();
 
-                /// Add newly added items to the current stock transfer in state
-                context.read<StockTransferCubit>().addItem(stockTransferItem);
-              },
-            ),
+              /// Add newly added items to the current stock transfer in state
+              context.read<StockTransferCubit>().addItem(stockTransferItem);
+            },
           ),
         ),
         BlocConsumer<StockTransferCubit, StockTransferState>(
@@ -113,7 +110,7 @@ class _StockItemsToTransferDataGridState extends State<StockItemsToTransferDataG
                                     if (_stockItemsToTransferDataSource._itemsToTransfer
                                             .any((item) => item.variantId == value.id) ==
                                         true) {
-                                      ToastNotification.duplicate(context, 'Item was already added.');
+                                      SnackbarUtil.duplicate(context, 'Item was already added.');
                                       return;
                                     }
                                     final stockTransferItem = value.toStockTransferItem();

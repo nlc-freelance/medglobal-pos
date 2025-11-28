@@ -1,27 +1,20 @@
-import 'package:medglobal_admin_portal/core/network/api_service.dart';
+import 'package:medglobal_admin_portal/core/network/old_api_service.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
+import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/variants/product_variant_dto.dart';
 
-abstract class ProductVariantApi {
-  Future<List<ProductVariantDto>> getProductVariants({int? supplierId, int? branchId, String? search});
-}
+class ProductVariantApi {
+  final ApiService _api;
 
-class ProductVariantApiImpl implements ProductVariantApi {
-  final ApiService _apiService;
+  ProductVariantApi({required ApiService api}) : _api = api;
 
-  ProductVariantApiImpl(this._apiService);
-
-  @override
   Future<List<ProductVariantDto>> getProductVariants({int? supplierId, int? branchId, String? search}) async {
-    try {
-      final response = await _apiService.collection<ProductVariantDto>(
-        '/products/variants',
-        queryParams: {'size': 10, 'search': search, 'supplier': supplierId, 'branch': branchId},
-        converter: ProductVariantDto.fromJson,
-      );
+    final data = await _api.getPaginated<ProductVariantDto>(
+      '/products/variants',
+      queryParams: {'size': 10, 'search': search, 'supplier': supplierId, 'branch': branchId},
+      parser: (json) => parse(json, ProductVariantDto.fromJson),
+    );
 
-      return response.items ?? [];
-    } catch (_) {
-      rethrow;
-    }
+    return data.items;
   }
 }

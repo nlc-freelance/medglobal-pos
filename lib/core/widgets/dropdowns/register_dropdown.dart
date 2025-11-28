@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/shared/register/domain/entities/register.dart';
-import 'package:medglobal_admin_portal/shared/register/presentation/cubit/register_lazy_list/register_lazy_list_cubit.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
+import 'package:medglobal_admin_portal/portal/settings/register/domain/entity/register.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 class RegisterDropdown extends StatefulWidget {
@@ -25,14 +26,22 @@ class RegisterDropdownState extends State<RegisterDropdown> {
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_scrollListener);
-    context.read<RegisterLazyListCubit>().getRegisters();
+    context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(
+          filters: FilterQuery(extra: {'assigned': false}),
+        ));
+    // context.read<RegisterLazyListCubit>().getRegisters();
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
-        !context.read<RegisterLazyListCubit>().state.isLoadingMore &&
-        !context.read<RegisterLazyListCubit>().state.hasReachedMax) {
-      context.read<RegisterLazyListCubit>().getRegisters();
+        !context.read<LazyListBloc<Register>>().state.isLoadingMore &&
+        !context.read<LazyListBloc<Register>>().state.hasReachedMax) {
+      // !context.read<RegisterLazyListCubit>().state.isLoadingMore &&
+      // !context.read<RegisterLazyListCubit>().state.hasReachedMax) {
+      context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(
+            filters: FilterQuery(extra: {'assigned': false}),
+          ));
+      // context.read<RegisterLazyListCubit>().getRegisters();
     }
   }
 
@@ -64,10 +73,12 @@ class RegisterDropdownState extends State<RegisterDropdown> {
           },
         ),
       ),
-      body: BlocBuilder<RegisterLazyListCubit, RegisterLazyListState>(
+      body: BlocBuilder<LazyListBloc<Register>, LazyListState<Register>>(
+        // body: BlocBuilder<RegisterLazyListCubit, RegisterLazyListState>(
         builder: (context, state) {
           double itemHeight = 40;
-          double totalHeight = (state.registers.isNotEmpty ? state.registers.length : 3) * itemHeight;
+          double totalHeight = (state.items.isNotEmpty ? state.items.length : 3) * itemHeight;
+          // double totalHeight = (state.registers.isNotEmpty ? state.registers.length : 3) * itemHeight;
           double height = totalHeight > 200 ? 200 : totalHeight;
 
           return Container(
@@ -81,17 +92,26 @@ class RegisterDropdownState extends State<RegisterDropdown> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (state.INITIAL_LOADING)
+                if (state.isLoadingInitial)
+                  // if (state.INITIAL_LOADING)
                   const CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)
-                else if (state.EMPTY)
+                else if (state.hasNoData)
+                  // else if (state.EMPTY)
                   UIText.labelMedium('No data available', align: TextAlign.center)
-                else if (state.ERROR)
+                else if (state.error != null)
+                  // else if (state.ERROR)
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         UIText.labelMedium(state.error!, align: TextAlign.center),
-                        UIButton.text('Reload', onClick: () => context.read<RegisterLazyListCubit>().getRegisters())
+                        UIButton.text('Reload',
+                            onClick: () =>
+                                context.read<LazyListBloc<Register>>().add(const LazyListEvent<Register>.fetch(
+                                      forceRefresh: true,
+                                      filters: FilterQuery(extra: {'assigned': false}),
+                                    )))
+                        // UIButton.text('Reload', onClick: () => context.read<RegisterLazyListCubit>().getRegisters())
                       ],
                     ),
                   )
@@ -99,13 +119,15 @@ class RegisterDropdownState extends State<RegisterDropdown> {
                   Expanded(
                     child: ListView.builder(
                       controller: _scrollController,
-                      itemCount: state.registers.length,
+                      itemCount: state.items.length,
+                      // itemCount: state.registers.length,
                       itemBuilder: (context, index) {
                         return Material(
                           type: MaterialType.transparency,
                           child: ListTile(
                             onTap: () {
-                              final register = state.registers[index];
+                              final register = state.items[index];
+                              // final register = state.registers[index];
 
                               /// Single select
                               setState(() => _selectedItem = register);
@@ -116,7 +138,8 @@ class RegisterDropdownState extends State<RegisterDropdown> {
                             },
                             dense: true,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            title: UIText.labelMedium(state.registers[index].name!),
+                            title: UIText.labelMedium(state.items[index].name),
+                            // title: UIText.labelMedium(state.registers[index].name),
                           ),
                         );
                       },

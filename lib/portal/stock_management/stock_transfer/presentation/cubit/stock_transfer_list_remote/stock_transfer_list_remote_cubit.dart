@@ -32,9 +32,9 @@ class StockTransferListRemoteCubit extends Cubit<StockTransferListRemoteState> {
         startDate: startDate,
         endDate: endDate,
       ));
-      result.fold(
-        (error) => emit(StockTransferListError(message: error.message)),
-        (data) => emit(StockTransferListLoaded(data: data)),
+      result.when(
+        success: (data) => emit(StockTransferListLoaded(data: data)),
+        failure: (error) => emit(StockTransferListError(message: error.message)),
       );
     } catch (e) {
       emit(StockTransferListError(message: e.toString()));

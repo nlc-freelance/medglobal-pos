@@ -297,7 +297,7 @@ class StockTransferDataSource extends DataGridSource {
               onTap: () {
                 // _context.read<StockTransferRemoteCubit>().getStockTransferById(id);
                 AppRouter.router.goNamed(
-                  'Stock Transfer Details',
+                  'stockTransferDetails',
                   pathParameters: {'id': id.toString()},
                 );
               },

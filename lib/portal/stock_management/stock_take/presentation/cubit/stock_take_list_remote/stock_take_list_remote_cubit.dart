@@ -28,9 +28,9 @@ class StockTakeListRemoteCubit extends Cubit<StockTakeListRemoteState> {
         startDate: startDate,
         endDate: endDate,
       ));
-      result.fold(
-        (error) => emit(StockTakeListError(message: error.message)),
-        (data) => emit(StockTakeListLoaded(data: data)),
+      result.when(
+        success: (data) => emit(StockTakeListLoaded(data: data)),
+        failure: (error) => emit(StockTakeListError(message: error.message)),
       );
     } catch (e) {
       emit(StockTakeListError(message: e.toString()));

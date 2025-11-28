@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/new_stock_transfer/new_stock_transfer_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/cubit/stock_transfer/stock_transfer_cubit.dart';
@@ -59,8 +60,12 @@ class _StockTransferStepperState extends State<StockTransferStepper> {
               listener: (context, state) {
                 if (state is StockTransferCreateSuccess) {
                   final id = state.stockTransfer.id;
-                  AppRouter.router.goNamed(
-                    SideMenuTreeItem.STOCK_TRANSFER_DETAILS.name,
+                  // AppRouter.router.goNamed(
+                  //   SideMenuTreeItem.STOCK_TRANSFER_DETAILS.name,
+                  //   pathParameters: {'id': id.toString()},
+                  // );
+                  context.goNamed(
+                    'stockTransferDetails',
                     pathParameters: {'id': id.toString()},
                   );
                 }
@@ -92,8 +97,9 @@ class _StockTransferStepperState extends State<StockTransferStepper> {
                             padding: const EdgeInsets.only(right: 8),
                             child: UIButton.outlined(
                               'Cancel',
-                              onClick: () =>
-                                  AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TRANSFERS.name),
+                              onClick: () => context.goNamed('stockTransferList'),
+                              // onClick: () =>
+                              //     AppRouter.router.pushReplacementNamed(SideMenuTreeItem.STOCK_TRANSFERS.name),
                             ),
                           ),
                         if (_currentStep == 0)

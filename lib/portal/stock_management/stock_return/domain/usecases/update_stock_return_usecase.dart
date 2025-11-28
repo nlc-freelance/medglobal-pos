@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/repositories/stock_return_repository.dart';
 
@@ -9,7 +9,7 @@ class UpdateStockReturnUseCase implements UseCase<StockReturn, UpdateStockReturn
   const UpdateStockReturnUseCase(this.repository);
 
   @override
-  Future<Either<Failure, StockReturn>> call(UpdateStockReturnParams params) =>
+  Future<ApiResult<StockReturn>> call(UpdateStockReturnParams params) =>
       repository.update(params.type, id: params.id, stockReturn: params.stockReturn);
 }
 

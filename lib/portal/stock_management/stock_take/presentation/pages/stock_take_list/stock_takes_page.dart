@@ -2,22 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid.dart';
 import 'package:medglobal_admin_portal/core/widgets/date_picker_popup.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_filter_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/stock_take_paginated_data_grid.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/widgets/new_stock_take_dialog.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/widgets/stock_take_toolbar.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class StockTakesPage extends StatefulWidget {
-  const StockTakesPage({super.key});
+class StockTakeListPage extends StatefulWidget {
+  const StockTakeListPage({super.key});
 
   @override
-  State<StockTakesPage> createState() => _StockTakesPageState();
+  State<StockTakeListPage> createState() => _StockTakesPageState();
 }
 
-class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProviderStateMixin {
+class _StockTakesPageState extends State<StockTakeListPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -95,7 +99,13 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
               onClick: () => showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (context) => const NewStockTakeDialog(),
+                builder: (_) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: context.read<NewStockTakeCubit>()),
+                    BlocProvider.value(value: context.read<StockTakeBloc>()),
+                  ],
+                  child: const NewStockTakeDialog(),
+                ),
               ),
             ),
           ],
@@ -140,48 +150,8 @@ class _StockTakesPageState extends State<StockTakesPage> with SingleTickerProvid
           }),
         ),
         const UIVerticalSpace(20),
-        BlocSelector<StockTakeListFilterCubit, StockTakeListFilterState, StockTakeListFilterState>(
-          selector: (state) => state,
-          builder: (context, filters) {
-            return DataGridToolbar(
-              reportType: ReportType.STOCK_TAKE_CSV,
-              reportFilters: {
-                'status': filters.status?.label.toLowerCase(),
-                'startDate': filters.startDate,
-                'endDate': filters.endDate,
-              },
-              filters: [
-                DatePickerPopup(
-                  onRemoveSelected: () {
-                    final size = context.read<StockTakeListFilterCubit>().state.size;
-                    final status = context.read<StockTakeListFilterCubit>().state.status;
-
-                    context.read<StockTakeListRemoteCubit>().getStockTakes(size: size!, status: status);
-
-                    context.read<StockTakeListFilterCubit>().setStartDate(null);
-                    context.read<StockTakeListFilterCubit>().setEndDate(null);
-                  },
-                  onSelectRange: (dates) {
-                    final size = context.read<StockTakeListFilterCubit>().state.size;
-                    final status = context.read<StockTakeListFilterCubit>().state.status;
-
-                    String? endDate;
-                    final startDate = DateFormat('MM-dd-yyyy').format(dates[0]!);
-                    if (dates.length == 2) endDate = DateFormat('MM-dd-yyyy').format(dates[1]!);
-
-                    context
-                        .read<StockTakeListRemoteCubit>()
-                        .getStockTakes(size: size!, status: status, startDate: startDate, endDate: endDate);
-
-                    context.read<StockTakeListFilterCubit>().setStartDate(startDate);
-                    context.read<StockTakeListFilterCubit>().setEndDate(endDate);
-                  },
-                  selectionMode: DateRangePickerSelectionMode.range,
-                ),
-              ],
-            );
-          },
-        ),
+        const StockTakeToolbar(),
+        const UIVerticalSpace(20),
         const Expanded(child: StockTakePaginatedDataGrid()),
       ],
     );

@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_dto.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/data/dto/branch_mapper.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/data/dto/stock_return_item_dto.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_return/domain/entities/stock_return.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
@@ -12,7 +14,7 @@ part 'stock_return_dto.g.dart';
 class StockReturnDto extends Equatable {
   final int? id;
   @JsonKey(name: 'store')
-  final Branch? branch;
+  final BranchPartialDto? branch;
   final Supplier? supplier;
   final String? status;
   final double? totalAmount;
@@ -47,7 +49,7 @@ class StockReturnDto extends Equatable {
 
   StockReturn toEntity() => StockReturn(
         id: id,
-        branch: branch,
+        branch: branch == null ? null : BranchPartialMapper.fromDto(branch!),
         supplier: supplier,
         status: StatusMapper.status(status),
         tax: tax,

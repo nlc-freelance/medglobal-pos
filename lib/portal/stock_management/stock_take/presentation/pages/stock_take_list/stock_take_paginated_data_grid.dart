@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/data_grid/data_grid_loading.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/domain/entities/stock_take.dart';
@@ -28,6 +29,7 @@ class _StockTakePaginatedDataGridState extends State<StockTakePaginatedDataGrid>
     super.initState();
     _dataGridController = DataGridController();
     context.read<StockTakeListRemoteCubit>().getStockTakes();
+    // context.read<PaginatedListBloc<StockTake>>().add(const PaginatedListEvent.fetch());
   }
 
   @override
@@ -277,9 +279,8 @@ class StockTakeDataSource extends DataGridSource {
         'start_time' => HoverBuilder(
             builder: (isHover) => InkWell(
               onTap: () {
-                // _context.read<StockTakeBloc>().add(GetStockTakeByIdEvent(id));
                 AppRouter.router.goNamed(
-                  SideMenuTreeItem.STOCK_TAKE_DETAILS.name,
+                  'stockTakeDetails',
                   pathParameters: {'id': id.toString()},
                 );
               },

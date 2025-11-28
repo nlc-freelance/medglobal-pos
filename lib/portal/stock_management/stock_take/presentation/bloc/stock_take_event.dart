@@ -33,14 +33,42 @@ class StartStockTakePollingEvent extends StockTakeEvent {
   List<Object> get props => [id, targetStatus];
 }
 
-class UpdateStockTakeEvent extends StockTakeEvent {
-  final StockOrderUpdate type;
+class SaveStockTakeEvent extends StockTakeEvent {
+  final int id;
+  final StockTake stockTake;
+
+  const SaveStockTakeEvent({required this.id, required this.stockTake});
+
+  @override
+  List<Object?> get props => [id, stockTake];
+}
+
+class CheckUncountedItemForCompletionEvent extends StockTakeEvent {
+  final StockTake stockTake;
+
+  const CheckUncountedItemForCompletionEvent({required this.stockTake});
+
+  @override
+  List<Object?> get props => [stockTake];
+}
+
+class CompleteStockTakeEvent extends StockTakeEvent {
   final int id;
   final StockTake stockTake;
   final StockTakeItemAction? action;
 
-  const UpdateStockTakeEvent(this.type, {required this.id, required this.stockTake, this.action});
+  const CompleteStockTakeEvent({required this.id, required this.stockTake, this.action});
 
   @override
-  List<Object?> get props => [type, id, stockTake, action];
+  List<Object?> get props => [id, stockTake, action];
+}
+
+class CancelStockTakeEvent extends StockTakeEvent {
+  final int id;
+  final StockTake stockTake;
+
+  const CancelStockTakeEvent({required this.id, required this.stockTake});
+
+  @override
+  List<Object?> get props => [id, stockTake];
 }

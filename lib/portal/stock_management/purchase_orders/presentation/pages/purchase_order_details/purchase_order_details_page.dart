@@ -1,152 +1,161 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/utils/print_util.dart';
-import 'package:medglobal_admin_portal/core/widgets/toast_notification.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:medglobal_admin_portal/core/blocs/paginated_list_bloc/paginated_list_bloc.dart';
+import 'package:medglobal_admin_portal/core/enums/enums.dart';
+import 'package:medglobal_admin_portal/core/utils/snackbar_util.dart';
+import 'package:medglobal_admin_portal/core/widgets/page/page.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/domain/entities/purchase_order.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order/purchase_order_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_remote/purchase_order_remote_cubit.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/details/purchase_order_details.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/purchase_order_stepper.dart';
-import 'package:medglobal_shared/medglobal_shared.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/bloc/purchase_order_bloc/purchase_order_bloc.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/new_purchase_order_form/new_purchase_order_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_form_cubit/purchase_order_form_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/cubit/purchase_order_list_filter/purchase_order_list_filter_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_form/purchase_order_form.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_form/purchase_order_stepper.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_form/widgets/purchase_order_form_header.dart';
 
-class PurchaseOrderDetailsPage extends StatefulWidget {
-  const PurchaseOrderDetailsPage({super.key, required this.id});
+class PurchaseOrderDetailsPage extends StatelessWidget {
+  const PurchaseOrderDetailsPage({super.key, this.id});
 
-  final String id;
+  final String? id;
 
   @override
-  State<PurchaseOrderDetailsPage> createState() => _PurchaseOrderDetailsPageState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => NewPurchaseOrderFormCubit()),
+        BlocProvider(create: (context) => GetIt.I<PurchaseOrderBloc>())
+      ],
+      child: _PurchaseOrderDetailsPage(id: id),
+    );
+  }
 }
 
-class _PurchaseOrderDetailsPageState extends State<PurchaseOrderDetailsPage> {
-  late PurchaseOrder _purchaseOrder;
+class _PurchaseOrderDetailsPage extends StatefulWidget {
+  const _PurchaseOrderDetailsPage({this.id});
+
+  final String? id;
+
+  @override
+  State<_PurchaseOrderDetailsPage> createState() => _PurchaseOrderDetailsPageState();
+}
+
+class _PurchaseOrderDetailsPageState extends State<_PurchaseOrderDetailsPage> {
+  late final PurchaseOrderFormCubit _formCubit;
+  int _currentStep = 0;
 
   @override
   void initState() {
     super.initState();
-    context.read<PurchaseOrderRemoteCubit>().getPurchaseOrderById(int.parse(widget.id));
-  }
 
-  String get _title {
-    switch (_purchaseOrder.status) {
-      case StockOrderStatus.NEW:
-        return 'Edit Purchase Order';
-      case StockOrderStatus.FOR_RECEIVING:
-        return 'Receive Purchase Order';
-      case StockOrderStatus.COMPLETED || StockOrderStatus.CANCELLED:
-        return 'Purchase Order';
-      default:
-        return Strings.empty;
+    _formCubit = context.read<PurchaseOrderFormCubit>();
+
+    if (_isEditMode) {
+      final id = int.parse(widget.id!);
+      context.read<PurchaseOrderBloc>().add(PurchaseOrderEvent.getPurchaseOrderById(id));
+    } else {
+      _formCubit.reset();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PurchaseOrderRemoteCubit, PurchaseOrderRemoteState>(
+    return BlocConsumer<PurchaseOrderBloc, PurchaseOrderState>(
       listener: (context, state) {
-        if (state is PurchaseOrderByIdSuccess) {
-          _purchaseOrder = state.purchaseOrder;
-          context.read<PurchaseOrderCubit>().setPurchaseOrder(state.purchaseOrder);
-        }
-        if (state is PurchaseOrderSuccess) {
-          _purchaseOrder = state.purchaseOrder;
-          context.read<PurchaseOrderCubit>().setPurchaseOrder(state.purchaseOrder);
-          ToastNotification.success(context, 'Purchase Order updated successfully.');
-        }
-        if (state is PurchaseOrderDeleteSuccess) {
-          AppRouter.router.pushReplacementNamed(SideMenuTreeItem.PURCHASE_ORDERS.name);
-          ToastNotification.success(context, 'Purchase Order deleted successfully.');
-        }
-      },
-      builder: (context, state) {
-        if (state is PurchaseOrderByIdError) {
-          return Text(state.message);
-        }
-        if (state is PurchaseOrderByIdLoading) {
-          return const Center(child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2));
-        }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PageHeader(
-              title: _title,
-              titleTrailings: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 1),
-                  child: Chip(
-                    label: Text(
-                      _purchaseOrder.status!.label,
-                      style: UIStyleText.chip.copyWith(color: StatusMapper.textColor(_purchaseOrder.status!)),
-                    ),
-                    backgroundColor: StatusMapper.color(_purchaseOrder.status!),
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    visualDensity: const VisualDensity(horizontal: 0.0, vertical: -4),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: const BorderSide(color: UIColors.transparent),
-                    ),
-                  ),
-                ),
-                const UIHorizontalSpace(12),
-                if (_purchaseOrder.status == StockOrderStatus.NEW ||
-                    _purchaseOrder.status == StockOrderStatus.FOR_RECEIVING ||
-                    _purchaseOrder.status == StockOrderStatus.COMPLETED)
-                  UIPopupMenuButton.icon(
-                    onSelect: (menu) {
-                      if (menu == 'Print Purchase Order') {
-                        PrintUtil.generateAndPrintOpenPO(_purchaseOrder);
-                      }
-                      if (menu == 'Cancel Purchase Order') {
-                        context.read<PurchaseOrderRemoteCubit>().update(
-                              StockOrderUpdate.CANCEL,
-                              id: _purchaseOrder.id!,
-                              purchaseOrder: _purchaseOrder,
-                            );
-                      }
-                      if (menu == 'Delete Purchase Order') {
-                        context.read<PurchaseOrderRemoteCubit>().delete(_purchaseOrder.id!);
-                      }
-                    },
-                    icon: Assets.icons.more.setSize(20),
-                    menu: [
-                      if (_purchaseOrder.status == StockOrderStatus.FOR_RECEIVING ||
-                          _purchaseOrder.status == StockOrderStatus.COMPLETED)
-                        'Print Purchase Order',
-                      if (_purchaseOrder.status == StockOrderStatus.NEW ||
-                          _purchaseOrder.status == StockOrderStatus.FOR_RECEIVING) ...[
-                        'Cancel Purchase Order',
-                        'Delete Purchase Order',
-                      ],
-                    ],
-                    menuAsString: (menu) => menu,
-                  ),
-                if (state is PurchaseOrderCancelLoading || state is PurchaseOrderDeleteLoading) ...[
-                  const UIHorizontalSpace(12),
-                  const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2),
-                  ),
-                ],
-              ],
-            ),
-            if (_purchaseOrder.status == StockOrderStatus.NEW ||
-                _purchaseOrder.status == StockOrderStatus.FOR_RECEIVING) ...[
-              UIText.heading5(
-                  _purchaseOrder.status == StockOrderStatus.NEW ? 'Step 2 of 4 - Editing' : 'Step 3 of 4 - Receiving'),
-              const UIVerticalSpace(12),
-              if (_purchaseOrder.status == StockOrderStatus.NEW) const PurchaseOrderStepper(currentStep: 1),
-              if (_purchaseOrder.status == StockOrderStatus.FOR_RECEIVING) const PurchaseOrderStepper(currentStep: 2)
-            ] else
-              const Expanded(
-                child: SingleChildScrollView(
-                  child: PurchaseOrderDetails(),
-                ),
-              ),
-          ],
+        state.maybeWhen(
+          creating: () => PageLoader.show(context),
+          created: (po) => _onCreated(po),
+          loaded: (po) => _onLoaded(po),
+          updating: () => PageLoader.show(context),
+          markingAsShippedWithNewItems: () => PageLoader.show(context),
+          markingAsShipped: () => PageLoader.show(context),
+          markingAsReceived: () => PageLoader.show(context),
+          cancelling: () => PageLoader.show(context),
+          deleting: () => PageLoader.show(context),
+          updated: (po) => _onSuccess(po),
+          deleted: () => _onDeleted(),
+          failure: (_) => PageLoader.close(),
+          orElse: () => {},
         );
       },
+      builder: (context, state) => state.maybeWhen(
+        initial: () => _isEditMode ? const LoadingView() : const PurchaseOrderStepper(currentStep: 0),
+        loading: () => const LoadingView(),
+        loadFailed: (message) => FailureView(message),
+        orElse: () {
+          return _isPurchaseOrderCancelled
+              ? const SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PurchaseOrderFormHeader(),
+                      PurchaseOrderForm(),
+                    ],
+                  ),
+                )
+              : PurchaseOrderStepper(currentStep: _currentStep);
+        },
+      ),
     );
+  }
+
+  bool get _isEditMode => widget.id != null;
+
+  bool get _isPurchaseOrderCancelled => _currentStep == -1;
+
+  void _onCreated(PurchaseOrder po) {
+    PageLoader.close();
+    _updateCurrentStepToEdit();
+    final poId = po.id!;
+    context.goNamed(
+      'purchaseOrderDetails',
+      pathParameters: {'id': poId.toString()},
+    );
+    // Since we are in the same page, initState does not get triggered again so we need to call the request again here
+    context.read<PurchaseOrderBloc>().add(PurchaseOrderEvent.getPurchaseOrderById(poId));
+
+    // Reload list ..and reset filter
+    context.read<PaginatedListBloc<PurchaseOrder>>().add(const PaginatedListEvent.fetch());
+  }
+
+  void _onLoaded(PurchaseOrder po) {
+    _updateCurrentStepByStatus(po);
+    _formCubit.loadPurchaseOrder(po);
+  }
+
+  void _onSuccess(PurchaseOrder po) {
+    PageLoader.close();
+    _updateCurrentStepByStatus(po);
+    _formCubit.loadPurchaseOrder(po);
+    SnackbarUtil.success(context, 'Purchase Order updated successfully.');
+
+    // Reload list ..and reset filter
+    context.read<PaginatedListBloc<PurchaseOrder>>().add(const PaginatedListEvent.fetch());
+  }
+
+  void _onDeleted() {
+    PageLoader.close();
+    context.goNamed('purchaseOrderList');
+    SnackbarUtil.success(context, 'Purchase Order deleted successfully.');
+
+    // Reload list ..and reset filter
+    context.read<PaginatedListBloc<PurchaseOrder>>().add(const PaginatedListEvent.fetch());
+  }
+
+  void _updateCurrentStepToEdit() => setState(() => _currentStep = 1);
+
+  void _updateCurrentStepByStatus(PurchaseOrder po) {
+    setState(() {
+      if (po.status == StockOrderStatus.NEW) {
+        _currentStep = 1;
+      } else if (po.status == StockOrderStatus.FOR_RECEIVING) {
+        _currentStep = 2;
+      } else if (po.status == StockOrderStatus.COMPLETED) {
+        _currentStep = 3;
+      } else if (po.status == StockOrderStatus.CANCELLED) {
+        _currentStep = -1;
+      }
+    });
   }
 }

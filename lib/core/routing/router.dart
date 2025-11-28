@@ -1,299 +1,156 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/core/widgets/route_guard.dart';
-import 'package:medglobal_admin_portal/core/widgets/scaffold_layout/pos/pos_scaffold.dart';
+import 'package:medglobal_admin_portal/core/routing/portal_routes.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:medglobal_admin_portal/portal/authentication/presentation/pages/login_page.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_details/product_details_page.dart';
-import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/products_page.dart';
-import 'package:medglobal_admin_portal/portal/reports/product_history/presentation/product_history_page.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_category/presentation/sales_per_category_page.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_details/sales_per_shift_details_page.dart';
-import 'package:medglobal_admin_portal/portal/reports/sales_per_shift/presentation/presentation/sales_per_shift_list/sales_per_shift_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/purchase_order_details_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_details/stepper/new/new_purchase_order_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_orders_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stepper/new/new_stock_return_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_details/stock_return_details_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_return/presentation/pages/stock_return_list/stock_returns_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_details/stock_take_details_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/pages/stock_take_list/stock_takes_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stepper/new/new_stock_transfer_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_details/stock_transfer_details_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/presentation/pages/stock_transfer_list/stock_transfers_page.dart';
-import 'package:medglobal_admin_portal/portal/stock_management/supply_needs/presentation/pages/supply_needs_page.dart';
-import 'package:medglobal_admin_portal/portal/supplier_management/presentation/pages/supplier_list/suppliers_page.dart';
-import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_details/return_transaction_details_page.dart';
-import 'package:medglobal_admin_portal/portal/transactions/returns/presentation/pages/return_transaction_list/returns_page.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_details/sale_transaction_details_page.dart';
-import 'package:medglobal_admin_portal/portal/transactions/sales/presentation/pages/sale_transaction_list/sale_transactions_page.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/billing/billing_page.dart';
-import 'package:medglobal_admin_portal/pos/point_of_sale/presentation/pages/register/register_page.dart';
-import 'package:medglobal_admin_portal/pos/transactions/presentation/pages/transactions_page.dart';
+import 'package:medglobal_admin_portal/portal/product_management/presentation/pages/product_list/product_list_page.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/purchase_orders/presentation/pages/purchase_order_list/purchase_order_list_page.dart';
+import 'package:medglobal_admin_portal/pos/register/presentation/screens/register_screen.dart';
+import 'package:medglobal_shared/medglobal_shared.dart';
 
 abstract class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: LoginPage.route,
+    errorPageBuilder: (_, __) => const NoTransitionPage(
+      child: NotFoundPage(),
+    ),
     routes: [
       GoRoute(
         path: LoginPage.route,
-        pageBuilder: (context, state) => const NoTransitionPage(child: LoginPage()),
+        pageBuilder: (_, __) => const NoTransitionPage(child: LoginPage()),
       ),
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) => RouteGuard(
-          allowedTypes: const [UserType.ADMIN, UserType.STORE_MANAGER],
-          child: ScaffoldLayout(
-            routerState: state,
-            navigationShell: navigationShell,
-          ),
-        ),
-        branches: [
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                name: SideMenuTreeItem.PRODUCT_MANAGEMENT.name,
-                path: SideMenuTreeItem.PRODUCT_MANAGEMENT.path,
-                builder: (context, state) => const SizedBox(),
-                routes: [
-                  GoRoute(
-                    name: SideMenuTreeItem.SUPPLIERS.name,
-                    path: SideMenuTreeItem.SUPPLIERS.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: SuppliersPage()),
-                  ),
-                  GoRoute(
-                    name: SideMenuTreeItem.PRODUCTS.name,
-                    path: SideMenuTreeItem.PRODUCTS.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: ProductsPage()),
-                    routes: [
-                      GoRoute(
-                        name: SideMenuTreeItem.NEW_PRODUCT.name,
-                        path: SideMenuTreeItem.NEW_PRODUCT.path,
-                        pageBuilder: (context, state) => const NoTransitionPage(child: ProductDetailsPage()),
-                      ),
-                      GoRoute(
-                        name: SideMenuTreeItem.PRODUCT_DETAILS.name,
-                        path: SideMenuTreeItem.PRODUCT_DETAILS.path,
-                        pageBuilder: (context, state) =>
-                            NoTransitionPage(child: ProductDetailsPage(id: state.pathParameters['id'])),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                name: SideMenuTreeItem.STOCK_MANAGEMENT.name,
-                path: SideMenuTreeItem.STOCK_MANAGEMENT.path,
-                builder: (context, state) => const SizedBox(),
-                routes: [
-                  GoRoute(
-                    name: SideMenuTreeItem.SUPPLY_NEEDS.name,
-                    path: SideMenuTreeItem.SUPPLY_NEEDS.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: SupplyNeedsPage()),
-                  ),
-                  GoRoute(
-                    name: SideMenuTreeItem.PURCHASE_ORDERS.name,
-                    path: SideMenuTreeItem.PURCHASE_ORDERS.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: PurchaseOrdersPage()),
-                    routes: [
-                      GoRoute(
-                        name: SideMenuTreeItem.NEW_PURCHASE_ORDER.name,
-                        path: SideMenuTreeItem.NEW_PURCHASE_ORDER.path,
-                        pageBuilder: (context, state) => const NoTransitionPage(child: NewPurchaseOrderPage()),
-                      ),
-                      GoRoute(
-                        name: SideMenuTreeItem.PURCHASE_ORDER_DETAILS.name,
-                        path: SideMenuTreeItem.PURCHASE_ORDER_DETAILS.path,
-                        pageBuilder: (context, state) =>
-                            NoTransitionPage(child: PurchaseOrderDetailsPage(id: state.pathParameters['id']!)),
-                      ),
-                    ],
-                  ),
-                  GoRoute(
-                    name: SideMenuTreeItem.STOCK_RETURNS.name,
-                    path: SideMenuTreeItem.STOCK_RETURNS.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: StockReturnsPage()),
-                    routes: [
-                      GoRoute(
-                        name: SideMenuTreeItem.NEW_STOCK_RETURN.name,
-                        path: SideMenuTreeItem.NEW_STOCK_RETURN.path,
-                        pageBuilder: (context, state) => const NoTransitionPage(child: NewStockReturnPage()),
-                      ),
-                      GoRoute(
-                        name: SideMenuTreeItem.STOCK_RETURN_DETAILS.name,
-                        path: SideMenuTreeItem.STOCK_RETURN_DETAILS.path,
-                        pageBuilder: (context, state) =>
-                            NoTransitionPage(child: StockReturnDetailsPage(id: state.pathParameters['id']!)),
-                      ),
-                    ],
-                  ),
-                  GoRoute(
-                    name: SideMenuTreeItem.STOCK_TAKES.name,
-                    path: SideMenuTreeItem.STOCK_TAKES.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: StockTakesPage()),
-                    routes: [
-                      GoRoute(
-                        name: SideMenuTreeItem.STOCK_TAKE_DETAILS.name,
-                        path: SideMenuTreeItem.STOCK_TAKE_DETAILS.path,
-                        pageBuilder: (context, state) =>
-                            NoTransitionPage(child: StockTakeDetailsPage(id: state.pathParameters['id']!)),
-                      ),
-                    ],
-                  ),
-                  GoRoute(
-                    name: SideMenuTreeItem.STOCK_TRANSFERS.name,
-                    path: SideMenuTreeItem.STOCK_TRANSFERS.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: StockTransfersPage()),
-                    routes: [
-                      GoRoute(
-                        name: SideMenuTreeItem.NEW_STOCK_TRANSFER.name,
-                        path: SideMenuTreeItem.NEW_STOCK_TRANSFER.path,
-                        pageBuilder: (context, state) => const NoTransitionPage(child: NewStockTransferPage()),
-                      ),
-                      GoRoute(
-                        name: SideMenuTreeItem.STOCK_TRANSFER_DETAILS.name,
-                        path: SideMenuTreeItem.STOCK_TRANSFER_DETAILS.path,
-                        pageBuilder: (context, state) =>
-                            NoTransitionPage(child: StockTransferDetailsPage(id: state.pathParameters['id']!)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                name: SideMenuTreeItem.TRANSACTIONS.name,
-                path: SideMenuTreeItem.TRANSACTIONS.path,
-                builder: (context, state) => const SizedBox(),
-                routes: [
-                  GoRoute(
-                    name: SideMenuTreeItem.SALE_TRANSACTIONS.name,
-                    path: SideMenuTreeItem.SALE_TRANSACTIONS.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: SaleTransactionsPage()),
-                    routes: [
-                      GoRoute(
-                        name: SideMenuTreeItem.SALE_TRANSACTION_DETAILS.name,
-                        path: SideMenuTreeItem.SALE_TRANSACTION_DETAILS.path,
-                        pageBuilder: (context, state) =>
-                            NoTransitionPage(child: SaleTransactionDetailsPage(id: state.pathParameters['id']!)),
-                      ),
-                    ],
-                  ),
-                  GoRoute(
-                    name: SideMenuTreeItem.RETURN_TRANSACTIONS.name,
-                    path: SideMenuTreeItem.RETURN_TRANSACTIONS.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: ReturnTransactionsPage()),
-                    routes: [
-                      GoRoute(
-                        name: SideMenuTreeItem.RETURN_TRANSACTION_DETAILS.name,
-                        path: SideMenuTreeItem.RETURN_TRANSACTION_DETAILS.path,
-                        pageBuilder: (context, state) =>
-                            NoTransitionPage(child: ReturnTransactionDetailsPage(id: state.pathParameters['id']!)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                name: SideMenuTreeItem.REPORTS.name,
-                path: SideMenuTreeItem.REPORTS.path,
-                builder: (context, state) => const SizedBox(),
-                routes: [
-                  GoRoute(
-                    name: SideMenuTreeItem.PRODUCT_HISTORY.name,
-                    path: SideMenuTreeItem.PRODUCT_HISTORY.path,
-                    pageBuilder: (context, state) => const NoTransitionPage(child: ProductHistoryPage()),
-                  ),
-                  GoRoute(
-                    name: SideMenuTreeItem.SALES_REPORT.name,
-                    path: SideMenuTreeItem.SALES_REPORT.path,
-                    builder: (context, state) => const SizedBox(),
-                    routes: [
-                      GoRoute(
-                        name: SideMenuTreeItem.SALES_PER_CATEGORY.name,
-                        path: SideMenuTreeItem.SALES_PER_CATEGORY.path,
-                        pageBuilder: (context, state) => const NoTransitionPage(child: SalesPerCategoryPage()),
-                      ),
-                      GoRoute(
-                        name: SideMenuTreeItem.SALES_PER_SHIFT.name,
-                        path: SideMenuTreeItem.SALES_PER_SHIFT.path,
-                        pageBuilder: (context, state) => const NoTransitionPage(child: SalesPerShiftPage()),
-                        routes: [
-                          GoRoute(
-                            name: SideMenuTreeItem.SALES_PER_SHIFT_DETAILS.name,
-                            path: SideMenuTreeItem.SALES_PER_SHIFT_DETAILS.path,
-                            pageBuilder: (context, state) =>
-                                NoTransitionPage(child: SalesPerShiftDetailsPage(id: state.pathParameters['id']!)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+      GoRoute(
+        path: NotFoundPage.route,
+        pageBuilder: (_, __) => const NoTransitionPage(child: NotFoundPage()),
       ),
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) => RouteGuard(
-          allowedTypes: const [UserType.CASHIER],
-          child: PosScaffold(
-            routerState: state,
-            navigationShell: navigationShell,
-          ),
-        ),
-        branches: [
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                name: 'Register',
-                path: '/point-of-sale/register',
-                pageBuilder: (context, state) => const NoTransitionPage(child: RegisterPage()),
-              ),
-              GoRoute(
-                name: 'Billing',
-                path: '/point-of-sale/register/billing',
-                pageBuilder: (context, state) => const NoTransitionPage(child: BillingPage()),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                name: 'POS Transactions',
-                path: '/point-of-sale/transactions',
-                pageBuilder: (context, state) => const NoTransitionPage(child: TransactionsPage()),
-              ),
-            ],
-          ),
-        ],
+      GoRoute(
+        path: AccessDeniedPage.route,
+        pageBuilder: (_, __) => const NoTransitionPage(child: AccessDeniedPage()),
       ),
+      if (AppConfig.isPortalApp) portalRoutes,
+      // if (AppConfig.isPOSApp) posRoutes,
     ],
     redirect: (context, state) {
       final authState = context.read<AuthBloc>().state;
       final isLoginRoute = state.matchedLocation == LoginPage.route;
 
+      // Not logged in and not on login page → redirect to login
       if (authState is UnauthenticatedState && !isLoginRoute) {
         return LoginPage.route;
-      } else if (authState is AuthenticatedState && isLoginRoute) {
-        if (authState.user.type == UserType.STORE_MANAGER) return PurchaseOrdersPage.route;
-        return authState.user.type == UserType.CASHIER ? RegisterPage.route : ProductsPage.route;
+      }
+
+      // Logged in but on login page → redirect to role-appropriate page
+      if (authState is AuthenticatedState && isLoginRoute) {
+        final userRole = authState.user.type;
+
+        if (AppConfig.isPortalApp) {
+          switch (userRole) {
+            case UserType.admin:
+              return ProductListPage.route;
+            case UserType.supervisor:
+              return PurchaseOrderListPage.route;
+            default:
+              return AccessDeniedPage.route;
+          }
+        }
+
+        if (AppConfig.isPOSApp) {
+          if (userRole == UserType.cashier || userRole == UserType.supervisor) {
+            return RegisterScreen.route;
+          } else {
+            return AccessDeniedPage.route;
+          }
+        }
+
+        // Unknown platform fallback
+        return AccessDeniedPage.route;
       }
 
       return null;
     },
   );
+}
+
+enum PlatformType { web, desktop }
+
+class AppConfig {
+  static const platform = kIsWeb ? PlatformType.web : PlatformType.desktop;
+
+  static bool get isPortalApp => platform == PlatformType.web;
+  static bool get isPOSApp => platform == PlatformType.desktop;
+}
+
+// const accessMatrix = {
+//   PlatformType.web: [UserType.admin, UserType.supervisor],
+//   PlatformType.desktop: [UserType.cashier, UserType.supervisor],
+// };
+
+// bool canAccess(UserType type) {
+//   return accessMatrix[AppConfig.platform]?.contains(type) ?? false;
+// }
+
+class AccessDeniedPage extends StatelessWidget {
+  static String route = '/access-denied';
+
+  const AccessDeniedPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Assets.icons.cube.setSize(24),
+        UIText.heading5('Unauthorized Access'),
+        UIText.labelMedium(
+          'Your account is not authorized to use this application. \n Contact your administrator if you believe this is an error.',
+        ),
+      ],
+    );
+  }
+}
+
+class NotFoundPage extends StatelessWidget {
+  static String route = '/404-page-not-found';
+
+  const NotFoundPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Assets.images.designLines.svg(fit: BoxFit.fill, colorFilter: UIColors.borderMuted.toColorFilter),
+          ),
+          Positioned.fill(
+            left: MediaQuery.of(context).size.width * 0.12,
+            right: MediaQuery.of(context).size.width * 0.12,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Assets.icons.cube.setSize(48),
+                const UIVerticalSpace(20),
+                UIText.heading1('404 — Page Not Found'),
+                const UIVerticalSpace(12),
+                UIText.bodyRegular(
+                  'The page you’re looking for doesn’t exist or the URL was entered incorrectly.',
+                ),
+                const UIVerticalSpace(4),
+                UIText.bodyRegular('Please check the address bar or go back to the homepage.'),
+                const UIVerticalSpace(36),
+                UIButton.outlined(
+                  'Go back home',
+                  iconBuilder: (isHover) => Assets.icons.arrowRight1.setColorOnHover(isHover),
+                  onClick: () => context.goNamed('productList'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

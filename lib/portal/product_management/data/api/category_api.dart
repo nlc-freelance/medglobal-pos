@@ -1,48 +1,38 @@
+import 'package:medglobal_admin_portal/core/models/models.dart';
 import 'package:medglobal_admin_portal/core/network/api_endpoint.dart';
-import 'package:medglobal_admin_portal/core/network/api_service.dart';
-import 'package:medglobal_admin_portal/portal/product_management/data/dto/category_dto.dart';
-import 'package:medglobal_admin_portal/portal/product_management/domain/entities/category/category_paginated_list.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
+import 'package:medglobal_admin_portal/core/network/new/json_parser_utils.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/category/category_dto.dart';
+import 'package:medglobal_admin_portal/portal/product_management/data/dto/category/category_payload.dart';
 
-abstract class CategoryApi {
-  Future<CategoryDto> addNewCategory(String name);
-  Future<CategoryPaginatedList> getCategories({required int page});
-}
+class CategoryApi {
+  final ApiService _api;
 
-class CategoryApiImpl implements CategoryApi {
-  final ApiService api;
+  CategoryApi(this._api);
 
-  const CategoryApiImpl(this.api);
+  Future<CategoryDto> createCategory(CategoryPayload payload) async {
+    final data = await _api.post<CategoryDto>(
+      ApiEndpoint.productCategories,
+      data: payload.toJson(),
+      parser: (json) => parse(json, CategoryDto.fromJson),
+    );
 
-  @override
-  Future<CategoryDto> addNewCategory(String name) async {
-    try {
-      return await api.post<CategoryDto>(
-        ApiEndpoint.productCategories,
-        data: CategoryDto(name: name).toJson(),
-        converter: CategoryDto.fromJson,
-      );
-    } catch (_) {
-      rethrow;
-    }
+    return data;
   }
 
-  @override
-  Future<CategoryPaginatedList> getCategories({required int page}) async {
-    try {
-      final response = await api.collection<CategoryDto>(
-        ApiEndpoint.productCategories,
-        queryParams: {'page': page, 'size': 10},
-        converter: CategoryDto.fromJson,
-      );
+  Future<PaginatedList<CategoryDto>> getCategories(PageQuery query) async {
+    final data = await _api.getPaginated<CategoryDto>(
+      ApiEndpoint.productCategories,
+      queryParams: query.toJson(),
+      parser: (json) => parse(json, CategoryDto.fromJson),
+    );
 
-      return CategoryPaginatedList(
-        categories: response.items?.map((item) => item.toEntity()).toList(),
-        currentPage: response.pageInfo?.page,
-        totalPages: response.pageInfo?.totalPages,
-        totalCount: response.pageInfo?.totalCount,
-      );
-    } catch (e) {
-      rethrow;
-    }
+    return PaginatedList<CategoryDto>(
+      items: data.items,
+      currentSize: data.size,
+      currentPage: data.page,
+      totalPages: data.totalPages,
+      totalCount: data.totalCount,
+    );
   }
 }

@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_transfer/domain/entities/stock_transfer_item.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -11,8 +11,8 @@ part 'stock_transfer.g.dart';
 @JsonSerializable()
 class StockTransfer extends Equatable {
   final int? id;
-  final Branch? sourceBranch;
-  final Branch? destinationBranch;
+  final BranchPartial? sourceBranch;
+  final BranchPartial? destinationBranch;
   final StockOrderStatus? status;
   final List<StockTransferItem>? items;
   final String? notes;
@@ -105,8 +105,8 @@ class StockTransfer extends Equatable {
 
   StockTransfer copyWith({
     int? id,
-    Branch? sourceBranch,
-    Branch? destinationBranch,
+    BranchPartial? sourceBranch,
+    BranchPartial? destinationBranch,
     StockOrderStatus? status,
     List<StockTransferItem>? items,
     String? notes,

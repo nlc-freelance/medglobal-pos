@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/branch_dropdown.dart';
 import 'package:medglobal_admin_portal/core/widgets/dropdowns/supplier_dropdown.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/bloc/stock_take_bloc.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/new_stock_take/new_stock_take_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/counted_items_list/counted_items_list_cubit.dart';
 import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_items/uncounted_items_list/uncounted_items_list_cubit.dart';
+import 'package:medglobal_admin_portal/portal/stock_management/stock_take/presentation/cubit/stock_take_list_remote/stock_take_list_remote_cubit.dart';
 import 'package:medglobal_admin_portal/portal/supplier_management/domain/entities/supplier.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -38,10 +40,14 @@ class _NewStockTakeDialogState extends State<NewStockTakeDialog> {
         listener: (context, state) {
           if (state is StockTakeCreateSuccess) {
             final id = state.stockTake.id;
-            AppRouter.router.goNamed(
-              SideMenuTreeItem.STOCK_TAKE_DETAILS.name,
+            context.goNamed(
+              'stockTakeDetails',
               pathParameters: {'id': id.toString()},
             );
+
+            // Reload list
+            context.read<StockTakeListRemoteCubit>().getStockTakes();
+
             Navigator.pop(context);
           }
           if (state is StockTakeError) setState(() => _isInitialRebuild = false);

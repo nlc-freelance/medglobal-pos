@@ -1,41 +1,25 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
+import 'package:medglobal_admin_portal/core/models/models.dart';
 
 part 'purchase_order_list_filter_state.dart';
+part 'purchase_order_list_filter_cubit.freezed.dart';
 
 class PurchaseOrderListFilterCubit extends Cubit<PurchaseOrderListFilterState> {
-  PurchaseOrderListFilterCubit() : super(const PurchaseOrderListFilterState());
+  PurchaseOrderListFilterCubit() : super(PurchaseOrderListFilterState.initial());
 
-  void setSize(int value) => emit(state.copyWith(size: value));
+  void setPageAndSize(int page, int size) => emit(state.copyWith(page: page, size: size));
 
-  void setBranch(int? value) => emit(
-        state.copyWith(
-          branchId: value,
-          nullBranch: value == null,
-        ),
-      );
+  void setBranch(int? value) => emit(state.copyWith(branchId: value));
 
-  void setStatus(StockOrderStatus? value) => emit(
-        state.copyWith(
-          status: value,
-          nullStatus: value == null,
-        ),
-      );
+  void setStatus(StockOrderStatus? value) => emit(state.copyWith(status: value));
 
-  void setStartDate(String? value) => emit(
-        state.copyWith(
-          startDate: value,
-          nullStartDate: value == null,
-        ),
-      );
+  void setStartDate(String? value) => emit(state.copyWith(startDate: value));
 
-  void setEndDate(String? value) => emit(
-        state.copyWith(
-          endDate: value,
-          nullEndDate: value == null,
-        ),
-      );
+  void setEndDate(String? value) => emit(state.copyWith(endDate: value));
 
-  void reset() => emit(const PurchaseOrderListFilterState());
+  void reset() => emit(PurchaseOrderListFilterState.initial());
+
+  void resetPageAndSize() => emit(state.copyWith(page: 1, size: 20));
 }

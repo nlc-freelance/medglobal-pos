@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medglobal_admin_portal/core/blocs/lazy_list_bloc/lazy_list_bloc.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
-import 'package:medglobal_admin_portal/portal/branches/cubit/branch_lazy_list_cubit.dart';
-import 'package:medglobal_admin_portal/portal/branches/domain/entities/branch.dart';
+import 'package:medglobal_admin_portal/portal/settings/branch/domain/entity/branch.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
 /// Custom lazy loading dropdown using Portal and Bloc
@@ -19,6 +19,7 @@ class BranchDropdown extends StatelessWidget {
     this.label,
     this.isInlineHint = false,
     this.required = false,
+    this.isReadOnly = false,
     this.isSelectInputType = false,
     this.isMultiSelect = false,
     this.showSelectedItems = false,
@@ -33,6 +34,7 @@ class BranchDropdown extends StatelessWidget {
   final String? label;
   final String? hint;
   final bool required;
+  final bool isReadOnly;
   final bool isInlineHint;
   final bool isSelectInputType;
   final bool isMultiSelect;
@@ -67,9 +69,10 @@ class BranchDropdown extends StatelessWidget {
     required String hint,
     required String label,
     bool required = false,
+    bool isReadOnly = false,
     bool isMultiSelect = false,
     bool showSelectedItems = false,
-    Function(Branch value)? onSelectItem,
+    required Function(Branch value) onSelectItem,
     List<Branch>? selectedItems,
     Branch? selectedItem,
     Function(int value)? onDeleteItem,
@@ -81,6 +84,7 @@ class BranchDropdown extends StatelessWidget {
         label: label,
         hint: hint,
         required: required,
+        isReadOnly: isReadOnly,
         isMultiSelect: isMultiSelect,
         showSelectedItems: showSelectedItems,
         onSelectItem: onSelectItem,
@@ -93,6 +97,7 @@ class BranchDropdown extends StatelessWidget {
     required String hint,
     required String label,
     bool required = false,
+    bool isReadOnly = false,
     Function(Branch value)? onSelectItem,
     Branch? selectedItem,
     Key? key,
@@ -103,6 +108,7 @@ class BranchDropdown extends StatelessWidget {
         label: label,
         hint: hint,
         required: required,
+        isReadOnly: isReadOnly,
         onSelectItem: onSelectItem,
         selectedItem: selectedItem,
       );
@@ -112,13 +118,17 @@ class BranchDropdown extends StatelessWidget {
     final textLabel = Text.rich(
       TextSpan(
         text: label,
-        style: type == BranchDropdownType.input_top ? UIStyleText.labelRegular : UIStyleText.labelMedium,
+        style: type == BranchDropdownType.input_top
+            ? UIStyleText.labelRegular.copyWith(fontSize: 11)
+            : UIStyleText.labelMedium,
         children: [
           if (required)
             TextSpan(
               text: ' *',
-              style:
-                  (type == BranchDropdownType.input_top ? UIStyleText.labelRegular : UIStyleText.labelMedium).copyWith(
+              style: (type == BranchDropdownType.input_top
+                      ? UIStyleText.labelRegular.copyWith(fontSize: 11)
+                      : UIStyleText.labelMedium)
+                  .copyWith(
                 color: UIColors.accent,
               ),
             ),
@@ -147,12 +157,14 @@ class BranchDropdown extends StatelessWidget {
                 ? _BranchDropdownOverlay(
                     hint: hint,
                     isMultiSelect: true,
+                    isReadOnly: isReadOnly,
                     onDeleteItem: onDeleteItem,
                     onSelectItem: onSelectItem,
                     selectedItems: selectedItems,
                   )
                 : _BranchDropdownOverlay(
                     hint: hint,
+                    isReadOnly: isReadOnly,
                     onSelectItem: onSelectItem,
                     selectedItem: selectedItem,
                   ),
@@ -195,6 +207,7 @@ class BranchDropdown extends StatelessWidget {
                     flex: 2,
                     child: _BranchDropdownOverlay(
                       hint: hint,
+                      isReadOnly: isReadOnly,
                       onSelectItem: onSelectItem,
                       selectedItem: selectedItem,
                     ),
@@ -215,6 +228,7 @@ class _BranchDropdownOverlay extends StatefulWidget {
     this.isSelectType = false,
     this.isSelectInputType = false,
     this.isMultiSelect = false,
+    this.isReadOnly = false,
     this.onSelectItem,
     this.selectedItem,
     this.selectedItems,
@@ -225,6 +239,7 @@ class _BranchDropdownOverlay extends StatefulWidget {
   final bool isSelectType;
   final bool isSelectInputType;
   final bool isMultiSelect;
+  final bool isReadOnly;
   final String? hint;
   final bool? isInlineHint;
   final Function(Branch value)? onSelectItem;
@@ -249,14 +264,19 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
     super.initState();
     if (widget.selectedItem != null) setState(() => _selectedItem = widget.selectedItem);
     _scrollController = ScrollController()..addListener(_scrollListener);
-    context.read<BranchLazyListCubit>().getBranches();
+    context.read<LazyListBloc<Branch>>().add(const LazyListEvent<Branch>.fetch());
+    // context.read<BranchLazyListCubit>().getBranches();
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
-        !context.read<BranchLazyListCubit>().state.isLoadingMore &&
-        !context.read<BranchLazyListCubit>().state.hasReachedMax) {
-      context.read<BranchLazyListCubit>().getBranches();
+        !context.read<LazyListBloc<Branch>>().state.isLoadingMore &&
+        !context.read<LazyListBloc<Branch>>().state.hasReachedMax) {
+      // !context.read<BranchLazyListCubit>().state.isLoadingMore &&
+      // !context.read<BranchLazyListCubit>().state.hasReachedMax) {
+      context.read<LazyListBloc<Branch>>().add(const LazyListEvent<Branch>.fetch());
+
+      // context.read<BranchLazyListCubit>().getBranches();
     }
   }
 
@@ -274,7 +294,7 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
         hoverColor: UIColors.transparent,
         highlightColor: UIColors.transparent,
         borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-        onTap: () => setState(() => _isVisible = true),
+        onTap: () => widget.isReadOnly ? {} : setState(() => _isVisible = true),
         child: widget.isSelectType
             ? HoverBuilder(
                 builder: (isHover) {
@@ -352,28 +372,45 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
                 readOnly: true,
                 enabled: false,
                 controller: TextEditingController(text: _selectedItem?.name),
-                mouseCursor: SystemMouseCursors.click,
+                mouseCursor: widget.isReadOnly ? null : SystemMouseCursors.click,
                 showCursor: false,
+
                 style: UIStyleText.chip.copyWith(color: UIColors.textDark),
                 // TODO: Auto validation on user interaction, currently it only shows validation upon clicking 'Save'
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (_) {
-                  if (widget.selectedItems?.isEmpty == true) return 'Please select at least one supplier.';
-                  return null;
-                },
+                // TODO: this is just for the employee, need to extract this so it can be used without tightly coupling it to the branch dropdown in products
+                validator: widget.hint == 'Select branches to assign'
+                    ? null
+                    : (_) {
+                        if (widget.selectedItems?.isEmpty == true) {
+                          return 'Please select branches to add product price and QOH.';
+                        }
+                        return null;
+                      },
                 decoration: InputDecoration(
                   hintText: widget.hint,
-                  suffixIcon: Assets.icons.arrowDown.svg(),
+                  suffixIcon: widget.isReadOnly
+                      ? Assets.icons.lock.svg(colorFilter: UIColors.textMuted.toColorFilter)
+                      : Assets.icons.arrowDown.svg(),
                   suffixIconConstraints: const BoxConstraints.tightFor(width: 48, height: 12),
+                  fillColor: UIColors.borderMuted.withOpacity(0.5),
+                  filled: widget.isReadOnly,
+                  disabledBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    borderSide: BorderSide(color: UIColors.borderRegular),
+                  ),
                 ),
               ),
       ),
-      body: BlocBuilder<BranchLazyListCubit, BranchLazyListState>(
+      body: BlocBuilder<LazyListBloc<Branch>, LazyListState<Branch>>(
+        // body: BlocBuilder<BranchLazyListCubit, BranchLazyListState>(
         builder: (context, state) {
-          final branchList = state.branches;
+          final branchList = state.items;
+          // final branchList = state.branches;
 
           double itemHeight = widget.isMultiSelect ? 48 : 40;
-          double totalHeight = (state.branches.isNotEmpty ? branchList.length : 3) * itemHeight;
+          double totalHeight = (state.items.isNotEmpty ? branchList.length : 3) * itemHeight;
+          // double totalHeight = (state.branches.isNotEmpty ? branchList.length : 3) * itemHeight;
           double height = totalHeight > 200 ? 200 : totalHeight;
 
           return Container(
@@ -387,17 +424,22 @@ class _BranchDropdownOverlayState extends State<_BranchDropdownOverlay> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (state.INITIAL_LOADING)
+                if (state.isLoadingInitial)
+                  // if (state.INITIAL_LOADING)
                   const CircularProgressIndicator(color: UIColors.primary, strokeWidth: 2)
-                else if (state.EMPTY)
+                else if (state.hasNoData)
+                  // else if (state.EMPTY)
                   UIText.labelMedium('No data available', align: TextAlign.center)
-                else if (state.ERROR)
+                else if (state.error != null)
+                  // else if (state.ERROR)
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         UIText.labelMedium(state.error!, align: TextAlign.center),
-                        UIButton.text('Reload', onClick: () => context.read<BranchLazyListCubit>().getBranches())
+                        UIButton.text('Reload',
+                            onClick: () => context.read<LazyListBloc<Branch>>().add(const LazyListEvent.fetch()))
+                        // UIButton.text('Reload', onClick: () => context.read<BranchLazyListCubit>().getBranches())
                       ],
                     ),
                   )

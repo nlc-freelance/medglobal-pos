@@ -32,6 +32,15 @@ class ConfirmFirstTimeLoginEvent extends AuthEvent {
   List<Object> get props => [password];
 }
 
+class AcceptAccessDeniedEvent extends AuthEvent {
+  const AcceptAccessDeniedEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+
+
 class LogoutEvent extends AuthEvent {
   const LogoutEvent();
 

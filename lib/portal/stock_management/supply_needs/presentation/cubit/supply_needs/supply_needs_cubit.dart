@@ -15,9 +15,9 @@ class SupplyNeedsCubit extends Cubit<SupplyNeedsState> {
 
     try {
       final result = await _getSupplyNeedsUseCase.call(GetSupplyNeedsParams(branchId: branchId));
-      result.fold(
-        (error) => emit(SupplyNeedsError(message: error.message)),
-        (data) => emit(SupplyNeedsLoaded(supplyNeeds: data)),
+      result.when(
+        success: (data) => emit(SupplyNeedsLoaded(supplyNeeds: data)),
+        failure: (error) => emit(SupplyNeedsError(message: error.message)),
       );
     } catch (e) {
       emit(SupplyNeedsError(message: e.toString()));

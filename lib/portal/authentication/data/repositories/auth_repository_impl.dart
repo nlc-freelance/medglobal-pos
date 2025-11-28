@@ -1,5 +1,6 @@
-import 'package:dartz/dartz.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:medglobal_admin_portal/core/errors/failures.dart';
+import 'package:medglobal_admin_portal/core/network/network.dart';
 import 'package:medglobal_admin_portal/portal/authentication/data/api/auth_api.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/entities/login_response.dart';
 import 'package:medglobal_admin_portal/portal/authentication/domain/repositories/auth_repository.dart';
@@ -10,41 +11,42 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this.authApi);
 
   @override
-  Future<Either<Failure, LoginResponse>> confirmFirstTimeLogin(String password) async {
+  Future<ApiResult<LoginResponse>> confirmFirstTimeLogin(String password) async {
     try {
       final response = await authApi.confirmLoginWithNewPassword(password);
-      return Right(response.toEntity());
+      return ApiResult.success(response.toEntity());
     } catch (e) {
-      return Left(AuthenticationFailure(e.toString()));
+      return ApiResult.failure(AuthenticationFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, LoginResponse>> login(String email, String password) async {
+  Future<ApiResult<LoginResponse>> login(String email, String password) async {
     try {
       final response = await authApi.login(email, password);
-      return Right(response.toEntity());
+      return ApiResult.success(response.toEntity());
     } catch (e) {
-      return Left(AuthenticationFailure(e.toString()));
+      return ApiResult.failure(AuthenticationFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, LoginResponse>> getAuthSession() async {
+  Future<ApiResult<LoginResponse>> getAuthSession() async {
     try {
       final response = await authApi.getAuthSession();
-      return Right(response.toEntity());
+      return ApiResult.success(response.toEntity());
     } catch (e) {
-      return Left(AuthenticationFailure(e.toString()));
+      if (e is NotAuthorizedServiceException) return ApiResult.failure(ExpiredTokenFailure(e.message));
+      return ApiResult.failure(AuthenticationFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, void>> logout() async {
+  Future<ApiResult<void>> logout() async {
     try {
-      return Right(await authApi.logout());
+      return ApiResult.success(await authApi.logout());
     } catch (e) {
-      return Left(AuthenticationFailure(e.toString()));
+      return ApiResult.failure(AuthenticationFailure(e.toString()));
     }
   }
 }

@@ -102,12 +102,16 @@ class SupplierDropdown extends StatelessWidget {
     final textLabel = Text.rich(
       TextSpan(
         text: label,
-        style: type == SupplierDropdownType.input_top ? UIStyleText.labelRegular : UIStyleText.labelMedium,
+        style: type == SupplierDropdownType.input_top
+            ? UIStyleText.labelRegular.copyWith(fontSize: 11)
+            : UIStyleText.labelMedium,
         children: [
           if (required)
             TextSpan(
               text: ' *',
-              style: (type == SupplierDropdownType.input_top ? UIStyleText.labelRegular : UIStyleText.labelMedium)
+              style: (type == SupplierDropdownType.input_top
+                      ? UIStyleText.labelRegular.copyWith(fontSize: 11)
+                      : UIStyleText.labelMedium)
                   .copyWith(
                 color: UIColors.accent,
               ),
