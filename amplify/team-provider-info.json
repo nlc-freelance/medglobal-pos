@@ -1,23 +1,23 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-medglobalportal-dev-bd94d-authRole",
-      "UnauthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-bd94d-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-bd94d-authRole",
+      "AuthRoleName": "amplify-medglobalims-dev-56a07-authRole",
+      "UnauthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalims-dev-56a07-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalims-dev-56a07-authRole",
       "Region": "ap-southeast-1",
-      "DeploymentBucketName": "amplify-medglobalportal-dev-bd94d-deployment",
-      "UnauthRoleName": "amplify-medglobalportal-dev-bd94d-unauthRole",
-      "StackName": "amplify-medglobalportal-dev-bd94d",
-      "StackId": "arn:aws:cloudformation:ap-southeast-1:280954863577:stack/amplify-medglobalportal-dev-bd94d/a2dbf1d0-b7f1-11f0-8765-024095b3a911",
-      "AmplifyAppId": "d3o9zsjtt1p6v6"
+      "DeploymentBucketName": "amplify-medglobalims-dev-56a07-deployment",
+      "UnauthRoleName": "amplify-medglobalims-dev-56a07-unauthRole",
+      "StackName": "amplify-medglobalims-dev-56a07",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:280954863577:stack/amplify-medglobalims-dev-56a07/e3e3e090-cc44-11f0-8011-0aaad39438df",
+      "AmplifyAppId": "do0dal6o0nsim"
     },
     "categories": {
       "auth": {
-        "medglobalportaladeafc54": {
-          "userPoolId": "ap-southeast-1_u2ldk8PVd",
-          "userPoolName": "employees",
-          "webClientId": "6309eiplj9jqf6jpb0tqbe84aj",
-          "nativeClientId": "6309eiplj9jqf6jpb0tqbe84aj"
+        "medglobalimsdb5e205c": {
+          "userPoolId": "ap-southeast-1_WIWGmTSfS",
+          "userPoolName": "medglobal-pos-inventory-employees-nonprod-preprod",
+          "webClientId": "2i717imumh6likdm6agvc092q",
+          "nativeClientId": "2i717imumh6likdm6agvc092q"
         }
       }
     }
