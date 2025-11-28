@@ -1,6 +1,6 @@
 {
   "auth": {
-    "medglobalportalb8472343": {
+    "medglobalpos330bc758": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -8,62 +8,38 @@
       "serviceType": "imported"
     }
   },
-  "hosting": {
-    "amplifyhosting": {
-      "providerPlugin": "awscloudformation",
-      "service": "amplifyhosting",
-      "type": "manual"
-    }
-  },
   "parameters": {
-    "AMPLIFY_auth_medglobalportalb8472343_nativeClientId": {
+    "AMPLIFY_auth_medglobalpos330bc758_nativeClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalportalb8472343"
+          "resourceName": "medglobalpos330bc758"
         }
       ]
     },
-    "AMPLIFY_auth_medglobalportalb8472343_userPoolId": {
+    "AMPLIFY_auth_medglobalpos330bc758_userPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalportalb8472343"
+          "resourceName": "medglobalpos330bc758"
         }
       ]
     },
-    "AMPLIFY_auth_medglobalportalb8472343_userPoolName": {
+    "AMPLIFY_auth_medglobalpos330bc758_userPoolName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalportalb8472343"
+          "resourceName": "medglobalpos330bc758"
         }
       ]
     },
-    "AMPLIFY_auth_medglobalportalb8472343_webClientId": {
+    "AMPLIFY_auth_medglobalpos330bc758_webClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "medglobalportalb8472343"
-        }
-      ]
-    },
-    "AMPLIFY_hosting_amplifyhosting_appId": {
-      "usedBy": [
-        {
-          "category": "hosting",
-          "resourceName": "amplifyhosting"
-        }
-      ]
-    },
-    "AMPLIFY_hosting_amplifyhosting_type": {
-      "usedBy": [
-        {
-          "category": "hosting",
-          "resourceName": "amplifyhosting"
+          "resourceName": "medglobalpos330bc758"
         }
       ]
     }
-  },
-  "storage": {}
+  }
 }

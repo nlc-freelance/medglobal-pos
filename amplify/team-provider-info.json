@@ -1,29 +1,23 @@
 {
-  "dev": {
+  "preprod": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-medglobalportal-dev-86b80-authRole",
-      "UnauthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-86b80-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalportal-dev-86b80-authRole",
+      "AuthRoleName": "amplify-medglobalpos-preprod-a5cf1-authRole",
+      "UnauthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalpos-preprod-a5cf1-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::280954863577:role/amplify-medglobalpos-preprod-a5cf1-authRole",
       "Region": "ap-southeast-1",
-      "DeploymentBucketName": "amplify-medglobalportal-dev-86b80-deployment",
-      "UnauthRoleName": "amplify-medglobalportal-dev-86b80-unauthRole",
-      "StackName": "amplify-medglobalportal-dev-86b80",
-      "StackId": "arn:aws:cloudformation:ap-southeast-1:280954863577:stack/amplify-medglobalportal-dev-86b80/c0151360-084f-11ef-9ac0-0695269198d5",
-      "AmplifyAppId": "d12wnjf82ab5ja"
+      "DeploymentBucketName": "amplify-medglobalpos-preprod-a5cf1-deployment",
+      "UnauthRoleName": "amplify-medglobalpos-preprod-a5cf1-unauthRole",
+      "StackName": "amplify-medglobalpos-preprod-a5cf1",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:280954863577:stack/amplify-medglobalpos-preprod-a5cf1/d7385dc0-cc54-11f0-9aea-0a15b90e607f",
+      "AmplifyAppId": "d2st5bndm8uodn"
     },
     "categories": {
       "auth": {
-        "medglobalportalb8472343": {
-          "userPoolId": "ap-southeast-1_u2ldk8PVd",
-          "userPoolName": "employees",
-          "webClientId": "6309eiplj9jqf6jpb0tqbe84aj",
-          "nativeClientId": "6309eiplj9jqf6jpb0tqbe84aj"
-        }
-      },
-      "hosting": {
-        "amplifyhosting": {
-          "appId": "d12wnjf82ab5ja",
-          "type": "manual"
+        "medglobalpos330bc758": {
+          "nativeClientId": "2i717imumh6likdm6agvc092q",
+          "userPoolId": "ap-southeast-1_WIWGmTSfS",
+          "userPoolName": "medglobal-pos-inventory-employees-nonprod-preprod",
+          "webClientId": "2i717imumh6likdm6agvc092q"
         }
       }
     }

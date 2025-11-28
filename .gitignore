@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -56,6 +58,19 @@ app.*.map.json
 
 # Add fvm files needed to be added in gitignore
 .fvm
+
+
+# Windows Installer (InnoSetup)
+windows/installer/Output/
+windows/installer/setup_compiled.iss
+build/windows_installer_staging/
+
+# Note: runtime_dlls/*.dll should be committed (not ignored)
+# They are required for the CI/CD pipeline to build installers
+
+
+amplify/hooks
+amplify/README.md
 
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
