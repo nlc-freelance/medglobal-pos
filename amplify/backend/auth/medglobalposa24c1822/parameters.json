@@ -1,15 +1,16 @@
 {
   "authSelections": "userPoolOnly",
-  "resourceName": "medglobalpos330bc758",
+  "resourceName": "medglobalposa24c1822",
   "serviceType": "imported",
   "region": "ap-southeast-1",
   "usernameAttributes": [
     "email"
   ],
   "requiredAttributes": [
-    "email",
     "given_name",
-    "family_name"
+    "family_name",
+    "email",
+    "updated_at"
   ],
   "passwordPolicyMinLength": 8,
   "passwordPolicyCharacters": [
@@ -19,8 +20,5 @@
     "Requires Symbols"
   ],
   "mfaConfiguration": "OFF",
-  "autoVerifiedAttributes": [
-    "email"
-  ],
   "mfaTypes": []
 }
