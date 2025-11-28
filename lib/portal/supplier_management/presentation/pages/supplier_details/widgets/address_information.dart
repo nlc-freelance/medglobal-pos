@@ -1,7 +1,7 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl_phone_field/countries.dart';
+// import 'package:intl_phone_field/countries.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -59,13 +59,13 @@ class AddressInformation extends StatelessWidget {
               controller: postalCodeController,
             ),
             CountryCodePicker(
-              countryList: countries
-                  .map((c) => {
-                        "name": c.name,
-                        "code": c.code,
-                        "dial_code": c.dialCode,
-                      })
-                  .toList(),
+              // countryList: countries
+              //     .map((c) => {
+              //           "name": c.name,
+              //           "code": c.code,
+              //           "dial_code": c.dialCode,
+              //         })
+              //     .toList(),
               onChanged: (c) => countryController.text = c.name!,
               dialogSize: const Size(500, 500),
               favorite: const ['PH'],

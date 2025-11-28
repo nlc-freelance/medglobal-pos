@@ -9,7 +9,7 @@ on:
         type: choice
         options:
           - dev
-          - staging
+          - preprod
           - prod
       deploy_portal:
         description: 'Deploy Portal Web'

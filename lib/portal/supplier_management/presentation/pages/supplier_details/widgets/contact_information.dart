@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:intl_phone_field/country_picker_dialog.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:medglobal_admin_portal/core/core.dart';
 import 'package:medglobal_shared/medglobal_shared.dart';
 
@@ -50,10 +52,31 @@ class ContactInformation extends StatelessWidget {
               label: 'Website',
               controller: websiteController,
             ),
-            UITextField.topLabel(
-              label: 'Phone',
-              formatter: [FilteringTextInputFormatter.digitsOnly],
-              controller: phoneController,
+            IntlPhoneField(
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              initialCountryCode: 'PH',
+              showDropdownIcon: false,
+              flagsButtonMargin: const EdgeInsets.only(left: 8),
+              decoration: const InputDecoration(hintText: 'Enter phone number'),
+              cursorHeight: 14,
+              style: UIStyleText.bodyRegular,
+              pickerDialogStyle: PickerDialogStyle(
+                width: 500,
+                searchFieldInputDecoration: InputDecoration(
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Assets.icons.search.setSize(16),
+                  ),
+                  prefixIconConstraints: const BoxConstraints(maxHeight: 48),
+                  suffixIcon: null,
+                  hintText: 'Search country',
+                ),
+                backgroundColor: UIColors.background,
+                padding: const EdgeInsets.all(16),
+                countryCodeStyle: UIStyleText.labelMedium,
+                countryNameStyle: UIStyleText.labelSemiBold,
+                listTileDivider: const Divider(color: UIColors.borderMuted),
+              ),
             ),
           ],
         ),
